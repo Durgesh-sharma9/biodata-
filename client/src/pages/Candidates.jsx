@@ -1,0 +1,288 @@
+import { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Link } from 'react-router-dom';
+import { Plus, Search, Eye, Pencil, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { getCandidates, deleteCandidate, getSettings } from '@/lib/api';
+import { PageHeader } from '@/components/common/PageHeader';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent } from '@/components/ui/card';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { formatDate } from '@/lib/utils';
+
+export default function Candidates() {
+  const queryClient = useQueryClient();
+  const [page, setPage] = useState(1);
+  const [filters, setFilters] = useState({
+    name: '',
+    mobile: '',
+    position: '',
+    subject: '',
+    qualification: '',
+    class: '',
+    experience: '',
+    dateFrom: '',
+    dateTo: '',
+    sortBy: 'createdAt',
+    sortOrder: 'desc',
+  });
+  const [deleteId, setDeleteId] = useState(null);
+
+  const { data: settings } = useQuery({
+    queryKey: ['settings'],
+    queryFn: () => getSettings().then((r) => r.data.data),
+  });
+
+  const { data, isLoading } = useQuery({
+    queryKey: ['candidates', page, filters],
+    queryFn: () =>
+      getCandidates({
+        page,
+        limit: 10,
+        ...Object.fromEntries(Object.entries(filters).filter(([, v]) => v !== '')),
+      }).then((r) => r.data),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: deleteCandidate,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['candidates'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      setDeleteId(null);
+    },
+  });
+
+  const updateFilter = (key, value) => {
+    setPage(1);
+    setFilters((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const handleSort = (field) => {
+    setFilters((prev) => ({
+      ...prev,
+      sortBy: field,
+      sortOrder: prev.sortBy === field && prev.sortOrder === 'asc' ? 'desc' : 'asc',
+    }));
+  };
+
+  return (
+    <div>
+      <PageHeader
+        title="Candidates"
+        description="Manage your school's candidate database"
+        action={
+          <Button asChild>
+            <Link to="/candidates/new">
+              <Plus className="mr-2 h-4 w-4" />
+              Add Candidate
+            </Link>
+          </Button>
+        }
+      />
+
+      <Card className="mb-6">
+        <CardContent className="pt-6">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search by name"
+                className="pl-9"
+                value={filters.name}
+                onChange={(e) => updateFilter('name', e.target.value)}
+              />
+            </div>
+            <Input
+              placeholder="Search by mobile"
+              value={filters.mobile}
+              onChange={(e) => updateFilter('mobile', e.target.value)}
+            />
+            <Select value={filters.position || 'all'} onValueChange={(v) => updateFilter('position', v === 'all' ? '' : v)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Position" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Positions</SelectItem>
+                {settings?.positions?.map((p) => (
+                  <SelectItem key={p} value={p}>
+                    {p}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select value={filters.subject || 'all'} onValueChange={(v) => updateFilter('subject', v === 'all' ? '' : v)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Subject" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Subjects</SelectItem>
+                {settings?.subjects?.map((s) => (
+                  <SelectItem key={s} value={s}>
+                    {s}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select
+              value={filters.qualification || 'all'}
+              onValueChange={(v) => updateFilter('qualification', v === 'all' ? '' : v)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Qualification" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Qualifications</SelectItem>
+                {settings?.qualifications?.map((q) => (
+                  <SelectItem key={q} value={q}>
+                    {q}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select value={filters.class || 'all'} onValueChange={(v) => updateFilter('class', v === 'all' ? '' : v)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Class" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Classes</SelectItem>
+                {settings?.classes?.map((c) => (
+                  <SelectItem key={c} value={c}>
+                    {c}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Input
+              type="number"
+              placeholder="Experience (years)"
+              value={filters.experience}
+              onChange={(e) => updateFilter('experience', e.target.value)}
+            />
+            <div className="flex gap-2">
+              <Input type="date" value={filters.dateFrom} onChange={(e) => updateFilter('dateFrom', e.target.value)} />
+              <Input type="date" value={filters.dateTo} onChange={(e) => updateFilter('dateTo', e.target.value)} />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardContent className="pt-6">
+          {isLoading ? (
+            <div className="py-8 text-center">Loading...</div>
+          ) : (
+            <>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="cursor-pointer" onClick={() => handleSort('fullName')}>
+                      Name
+                    </TableHead>
+                    <TableHead className="cursor-pointer" onClick={() => handleSort('mobile')}>
+                      Mobile
+                    </TableHead>
+                    <TableHead className="cursor-pointer" onClick={() => handleSort('position')}>
+                      Position
+                    </TableHead>
+                    <TableHead>Qualification</TableHead>
+                    <TableHead className="cursor-pointer" onClick={() => handleSort('experienceYears')}>
+                      Experience
+                    </TableHead>
+                    <TableHead className="cursor-pointer" onClick={() => handleSort('createdAt')}>
+                      Date Added
+                    </TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {data?.data?.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={7} className="text-center text-muted-foreground">
+                        No candidates found
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    data?.data?.map((c) => (
+                      <TableRow key={c._id}>
+                        <TableCell className="font-medium">{c.fullName}</TableCell>
+                        <TableCell>{c.mobile}</TableCell>
+                        <TableCell>{c.position}</TableCell>
+                        <TableCell>{c.qualifications?.join(', ') || '-'}</TableCell>
+                        <TableCell>{c.experienceYears} yrs</TableCell>
+                        <TableCell>{formatDate(c.createdAt)}</TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex justify-end gap-1">
+                            <Button variant="ghost" size="icon" asChild>
+                              <Link to={`/candidates/${c._id}`}>
+                                <Eye className="h-4 w-4" />
+                              </Link>
+                            </Button>
+                            <Button variant="ghost" size="icon" asChild>
+                              <Link to={`/candidates/${c._id}/edit`}>
+                                <Pencil className="h-4 w-4" />
+                              </Link>
+                            </Button>
+                            <Button variant="ghost" size="icon" onClick={() => setDeleteId(c._id)}>
+                              <Trash2 className="h-4 w-4 text-destructive" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+
+              {data?.pagination && (
+                <div className="mt-4 flex items-center justify-between">
+                  <p className="text-sm text-muted-foreground">
+                    Page {data.pagination.page} of {data.pagination.totalPages} ({data.pagination.total} total)
+                  </p>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled={page <= 1}
+                      onClick={() => setPage((p) => p - 1)}
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled={page >= data.pagination.totalPages}
+                      onClick={() => setPage((p) => p + 1)}
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+        </CardContent>
+      </Card>
+
+      <Dialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete Candidate</DialogTitle>
+            <DialogDescription>
+              This will soft-delete the candidate. They can be restored from the database if needed.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-end gap-2">
+            <Button variant="outline" onClick={() => setDeleteId(null)}>
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={() => deleteMutation.mutate(deleteId)} disabled={deleteMutation.isPending}>
+              {deleteMutation.isPending ? 'Deleting...' : 'Delete'}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
