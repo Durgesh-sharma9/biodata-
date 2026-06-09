@@ -3,6 +3,11 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
 import { ProtectedRoute } from '@/components/layout/ProtectedRoute';
 import { AppLayout } from '@/components/layout/AppLayout';
+import Landing from '@/pages/Landing';
+import Features from '@/pages/Features';
+import Pricing from '@/pages/Pricing';
+import Contact from '@/pages/Contact';
+import Signup from '@/pages/Signup';
 import Login from '@/pages/Login';
 import Dashboard from '@/pages/Dashboard';
 import Candidates from '@/pages/Candidates';
@@ -21,7 +26,7 @@ const queryClient = new QueryClient({
 function RootRedirect() {
   const { user, loading } = useAuth();
   if (loading) return null;
-  if (!user) return <Navigate to="/login" replace />;
+  if (!user) return <Navigate to="/" replace />;
   return <Navigate to={user.role === 'super_admin' ? '/admin/schools' : '/dashboard'} replace />;
 }
 
@@ -31,8 +36,13 @@ export default function App() {
       <AuthProvider>
         <BrowserRouter>
           <Routes>
+            <Route path="/" element={<Landing />} />
+            <Route path="/features" element={<Features />} />
+            <Route path="/pricing" element={<Pricing />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/signup" element={<Signup />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/" element={<RootRedirect />} />
+            <Route path="/app" element={<RootRedirect />} />
 
             <Route
               element={

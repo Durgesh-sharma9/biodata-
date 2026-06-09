@@ -36,7 +36,6 @@ export const getMe = () => api.get('/auth/me');
 // Schools (Super Admin)
 export const getSchools = (params) => api.get('/schools', { params });
 export const getSchool = (id) => api.get(`/schools/${id}`);
-export const createSchool = (data) => api.post('/schools', data);
 export const updateSchool = (id, data) => api.put(`/schools/${id}`, data);
 export const toggleSchoolStatus = (id) => api.patch(`/schools/${id}/toggle-status`);
 export const getPlatformStats = () => api.get('/schools/stats');

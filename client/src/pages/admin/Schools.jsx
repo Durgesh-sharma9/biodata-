@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Plus, Search, Power, Pencil } from 'lucide-react';
-import { getSchools, createSchool, toggleSchoolStatus, updateSchool } from '@/lib/api';
+import { Search, Power, Pencil } from 'lucide-react';
+import { getSchools, toggleSchoolStatus, updateSchool } from '@/lib/api';
 import { PageHeader } from '@/components/common/PageHeader';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -26,9 +26,6 @@ const emptyForm = {
   subscriptionStatus: 'trial',
   startDate: '',
   expiryDate: '',
-  adminName: '',
-  adminEmail: '',
-  adminPassword: '',
 };
 
 export default function Schools() {
@@ -51,15 +48,6 @@ export default function Schools() {
       }).then((r) => r.data),
   });
 
-  const createMutation = useMutation({
-    mutationFn: createSchool,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['schools'] });
-      setDialogOpen(false);
-      setForm(emptyForm);
-    },
-  });
-
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => updateSchool(id, data),
     onSuccess: () => {
@@ -75,12 +63,6 @@ export default function Schools() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['schools'] }),
   });
 
-  const openCreate = () => {
-    setEditSchool(null);
-    setForm(emptyForm);
-    setDialogOpen(true);
-  };
-
   const openEdit = (school) => {
     setEditSchool(school);
     setForm({
@@ -91,9 +73,6 @@ export default function Schools() {
       subscriptionStatus: school.subscriptionStatus,
       startDate: school.startDate ? school.startDate.split('T')[0] : '',
       expiryDate: school.expiryDate ? school.expiryDate.split('T')[0] : '',
-      adminName: '',
-      adminEmail: '',
-      adminPassword: '',
     });
     setDialogOpen(true);
   };
@@ -101,10 +80,7 @@ export default function Schools() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (editSchool) {
-      const { adminName, adminEmail, adminPassword, ...schoolData } = form;
-      updateMutation.mutate({ id: editSchool._id, data: schoolData });
-    } else {
-      createMutation.mutate(form);
+      updateMutation.mutate({ id: editSchool._id, data: form });
     }
   };
 
@@ -113,12 +89,6 @@ export default function Schools() {
       <PageHeader
         title="Schools"
         description="Manage schools and subscriptions"
-        action={
-          <Button onClick={openCreate}>
-            <Plus className="mr-2 h-4 w-4" />
-            Add School
-          </Button>
-        }
       />
 
       <Card className="mb-6">
@@ -210,7 +180,7 @@ export default function Schools() {
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>{editSchool ? 'Edit School' : 'Add School'}</DialogTitle>
+            <DialogTitle>Edit School</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid gap-4 md:grid-cols-2">
@@ -229,7 +199,7 @@ export default function Schools() {
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
                   required
-                  disabled={!!editSchool}
+                  disabled
                 />
               </div>
               <div className="space-y-2">
@@ -273,48 +243,12 @@ export default function Schools() {
               </div>
             </div>
 
-            {!editSchool && (
-              <>
-                <hr />
-                <p className="text-sm font-medium">School Admin Account</p>
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div className="space-y-2">
-                    <Label>Admin Name *</Label>
-                    <Input
-                      value={form.adminName}
-                      onChange={(e) => setForm({ ...form, adminName: e.target.value })}
-                      required={!editSchool}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Admin Email *</Label>
-                    <Input
-                      type="email"
-                      value={form.adminEmail}
-                      onChange={(e) => setForm({ ...form, adminEmail: e.target.value })}
-                      required={!editSchool}
-                    />
-                  </div>
-                  <div className="space-y-2 md:col-span-2">
-                    <Label>Admin Password *</Label>
-                    <Input
-                      type="password"
-                      value={form.adminPassword}
-                      onChange={(e) => setForm({ ...form, adminPassword: e.target.value })}
-                      required={!editSchool}
-                      minLength={6}
-                    />
-                  </div>
-                </div>
-              </>
-            )}
-
             <div className="flex justify-end gap-2">
               <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
                 Cancel
               </Button>
-              <Button type="submit" disabled={createMutation.isPending || updateMutation.isPending}>
-                {editSchool ? 'Update' : 'Create'}
+              <Button type="submit" disabled={updateMutation.isPending}>
+                Update
               </Button>
             </div>
           </form>
