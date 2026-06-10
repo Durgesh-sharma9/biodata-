@@ -7,6 +7,7 @@ import {
   updateCandidate,
   deleteCandidate,
   getDashboardStats,
+  unlockCandidate,
 } from '../controllers/candidateController.js';
 import { protect, authorize } from '../middleware/auth.js';
 
@@ -17,6 +18,7 @@ router.use(protect, authorize('school_admin'));
 router.get('/dashboard', getDashboardStats);
 router.get('/check-duplicate', checkDuplicate);
 router.get('/', getCandidates);
+router.post('/:id/unlock', unlockCandidate);
 router.get('/:id', getCandidate);
 router.post('/', createCandidate);
 router.put('/:id', updateCandidate);

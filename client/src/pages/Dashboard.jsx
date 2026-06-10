@@ -1,12 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-import { Users, GraduationCap, Briefcase, Plus, List } from 'lucide-react';
+import { Users, Coins, Plus, List } from 'lucide-react';
 import { getDashboardStats } from '@/lib/api';
 import { PageHeader } from '@/components/common/PageHeader';
 import { StatCard } from '@/components/common/StatCard';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Badge } from '@/components/ui/badge';
 import { formatDate } from '@/lib/utils';
 
 export default function Dashboard() {
@@ -44,8 +45,8 @@ export default function Dashboard() {
 
       <div className="mb-8 grid gap-4 md:grid-cols-3">
         <StatCard title="Total Candidates" value={data?.totalCandidates || 0} icon={Users} />
-        <StatCard title="Teachers" value={data?.teachers || 0} icon={GraduationCap} />
-        <StatCard title="Non-Teaching Staff" value={data?.nonTeachingStaff || 0} icon={Briefcase} />
+        <StatCard title="Your Candidates" value={data?.ownedCandidates || 0} icon={Users} />
+        <StatCard title="Available Credits" value={data?.availableCredits || 0} icon={Coins} />
       </div>
 
       <Card>
@@ -57,8 +58,8 @@ export default function Dashboard() {
             <TableHeader>
               <TableRow>
                 <TableHead>Name</TableHead>
-                <TableHead>Mobile</TableHead>
                 <TableHead>Position</TableHead>
+                <TableHead>Source</TableHead>
                 <TableHead>Date Added</TableHead>
               </TableRow>
             </TableHeader>
@@ -75,10 +76,15 @@ export default function Dashboard() {
                     <TableCell>
                       <Link to={`/candidates/${c._id}`} className="font-medium text-primary hover:underline">
                         {c.fullName}
+                        {c.isLocked && (
+                          <Badge variant="outline" className="ml-2 text-xs">
+                            Locked
+                          </Badge>
+                        )}
                       </Link>
                     </TableCell>
-                    <TableCell>{c.mobile}</TableCell>
                     <TableCell>{c.position}</TableCell>
+                    <TableCell>{c.source}</TableCell>
                     <TableCell>{formatDate(c.createdAt)}</TableCell>
                   </TableRow>
                 ))

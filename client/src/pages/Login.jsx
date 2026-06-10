@@ -15,7 +15,13 @@ const loginSchema = z.object({
   password: z.string().min(6, 'Password must be at least 6 characters'),
 });
 
-export default function Login() {
+function getPostLoginRoute(role) {
+  if (role === 'super_admin') return '/admin/dashboard';
+  if (role === 'self_applicant') return '/applicant/profile';
+  return '/dashboard';
+}
+
+export default function Login({ redirectTo, signupLink = '/signup', title = 'Sign In' }) {
   const { login } = useAuth();
   const navigate = useNavigate();
   const [error, setError] = useState('');
@@ -31,7 +37,7 @@ export default function Login() {
     try {
       setError('');
       const result = await login(data.email, data.password);
-      navigate(result.user.role === 'super_admin' ? '/admin/schools' : '/dashboard');
+      navigate(redirectTo || getPostLoginRoute(result.user.role));
     } catch (err) {
       setError(err.response?.data?.message || 'Authentication failed. Please verify credentials.');
     }
@@ -105,7 +111,7 @@ export default function Login() {
               <div className="inline-flex items-center gap-1.5 self-center px-3 py-1 mb-3 rounded-full border border-indigo-100 bg-indigo-50/60 text-[10px] font-black tracking-wider uppercase text-indigo-700 shadow-sm">
                 <Sparkles className="w-3 h-3 text-indigo-500 fill-indigo-500" /> Secure Cloud Vault
               </div>
-              <CardTitle className="text-3xl font-black tracking-tight text-slate-900">Sign In</CardTitle>
+              <CardTitle className="text-3xl font-black tracking-tight text-slate-900">{title}</CardTitle>
               <CardDescription className="text-slate-500 font-medium text-sm mt-1">Access your operational school node</CardDescription>
             </CardHeader>
             
@@ -186,7 +192,7 @@ export default function Login() {
 
               <p className="mt-6 text-center text-sm text-slate-600 font-semibold">
                 Don't have an asset space account?{' '}
-                <Link to="/signup" className="text-indigo-600 hover:text-indigo-700 font-bold transition-colors">
+                <Link to={signupLink} className="text-indigo-600 hover:text-indigo-700 font-bold transition-colors">
                   Start free sandbox trial
                 </Link>
               </p>

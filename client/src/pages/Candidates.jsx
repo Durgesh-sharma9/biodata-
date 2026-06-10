@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { Plus, Search, Eye, Pencil, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
-import { getCandidates, deleteCandidate, getSettings } from '@/lib/api';
+import { getCandidates, deleteCandidate, getSettings, getStates } from '@/lib/api';
+import { Badge } from '@/components/ui/badge';
 import { PageHeader } from '@/components/common/PageHeader';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -23,6 +24,13 @@ export default function Candidates() {
     qualification: '',
     class: '',
     experience: '',
+    state: '',
+    city: '',
+    locality: '',
+    localityCluster: '',
+    source: '',
+    expectedSalaryMin: '',
+    expectedSalaryMax: '',
     dateFrom: '',
     dateTo: '',
     sortBy: 'createdAt',
@@ -34,6 +42,13 @@ export default function Candidates() {
     queryKey: ['settings'],
     queryFn: () => getSettings().then((r) => r.data.data),
   });
+
+  const { data: states = [] } = useQuery({
+    queryKey: ['states'],
+    queryFn: () => getStates().then((r) => r.data.data),
+  });
+
+  const SOURCE_OPTIONS = ['ADMIN', 'SCHOOL_LINK', 'SELF_APPLICANT', 'SUPER_ADMIN_IMPORT'];
 
   const { data, isLoading } = useQuery({
     queryKey: ['candidates', page, filters],
@@ -160,6 +175,35 @@ export default function Candidates() {
               value={filters.experience}
               onChange={(e) => updateFilter('experience', e.target.value)}
             />
+            <Select value={filters.state || 'all'} onValueChange={(v) => updateFilter('state', v === 'all' ? '' : v)}>
+              <SelectTrigger><SelectValue placeholder="State" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All States</SelectItem>
+                {states.map((s) => <SelectItem key={s._id} value={s.name}>{s.name}</SelectItem>)}
+              </SelectContent>
+            </Select>
+            <Input placeholder="City" value={filters.city} onChange={(e) => updateFilter('city', e.target.value)} />
+            <Input placeholder="Locality" value={filters.locality} onChange={(e) => updateFilter('locality', e.target.value)} />
+            <Input placeholder="Cluster" value={filters.localityCluster} onChange={(e) => updateFilter('localityCluster', e.target.value)} />
+            <Select value={filters.source || 'all'} onValueChange={(v) => updateFilter('source', v === 'all' ? '' : v)}>
+              <SelectTrigger><SelectValue placeholder="Source" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Sources</SelectItem>
+                {SOURCE_OPTIONS.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+              </SelectContent>
+            </Select>
+            <Input
+              type="number"
+              placeholder="Min Salary"
+              value={filters.expectedSalaryMin}
+              onChange={(e) => updateFilter('expectedSalaryMin', e.target.value)}
+            />
+            <Input
+              type="number"
+              placeholder="Max Salary"
+              value={filters.expectedSalaryMax}
+              onChange={(e) => updateFilter('expectedSalaryMax', e.target.value)}
+            />
             <div className="flex gap-2">
               <Input type="date" value={filters.dateFrom} onChange={(e) => updateFilter('dateFrom', e.target.value)} />
               <Input type="date" value={filters.dateTo} onChange={(e) => updateFilter('dateTo', e.target.value)} />
@@ -180,12 +224,11 @@ export default function Candidates() {
                     <TableHead className="cursor-pointer" onClick={() => handleSort('fullName')}>
                       Name
                     </TableHead>
-                    <TableHead className="cursor-pointer" onClick={() => handleSort('mobile')}>
-                      Mobile
-                    </TableHead>
                     <TableHead className="cursor-pointer" onClick={() => handleSort('position')}>
                       Position
                     </TableHead>
+                    <TableHead>Location</TableHead>
+                    <TableHead>Source</TableHead>
                     <TableHead>Qualification</TableHead>
                     <TableHead className="cursor-pointer" onClick={() => handleSort('experienceYears')}>
                       Experience
@@ -199,16 +242,20 @@ export default function Candidates() {
                 <TableBody>
                   {data?.data?.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={7} className="text-center text-muted-foreground">
+                      <TableCell colSpan={8} className="text-center text-muted-foreground">
                         No candidates found
                       </TableCell>
                     </TableRow>
                   ) : (
                     data?.data?.map((c) => (
                       <TableRow key={c._id}>
-                        <TableCell className="font-medium">{c.fullName}</TableCell>
-                        <TableCell>{c.mobile}</TableCell>
+                        <TableCell className="font-medium">
+                          {c.fullName}
+                          {c.isLocked && <Badge variant="outline" className="ml-2 text-xs">Locked</Badge>}
+                        </TableCell>
                         <TableCell>{c.position}</TableCell>
+                        <TableCell className="text-xs">{[c.city, c.locality].filter(Boolean).join(', ') || '-'}</TableCell>
+                        <TableCell><Badge variant="secondary">{c.source}</Badge></TableCell>
                         <TableCell>{c.qualifications?.join(', ') || '-'}</TableCell>
                         <TableCell>{c.experienceYears} yrs</TableCell>
                         <TableCell>{formatDate(c.createdAt)}</TableCell>
@@ -219,14 +266,18 @@ export default function Candidates() {
                                 <Eye className="h-4 w-4" />
                               </Link>
                             </Button>
-                            <Button variant="ghost" size="icon" asChild>
-                              <Link to={`/candidates/${c._id}/edit`}>
-                                <Pencil className="h-4 w-4" />
-                              </Link>
-                            </Button>
-                            <Button variant="ghost" size="icon" onClick={() => setDeleteId(c._id)}>
-                              <Trash2 className="h-4 w-4 text-destructive" />
-                            </Button>
+                            {c.canEdit && (
+                              <>
+                                <Button variant="ghost" size="icon" asChild>
+                                  <Link to={`/candidates/${c._id}/edit`}>
+                                    <Pencil className="h-4 w-4" />
+                                  </Link>
+                                </Button>
+                                <Button variant="ghost" size="icon" onClick={() => setDeleteId(c._id)}>
+                                  <Trash2 className="h-4 w-4 text-destructive" />
+                                </Button>
+                              </>
+                            )}
                           </div>
                         </TableCell>
                       </TableRow>

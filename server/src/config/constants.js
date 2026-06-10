@@ -90,5 +90,13 @@ export const TEACHING_POSITIONS = ['Teacher', 'Principal', 'Vice Principal', 'Co
 export const SUBSCRIPTION_PLANS = ['basic', 'standard', 'premium'];
 export const SUBSCRIPTION_STATUSES = ['active', 'expired', 'trial', 'cancelled'];
 
+export const CANDIDATE_SOURCES = ['ADMIN', 'SCHOOL_LINK', 'SELF_APPLICANT', 'SUPER_ADMIN_IMPORT'];
+
+export const USER_ROLES = ['super_admin', 'school_admin', 'self_applicant'];
+
+export const DOCUMENT_TYPES = ['photo', 'resume', 'certificate', 'experience_letter', 'other'];
+
 export const MAX_DOCUMENTS = 10;
 export const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+
+export const UNLOCK_CREDIT_COST = 1;

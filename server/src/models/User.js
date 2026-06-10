@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
+import { USER_ROLES } from '../config/constants.js';
 
 const userSchema = new mongoose.Schema(
   {
@@ -8,10 +9,15 @@ const userSchema = new mongoose.Schema(
       ref: 'School',
       default: null,
     },
+    candidateId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Candidate',
+      default: null,
+    },
     name: { type: String, required: true, trim: true },
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     password: { type: String, required: true, minlength: 6, select: false },
-    role: { type: String, enum: ['super_admin', 'school_admin'], required: true },
+    role: { type: String, enum: USER_ROLES, required: true },
   },
   { timestamps: true }
 );

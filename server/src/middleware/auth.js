@@ -35,6 +35,11 @@ export const protect = async (req, res, next) => {
       req.school = school;
     }
 
+    if (user.role === 'self_applicant') {
+      req.applicantUserId = user._id;
+      req.candidateId = user.candidateId;
+    }
+
     next();
   } catch {
     return next(new ApiError(401, 'Not authorized, invalid token'));

@@ -12,6 +12,7 @@ import {
   getSettings,
   uploadFiles,
 } from '@/lib/api';
+import { LocationSelect } from '@/components/common/LocationSelect';
 import { candidateSchema, TEACHING_POSITIONS, VEHICLE_TYPES } from '@/schemas/candidateSchema';
 import { PageHeader } from '@/components/common/PageHeader';
 import { Button } from '@/components/ui/button';
@@ -36,6 +37,7 @@ export default function CandidateForm() {
   const queryClient = useQueryClient();
   const [duplicate, setDuplicate] = useState(null);
   const [uploading, setUploading] = useState(false);
+  const [location, setLocation] = useState({});
 
   const { data: settings } = useQuery({
     queryKey: ['settings'],
@@ -69,6 +71,7 @@ export default function CandidateForm() {
       classesCanTeach: [],
       vehicleTypes: [],
       experienceYears: 0,
+      expectedSalary: '',
       notes: '',
       documents: [],
     },
@@ -91,6 +94,7 @@ export default function CandidateForm() {
         classesCanTeach: candidate.classesCanTeach || [],
         vehicleTypes: candidate.vehicleTypes || [],
         experienceYears: candidate.experienceYears || 0,
+        expectedSalary: candidate.expectedSalary || '',
         notes: candidate.notes || '',
         documents: candidate.documents || [],
       });
@@ -152,12 +156,21 @@ export default function CandidateForm() {
   };
 
   const onSubmit = (data) => {
-    saveMutation.mutate(data);
+    saveMutation.mutate({
+      ...data,
+      expectedSalary: data.expectedSalary ? Number(data.expectedSalary) : undefined,
+      localityId: location.localityId,
+    });
   };
 
   const handleForceCreate = () => {
     const data = watch();
-    saveMutation.mutate({ ...data, forceCreate: true });
+    saveMutation.mutate({
+      ...data,
+      forceCreate: true,
+      expectedSalary: data.expectedSalary ? Number(data.expectedSalary) : undefined,
+      localityId: location.localityId,
+    });
     setDuplicate(null);
   };
 
@@ -204,6 +217,9 @@ export default function CandidateForm() {
             <div className="space-y-2 md:col-span-2">
               <Label htmlFor="address">Address</Label>
               <Textarea id="address" {...register('address')} />
+            </div>
+            <div className="space-y-2 md:col-span-2">
+              <LocationSelect value={location} onChange={setLocation} />
             </div>
           </CardContent>
         </Card>
@@ -326,6 +342,10 @@ export default function CandidateForm() {
             <div className="space-y-2">
               <Label htmlFor="experienceYears">Experience (Years)</Label>
               <Input id="experienceYears" type="number" min="0" {...register('experienceYears')} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="expectedSalary">Expected Salary (₹)</Label>
+              <Input id="expectedSalary" type="number" min="0" {...register('expectedSalary')} />
             </div>
             <div className="space-y-2 md:col-span-2">
               <Label htmlFor="notes">Notes</Label>

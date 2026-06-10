@@ -50,8 +50,27 @@ export function AuthProvider({ children }) {
     setSchool(null);
   };
 
+  const refreshSchool = async () => {
+    const meRes = await getMe();
+    setUser(meRes.data.user);
+    setSchool(meRes.data.school);
+    localStorage.setItem('user', JSON.stringify(meRes.data.user));
+  };
+
   return (
-    <AuthContext.Provider value={{ user, school, loading, login, logout, isSuperAdmin: user?.role === 'super_admin' }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        school,
+        loading,
+        login,
+        logout,
+        refreshSchool,
+        isSuperAdmin: user?.role === 'super_admin',
+        isApplicant: user?.role === 'self_applicant',
+        isSchoolAdmin: user?.role === 'school_admin',
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

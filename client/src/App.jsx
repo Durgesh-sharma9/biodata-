@@ -14,8 +14,18 @@ import Candidates from '@/pages/Candidates';
 import CandidateForm from '@/pages/CandidateForm';
 import CandidateProfile from '@/pages/CandidateProfile';
 import Settings from '@/pages/Settings';
-import Schools from '@/pages/admin/Schools';
-import PlatformStats from '@/pages/admin/PlatformStats';
+import Credits from '@/pages/Credits';
+import ApplicationLinks from '@/pages/ApplicationLinks';
+import Apply from '@/pages/Apply';
+import AdminDashboard from '@/pages/admin/AdminDashboard';
+import Admins from '@/pages/admin/Admins';
+import Plans from '@/pages/admin/Plans';
+import CreditPackages from '@/pages/admin/CreditPackages';
+import Locations from '@/pages/admin/Locations';
+import CandidateImport from '@/pages/admin/CandidateImport';
+import ApplicantSignup from '@/pages/applicant/ApplicantSignup';
+import ApplicantLogin from '@/pages/applicant/ApplicantLogin';
+import ApplicantProfile from '@/pages/applicant/ApplicantProfile';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -23,11 +33,17 @@ const queryClient = new QueryClient({
   },
 });
 
+function getDefaultRoute(role) {
+  if (role === 'super_admin') return '/admin/dashboard';
+  if (role === 'self_applicant') return '/applicant/profile';
+  return '/dashboard';
+}
+
 function RootRedirect() {
   const { user, loading } = useAuth();
   if (loading) return null;
   if (!user) return <Navigate to="/" replace />;
-  return <Navigate to={user.role === 'super_admin' ? '/admin/schools' : '/dashboard'} replace />;
+  return <Navigate to={getDefaultRoute(user.role)} replace />;
 }
 
 export default function App() {
@@ -42,6 +58,9 @@ export default function App() {
             <Route path="/contact" element={<Contact />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/apply/:slug" element={<Apply />} />
+            <Route path="/applicant/signup" element={<ApplicantSignup />} />
+            <Route path="/applicant/login" element={<ApplicantLogin />} />
             <Route path="/app" element={<RootRedirect />} />
 
             <Route
@@ -56,6 +75,8 @@ export default function App() {
               <Route path="/candidates/new" element={<CandidateForm />} />
               <Route path="/candidates/:id" element={<CandidateProfile />} />
               <Route path="/candidates/:id/edit" element={<CandidateForm />} />
+              <Route path="/credits" element={<Credits />} />
+              <Route path="/application-links" element={<ApplicationLinks />} />
               <Route path="/settings" element={<Settings />} />
             </Route>
 
@@ -66,8 +87,24 @@ export default function App() {
                 </ProtectedRoute>
               }
             >
-              <Route path="/admin/schools" element={<Schools />} />
-              <Route path="/admin/stats" element={<PlatformStats />} />
+              <Route path="/admin/dashboard" element={<AdminDashboard />} />
+              <Route path="/admin/admins" element={<Admins />} />
+              <Route path="/admin/plans" element={<Plans />} />
+              <Route path="/admin/credit-packages" element={<CreditPackages />} />
+              <Route path="/admin/locations" element={<Locations />} />
+              <Route path="/admin/import" element={<CandidateImport />} />
+              <Route path="/admin/schools" element={<Navigate to="/admin/admins" replace />} />
+              <Route path="/admin/stats" element={<Navigate to="/admin/dashboard" replace />} />
+            </Route>
+
+            <Route
+              element={
+                <ProtectedRoute role="self_applicant">
+                  <AppLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route path="/applicant/profile" element={<ApplicantProfile />} />
             </Route>
 
             <Route path="*" element={<Navigate to="/" replace />} />

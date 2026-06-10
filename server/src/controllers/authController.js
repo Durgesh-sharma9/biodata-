@@ -4,6 +4,7 @@ import SchoolSettings from '../models/SchoolSettings.js';
 import { ApiError } from '../utils/ApiError.js';
 import { generateToken } from '../utils/generateToken.js';
 import { catchAsync } from '../utils/catchAsync.js';
+import { generateSchoolSlug } from '../utils/slugify.js';
 
 const formatUser = (user) => ({
   id: user._id,
@@ -32,6 +33,10 @@ export const login = catchAsync(async (req, res) => {
     }
   }
 
+  if (user.role === 'self_applicant') {
+    // self applicants can always login
+  }
+
   const token = generateToken(user._id);
 
   res.json({
@@ -44,7 +49,12 @@ export const login = catchAsync(async (req, res) => {
 export const getMe = catchAsync(async (req, res) => {
   let school = null;
   if (req.user.schoolId) {
-    school = await School.findById(req.user.schoolId).select('schoolName email isActive subscriptionPlan subscriptionStatus');
+    school = await School.findById(req.user.schoolId).select(
+      'schoolName email isActive subscriptionPlan subscriptionStatus credits slug planId'
+    );
+    if (school) {
+      await school.populate('planId', 'name credits durationDays');
+    }
   }
 
   res.json({
@@ -77,11 +87,13 @@ export const registerSchool = catchAsync(async (req, res) => {
     schoolName,
     email: email.toLowerCase(),
     phone: mobile,
+    slug: generateSchoolSlug(schoolName),
     subscriptionPlan: 'basic',
     subscriptionStatus: 'trial',
     startDate: new Date(),
     expiryDate: trialExpiryDate,
     isActive: true,
+    credits: 5,
   });
 
   const user = await User.create({

@@ -2,11 +2,8 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { Button } from '@/components/ui/Button';
-import { useAuth } from '@/context/AuthContext';
-
 export default function Signup() {
   const navigate = useNavigate();
-  const { login } = useAuth();
   const [formData, setFormData] = useState({
     schoolName: '',
     adminName: '',
@@ -33,8 +30,10 @@ export default function Signup() {
       return result;
     },
     onSuccess: (data) => {
-      login(data.token, data.user, data.school);
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
       navigate('/dashboard');
+      window.location.reload();
     },
     onError: (err) => {
       setError(err.message);

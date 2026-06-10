@@ -1,10 +1,18 @@
 import Candidate from '../models/Candidate.js';
+import School from '../models/School.js';
+import UnlockHistory from '../models/UnlockHistory.js';
 import { ApiError } from '../utils/ApiError.js';
 import { catchAsync } from '../utils/catchAsync.js';
-import { TEACHING_POSITIONS } from '../config/constants.js';
+import { TEACHING_POSITIONS, UNLOCK_CREDIT_COST } from '../config/constants.js';
+import {
+  formatCandidateForSchool,
+  isOwnedBySchool,
+  hasFullAccess,
+} from '../utils/candidateAccess.js';
+import { resolveLocationFromLocalityId } from '../utils/locationHelper.js';
 
-const buildCandidateFilter = (schoolId, query) => {
-  const filter = { schoolId, isDeleted: false };
+const buildCandidateFilter = (query) => {
+  const filter = { isDeleted: false };
 
   if (query.name) {
     filter.fullName = { $regex: query.name, $options: 'i' };
@@ -30,6 +38,17 @@ const buildCandidateFilter = (schoolId, query) => {
       filter.experienceYears = exp;
     }
   }
+  if (query.state) filter.state = query.state;
+  if (query.city) filter.city = query.city;
+  if (query.locality) filter.locality = query.locality;
+  if (query.localityCluster) filter.localityCluster = query.localityCluster;
+  if (query.source) filter.source = query.source;
+  if (query.expectedSalaryMin) {
+    filter.expectedSalary = { ...filter.expectedSalary, $gte: Number(query.expectedSalaryMin) };
+  }
+  if (query.expectedSalaryMax) {
+    filter.expectedSalary = { ...filter.expectedSalary, $lte: Number(query.expectedSalaryMax) };
+  }
   if (query.dateFrom || query.dateTo) {
     filter.createdAt = {};
     if (query.dateFrom) filter.createdAt.$gte = new Date(query.dateFrom);
@@ -44,7 +63,7 @@ const buildCandidateFilter = (schoolId, query) => {
 };
 
 const getSortOption = (sortBy, sortOrder) => {
-  const allowed = ['fullName', 'mobile', 'position', 'experienceYears', 'createdAt'];
+  const allowed = ['fullName', 'mobile', 'position', 'experienceYears', 'expectedSalary', 'createdAt', 'source'];
   const field = allowed.includes(sortBy) ? sortBy : 'createdAt';
   const order = sortOrder === 'asc' ? 1 : -1;
   return { [field]: order };
@@ -59,7 +78,7 @@ export const getCandidates = catchAsync(async (req, res) => {
     ...filters
   } = req.query;
 
-  const filter = buildCandidateFilter(req.schoolId, filters);
+  const filter = buildCandidateFilter(filters);
   const skip = (Number(page) - 1) * Number(limit);
   const sort = getSortOption(sortBy, sortOrder);
 
@@ -68,9 +87,13 @@ export const getCandidates = catchAsync(async (req, res) => {
     Candidate.countDocuments(filter),
   ]);
 
+  const formatted = await Promise.all(
+    candidates.map((c) => formatCandidateForSchool(c, req.schoolId))
+  );
+
   res.json({
     success: true,
-    data: candidates,
+    data: formatted,
     pagination: {
       page: Number(page),
       limit: Number(limit),
@@ -83,13 +106,61 @@ export const getCandidates = catchAsync(async (req, res) => {
 export const getCandidate = catchAsync(async (req, res) => {
   const candidate = await Candidate.findOne({
     _id: req.params.id,
-    schoolId: req.schoolId,
     isDeleted: false,
   });
 
   if (!candidate) throw new ApiError(404, 'Candidate not found');
 
-  res.json({ success: true, data: candidate });
+  const formatted = await formatCandidateForSchool(candidate, req.schoolId);
+  res.json({ success: true, data: formatted });
+});
+
+export const unlockCandidate = catchAsync(async (req, res) => {
+  const candidate = await Candidate.findOne({
+    _id: req.params.id,
+    isDeleted: false,
+  });
+
+  if (!candidate) throw new ApiError(404, 'Candidate not found');
+
+  if (isOwnedBySchool(candidate, req.schoolId)) {
+    return res.json({
+      success: true,
+      message: 'You already have full access to this candidate',
+      data: await formatCandidateForSchool(candidate, req.schoolId),
+    });
+  }
+
+  const alreadyUnlocked = await hasFullAccess(candidate, req.schoolId);
+  if (alreadyUnlocked) {
+    return res.json({
+      success: true,
+      message: 'Candidate already unlocked',
+      data: await formatCandidateForSchool(candidate, req.schoolId),
+    });
+  }
+
+  const school = await School.findById(req.schoolId);
+  if (!school || (school.credits || 0) < UNLOCK_CREDIT_COST) {
+    throw new ApiError(402, 'Insufficient credits. Please purchase more credits.');
+  }
+
+  school.credits -= UNLOCK_CREDIT_COST;
+  await school.save();
+
+  await UnlockHistory.create({
+    schoolId: req.schoolId,
+    candidateId: candidate._id,
+    creditsDeducted: UNLOCK_CREDIT_COST,
+  });
+
+  const formatted = await formatCandidateForSchool(candidate, req.schoolId);
+  res.json({
+    success: true,
+    message: 'Profile unlocked successfully',
+    data: formatted,
+    creditsRemaining: school.credits,
+  });
 });
 
 export const checkDuplicate = catchAsync(async (req, res) => {
@@ -97,7 +168,7 @@ export const checkDuplicate = catchAsync(async (req, res) => {
   if (!mobile) throw new ApiError(400, 'Mobile number is required');
 
   const filter = {
-    schoolId: req.schoolId,
+    ownerSchoolId: req.schoolId,
     mobile: mobile.trim(),
     isDeleted: false,
   };
@@ -116,7 +187,7 @@ export const checkDuplicate = catchAsync(async (req, res) => {
 });
 
 export const createCandidate = catchAsync(async (req, res) => {
-  const { fullName, mobile, forceCreate } = req.body;
+  const { fullName, mobile, forceCreate, localityId } = req.body;
 
   if (!fullName || !mobile) {
     throw new ApiError(400, 'Full name and mobile are required');
@@ -124,7 +195,7 @@ export const createCandidate = catchAsync(async (req, res) => {
 
   if (!forceCreate) {
     const existing = await Candidate.findOne({
-      schoolId: req.schoolId,
+      ownerSchoolId: req.schoolId,
       mobile: mobile.trim(),
       isDeleted: false,
     });
@@ -139,9 +210,17 @@ export const createCandidate = catchAsync(async (req, res) => {
     }
   }
 
+  let locationFields = {};
+  if (localityId) {
+    locationFields = await resolveLocationFromLocalityId(localityId);
+  }
+
   const candidate = await Candidate.create({
     ...req.body,
+    ...locationFields,
     schoolId: req.schoolId,
+    ownerSchoolId: req.schoolId,
+    source: 'ADMIN',
     mobile: mobile.trim(),
   });
 
@@ -151,15 +230,18 @@ export const createCandidate = catchAsync(async (req, res) => {
 export const updateCandidate = catchAsync(async (req, res) => {
   const candidate = await Candidate.findOne({
     _id: req.params.id,
-    schoolId: req.schoolId,
     isDeleted: false,
   });
 
   if (!candidate) throw new ApiError(404, 'Candidate not found');
 
+  if (!isOwnedBySchool(candidate, req.schoolId)) {
+    throw new ApiError(403, 'You can only edit candidates owned by your school');
+  }
+
   if (req.body.mobile && req.body.mobile !== candidate.mobile) {
     const duplicate = await Candidate.findOne({
-      schoolId: req.schoolId,
+      ownerSchoolId: req.schoolId,
       mobile: req.body.mobile.trim(),
       isDeleted: false,
       _id: { $ne: candidate._id },
@@ -170,7 +252,16 @@ export const updateCandidate = catchAsync(async (req, res) => {
     }
   }
 
-  Object.assign(candidate, req.body);
+  if (req.body.localityId) {
+    const locationFields = await resolveLocationFromLocalityId(req.body.localityId);
+    candidate.state = locationFields.state;
+    candidate.city = locationFields.city;
+    candidate.locality = locationFields.locality;
+    candidate.localityCluster = locationFields.localityCluster;
+  }
+
+  const { localityId, ...updateData } = req.body;
+  Object.assign(candidate, updateData);
   if (req.body.mobile) candidate.mobile = req.body.mobile.trim();
   await candidate.save();
 
@@ -180,11 +271,14 @@ export const updateCandidate = catchAsync(async (req, res) => {
 export const deleteCandidate = catchAsync(async (req, res) => {
   const candidate = await Candidate.findOne({
     _id: req.params.id,
-    schoolId: req.schoolId,
     isDeleted: false,
   });
 
   if (!candidate) throw new ApiError(404, 'Candidate not found');
+
+  if (!isOwnedBySchool(candidate, req.schoolId)) {
+    throw new ApiError(403, 'You can only delete candidates owned by your school');
+  }
 
   candidate.isDeleted = true;
   await candidate.save();
@@ -194,28 +288,28 @@ export const deleteCandidate = catchAsync(async (req, res) => {
 
 export const getDashboardStats = catchAsync(async (req, res) => {
   const schoolId = req.schoolId;
-  const baseFilter = { schoolId, isDeleted: false };
+  const school = await School.findById(schoolId);
 
-  const [totalCandidates, teachers, nonTeachingStaff, recentCandidates] = await Promise.all([
+  const baseFilter = { isDeleted: false };
+  const ownedFilter = { ...baseFilter, ownerSchoolId: schoolId };
+
+  const [totalCandidates, ownedCandidates, recentCandidates] = await Promise.all([
     Candidate.countDocuments(baseFilter),
-    Candidate.countDocuments({
-      ...baseFilter,
-      position: { $in: TEACHING_POSITIONS },
-    }),
-    Candidate.countDocuments({
-      ...baseFilter,
-      position: { $nin: TEACHING_POSITIONS },
-    }),
+    Candidate.countDocuments(ownedFilter),
     Candidate.find(baseFilter).sort({ createdAt: -1 }).limit(5),
   ]);
+
+  const formattedRecent = await Promise.all(
+    recentCandidates.map((c) => formatCandidateForSchool(c, schoolId))
+  );
 
   res.json({
     success: true,
     data: {
       totalCandidates,
-      teachers,
-      nonTeachingStaff,
-      recentCandidates,
+      ownedCandidates,
+      availableCredits: school?.credits || 0,
+      recentCandidates: formattedRecent,
     },
   });
 });

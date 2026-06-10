@@ -14,6 +14,8 @@ export const candidateSchema = z.object({
   classesCanTeach: z.array(z.string()).default([]),
   vehicleTypes: z.array(z.string()).default([]),
   experienceYears: z.coerce.number().min(0, 'Experience cannot be negative').default(0),
+  expectedSalary: z.coerce.number().min(0, 'Salary cannot be negative').optional(),
+  localityId: z.string().optional(),
   notes: z.string().optional(),
   documents: z
     .array(

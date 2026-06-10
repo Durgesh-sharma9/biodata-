@@ -1,30 +1,55 @@
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Users, Settings, School, BarChart3, LogOut } from 'lucide-react';
+import {
+  LayoutDashboard,
+  Users,
+  Settings,
+  School,
+  LogOut,
+  CreditCard,
+  Link2,
+  MapPin,
+  Package,
+  Upload,
+  Coins,
+} from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { cn } from '@/lib/utils';
 
 const schoolLinks = [
   { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { to: '/candidates', label: 'Candidates', icon: Users },
+  { to: '/credits', label: 'Credits', icon: Coins },
+  { to: '/application-links', label: 'Application Links', icon: Link2 },
   { to: '/settings', label: 'Settings', icon: Settings },
 ];
 
 const adminLinks = [
-  { to: '/admin/schools', label: 'Schools', icon: School },
-  { to: '/admin/stats', label: 'Platform Stats', icon: BarChart3 },
+  { to: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { to: '/admin/admins', label: 'Admins', icon: School },
+  { to: '/admin/plans', label: 'Plans', icon: Package },
+  { to: '/admin/credit-packages', label: 'Credit Packages', icon: CreditCard },
+  { to: '/admin/locations', label: 'Locations', icon: MapPin },
+  { to: '/admin/import', label: 'Candidate Import', icon: Upload },
+];
+
+const applicantLinks = [
+  { to: '/applicant/profile', label: 'My Profile', icon: Users },
 ];
 
 export function Sidebar() {
-  const { user, school, logout, isSuperAdmin } = useAuth();
-  const links = isSuperAdmin ? adminLinks : schoolLinks;
+  const { user, school, logout, isSuperAdmin, isApplicant } = useAuth();
+  const links = isSuperAdmin ? adminLinks : isApplicant ? applicantLinks : schoolLinks;
 
   return (
     <aside className="flex h-screen w-64 flex-col border-r bg-card">
       <div className="border-b p-6">
-        <h1 className="text-lg font-bold text-primary">Candidate DB</h1>
+        <h1 className="text-lg font-bold text-primary">RecruitPlatform</h1>
         <p className="mt-1 truncate text-xs text-muted-foreground">
-          {isSuperAdmin ? 'Super Admin' : school?.schoolName || 'School Admin'}
+          {isSuperAdmin ? 'Super Admin' : isApplicant ? 'Self Applicant' : school?.schoolName || 'School Admin'}
         </p>
+        {!isSuperAdmin && !isApplicant && school?.credits != null && (
+          <p className="mt-2 text-sm font-semibold text-primary">Credits: {school.credits}</p>
+        )}
       </div>
 
       <nav className="flex-1 space-y-1 p-4">
