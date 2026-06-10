@@ -1,5 +1,6 @@
 import User from '../models/User.js';
 import School from '../models/School.js';
+import SchoolSettings from '../models/SchoolSettings.js';
 import { ApiError } from '../utils/ApiError.js';
 import { generateToken } from '../utils/generateToken.js';
 import { catchAsync } from '../utils/catchAsync.js';
@@ -50,5 +51,62 @@ export const getMe = catchAsync(async (req, res) => {
     success: true,
     user: formatUser(req.user),
     school,
+  });
+});
+
+export const registerSchool = catchAsync(async (req, res) => {
+  const { schoolName, adminName, email, mobile, password } = req.body;
+
+  if (!schoolName || !adminName || !email || !mobile || !password) {
+    throw new ApiError(400, 'All fields are required');
+  }
+
+  const existingSchool = await School.findOne({ email: email.toLowerCase() });
+  if (existingSchool) throw new ApiError(400, 'School email already exists');
+
+  const existingUser = await User.findOne({ email: email.toLowerCase() });
+  if (existingUser) throw new ApiError(400, 'Email already registered');
+
+  const trialExpiryDate = new Date();
+  trialExpiryDate.setDate(trialExpiryDate.getDate() + 30);
+
+  const schoolId = 'SCH-' + Date.now().toString().slice(-6) + Math.random().toString(36).substring(2, 6).toUpperCase();
+
+  const school = await School.create({
+    schoolId,
+    schoolName,
+    email: email.toLowerCase(),
+    phone: mobile,
+    subscriptionPlan: 'basic',
+    subscriptionStatus: 'trial',
+    startDate: new Date(),
+    expiryDate: trialExpiryDate,
+    isActive: true,
+  });
+
+  const user = await User.create({
+    schoolId: school._id,
+    name: adminName,
+    email: email.toLowerCase(),
+    password,
+    role: 'school_admin',
+  });
+
+  await SchoolSettings.create({ schoolId: school._id });
+
+  const token = generateToken(user._id);
+
+  res.status(201).json({
+    success: true,
+    token,
+    user: formatUser(user),
+    school: {
+      schoolId: school.schoolId,
+      schoolName: school.schoolName,
+      email: school.email,
+      subscriptionPlan: school.subscriptionPlan,
+      subscriptionStatus: school.subscriptionStatus,
+      expiryDate: school.expiryDate,
+    },
   });
 });

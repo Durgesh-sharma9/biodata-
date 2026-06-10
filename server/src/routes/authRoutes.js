@@ -1,9 +1,10 @@
 import { Router } from 'express';
-import { login, getMe } from '../controllers/authController.js';
+import { login, getMe, registerSchool } from '../controllers/authController.js';
 import { protect } from '../middleware/auth.js';
 
 const router = Router();
 
+router.post('/register', registerSchool);
 router.post('/login', login);
 router.get('/me', protect, getMe);
 
