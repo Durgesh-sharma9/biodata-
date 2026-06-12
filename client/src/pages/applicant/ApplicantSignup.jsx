@@ -12,6 +12,7 @@ export default function ApplicantSignup() {
     name: '',
     email: '',
     password: '',
+    mobile: '',
     profileSharingConsent: false,
     contactConsent: false,
   });
@@ -26,7 +27,7 @@ export default function ApplicantSignup() {
       const res = await registerApplicant(form);
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('user', JSON.stringify(res.data.user));
-      navigate('/applicant/profile');
+      navigate('/applicant/dashboard');
       window.location.reload();
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed');
@@ -50,6 +51,10 @@ export default function ApplicantSignup() {
             <div>
               <Label>Email</Label>
               <Input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
+            </div>
+            <div>
+              <Label>Mobile (optional — link existing profile)</Label>
+              <Input value={form.mobile} onChange={(e) => setForm({ ...form, mobile: e.target.value })} />
             </div>
             <div>
               <Label>Password</Label>

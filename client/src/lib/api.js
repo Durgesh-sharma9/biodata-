@@ -20,7 +20,7 @@ api.interceptors.response.use(
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       const path = window.location.pathname;
-      if (!path.includes('/login') && !path.includes('/apply') && !path.includes('/applicant')) {
+      if (!path.includes('/login') && !path.includes('/apply') && !path.includes('/join') && !path.includes('/applicant')) {
         window.location.href = '/login';
       }
     }
@@ -62,19 +62,15 @@ export const deleteCreditPackage = (id) => api.delete(`/credit-packages/${id}`);
 export const getStates = () => api.get('/locations/states');
 export const getCities = (stateId) =>
   api.get('/locations/cities', { params: stateId ? { stateId } : {} });
-export const getClusters = (params) => api.get('/locations/clusters', { params });
 export const getLocalities = (params) => api.get('/locations/localities', { params });
 export const createState = (data) => api.post('/locations/states', data);
 export const createCity = (data) => api.post('/locations/cities', data);
-export const createCluster = (data) => api.post('/locations/clusters', data);
 export const createLocality = (data) => api.post('/locations/localities', data);
 export const updateState = (id, data) => api.put(`/locations/states/${id}`, data);
 export const updateCity = (id, data) => api.put(`/locations/cities/${id}`, data);
-export const updateCluster = (id, data) => api.put(`/locations/clusters/${id}`, data);
 export const updateLocality = (id, data) => api.put(`/locations/localities/${id}`, data);
 export const deleteState = (id) => api.delete(`/locations/states/${id}`);
 export const deleteCity = (id) => api.delete(`/locations/cities/${id}`);
-export const deleteCluster = (id) => api.delete(`/locations/clusters/${id}`);
 export const deleteLocality = (id) => api.delete(`/locations/localities/${id}`);
 
 // Credits
@@ -108,16 +104,47 @@ export const getApplicationLink = () => api.get('/application/link');
 export const getApplicationQR = () => api.get('/application/qr');
 export const getSchoolBySlug = (slug) => api.get(`/application/school/${slug}`);
 export const submitApplication = (slug, data) => api.post(`/application/submit/${slug}`, data);
+export const submitPublicApplication = (data) => api.post('/applicant/apply', data);
 
 // Applicant
 export const registerApplicant = (data) => api.post('/applicant/register', data);
 export const getApplicantProfile = () => api.get('/applicant/profile');
 export const updateApplicantProfile = (data) => api.put('/applicant/profile', data);
+export const getApplicantDashboard = () => api.get('/applicant/dashboard');
+export const getReceivedRequests = () => api.get('/applicant/requests');
+export const getRequestSchoolDetails = (requestId) => api.get(`/applicant/requests/${requestId}/school`);
+export const getApplicantSubscription = () => api.get('/applicant/subscription');
+export const getApplicantSubscriptionHistory = () => api.get('/applicant/subscription/history');
+export const purchaseApplicantPlan = (planId) => api.post('/applicant/subscription/purchase', { planId });
+
+// Applicant Plans (Super Admin)
+export const getApplicantPlans = () => api.get('/applicant-plans');
+export const createApplicantPlan = (data) => api.post('/applicant-plans', data);
+export const updateApplicantPlan = (id, data) => api.put(`/applicant-plans/${id}`, data);
+export const deleteApplicantPlan = (id) => api.delete(`/applicant-plans/${id}`);
+
+// Interest Requests (School Admin)
+export const sendInterestRequest = (data) => api.post('/interest-requests', data);
+export const getSentInterestRequests = () => api.get('/interest-requests/sent');
+export const getInterestRequestStatus = (candidateId) => api.get(`/interest-requests/status/${candidateId}`);
+
+// Notifications (Applicant)
+export const getNotifications = () => api.get('/notifications');
+export const markNotificationRead = (id) => api.patch(`/notifications/${id}/read`);
+export const markAllNotificationsRead = () => api.patch('/notifications/read-all');
 
 // Settings
 export const getSettings = () => api.get('/settings');
 export const addSettingItem = (data) => api.post('/settings/add', data);
 export const removeSettingItem = (data) => api.post('/settings/remove', data);
+
+export const uploadPublicFiles = (files) => {
+  const formData = new FormData();
+  files.forEach((file) => formData.append('files', file));
+  return api.post('/upload/public', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+};
 
 // Upload
 export const uploadFiles = (files) => {

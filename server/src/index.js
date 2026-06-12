@@ -16,6 +16,9 @@ import applicationRoutes from './routes/applicationRoutes.js';
 import applicantRoutes from './routes/applicantRoutes.js';
 import importRoutes from './routes/importRoutes.js';
 import superAdminRoutes from './routes/superAdminRoutes.js';
+import interestRequestRoutes from './routes/interestRequestRoutes.js';
+import applicantPlanRoutes from './routes/applicantPlanRoutes.js';
+import notificationRoutes from './routes/notificationRoutes.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -46,6 +49,9 @@ app.use('/api/application', applicationRoutes);
 app.use('/api/applicant', applicantRoutes);
 app.use('/api/import', importRoutes);
 app.use('/api/admin', superAdminRoutes);
+app.use('/api/interest-requests', interestRequestRoutes);
+app.use('/api/applicant-plans', applicantPlanRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

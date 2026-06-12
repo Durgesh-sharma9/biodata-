@@ -41,7 +41,6 @@ const buildCandidateFilter = (query) => {
   if (query.state) filter.state = query.state;
   if (query.city) filter.city = query.city;
   if (query.locality) filter.locality = query.locality;
-  if (query.localityCluster) filter.localityCluster = query.localityCluster;
   if (query.source) filter.source = query.source;
   if (query.expectedSalaryMin) {
     filter.expectedSalary = { ...filter.expectedSalary, $gte: Number(query.expectedSalaryMin) };
@@ -69,16 +68,38 @@ const getSortOption = (sortBy, sortOrder) => {
   return { [field]: order };
 };
 
+const applySectionFilter = (filter, section, schoolId) => {
+  if (!section || !schoolId) return filter;
+
+  if (section === 'my_candidates') {
+    filter.ownerSchoolId = schoolId;
+    filter.source = { $in: ['ADMIN', 'SCHOOL_LINK'] };
+  } else if (section === 'talent_pool') {
+    filter.$or = [
+      { source: { $in: ['SELF_APPLICANT', 'SUPER_ADMIN_IMPORT'] } },
+      {
+        $and: [
+          { ownerSchoolId: { $exists: true, $ne: null } },
+          { ownerSchoolId: { $ne: schoolId } },
+        ],
+      },
+    ];
+  }
+
+  return filter;
+};
+
 export const getCandidates = catchAsync(async (req, res) => {
   const {
     page = 1,
     limit = 10,
     sortBy = 'createdAt',
     sortOrder = 'desc',
+    section,
     ...filters
   } = req.query;
 
-  const filter = buildCandidateFilter(filters);
+  const filter = applySectionFilter(buildCandidateFilter(filters), section, req.schoolId);
   const skip = (Number(page) - 1) * Number(limit);
   const sort = getSortOption(sortBy, sortOrder);
 
@@ -257,7 +278,6 @@ export const updateCandidate = catchAsync(async (req, res) => {
     candidate.state = locationFields.state;
     candidate.city = locationFields.city;
     candidate.locality = locationFields.locality;
-    candidate.localityCluster = locationFields.localityCluster;
   }
 
   const { localityId, ...updateData } = req.body;
@@ -293,10 +313,29 @@ export const getDashboardStats = catchAsync(async (req, res) => {
   const baseFilter = { isDeleted: false };
   const ownedFilter = { ...baseFilter, ownerSchoolId: schoolId };
 
-  const [totalCandidates, ownedCandidates, recentCandidates] = await Promise.all([
-    Candidate.countDocuments(baseFilter),
+  const myCandidatesFilter = {
+    ...baseFilter,
+    ownerSchoolId: schoolId,
+    source: { $in: ['ADMIN', 'SCHOOL_LINK'] },
+  };
+  const talentPoolFilter = {
+    ...baseFilter,
+    $or: [
+      { source: { $in: ['SELF_APPLICANT', 'SUPER_ADMIN_IMPORT'] } },
+      {
+        $and: [
+          { ownerSchoolId: { $exists: true, $ne: null } },
+          { ownerSchoolId: { $ne: schoolId } },
+        ],
+      },
+    ],
+  };
+
+  const [myCandidates, talentPoolCount, ownedCandidates, recentCandidates] = await Promise.all([
+    Candidate.countDocuments(myCandidatesFilter),
+    Candidate.countDocuments(talentPoolFilter),
     Candidate.countDocuments(ownedFilter),
-    Candidate.find(baseFilter).sort({ createdAt: -1 }).limit(5),
+    Candidate.find(myCandidatesFilter).sort({ createdAt: -1 }).limit(5),
   ]);
 
   const formattedRecent = await Promise.all(
@@ -306,7 +345,9 @@ export const getDashboardStats = catchAsync(async (req, res) => {
   res.json({
     success: true,
     data: {
-      totalCandidates,
+      myCandidates,
+      talentPoolCount,
+      totalCandidates: myCandidates + talentPoolCount,
       ownedCandidates,
       availableCredits: school?.credits || 0,
       recentCandidates: formattedRecent,

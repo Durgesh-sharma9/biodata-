@@ -10,7 +10,8 @@ import Contact from '@/pages/Contact';
 import Signup from '@/pages/Signup';
 import Login from '@/pages/Login';
 import Dashboard from '@/pages/Dashboard';
-import Candidates from '@/pages/Candidates';
+import Candidates, { TalentPool } from '@/pages/Candidates';
+import SelfApply from '@/pages/SelfApply';
 import CandidateForm from '@/pages/CandidateForm';
 import CandidateProfile from '@/pages/CandidateProfile';
 import Settings from '@/pages/Settings';
@@ -26,6 +27,12 @@ import CandidateImport from '@/pages/admin/CandidateImport';
 import ApplicantSignup from '@/pages/applicant/ApplicantSignup';
 import ApplicantLogin from '@/pages/applicant/ApplicantLogin';
 import ApplicantProfile from '@/pages/applicant/ApplicantProfile';
+import ApplicantDashboard from '@/pages/applicant/ApplicantDashboard';
+import ApplicantRequests from '@/pages/applicant/ApplicantRequests';
+import ApplicantPlan from '@/pages/applicant/ApplicantPlan';
+import ApplicantDocuments from '@/pages/applicant/ApplicantDocuments';
+import ApplicantNotifications from '@/pages/applicant/ApplicantNotifications';
+import ApplicantPlans from '@/pages/admin/ApplicantPlans';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -35,7 +42,7 @@ const queryClient = new QueryClient({
 
 function getDefaultRoute(role) {
   if (role === 'super_admin') return '/admin/dashboard';
-  if (role === 'self_applicant') return '/applicant/profile';
+  if (role === 'self_applicant') return '/applicant/dashboard';
   return '/dashboard';
 }
 
@@ -59,6 +66,7 @@ export default function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/login" element={<Login />} />
             <Route path="/apply/:slug" element={<Apply />} />
+            <Route path="/join" element={<SelfApply />} />
             <Route path="/applicant/signup" element={<ApplicantSignup />} />
             <Route path="/applicant/login" element={<ApplicantLogin />} />
             <Route path="/app" element={<RootRedirect />} />
@@ -71,7 +79,9 @@ export default function App() {
               }
             >
               <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/candidates" element={<Candidates />} />
+              <Route path="/candidates" element={<Navigate to="/my-candidates" replace />} />
+              <Route path="/my-candidates" element={<Candidates />} />
+              <Route path="/talent-pool" element={<TalentPool />} />
               <Route path="/candidates/new" element={<CandidateForm />} />
               <Route path="/candidates/:id" element={<CandidateProfile />} />
               <Route path="/candidates/:id/edit" element={<CandidateForm />} />
@@ -93,6 +103,7 @@ export default function App() {
               <Route path="/admin/credit-packages" element={<CreditPackages />} />
               <Route path="/admin/locations" element={<Locations />} />
               <Route path="/admin/import" element={<CandidateImport />} />
+              <Route path="/admin/applicant-plans" element={<ApplicantPlans />} />
               <Route path="/admin/schools" element={<Navigate to="/admin/admins" replace />} />
               <Route path="/admin/stats" element={<Navigate to="/admin/dashboard" replace />} />
             </Route>
@@ -104,7 +115,13 @@ export default function App() {
                 </ProtectedRoute>
               }
             >
+              <Route path="/applicant/dashboard" element={<ApplicantDashboard />} />
               <Route path="/applicant/profile" element={<ApplicantProfile />} />
+              <Route path="/applicant/documents" element={<ApplicantDocuments />} />
+              <Route path="/applicant/requests" element={<ApplicantRequests />} />
+              <Route path="/applicant/plan" element={<ApplicantPlan />} />
+              <Route path="/applicant/notifications" element={<ApplicantNotifications />} />
+              <Route path="/applicant" element={<Navigate to="/applicant/dashboard" replace />} />
             </Route>
 
             <Route path="*" element={<Navigate to="/" replace />} />

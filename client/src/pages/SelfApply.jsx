@@ -1,27 +1,17 @@
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { useQuery, useMutation } from '@tanstack/react-query';
-import { getSchoolBySlug, submitApplication, uploadPublicFiles } from '@/lib/api';
+import { useMutation } from '@tanstack/react-query';
+import { submitPublicApplication, uploadPublicFiles } from '@/lib/api';
 import { CandidateApplicationForm } from '@/components/common/CandidateApplicationForm';
 import { DEFAULT_QUALIFICATIONS, DEFAULT_SUBJECTS, DEFAULT_CLASSES } from '@/config/defaults';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-export default function Apply() {
-  const { slug } = useParams();
+export default function SelfApply() {
   const [submitted, setSubmitted] = useState(false);
 
-  const { data: school, isLoading, error } = useQuery({
-    queryKey: ['apply-school', slug],
-    queryFn: () => getSchoolBySlug(slug).then((r) => r.data.data),
-  });
-
   const submitMutation = useMutation({
-    mutationFn: (data) => submitApplication(slug, data),
+    mutationFn: submitPublicApplication,
     onSuccess: () => setSubmitted(true),
   });
-
-  if (isLoading) return <div className="flex min-h-screen items-center justify-center">Loading...</div>;
-  if (error || !school) return <div className="flex min-h-screen items-center justify-center">Application link not found</div>;
 
   if (submitted) {
     return (
@@ -29,7 +19,9 @@ export default function Apply() {
         <Card className="max-w-md">
           <CardContent className="pt-6 text-center">
             <h2 className="text-xl font-bold text-primary">Application Submitted!</h2>
-            <p className="mt-2 text-muted-foreground">Thank you for applying to {school.schoolName}.</p>
+            <p className="mt-2 text-muted-foreground">
+              Thank you for joining the School Recruitment Network. Schools can now discover your profile in the talent pool.
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -41,9 +33,9 @@ export default function Apply() {
       <div className="mx-auto max-w-2xl">
         <Card>
           <CardHeader>
-            <CardTitle>Apply to {school.schoolName}</CardTitle>
+            <CardTitle>Join the School Recruitment Network</CardTitle>
             <p className="text-sm text-muted-foreground">
-              Complete the form below. Your application will be added to this school's candidate database.
+              Submit your profile to be discovered by schools across the network. No login required.
             </p>
           </CardHeader>
           <CardContent>

@@ -2,6 +2,7 @@ import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard,
   Users,
+  UserSearch,
   Settings,
   School,
   LogOut,
@@ -11,13 +12,17 @@ import {
   Package,
   Upload,
   Coins,
+  Inbox,
+  FileText,
+  Bell,
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { cn } from '@/lib/utils';
 
 const schoolLinks = [
   { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { to: '/candidates', label: 'Candidates', icon: Users },
+  { to: '/my-candidates', label: 'My Candidates', icon: Users },
+  { to: '/talent-pool', label: 'Talent Pool', icon: UserSearch },
   { to: '/credits', label: 'Credits', icon: Coins },
   { to: '/application-links', label: 'Application Links', icon: Link2 },
   { to: '/settings', label: 'Settings', icon: Settings },
@@ -30,10 +35,16 @@ const adminLinks = [
   { to: '/admin/credit-packages', label: 'Credit Packages', icon: CreditCard },
   { to: '/admin/locations', label: 'Locations', icon: MapPin },
   { to: '/admin/import', label: 'Candidate Import', icon: Upload },
+  { to: '/admin/applicant-plans', label: 'Applicant Plans', icon: CreditCard },
 ];
 
 const applicantLinks = [
+  { to: '/applicant/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { to: '/applicant/profile', label: 'My Profile', icon: Users },
+  { to: '/applicant/documents', label: 'Documents', icon: FileText },
+  { to: '/applicant/requests', label: 'Received Requests', icon: Inbox },
+  { to: '/applicant/plan', label: 'Active Plan', icon: CreditCard },
+  { to: '/applicant/notifications', label: 'Notifications', icon: Bell },
 ];
 
 export function Sidebar() {
@@ -43,7 +54,7 @@ export function Sidebar() {
   return (
     <aside className="flex h-screen w-64 flex-col border-r bg-card">
       <div className="border-b p-6">
-        <h1 className="text-lg font-bold text-primary">RecruitPlatform</h1>
+        <h1 className="text-lg font-bold text-primary">School Recruitment Network</h1>
         <p className="mt-1 truncate text-xs text-muted-foreground">
           {isSuperAdmin ? 'Super Admin' : isApplicant ? 'Self Applicant' : school?.schoolName || 'School Admin'}
         </p>

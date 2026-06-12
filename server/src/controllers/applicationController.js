@@ -59,11 +59,15 @@ export const submitApplication = catchAsync(async (req, res) => {
   const school = await School.findOne({ slug: req.params.slug, isActive: true });
   if (!school) throw new ApiError(404, 'Application link not found');
 
-  const { fullName, mobile, email, address, position, qualifications, experienceYears, expectedSalary, localityId, documents } =
+  const { fullName, mobile, email, address, position, qualifications, subjects, classesCanTeach, vehicleTypes, experienceYears, expectedSalary, localityId, documents, profileSharingConsent, contactConsent } =
     req.body;
 
   if (!fullName || !mobile || !position) {
     throw new ApiError(400, 'Full name, mobile, and position are required');
+  }
+
+  if (!profileSharingConsent || !contactConsent) {
+    throw new ApiError(400, 'Consent is required to submit your application');
   }
 
   let locationFields = {};
@@ -78,16 +82,20 @@ export const submitApplication = catchAsync(async (req, res) => {
     address,
     position,
     qualifications: qualifications || [],
+    subjects: subjects || [],
+    classesCanTeach: classesCanTeach || [],
+    vehicleTypes: vehicleTypes || [],
     experienceYears: experienceYears || 0,
     expectedSalary,
     documents: documents || [],
+    profileSharingConsent: true,
+    contactConsent: true,
     source: 'SCHOOL_LINK',
     ownerSchoolId: school._id,
     schoolId: school._id,
     state: locationFields.state,
     city: locationFields.city,
     locality: locationFields.locality,
-    localityCluster: locationFields.localityCluster,
   });
 
   res.status(201).json({

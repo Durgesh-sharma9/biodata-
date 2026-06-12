@@ -13,26 +13,29 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { formatDate } from '@/lib/utils';
 
-export default function Candidates() {
+const SOURCE_OPTIONS = ['ADMIN', 'SCHOOL_LINK', 'SELF_APPLICANT', 'SUPER_ADMIN_IMPORT'];
+
+export function CandidateList({
+  section,
+  title,
+  description,
+  showAddButton = false,
+  sourceFilterOptions = SOURCE_OPTIONS,
+}) {
   const queryClient = useQueryClient();
   const [page, setPage] = useState(1);
   const [filters, setFilters] = useState({
     name: '',
     mobile: '',
     position: '',
-    subject: '',
     qualification: '',
-    class: '',
     experience: '',
     state: '',
     city: '',
     locality: '',
-    localityCluster: '',
     source: '',
     expectedSalaryMin: '',
     expectedSalaryMax: '',
-    dateFrom: '',
-    dateTo: '',
     sortBy: 'createdAt',
     sortOrder: 'desc',
   });
@@ -48,12 +51,11 @@ export default function Candidates() {
     queryFn: () => getStates().then((r) => r.data.data),
   });
 
-  const SOURCE_OPTIONS = ['ADMIN', 'SCHOOL_LINK', 'SELF_APPLICANT', 'SUPER_ADMIN_IMPORT'];
-
   const { data, isLoading } = useQuery({
-    queryKey: ['candidates', page, filters],
+    queryKey: ['candidates', section, page, filters],
     queryFn: () =>
       getCandidates({
+        section,
         page,
         limit: 10,
         ...Object.fromEntries(Object.entries(filters).filter(([, v]) => v !== '')),
@@ -85,15 +87,17 @@ export default function Candidates() {
   return (
     <div>
       <PageHeader
-        title="Candidates"
-        description="Manage your school's candidate database"
+        title={title}
+        description={description}
         action={
-          <Button asChild>
-            <Link to="/candidates/new">
-              <Plus className="mr-2 h-4 w-4" />
-              Add Candidate
-            </Link>
-          </Button>
+          showAddButton ? (
+            <Button asChild>
+              <Link to="/candidates/new">
+                <Plus className="mr-2 h-4 w-4" />
+                Add Candidate
+              </Link>
+            </Button>
+          ) : null
         }
       />
 
@@ -127,19 +131,6 @@ export default function Candidates() {
                 ))}
               </SelectContent>
             </Select>
-            <Select value={filters.subject || 'all'} onValueChange={(v) => updateFilter('subject', v === 'all' ? '' : v)}>
-              <SelectTrigger>
-                <SelectValue placeholder="Subject" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Subjects</SelectItem>
-                {settings?.subjects?.map((s) => (
-                  <SelectItem key={s} value={s}>
-                    {s}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
             <Select
               value={filters.qualification || 'all'}
               onValueChange={(v) => updateFilter('qualification', v === 'all' ? '' : v)}
@@ -152,19 +143,6 @@ export default function Candidates() {
                 {settings?.qualifications?.map((q) => (
                   <SelectItem key={q} value={q}>
                     {q}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select value={filters.class || 'all'} onValueChange={(v) => updateFilter('class', v === 'all' ? '' : v)}>
-              <SelectTrigger>
-                <SelectValue placeholder="Class" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Classes</SelectItem>
-                {settings?.classes?.map((c) => (
-                  <SelectItem key={c} value={c}>
-                    {c}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -184,14 +162,15 @@ export default function Candidates() {
             </Select>
             <Input placeholder="City" value={filters.city} onChange={(e) => updateFilter('city', e.target.value)} />
             <Input placeholder="Locality" value={filters.locality} onChange={(e) => updateFilter('locality', e.target.value)} />
-            <Input placeholder="Cluster" value={filters.localityCluster} onChange={(e) => updateFilter('localityCluster', e.target.value)} />
-            <Select value={filters.source || 'all'} onValueChange={(v) => updateFilter('source', v === 'all' ? '' : v)}>
-              <SelectTrigger><SelectValue placeholder="Source" /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Sources</SelectItem>
-                {SOURCE_OPTIONS.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
-              </SelectContent>
-            </Select>
+            {section !== 'talent_pool' && (
+              <Select value={filters.source || 'all'} onValueChange={(v) => updateFilter('source', v === 'all' ? '' : v)}>
+                <SelectTrigger><SelectValue placeholder="Source" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Sources</SelectItem>
+                  {sourceFilterOptions.map((s) => <SelectItem key={s} value={s}>{s.replace(/_/g, ' ')}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            )}
             <Input
               type="number"
               placeholder="Min Salary"
@@ -204,10 +183,6 @@ export default function Candidates() {
               value={filters.expectedSalaryMax}
               onChange={(e) => updateFilter('expectedSalaryMax', e.target.value)}
             />
-            <div className="flex gap-2">
-              <Input type="date" value={filters.dateFrom} onChange={(e) => updateFilter('dateFrom', e.target.value)} />
-              <Input type="date" value={filters.dateTo} onChange={(e) => updateFilter('dateTo', e.target.value)} />
-            </div>
           </div>
         </CardContent>
       </Card>
@@ -228,10 +203,13 @@ export default function Candidates() {
                       Position
                     </TableHead>
                     <TableHead>Location</TableHead>
-                    <TableHead>Source</TableHead>
+                    {section === 'talent_pool' && <TableHead>Pool</TableHead>}
                     <TableHead>Qualification</TableHead>
                     <TableHead className="cursor-pointer" onClick={() => handleSort('experienceYears')}>
                       Experience
+                    </TableHead>
+                    <TableHead className="cursor-pointer" onClick={() => handleSort('expectedSalary')}>
+                      Expected Salary
                     </TableHead>
                     <TableHead className="cursor-pointer" onClick={() => handleSort('createdAt')}>
                       Date Added
@@ -242,7 +220,7 @@ export default function Candidates() {
                 <TableBody>
                   {data?.data?.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={8} className="text-center text-muted-foreground">
+                      <TableCell colSpan={9} className="text-center text-muted-foreground">
                         No candidates found
                       </TableCell>
                     </TableRow>
@@ -255,9 +233,18 @@ export default function Candidates() {
                         </TableCell>
                         <TableCell>{c.position}</TableCell>
                         <TableCell className="text-xs">{[c.city, c.locality].filter(Boolean).join(', ') || '-'}</TableCell>
-                        <TableCell><Badge variant="secondary">{c.source}</Badge></TableCell>
+                        {section === 'talent_pool' && (
+                          <TableCell>
+                            {c.source ? (
+                              <Badge variant="secondary">{c.source.replace(/_/g, ' ')}</Badge>
+                            ) : (
+                              <Badge variant="outline">Talent Pool</Badge>
+                            )}
+                          </TableCell>
+                        )}
                         <TableCell>{c.qualifications?.join(', ') || '-'}</TableCell>
                         <TableCell>{c.experienceYears} yrs</TableCell>
+                        <TableCell>{c.expectedSalary ? `₹${c.expectedSalary.toLocaleString()}` : c.isLocked ? '—' : '-'}</TableCell>
                         <TableCell>{formatDate(c.createdAt)}</TableCell>
                         <TableCell className="text-right">
                           <div className="flex justify-end gap-1">
@@ -292,12 +279,7 @@ export default function Candidates() {
                     Page {data.pagination.page} of {data.pagination.totalPages} ({data.pagination.total} total)
                   </p>
                   <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      disabled={page <= 1}
-                      onClick={() => setPage((p) => p - 1)}
-                    >
+                    <Button variant="outline" size="sm" disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>
                       <ChevronLeft className="h-4 w-4" />
                     </Button>
                     <Button
@@ -321,13 +303,11 @@ export default function Candidates() {
           <DialogHeader>
             <DialogTitle>Delete Candidate</DialogTitle>
             <DialogDescription>
-              This will soft-delete the candidate. They can be restored from the database if needed.
+              This will soft-delete the candidate from your school database.
             </DialogDescription>
           </DialogHeader>
           <div className="flex justify-end gap-2">
-            <Button variant="outline" onClick={() => setDeleteId(null)}>
-              Cancel
-            </Button>
+            <Button variant="outline" onClick={() => setDeleteId(null)}>Cancel</Button>
             <Button variant="destructive" onClick={() => deleteMutation.mutate(deleteId)} disabled={deleteMutation.isPending}>
               {deleteMutation.isPending ? 'Deleting...' : 'Delete'}
             </Button>
@@ -335,5 +315,27 @@ export default function Candidates() {
         </DialogContent>
       </Dialog>
     </div>
+  );
+}
+
+export default function MyCandidates() {
+  return (
+    <CandidateList
+      section="my_candidates"
+      title="My Candidates"
+      description="Candidates added by your school (ADMIN) and via your application link (SCHOOL_LINK). Full access, no credit required."
+      showAddButton
+    />
+  );
+}
+
+export function TalentPool() {
+  return (
+    <CandidateList
+      section="talent_pool"
+      title="Talent Pool"
+      description="Browse platform candidates and profiles from other schools. Unlock profiles using credits."
+      sourceFilterOptions={['SELF_APPLICANT']}
+    />
   );
 }

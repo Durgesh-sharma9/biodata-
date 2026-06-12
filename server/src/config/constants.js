@@ -1,22 +1,14 @@
 export const DEFAULT_POSITIONS = [
   'Teacher',
-  'Principal',
-  'Vice Principal',
-  'Coordinator',
+  'Driver',
   'Accountant',
-  'Clerk',
   'Receptionist',
-  'Office Assistant',
+  'Clerk',
   'Librarian',
   'Lab Assistant',
-  'Computer Operator',
-  'Driver',
-  'Peon',
+  'Sports Coach',
   'Security Guard',
   'Cleaner',
-  'Sports Coach',
-  'Counselor',
-  'Other',
 ];
 
 export const DEFAULT_SUBJECTS = [
@@ -85,7 +77,10 @@ export const DEFAULT_QUALIFICATIONS = [
 
 export const VEHICLE_TYPES = ['School Bus', 'Car', 'Van', 'Heavy Vehicle'];
 
-export const TEACHING_POSITIONS = ['Teacher', 'Principal', 'Vice Principal', 'Coordinator', 'Sports Coach', 'Counselor'];
+export const TEACHING_POSITIONS = ['Teacher', 'Sports Coach'];
+export const SUBJECT_POSITIONS = ['Teacher', 'Sports Coach', 'Librarian', 'Lab Assistant'];
+export const CLASS_POSITIONS = ['Teacher', 'Sports Coach'];
+export const DRIVER_POSITIONS = ['Driver'];
 
 export const SUBSCRIPTION_PLANS = ['basic', 'standard', 'premium'];
 export const SUBSCRIPTION_STATUSES = ['active', 'expired', 'trial', 'cancelled'];

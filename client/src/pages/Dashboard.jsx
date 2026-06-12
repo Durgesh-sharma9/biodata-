@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-import { Users, Coins, Plus, List } from 'lucide-react';
+import { Users, Coins, Plus, List, Search } from 'lucide-react';
 import { getDashboardStats } from '@/lib/api';
 import { PageHeader } from '@/components/common/PageHeader';
 import { StatCard } from '@/components/common/StatCard';
@@ -24,7 +24,7 @@ export default function Dashboard() {
     <div>
       <PageHeader
         title="Dashboard"
-        description="Overview of your candidate database"
+        description="Overview of your school recruitment network"
         action={
           <div className="flex gap-2">
             <Button asChild>
@@ -34,24 +34,28 @@ export default function Dashboard() {
               </Link>
             </Button>
             <Button variant="outline" asChild>
-              <Link to="/candidates">
-                <List className="mr-2 h-4 w-4" />
-                View Candidates
+              <Link to="/talent-pool">
+                <Search className="mr-2 h-4 w-4" />
+                Browse Talent Pool
               </Link>
             </Button>
           </div>
         }
       />
 
-      <div className="mb-8 grid gap-4 md:grid-cols-3">
-        <StatCard title="Total Candidates" value={data?.totalCandidates || 0} icon={Users} />
-        <StatCard title="Your Candidates" value={data?.ownedCandidates || 0} icon={Users} />
+      <div className="mb-8 grid gap-4 md:grid-cols-4">
+        <StatCard title="My Candidates" value={data?.myCandidates || 0} icon={Users} />
+        <StatCard title="Talent Pool" value={data?.talentPoolCount || 0} icon={List} />
+        <StatCard title="Owned Candidates" value={data?.ownedCandidates || 0} icon={Users} />
         <StatCard title="Available Credits" value={data?.availableCredits || 0} icon={Coins} />
       </div>
 
       <Card>
-        <CardHeader>
-          <CardTitle>Recent Candidates</CardTitle>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle>Recent My Candidates</CardTitle>
+          <Button variant="link" asChild>
+            <Link to="/my-candidates">View all</Link>
+          </Button>
         </CardHeader>
         <CardContent>
           <Table>
@@ -76,15 +80,10 @@ export default function Dashboard() {
                     <TableCell>
                       <Link to={`/candidates/${c._id}`} className="font-medium text-primary hover:underline">
                         {c.fullName}
-                        {c.isLocked && (
-                          <Badge variant="outline" className="ml-2 text-xs">
-                            Locked
-                          </Badge>
-                        )}
                       </Link>
                     </TableCell>
                     <TableCell>{c.position}</TableCell>
-                    <TableCell>{c.source}</TableCell>
+                    <TableCell>{c.source?.replace(/_/g, ' ')}</TableCell>
                     <TableCell>{formatDate(c.createdAt)}</TableCell>
                   </TableRow>
                 ))

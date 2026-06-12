@@ -1,18 +1,15 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Plus, Trash2 } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 import {
   getStates,
   getCities,
-  getClusters,
   getLocalities,
   createState,
   createCity,
-  createCluster,
   createLocality,
   deleteState,
   deleteCity,
-  deleteCluster,
   deleteLocality,
 } from '@/lib/api';
 import { PageHeader } from '@/components/common/PageHeader';
@@ -29,11 +26,9 @@ export default function Locations() {
   const [stateName, setStateName] = useState('');
   const [cityName, setCityName] = useState('');
   const [cityStateId, setCityStateId] = useState('');
-  const [clusterName, setClusterName] = useState('');
-  const [clusterCityId, setClusterCityId] = useState('');
   const [localityName, setLocalityName] = useState('');
-  const [localityClusterId, setLocalityClusterId] = useState('');
-  const [viewClusterId, setViewClusterId] = useState('');
+  const [localityCityId, setLocalityCityId] = useState('');
+  const [viewCityId, setViewCityId] = useState('');
 
   const { data: states = [] } = useQuery({
     queryKey: ['states'],
@@ -45,21 +40,15 @@ export default function Locations() {
     queryFn: () => getCities().then((r) => r.data.data),
   });
 
-  const { data: clusters = [] } = useQuery({
-    queryKey: ['clusters-all'],
-    queryFn: () => getClusters().then((r) => r.data.data),
-  });
-
-  const { data: clusterLocalities = [] } = useQuery({
-    queryKey: ['localities', viewClusterId],
-    queryFn: () => getLocalities({ clusterId: viewClusterId }).then((r) => r.data.data),
-    enabled: !!viewClusterId,
+  const { data: cityLocalities = [] } = useQuery({
+    queryKey: ['localities', viewCityId],
+    queryFn: () => getLocalities({ cityId: viewCityId }).then((r) => r.data.data),
+    enabled: !!viewCityId,
   });
 
   const invalidate = () => {
     queryClient.invalidateQueries({ queryKey: ['states'] });
     queryClient.invalidateQueries({ queryKey: ['cities-all'] });
-    queryClient.invalidateQueries({ queryKey: ['clusters-all'] });
     queryClient.invalidateQueries({ queryKey: ['localities'] });
   };
 
@@ -79,14 +68,6 @@ export default function Locations() {
     },
   });
 
-  const clusterMutation = useMutation({
-    mutationFn: createCluster,
-    onSuccess: () => {
-      invalidate();
-      setClusterName('');
-    },
-  });
-
   const localityMutation = useMutation({
     mutationFn: createLocality,
     onSuccess: () => {
@@ -97,13 +78,12 @@ export default function Locations() {
 
   return (
     <div>
-      <PageHeader title="Location Management" description="Manage State → City → Cluster → Locality hierarchy" />
+      <PageHeader title="Location Management" description="Manage State → City → Locality hierarchy" />
 
       <Tabs defaultValue="states" className="space-y-4">
         <TabsList>
           <TabsTrigger value="states">States</TabsTrigger>
           <TabsTrigger value="cities">Cities</TabsTrigger>
-          <TabsTrigger value="clusters">Clusters</TabsTrigger>
           <TabsTrigger value="localities">Localities</TabsTrigger>
         </TabsList>
 
@@ -152,63 +132,24 @@ export default function Locations() {
               <div className="space-y-1">
                 {cities.map((c) => (
                   <div key={c._id} className="flex items-center justify-between rounded border px-3 py-2 text-sm">
-                    <span>{c.name} — {c.stateId?.name || ''}</span>
+                    <button className="text-left hover:text-primary" onClick={() => setViewCityId(c._id)}>
+                      {c.name} — {c.stateId?.name || ''}
+                    </button>
                     <Button size="sm" variant="ghost" onClick={() => deleteCity(c._id).then(invalidate)}>
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
                 ))}
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="clusters">
-          <Card>
-            <CardHeader><CardTitle>Locality Clusters</CardTitle></CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid gap-4 md:grid-cols-3">
-                <div>
-                  <Label>City</Label>
-                  <Select value={clusterCityId} onValueChange={setClusterCityId}>
-                    <SelectTrigger><SelectValue placeholder="Select city" /></SelectTrigger>
-                    <SelectContent>
-                      {cities.map((c) => <SelectItem key={c._id} value={c._id}>{c.name}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label>Cluster Name</Label>
-                  <Input value={clusterName} onChange={(e) => setClusterName(e.target.value)} />
-                </div>
-                <div className="flex items-end">
-                  <Button onClick={() => clusterMutation.mutate({ name: clusterName, cityId: clusterCityId })}>Add Cluster</Button>
-                </div>
-              </div>
-              <div className="space-y-2">
-                {clusters.map((cl) => (
-                  <div key={cl._id} className="flex items-center justify-between rounded border px-3 py-2 text-sm">
-                    <button
-                      className="text-left hover:text-primary"
-                      onClick={() => setViewClusterId(cl._id)}
-                    >
-                      {cl.name} ({cl.localityCount || 0} Localities) — {cl.cityId?.name}
-                    </button>
-                    <Button size="sm" variant="ghost" onClick={() => deleteCluster(cl._id).then(invalidate)}>
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                ))}
-              </div>
-              {viewClusterId && (
+              {viewCityId && (
                 <Card>
-                  <CardHeader><CardTitle>Localities in Cluster</CardTitle></CardHeader>
+                  <CardHeader><CardTitle>Localities in City</CardTitle></CardHeader>
                   <CardContent>
-                    {clusterLocalities.length === 0 ? (
+                    {cityLocalities.length === 0 ? (
                       <p className="text-sm text-muted-foreground">No localities</p>
                     ) : (
                       <ul className="list-disc pl-5 text-sm">
-                        {clusterLocalities.map((l) => <li key={l._id}>{l.name}</li>)}
+                        {cityLocalities.map((l) => <li key={l._id}>{l.name}</li>)}
                       </ul>
                     )}
                   </CardContent>
@@ -224,11 +165,11 @@ export default function Locations() {
             <CardContent className="space-y-4">
               <div className="grid gap-4 md:grid-cols-3">
                 <div>
-                  <Label>Cluster</Label>
-                  <Select value={localityClusterId} onValueChange={setLocalityClusterId}>
-                    <SelectTrigger><SelectValue placeholder="Select cluster" /></SelectTrigger>
+                  <Label>City</Label>
+                  <Select value={localityCityId} onValueChange={setLocalityCityId}>
+                    <SelectTrigger><SelectValue placeholder="Select city" /></SelectTrigger>
                     <SelectContent>
-                      {clusters.map((cl) => <SelectItem key={cl._id} value={cl._id}>{cl.name}</SelectItem>)}
+                      {cities.map((c) => <SelectItem key={c._id} value={c._id}>{c.name} ({c.stateId?.name})</SelectItem>)}
                     </SelectContent>
                   </Select>
                 </div>
@@ -237,7 +178,7 @@ export default function Locations() {
                   <Input value={localityName} onChange={(e) => setLocalityName(e.target.value)} />
                 </div>
                 <div className="flex items-end">
-                  <Button onClick={() => localityMutation.mutate({ name: localityName, clusterId: localityClusterId })}>
+                  <Button onClick={() => localityMutation.mutate({ name: localityName, cityId: localityCityId })}>
                     Add Locality
                   </Button>
                 </div>

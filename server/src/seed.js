@@ -3,6 +3,7 @@ import { connectDB } from './config/db.js';
 import User from './models/User.js';
 import Plan from './models/Plan.js';
 import CreditPackage from './models/CreditPackage.js';
+import ApplicantPlan from './models/ApplicantPlan.js';
 
 const seed = async () => {
   await connectDB();
@@ -41,6 +42,32 @@ const seed = async () => {
     await CreditPackage.findOneAndUpdate({ name: pkg.name }, pkg, { upsert: true });
   }
   console.log('Default credit packages seeded');
+
+  const defaultApplicantPlans = [
+    {
+      name: 'Free Plan',
+      price: 0,
+      durationDays: 365,
+      features: ['Create Profile', 'Upload Resume', 'Receive Requests'],
+    },
+    {
+      name: 'Basic Plan',
+      price: 49,
+      durationDays: 30,
+      features: ['View School Details', 'View School Contact', 'Contact School'],
+    },
+    {
+      name: 'Premium Plan',
+      price: 99,
+      durationDays: 90,
+      features: ['View School Details', 'View School Contact', 'Contact School', 'Priority Support'],
+    },
+  ];
+
+  for (const plan of defaultApplicantPlans) {
+    await ApplicantPlan.findOneAndUpdate({ name: plan.name }, plan, { upsert: true });
+  }
+  console.log('Default applicant plans seeded');
 
   process.exit(0);
 };

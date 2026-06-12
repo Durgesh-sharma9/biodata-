@@ -3,6 +3,7 @@ import UnlockHistory from '../models/UnlockHistory.js';
 import CreditPackage from '../models/CreditPackage.js';
 import { ApiError } from '../utils/ApiError.js';
 import { catchAsync } from '../utils/catchAsync.js';
+import { isMonetizedTalentPoolCandidate } from '../utils/candidateAccess.js';
 
 export const getSchoolCredits = catchAsync(async (req, res) => {
   const school = await School.findById(req.schoolId).populate('planId', 'name credits durationDays');
@@ -24,7 +25,15 @@ export const getUnlockHistory = catchAsync(async (req, res) => {
     .sort({ createdAt: -1 })
     .limit(50);
 
-  res.json({ success: true, data: history });
+  const sanitized = history.map((entry) => {
+    const obj = entry.toObject();
+    if (obj.candidateId && isMonetizedTalentPoolCandidate(obj.candidateId)) {
+      obj.candidateId = { ...obj.candidateId, source: undefined };
+    }
+    return obj;
+  });
+
+  res.json({ success: true, data: sanitized });
 });
 
 export const assignCreditsToSchool = catchAsync(async (req, res) => {

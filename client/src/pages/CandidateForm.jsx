@@ -13,7 +13,7 @@ import {
   uploadFiles,
 } from '@/lib/api';
 import { LocationSelect } from '@/components/common/LocationSelect';
-import { candidateSchema, TEACHING_POSITIONS, VEHICLE_TYPES } from '@/schemas/candidateSchema';
+import { candidateSchema, SUBJECT_POSITIONS, CLASS_POSITIONS, DRIVER_POSITIONS, VEHICLE_TYPES } from '@/schemas/candidateSchema';
 import { PageHeader } from '@/components/common/PageHeader';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -178,8 +178,9 @@ export default function CandidateForm() {
     return <div className="flex h-64 items-center justify-center">Loading...</div>;
   }
 
-  const isTeacher = TEACHING_POSITIONS.includes(position);
-  const isDriver = position === 'Driver';
+  const showsSubjectFields = SUBJECT_POSITIONS.includes(position);
+  const showsClassFields = CLASS_POSITIONS.includes(position);
+  const showsDriverFields = DRIVER_POSITIONS.includes(position);
 
   return (
     <div>
@@ -254,67 +255,63 @@ export default function CandidateForm() {
           </CardContent>
         </Card>
 
-        {isTeacher && (
+        {(showsSubjectFields || showsClassFields || showsDriverFields) && (
           <Card>
             <CardHeader>
-              <CardTitle>Teaching Details</CardTitle>
+              <CardTitle>Position-Specific Details</CardTitle>
             </CardHeader>
             <CardContent className="grid gap-4 md:grid-cols-2">
-              <div className="space-y-2">
-                <Label>Subjects Can Teach</Label>
-                <Controller
-                  name="subjects"
-                  control={control}
-                  render={({ field }) => (
-                    <MultiSelect
-                      options={settings?.subjects || []}
-                      value={field.value}
-                      onChange={field.onChange}
-                      placeholder="Select subjects"
-                    />
-                  )}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>Classes Can Teach</Label>
-                <Controller
-                  name="classesCanTeach"
-                  control={control}
-                  render={({ field }) => (
-                    <MultiSelect
-                      options={settings?.classes || []}
-                      value={field.value}
-                      onChange={field.onChange}
-                      placeholder="Select classes"
-                    />
-                  )}
-                />
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {isDriver && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Driver Details</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                <Label>Vehicle Types</Label>
-                <Controller
-                  name="vehicleTypes"
-                  control={control}
-                  render={({ field }) => (
-                    <MultiSelect
-                      options={VEHICLE_TYPES}
-                      value={field.value}
-                      onChange={field.onChange}
-                      placeholder="Select vehicle types"
-                    />
-                  )}
-                />
-              </div>
+              {showsSubjectFields && (
+                <div className="space-y-2">
+                  <Label>Subjects</Label>
+                  <Controller
+                    name="subjects"
+                    control={control}
+                    render={({ field }) => (
+                      <MultiSelect
+                        options={settings?.subjects || []}
+                        value={field.value}
+                        onChange={field.onChange}
+                        placeholder="Select subjects"
+                      />
+                    )}
+                  />
+                </div>
+              )}
+              {showsClassFields && (
+                <div className="space-y-2">
+                  <Label>Classes Can Teach</Label>
+                  <Controller
+                    name="classesCanTeach"
+                    control={control}
+                    render={({ field }) => (
+                      <MultiSelect
+                        options={settings?.classes || []}
+                        value={field.value}
+                        onChange={field.onChange}
+                        placeholder="Select classes"
+                      />
+                    )}
+                  />
+                </div>
+              )}
+              {showsDriverFields && (
+                <div className="space-y-2 md:col-span-2">
+                  <Label>Vehicle Types</Label>
+                  <Controller
+                    name="vehicleTypes"
+                    control={control}
+                    render={({ field }) => (
+                      <MultiSelect
+                        options={VEHICLE_TYPES}
+                        value={field.value}
+                        onChange={field.onChange}
+                        placeholder="Select vehicle types"
+                      />
+                    )}
+                  />
+                </div>
+              )}
             </CardContent>
           </Card>
         )}

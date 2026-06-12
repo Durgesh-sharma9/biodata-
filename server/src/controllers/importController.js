@@ -17,24 +17,16 @@ const mapRowToCandidate = async (row) => {
   let state = row.state || row.State || '';
   let city = row.city || row.City || '';
   let locality = row.locality || row.Locality || '';
-  let localityCluster = row.localityCluster || row.cluster || row['Locality Cluster'] || '';
 
-  if (locality && !localityCluster) {
-    const loc = await Locality.findOne({ name: new RegExp(`^${locality.trim()}$`, 'i') }).populate(
-      'clusterId'
-    );
+  if (locality && !city) {
+    const loc = await Locality.findOne({ name: new RegExp(`^${locality.trim()}$`, 'i') });
     if (loc) {
-      localityCluster = loc.clusterId?.name || '';
-      if (!city) {
-        const City = (await import('../models/City.js')).default;
-        const cityDoc = await City.findById(loc.cityId);
-        city = cityDoc?.name || '';
-      }
-      if (!state) {
-        const State = (await import('../models/State.js')).default;
-        const stateDoc = await State.findById(loc.stateId);
-        state = stateDoc?.name || '';
-      }
+      const City = (await import('../models/City.js')).default;
+      const State = (await import('../models/State.js')).default;
+      const cityDoc = await City.findById(loc.cityId);
+      const stateDoc = await State.findById(loc.stateId);
+      city = cityDoc?.name || '';
+      state = stateDoc?.name || '';
     }
   }
 
@@ -55,7 +47,6 @@ const mapRowToCandidate = async (row) => {
     state,
     city,
     locality,
-    localityCluster,
     source: 'SUPER_ADMIN_IMPORT',
     ownerSchoolId: null,
     schoolId: null,
@@ -75,7 +66,6 @@ export const importSingleCandidate = catchAsync(async (req, res) => {
     body.state = loc.state;
     body.city = loc.city;
     body.locality = loc.locality;
-    body.localityCluster = loc.localityCluster;
   }
 
   const candidate = await Candidate.create({

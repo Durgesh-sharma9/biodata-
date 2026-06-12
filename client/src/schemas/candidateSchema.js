@@ -17,6 +17,8 @@ export const candidateSchema = z.object({
   expectedSalary: z.coerce.number().min(0, 'Salary cannot be negative').optional(),
   localityId: z.string().optional(),
   notes: z.string().optional(),
+  profileSharingConsent: z.boolean().optional(),
+  contactConsent: z.boolean().optional(),
   documents: z
     .array(
       z.object({
@@ -29,5 +31,17 @@ export const candidateSchema = z.object({
     .default([]),
 });
 
+export const publicApplicationSchema = candidateSchema.extend({
+  profileSharingConsent: z.literal(true, {
+    errorMap: () => ({ message: 'You must consent to share your profile with schools' }),
+  }),
+  contactConsent: z.literal(true, {
+    errorMap: () => ({ message: 'You must consent to be contacted by schools' }),
+  }),
+});
+
 export const VEHICLE_TYPES = ['School Bus', 'Car', 'Van', 'Heavy Vehicle'];
-export const TEACHING_POSITIONS = ['Teacher', 'Principal', 'Vice Principal', 'Coordinator', 'Sports Coach', 'Counselor'];
+export const TEACHING_POSITIONS = ['Teacher', 'Sports Coach'];
+export const SUBJECT_POSITIONS = ['Teacher', 'Sports Coach', 'Librarian', 'Lab Assistant'];
+export const CLASS_POSITIONS = ['Teacher', 'Sports Coach'];
+export const DRIVER_POSITIONS = ['Driver'];

@@ -5,12 +5,82 @@ import { generateToken } from '../utils/generateToken.js';
 import { catchAsync } from '../utils/catchAsync.js';
 import { resolveLocationFromLocalityId } from '../utils/locationHelper.js';
 
+const buildCandidatePayload = async (body) => {
+  const {
+    fullName,
+    mobile,
+    email,
+    address,
+    position,
+    qualifications,
+    subjects,
+    classesCanTeach,
+    vehicleTypes,
+    experienceYears,
+    expectedSalary,
+    documents,
+    localityId,
+    profileSharingConsent,
+    contactConsent,
+  } = body;
+
+  if (!fullName || !mobile || !position) {
+    throw new ApiError(400, 'Full name, mobile, and position are required');
+  }
+
+  if (!profileSharingConsent || !contactConsent) {
+    throw new ApiError(400, 'Consent is required to submit your application');
+  }
+
+  let locationFields = {};
+  if (localityId) {
+    locationFields = await resolveLocationFromLocalityId(localityId);
+  }
+
+  return {
+    fullName,
+    mobile: mobile.trim(),
+    email,
+    address,
+    position,
+    qualifications: qualifications || [],
+    subjects: subjects || [],
+    classesCanTeach: classesCanTeach || [],
+    vehicleTypes: vehicleTypes || [],
+    experienceYears: experienceYears || 0,
+    expectedSalary,
+    documents: documents || [],
+    profileSharingConsent: true,
+    contactConsent: true,
+    state: locationFields.state,
+    city: locationFields.city,
+    locality: locationFields.locality,
+  };
+};
+
 const formatUser = (user) => ({
   id: user._id,
   name: user.name,
   email: user.email,
   role: user.role,
   candidateId: user.candidateId,
+});
+
+export const submitPublicApplication = catchAsync(async (req, res) => {
+  const payload = await buildCandidatePayload(req.body);
+
+  const candidate = await Candidate.create({
+    ...payload,
+    source: 'SELF_APPLICANT',
+    ownerSchoolId: null,
+    schoolId: null,
+  });
+
+  res.status(201).json({
+    success: true,
+    message: 'Application submitted successfully',
+    data: { id: candidate._id },
+  });
 });
 
 export const registerApplicant = catchAsync(async (req, res) => {
@@ -27,14 +97,30 @@ export const registerApplicant = catchAsync(async (req, res) => {
   const existing = await User.findOne({ email: email.toLowerCase() });
   if (existing) throw new ApiError(400, 'Email already registered');
 
-  const candidate = await Candidate.create({
-    fullName: name,
-    mobile: req.body.mobile || 'pending',
-    source: 'SELF_APPLICANT',
-    profileSharingConsent: true,
-    contactConsent: true,
-    position: 'Pending',
-  });
+  let candidate = null;
+  const mobile = req.body.mobile?.trim();
+
+  if (mobile) {
+    candidate = await Candidate.findOne({
+      mobile,
+      source: { $in: ['SELF_APPLICANT', 'SUPER_ADMIN_IMPORT'] },
+      isDeleted: false,
+      applicantUserId: null,
+    });
+  }
+
+  if (!candidate) {
+    candidate = await Candidate.create({
+      fullName: name,
+      mobile: mobile || 'pending',
+      source: 'SELF_APPLICANT',
+      profileSharingConsent: true,
+      contactConsent: true,
+      position: 'Pending',
+    });
+  } else if (name && candidate.fullName !== name) {
+    candidate.fullName = name;
+  }
 
   const user = await User.create({
     name,
@@ -84,6 +170,7 @@ export const updateApplicantProfile = catchAsync(async (req, res) => {
     qualifications,
     subjects,
     classesCanTeach,
+    vehicleTypes,
     experienceYears,
     expectedSalary,
     documents,
@@ -105,7 +192,6 @@ export const updateApplicantProfile = catchAsync(async (req, res) => {
     candidate.state = locationFields.state;
     candidate.city = locationFields.city;
     candidate.locality = locationFields.locality;
-    candidate.localityCluster = locationFields.localityCluster;
   }
 
   Object.assign(candidate, {
@@ -117,6 +203,7 @@ export const updateApplicantProfile = catchAsync(async (req, res) => {
     qualifications: qualifications || [],
     subjects: subjects || [],
     classesCanTeach: classesCanTeach || [],
+    vehicleTypes: vehicleTypes || [],
     experienceYears: experienceYears || 0,
     expectedSalary,
     documents: documents || candidate.documents,
