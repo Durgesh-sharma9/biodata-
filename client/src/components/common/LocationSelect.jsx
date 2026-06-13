@@ -28,10 +28,8 @@ export function LocationSelect({ value = {}, onChange, errors = {} }) {
   });
 
   useEffect(() => {
-    if (localityId) {
-      onChange?.({ stateId, cityId, localityId });
-    }
-  }, [stateId, cityId, localityId]);
+    onChange?.({ stateId, cityId, localityId });
+  }, [stateId, cityId, localityId, onChange]);
 
   return (
     <div className="w-full space-y-2">

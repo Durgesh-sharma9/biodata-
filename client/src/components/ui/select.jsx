@@ -29,14 +29,14 @@ const SelectContent = React.forwardRef(({ className, children, position = 'poppe
     <SelectPrimitive.Content
       ref={ref}
       className={cn(
-        'relative z-50 max-h-96 min-w-[8rem] overflow-hidden rounded-xl border border-slate-100 bg-white/95 text-slate-800 shadow-2xl shadow-slate-900/10 backdrop-blur-lg duration-200 ease-out data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0 data-[state=open]:zoom-in-95 data-[state=closed]:zoom-out-95 origin-top',
-        position === 'popper' && 'data-[side=bottom]:translate-y-2 data-[side=top]:-translate-y-2 data-[side=right]:translate-x-2 data-[side=left]:-translate-x-2',
+        'relative z-[100] max-h-96 min-w-[8rem] overflow-auto rounded-xl border border-slate-200 bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100 dark:border-slate-700 shadow-2xl shadow-slate-900/10 duration-200 ease-out data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0 data-[state=open]:zoom-in-95 data-[state=closed]:zoom-out-95 origin-top',
+        position === 'popper' && 'data-[side=bottom]:translate-y-2 data-[side=top]:-translate-y-2 data-[side=right]:translate-x-2 data-[side=left]:translate-x-2',
         className
       )}
       position={position}
       {...props}
     >
-      <SelectPrimitive.Viewport className="p-1.5 space-y-0.5">{children}</SelectPrimitive.Viewport>
+      <SelectPrimitive.Viewport className="p-1 space-y-0.5">{children}</SelectPrimitive.Viewport>
     </SelectPrimitive.Content>
   </SelectPrimitive.Portal>
 ));
@@ -46,11 +46,18 @@ const SelectItem = React.forwardRef(({ className, children, ...props }, ref) => 
   <SelectPrimitive.Item
     ref={ref}
     className={cn(
-      'relative flex w-full cursor-pointer select-none items-center rounded-lg py-2.5 pl-9 pr-4 text-sm font-medium text-slate-600 outline-none transition-colors duration-150 focus:bg-gradient-to-r focus:from-indigo-50 focus:to-blue-50 focus:text-indigo-600 data-[disabled]:pointer-events-none data-[disabled]:opacity-40 data-[state=checked]:text-indigo-600 data-[state=checked]:font-semibold',
+      'relative flex w-full cursor-pointer select-none items-center rounded-lg py-2.5 pl-3 pr-4 text-sm font-medium text-slate-700 dark:text-slate-300 outline-none transition-colors duration-150 focus:bg-indigo-50 dark:focus:bg-indigo-950/30 focus:text-indigo-600 dark:focus:text-indigo-400 data-[disabled]:pointer-events-none data-[disabled]:opacity-40 data-[state=checked]:text-indigo-600 dark:data-[state=checked]:text-indigo-400 data-[state=checked]:font-semibold',
       className
     )}
     {...props}
-  />
+  >
+    <span className="absolute left-0 flex h-3.5 w-3.5 items-center justify-center">
+      <SelectPrimitive.ItemIndicator>
+        <Check className="h-4 w-4" />
+      </SelectPrimitive.ItemIndicator>
+    </span>
+    <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
+  </SelectPrimitive.Item>
 ));
 SelectItem.displayName = SelectPrimitive.Item.displayName;
 

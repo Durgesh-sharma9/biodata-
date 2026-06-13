@@ -78,7 +78,6 @@ export function DynamicCandidateForm({
   positions,
   isLoading = false,
   submitButtonText = 'Submit',
-  showMobileCheck = true,
   disabledFields = [],
   showConsent = false,
   uploadFilesFn = uploadFiles,
@@ -116,15 +115,16 @@ export function DynamicCandidateForm({
   const documents = watch('documents');
   const mobile = watch('mobile');
 
+  const professionFields = POSITION_FIELDS[position] || {};
+
   useEffect(() => {
     if (initialValues) {
       reset(initialValues);
       setProfilePhoto(initialValues.profilePhoto || null);
-      if (initialValues.state || initialValues.city || initialValues.locality) {
+      if (initialValues.stateId || initialValues.cityId || initialValues.localityId) {
         setLocation({
-          state: initialValues.state,
-          city: initialValues.city,
-          locality: initialValues.locality,
+          stateId: initialValues.stateId,
+          cityId: initialValues.cityId,
           localityId: initialValues.localityId,
         });
       }
@@ -183,6 +183,8 @@ export function DynamicCandidateForm({
     onSubmit({
       ...data,
       expectedSalary: data.expectedSalary ? Number(data.expectedSalary) : undefined,
+      stateId: location.stateId,
+      cityId: location.cityId,
       localityId: location.localityId,
     });
   };
@@ -280,8 +282,6 @@ export function DynamicCandidateForm({
     }
   };
 
-  const professionFields = POSITION_FIELDS[position] || {};
-
   return (
     <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-8 max-w-4xl mx-auto antialiased">
       
@@ -366,7 +366,7 @@ export function DynamicCandidateForm({
                 id="mobile"
                 placeholder="9876543210"
                 {...register('mobile')}
-                disabled={isFieldDisabled('mobile') || showMobileCheck}
+                disabled={isFieldDisabled('mobile')}
                 className="rounded-xl h-11 pl-10 border-slate-200 focus-visible:ring-indigo-500 shadow-2xs transition-all disabled:bg-slate-50 disabled:cursor-not-allowed dark:disabled:bg-slate-900/40"
               />
               <Phone className="absolute left-3.5 top-3.5 h-4 w-4 text-muted-foreground/50" />
@@ -443,7 +443,7 @@ export function DynamicCandidateForm({
 
           {/* Location Dropdown Cascaders Block */}
           <div className="space-y-2 md:col-span-2 rounded-2xl bg-slate-50/40 dark:bg-slate-900/10 border border-dashed border-slate-200 p-4 shadow-3xs">
-            <LocationSelect value={location} onChange={setLocation} disabled={isFieldDisabled('location')} />
+            <LocationSelect value={location} onChange={setLocation} />
           </div>
         </CardContent>
       </Card>
@@ -469,16 +469,23 @@ export function DynamicCandidateForm({
               name="position"
               control={control}
               render={({ field }) => (
-                <Select value={field.value} onValueChange={field.onChange} disabled={isFieldDisabled('position')}>
+                <Select
+                  value={field.value}
+                  onValueChange={field.onChange}
+                  disabled={isFieldDisabled('position')}
+                >
                   <SelectTrigger className="rounded-xl h-11 border-slate-200 bg-background font-medium shadow-2xs">
                     <SelectValue placeholder="Select primary operational target position" />
                   </SelectTrigger>
                   <SelectContent className="rounded-xl max-h-[320px]">
-                    {(positions || settings?.positions || []).map((p) => (
-                      <SelectItem key={p} value={p} className="rounded-lg font-medium">
-                        {p}
-                      </SelectItem>
-                    ))}
+                    {(positions || settings?.positions || []).map((p) => {
+                      const positionValue = typeof p === 'object' ? p.name : p;
+                      return (
+                        <SelectItem key={positionValue} value={positionValue} className="rounded-lg font-medium">
+                          {positionValue}
+                        </SelectItem>
+                      );
+                    })}
                   </SelectContent>
                 </Select>
               )}
@@ -490,7 +497,7 @@ export function DynamicCandidateForm({
 
       {/* 3. Conditional Dynamic Field Modules Block Grid */}
       {position && professionFields && Object.keys(professionFields).length > 0 && (
-        <Card className="rounded-2xl border border-slate-200/60 bg-card shadow-xs overflow-hidden transition-all duration-300 hover:shadow-sm border-l-4 border-l-indigo-500">
+        <Card className="rounded-2xl border border-slate-200/60 bg-card shadow-xs overflow-hidden transition-all duration-300 hover:shadow-sm border-l-4 border-l-indigo-500 animate-in fade-in duration-300">
           <CardHeader className="border-b border-muted/40 bg-slate-50/50 dark:bg-slate-900/10 pb-4 pt-5 px-6 md:px-8">
             <div className="flex items-center gap-3">
               <div className="p-2.5 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-xl">

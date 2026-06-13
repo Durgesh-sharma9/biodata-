@@ -8,6 +8,7 @@ import {
   updateCandidate,
   checkDuplicate,
   getSettings,
+  getPositions,
 } from '@/lib/api';
 import { DynamicCandidateForm } from '@/components/forms/DynamicCandidateForm';
 import { PageHeader } from '@/components/common/PageHeader';
@@ -30,6 +31,11 @@ export default function CandidateForm() {
   const { data: settings } = useQuery({
     queryKey: ['settings'],
     queryFn: () => getSettings().then((r) => r.data.data),
+  });
+
+  const { data: positions } = useQuery({
+    queryKey: ['positions'],
+    queryFn: () => getPositions().then((r) => r.data.data),
   });
 
   const { data: candidate, isLoading } = useQuery({
@@ -98,10 +104,10 @@ export default function CandidateForm() {
           initialValues={candidate}
           onSubmit={onSubmit}
           settings={settings}
+          positions={positions}
           isLoading={saveMutation.isPending}
           submitButtonText={isEdit ? 'Update Candidate' : 'Add Candidate'}
-          showMobileCheck={!isEdit}
-          disabledFields={isEdit ? ['mobile'] : []}
+          disabledFields={[]}
         />
       </div>
 

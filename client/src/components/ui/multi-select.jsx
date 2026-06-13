@@ -59,7 +59,7 @@ export function MultiSelect({ options = [], value = [], onChange, placeholder = 
       {open && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-          <div className="absolute z-50 mt-2 w-full rounded-xl border border-slate-100 bg-white/95 p-1.5 shadow-2xl shadow-slate-900/10 backdrop-blur-lg animate-in fade-in-0 zoom-in-95 duration-200 origin-top">
+          <div className="absolute z-[100] mt-2 w-full rounded-xl border border-slate-100 bg-white/95 p-1.5 shadow-2xl shadow-slate-900/10 backdrop-blur-lg animate-in fade-in-0 zoom-in-95 duration-200 origin-top">
             <div className="border-b border-slate-100 pb-1.5 mb-1 px-1">
               <div className="relative">
                 <Search className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
@@ -84,7 +84,7 @@ export function MultiSelect({ options = [], value = [], onChange, placeholder = 
                       'flex w-full items-center justify-between px-3 py-2.5 text-left text-sm font-medium rounded-lg transition-all duration-200',
                       isSelected
                         ? 'bg-gradient-to-r from-indigo-50 to-blue-50 text-indigo-600 border border-indigo-100/40'
-                        : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                        : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100'
                     )}
                   >
                     <span>{option}</span>

@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getApplicantProfile, updateApplicantProfile, getSettings } from '@/lib/api';
+import { getApplicantProfile, updateApplicantProfile, getSettings, getPositions } from '@/lib/api';
 import { DynamicCandidateForm } from '@/components/forms/DynamicCandidateForm';
 import { PageHeader } from '@/components/common/PageHeader';
 
@@ -14,6 +14,11 @@ export default function ApplicantProfile() {
   const { data: settings } = useQuery({
     queryKey: ['settings'],
     queryFn: () => getSettings().then((r) => r.data.data),
+  });
+
+  const { data: positions } = useQuery({
+    queryKey: ['positions'],
+    queryFn: () => getPositions().then((r) => r.data.data),
   });
 
   const updateMutation = useMutation({
@@ -34,9 +39,10 @@ export default function ApplicantProfile() {
         initialValues={profile}
         onSubmit={(data) => updateMutation.mutate(data)}
         settings={settings}
+        positions={positions}
         isLoading={updateMutation.isPending}
         submitButtonText="Update Profile"
-        disabledFields={['mobile']}
+        disabledFields={[]}
       />
     </div>
   );
