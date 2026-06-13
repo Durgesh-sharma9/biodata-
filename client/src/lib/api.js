@@ -183,6 +183,8 @@ export const createClass = (data) => api.post('/master-data/classes', data);
 export const updateClass = (id, data) => api.put(`/master-data/classes/${id}`, data);
 export const deleteClass = (id) => api.delete(`/master-data/classes/${id}`);
 
+export const unlockRequest = (requestId) => api.post(`/applicant/requests/${requestId}/unlock`);
+
 export const uploadPublicFiles = (files) => {
   const formData = new FormData();
   files.forEach((file) => formData.append('files', file));

@@ -5,6 +5,7 @@ import {
   getRequestSchoolDetails,
   getApplicantPlans,
   purchaseApplicantPlan,
+  unlockRequest,
 } from '@/lib/api';
 import { PageHeader } from '@/components/common/PageHeader';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -46,6 +47,26 @@ export default function ApplicantRequests() {
     },
   });
 
+  const unlockMutation = useMutation({
+    mutationFn: unlockRequest,
+    onSuccess: (res) => {
+      queryClient.invalidateQueries({ queryKey: ['applicant-requests'] });
+      setSchoolDetails(res.data.data);
+    },
+    onError: (err) => {
+      if (err.response?.status === 402) {
+        setShowPayment(true);
+      } else {
+        alert(err.response?.data?.message || 'Failed to unlock request');
+      }
+    },
+  });
+
+  const handleUnlockRequest = (request) => {
+    setSelectedRequest(request);
+    unlockMutation.mutate(request._id);
+  };
+
   const handleViewSchool = async (request) => {
     setSelectedRequest(request);
     try {
@@ -60,7 +81,8 @@ export default function ApplicantRequests() {
     }
   };
 
-  const paidPlans = plans.filter((p) => p.price > 0 && p.isActive);
+  const requestBasedPlans = plans.filter((p) => p.planType === 'REQUEST_BASED' && p.price > 0 && p.isActive);
+  const unlimitedPlans = plans.filter((p) => p.planType === 'UNLIMITED' && p.price > 0 && p.isActive);
 
   return (
     <div>
@@ -92,18 +114,36 @@ export default function ApplicantRequests() {
                         {formatDate(request.createdAt)}
                       </p>
                     </div>
-                    <Badge variant={request.status === 'viewed' ? 'secondary' : 'default'}>
-                      {request.status}
-                    </Badge>
+                    <div className="flex flex-col gap-2 items-end">
+                      <Badge variant={request.status === 'viewed' ? 'secondary' : 'default'}>
+                        {request.status}
+                      </Badge>
+                      {request.isUnlocked && (
+                        <Badge variant="outline" className="text-xs">
+                          Unlocked
+                        </Badge>
+                      )}
+                    </div>
                   </div>
-                  <Button
-                    className="mt-4"
-                    size="sm"
-                    variant="outline"
-                    onClick={() => handleViewSchool(request)}
-                  >
-                    View School Details
-                  </Button>
+                  {request.isUnlocked ? (
+                    <Button
+                      className="mt-4"
+                      size="sm"
+                      onClick={() => handleViewSchool(request)}
+                    >
+                      View School Details
+                    </Button>
+                  ) : (
+                    <Button
+                      className="mt-4"
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleUnlockRequest(request)}
+                      disabled={unlockMutation.isPending}
+                    >
+                      {unlockMutation.isPending ? 'Unlocking...' : 'Unlock Request'}
+                    </Button>
+                  )}
                 </div>
               ))}
             </div>
@@ -134,35 +174,60 @@ export default function ApplicantRequests() {
       <Dialog open={showPayment} onOpenChange={setShowPayment}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Subscribe to View School Contact</DialogTitle>
+            <DialogTitle>Purchase Plan to Unlock</DialogTitle>
           </DialogHeader>
           <p className="text-sm text-muted-foreground mb-4">
-            Purchase a plan to view school contact information and connect directly.
+            Purchase a plan to unlock school contact information and connect directly.
           </p>
-          <div className="space-y-3">
-            {paidPlans.map((plan) => (
-              <Card key={plan._id}>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-base">{plan.name}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-2xl font-bold">₹{plan.price}</p>
-                  <p className="text-sm text-muted-foreground">{plan.durationDays} days</p>
-                  <ul className="mt-2 text-sm list-disc pl-4">
-                    {plan.features?.map((f) => (
-                      <li key={f}>{f}</li>
-                    ))}
-                  </ul>
-                  <Button
-                    className="mt-3 w-full"
-                    onClick={() => purchaseMutation.mutate(plan._id)}
-                    disabled={purchaseMutation.isPending}
-                  >
-                    {purchaseMutation.isPending ? 'Processing...' : `Pay ₹${plan.price}`}
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
+          
+          <div className="space-y-4">
+            <div>
+              <h3 className="font-medium mb-2">Request-Based Plans</h3>
+              <div className="space-y-2">
+                {requestBasedPlans.map((plan) => (
+                  <Card key={plan._id}>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-base">{plan.name}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-2xl font-bold">₹{plan.price}</p>
+                      <p className="text-sm text-muted-foreground">{plan.requestCount} request credits</p>
+                      <Button
+                        className="mt-3 w-full"
+                        onClick={() => purchaseMutation.mutate(plan._id)}
+                        disabled={purchaseMutation.isPending}
+                      >
+                        {purchaseMutation.isPending ? 'Processing...' : `Pay ₹${plan.price}`}
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+            
+            <div>
+              <h3 className="font-medium mb-2">Unlimited Plans</h3>
+              <div className="space-y-2">
+                {unlimitedPlans.map((plan) => (
+                  <Card key={plan._id}>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-base">{plan.name}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-2xl font-bold">₹{plan.price}</p>
+                      <p className="text-sm text-muted-foreground">{plan.durationDays} days</p>
+                      <Button
+                        className="mt-3 w-full"
+                        onClick={() => purchaseMutation.mutate(plan._id)}
+                        disabled={purchaseMutation.isPending}
+                      >
+                        {purchaseMutation.isPending ? 'Processing...' : `Pay ₹${plan.price}`}
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
           </div>
         </DialogContent>
       </Dialog>

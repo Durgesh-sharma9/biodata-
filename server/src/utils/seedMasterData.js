@@ -1,3 +1,4 @@
+import ApplicantPlan from '../models/ApplicantPlan.js';
 import Position from '../models/Position.js';
 import Subject from '../models/Subject.js';
 import Qualification from '../models/Qualification.js';
@@ -90,6 +91,59 @@ const DEFAULT_CLASSES = [
   'Class 12',
 ];
 
+const DEFAULT_APPLICANT_PLANS = [
+  // Request-Based Plans
+  {
+    name: 'Single Unlock',
+    planType: 'REQUEST_BASED',
+    price: 49,
+    requestCount: 1,
+    features: ['Unlock 1 school request', 'Permanent access to unlocked school', 'View school contact details'],
+    isActive: true,
+  },
+  {
+    name: 'Starter Pack',
+    planType: 'REQUEST_BASED',
+    price: 99,
+    requestCount: 3,
+    features: ['Unlock 3 school requests', 'Permanent access to unlocked schools', 'View school contact details'],
+    isActive: true,
+  },
+  {
+    name: 'Growth Pack',
+    planType: 'REQUEST_BASED',
+    price: 249,
+    requestCount: 10,
+    features: ['Unlock 10 school requests', 'Permanent access to unlocked schools', 'View school contact details', 'Best value'],
+    isActive: true,
+  },
+  // Unlimited Plans
+  {
+    name: 'Premium Monthly',
+    planType: 'UNLIMITED',
+    price: 299,
+    durationDays: 30,
+    features: ['Unlimited unlocks for 30 days', 'View all school contacts', 'No credit deduction'],
+    isActive: true,
+  },
+  {
+    name: 'Premium Quarterly',
+    planType: 'UNLIMITED',
+    price: 699,
+    durationDays: 90,
+    features: ['Unlimited unlocks for 90 days', 'View all school contacts', 'No credit deduction', 'Save 22%'],
+    isActive: true,
+  },
+  {
+    name: 'Premium Yearly',
+    planType: 'UNLIMITED',
+    price: 1999,
+    durationDays: 365,
+    features: ['Unlimited unlocks for 365 days', 'View all school contacts', 'No credit deduction', 'Best value - Save 44%'],
+    isActive: true,
+  },
+];
+
 export async function seedMasterData() {
   console.log('🌱 Starting master data seeding...');
 
@@ -144,6 +198,17 @@ export async function seedMasterData() {
       console.log(`✅ Seeded ${DEFAULT_CLASSES.length} classes`);
     } else {
       console.log(`⏭️ Classes already exist (${existingClasses} records)`);
+    }
+
+    // Seed Applicant Plans
+    const existingApplicantPlans = await ApplicantPlan.countDocuments();
+    console.log(`📊 Applicant Plans in database: ${existingApplicantPlans}`);
+    if (existingApplicantPlans === 0) {
+      console.log('📝 Seeding applicant plans...');
+      await ApplicantPlan.insertMany(DEFAULT_APPLICANT_PLANS);
+      console.log(`✅ Seeded ${DEFAULT_APPLICANT_PLANS.length} applicant plans`);
+    } else {
+      console.log(`⏭️ Applicant Plans already exist (${existingApplicantPlans} records)`);
     }
 
     console.log('✨ Master data seeding completed successfully');

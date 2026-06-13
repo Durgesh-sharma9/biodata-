@@ -19,8 +19,18 @@ const applicantSubscriptionSchema = new mongoose.Schema(
       ref: 'ApplicantPlan',
       required: true,
     },
+    planType: {
+      type: String,
+      enum: ['REQUEST_BASED', 'UNLIMITED'],
+      required: true,
+    },
     planName: { type: String, required: true },
     price: { type: Number, required: true, min: 0 },
+    requestCount: {
+      type: Number,
+      default: null,
+      min: 1,
+    },
     startDate: { type: Date, default: Date.now },
     expiryDate: { type: Date, required: true },
     status: {

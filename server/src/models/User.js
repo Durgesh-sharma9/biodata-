@@ -18,6 +18,24 @@ const userSchema = new mongoose.Schema(
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     password: { type: String, required: true, minlength: 6, select: false },
     role: { type: String, enum: USER_ROLES, required: true },
+    requestCredits: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    activePlan: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'ApplicantPlan',
+      default: null,
+    },
+    planExpiryDate: {
+      type: Date,
+      default: null,
+    },
+    unlockedRequests: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'InterestRequest',
+    }],
   },
   { timestamps: true }
 );

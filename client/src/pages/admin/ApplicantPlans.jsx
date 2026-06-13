@@ -11,8 +11,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-const emptyForm = { name: '', price: '', durationDays: '', features: '' };
+const emptyForm = { name: '', planType: 'UNLIMITED', price: '', requestCount: '', durationDays: '', features: '' };
 
 export default function ApplicantPlans() {
   const queryClient = useQueryClient();
@@ -33,6 +34,9 @@ export default function ApplicantPlans() {
       setEditPlan(null);
       setForm(emptyForm);
     },
+    onError: (err) => {
+      alert(err.response?.data?.message || 'Failed to save plan');
+    },
   });
 
   const deleteMutation = useMutation({
@@ -50,8 +54,10 @@ export default function ApplicantPlans() {
     setEditPlan(plan);
     setForm({
       name: plan.name,
+      planType: plan.planType,
       price: String(plan.price),
-      durationDays: String(plan.durationDays),
+      requestCount: plan.requestCount ? String(plan.requestCount) : '',
+      durationDays: plan.durationDays ? String(plan.durationDays) : '',
       features: plan.features?.join('\n') || '',
     });
     setDialogOpen(true);
@@ -59,13 +65,21 @@ export default function ApplicantPlans() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    saveMutation.mutate({
+    const data = {
       name: form.name,
+      planType: form.planType,
       price: Number(form.price),
-      durationDays: Number(form.durationDays),
       features: form.features.split('\n').map((f) => f.trim()).filter(Boolean),
       isActive: editPlan ? editPlan.isActive : true,
-    });
+    };
+
+    if (form.planType === 'REQUEST_BASED') {
+      data.requestCount = Number(form.requestCount);
+    } else if (form.planType === 'UNLIMITED') {
+      data.durationDays = Number(form.durationDays);
+    }
+
+    saveMutation.mutate(data);
   };
 
   return (
@@ -87,8 +101,9 @@ export default function ApplicantPlans() {
             <TableHeader>
               <TableRow>
                 <TableHead>Name</TableHead>
+                <TableHead>Type</TableHead>
                 <TableHead>Price</TableHead>
-                <TableHead>Duration</TableHead>
+                <TableHead>Requests/Duration</TableHead>
                 <TableHead>Features</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Actions</TableHead>
@@ -97,14 +112,21 @@ export default function ApplicantPlans() {
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center">Loading...</TableCell>
+                  <TableCell colSpan={7} className="text-center">Loading...</TableCell>
                 </TableRow>
               ) : (
                 plans.map((plan) => (
                   <TableRow key={plan._id}>
                     <TableCell className="font-medium">{plan.name}</TableCell>
+                    <TableCell>
+                      <Badge variant={plan.planType === 'REQUEST_BASED' ? 'secondary' : 'default'}>
+                        {plan.planType === 'REQUEST_BASED' ? 'Request Based' : 'Unlimited'}
+                      </Badge>
+                    </TableCell>
                     <TableCell>₹{plan.price}</TableCell>
-                    <TableCell>{plan.durationDays} days</TableCell>
+                    <TableCell>
+                      {plan.planType === 'REQUEST_BASED' ? `${plan.requestCount} requests` : `${plan.durationDays} days`}
+                    </TableCell>
                     <TableCell className="max-w-xs truncate text-xs">
                       {plan.features?.join(', ')}
                     </TableCell>
@@ -145,6 +167,18 @@ export default function ApplicantPlans() {
               <Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
             </div>
             <div>
+              <Label>Plan Type</Label>
+              <Select value={form.planType} onValueChange={(value) => setForm({ ...form, planType: value })}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="REQUEST_BASED">Request Based</SelectItem>
+                  <SelectItem value="UNLIMITED">Unlimited</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
               <Label>Price (₹)</Label>
               <Input
                 type="number"
@@ -153,15 +187,28 @@ export default function ApplicantPlans() {
                 required
               />
             </div>
-            <div>
-              <Label>Duration (days)</Label>
-              <Input
-                type="number"
-                value={form.durationDays}
-                onChange={(e) => setForm({ ...form, durationDays: e.target.value })}
-                required
-              />
-            </div>
+            {form.planType === 'REQUEST_BASED' && (
+              <div>
+                <Label>Request Count</Label>
+                <Input
+                  type="number"
+                  value={form.requestCount}
+                  onChange={(e) => setForm({ ...form, requestCount: e.target.value })}
+                  required
+                />
+              </div>
+            )}
+            {form.planType === 'UNLIMITED' && (
+              <div>
+                <Label>Duration (days)</Label>
+                <Input
+                  type="number"
+                  value={form.durationDays}
+                  onChange={(e) => setForm({ ...form, durationDays: e.target.value })}
+                  required
+                />
+              </div>
+            )}
             <div>
               <Label>Features (one per line)</Label>
               <Textarea

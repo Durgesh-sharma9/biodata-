@@ -14,6 +14,7 @@ import {
   getReceivedRequests,
   getRequestSchoolDetails,
   getApplicantDashboard,
+  unlockRequest,
 } from '../controllers/applicantSubscriptionController.js';
 import { protect, authorize } from '../middleware/auth.js';
 
@@ -29,6 +30,7 @@ router.get('/profile', protect, authorize('self_applicant', 'applicant'), getApp
 router.put('/profile', protect, authorize('self_applicant', 'applicant'), updateApplicantProfile);
 router.get('/requests', protect, authorize('self_applicant', 'applicant'), getReceivedRequests);
 router.get('/requests/:requestId/school', protect, authorize('self_applicant', 'applicant'), getRequestSchoolDetails);
+router.post('/requests/:requestId/unlock', protect, authorize('self_applicant', 'applicant'), unlockRequest);
 router.get('/subscription', protect, authorize('self_applicant', 'applicant'), getApplicantSubscription);
 router.get('/subscription/history', protect, authorize('self_applicant', 'applicant'), getApplicantSubscriptionHistory);
 router.post('/subscription/purchase', protect, authorize('self_applicant', 'applicant'), purchaseApplicantPlan);

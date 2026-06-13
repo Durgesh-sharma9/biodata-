@@ -21,6 +21,7 @@ import applicantPlanRoutes from './routes/applicantPlanRoutes.js';
 import notificationRoutes from './routes/notificationRoutes.js';
 import masterDataRoutes from './routes/masterDataRoutes.js';
 import { seedMasterData } from './utils/seedMasterData.js';
+import { migrateApplicantPlans } from './utils/migrateApplicantPlans.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -61,6 +62,7 @@ app.use(errorHandler);
 
 const start = async () => {
   await connectDB();
+  await migrateApplicantPlans();
   await seedMasterData();
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
