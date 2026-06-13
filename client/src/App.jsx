@@ -25,6 +25,7 @@ import Plans from '@/pages/admin/Plans';
 import CreditPackages from '@/pages/admin/CreditPackages';
 import Locations from '@/pages/admin/Locations';
 import CandidateImport from '@/pages/admin/CandidateImport';
+import MasterData from '@/pages/admin/MasterData';
 import ApplicantSignup from '@/pages/applicant/ApplicantSignup';
 import ApplicantLogin from '@/pages/applicant/ApplicantLogin';
 import ApplicantProfile from '@/pages/applicant/ApplicantProfile';
@@ -88,7 +89,6 @@ export default function App() {
               <Route path="/candidates/:id/edit" element={<CandidateForm />} />
               <Route path="/credits" element={<Credits />} />
               <Route path="/application-links" element={<ApplicationLinks />} />
-              <Route path="/settings" element={<Settings />} />
             </Route>
 
             <Route
@@ -105,6 +105,7 @@ export default function App() {
               <Route path="/admin/locations" element={<Locations />} />
               <Route path="/admin/import" element={<CandidateImport />} />
               <Route path="/admin/applicant-plans" element={<ApplicantPlans />} />
+              <Route path="/admin/master-data" element={<MasterData />} />
               <Route path="/admin/schools" element={<Navigate to="/admin/admins" replace />} />
               <Route path="/admin/stats" element={<Navigate to="/admin/dashboard" replace />} />
             </Route>

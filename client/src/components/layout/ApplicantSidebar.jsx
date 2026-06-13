@@ -15,7 +15,6 @@ import { cn } from '@/lib/utils';
 const applicantLinks = [
   { to: '/applicant/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { to: '/applicant/profile', label: 'My Profile', icon: User },
-  { to: '/applicant/profile', label: 'Professional Details', icon: Briefcase },
   { to: '/applicant/documents', label: 'Documents', icon: FileText },
   { to: '/applicant/requests', label: 'Received Requests', icon: Inbox },
   { to: '/applicant/plan', label: 'My Plan', icon: CreditCard },

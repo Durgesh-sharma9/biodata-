@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { getSchoolBySlug, submitApplication, uploadPublicFiles, getSettings } from '@/lib/api';
+import { getSchoolBySlug, submitApplication, uploadPublicFiles, getSettings, getPositions } from '@/lib/api';
 import { DynamicCandidateForm } from '@/components/forms/DynamicCandidateForm';
-import { APPLICATION_POSITIONS } from '@/config/positionForms';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function Apply() {
@@ -18,6 +17,11 @@ export default function Apply() {
   const { data: settings } = useQuery({
     queryKey: ['settings'],
     queryFn: () => getSettings().then((r) => r.data.data),
+  });
+
+  const { data: positions } = useQuery({
+    queryKey: ['positions'],
+    queryFn: () => getPositions().then((r) => r.data.data),
   });
 
   const submitMutation = useMutation({
@@ -52,15 +56,17 @@ export default function Apply() {
             </p>
           </CardHeader>
           <CardContent>
-            <DynamicCandidateForm
-              onSubmit={(data) => submitMutation.mutate(data)}
-              settings={settings}
-              positions={APPLICATION_POSITIONS}
-              isLoading={submitMutation.isPending}
-              submitButtonText="Submit Application"
-              showConsent
-              uploadFilesFn={uploadPublicFiles}
-            />
+            {settings && positions && (
+              <DynamicCandidateForm
+                onSubmit={(data) => submitMutation.mutate(data)}
+                settings={settings}
+                positions={positions}
+                isLoading={submitMutation.isPending}
+                submitButtonText="Submit Application"
+                showConsent
+                uploadFilesFn={uploadPublicFiles}
+              />
+            )}
           </CardContent>
         </Card>
       </div>

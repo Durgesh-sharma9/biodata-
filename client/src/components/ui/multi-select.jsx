@@ -1,10 +1,12 @@
 import { useState } from 'react';
-import { X, ChevronDown } from 'lucide-react';
+import { X, ChevronDown, Search } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from './badge';
+import { Input } from './input';
 
 export function MultiSelect({ options = [], value = [], onChange, placeholder = 'Select...', className }) {
   const [open, setOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const toggle = (option) => {
     if (value.includes(option)) {
@@ -13,6 +15,10 @@ export function MultiSelect({ options = [], value = [], onChange, placeholder = 
       onChange([...value, option]);
     }
   };
+
+  const filteredOptions = options.filter((option) =>
+    option.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className={cn('relative', className)}>
@@ -44,20 +50,37 @@ export function MultiSelect({ options = [], value = [], onChange, placeholder = 
       {open && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-          <div className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md border bg-background shadow-md">
-            {options.map((option) => (
-              <button
-                key={option}
-                type="button"
-                onClick={() => toggle(option)}
-                className={cn(
-                  'flex w-full px-3 py-2 text-left text-sm hover:bg-accent',
-                  value.includes(option) && 'bg-accent font-medium'
-                )}
-              >
-                {option}
-              </button>
-            ))}
+          <div className="absolute z-50 mt-1 w-full rounded-md border bg-background shadow-md">
+            <div className="border-b p-2">
+              <div className="relative">
+                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search..."
+                  className="pl-8 h-8"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onClick={(e) => e.stopPropagation()}
+                />
+              </div>
+            </div>
+            <div className="max-h-60 overflow-auto">
+              {filteredOptions.map((option) => (
+                <button
+                  key={option}
+                  type="button"
+                  onClick={() => toggle(option)}
+                  className={cn(
+                    'flex w-full px-3 py-2 text-left text-sm hover:bg-accent',
+                    value.includes(option) && 'bg-accent font-medium'
+                  )}
+                >
+                  {option}
+                </button>
+              ))}
+              {filteredOptions.length === 0 && (
+                <div className="px-3 py-2 text-sm text-muted-foreground">No results found</div>
+              )}
+            </div>
           </div>
         </>
       )}

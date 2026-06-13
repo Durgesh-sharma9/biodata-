@@ -3,7 +3,7 @@ import {
   LayoutDashboard,
   Users,
   UserSearch,
-  Settings,
+  Database,
   School,
   LogOut,
   CreditCard,
@@ -25,7 +25,6 @@ const schoolLinks = [
   { to: '/talent-pool', label: 'Talent Pool', icon: UserSearch },
   { to: '/credits', label: 'Credits', icon: Coins },
   { to: '/application-links', label: 'Application Links', icon: Link2 },
-  { to: '/settings', label: 'Settings', icon: Settings },
 ];
 
 const adminLinks = [
@@ -36,6 +35,7 @@ const adminLinks = [
   { to: '/admin/locations', label: 'Locations', icon: MapPin },
   { to: '/admin/import', label: 'Candidate Import', icon: Upload },
   { to: '/admin/applicant-plans', label: 'Applicant Plans', icon: CreditCard },
+  { to: '/admin/master-data', label: 'Master Data', icon: Database },
 ];
 
 const applicantLinks = [

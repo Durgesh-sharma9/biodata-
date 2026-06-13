@@ -19,6 +19,8 @@ import superAdminRoutes from './routes/superAdminRoutes.js';
 import interestRequestRoutes from './routes/interestRequestRoutes.js';
 import applicantPlanRoutes from './routes/applicantPlanRoutes.js';
 import notificationRoutes from './routes/notificationRoutes.js';
+import masterDataRoutes from './routes/masterDataRoutes.js';
+import { seedMasterData } from './utils/seedMasterData.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -52,12 +54,14 @@ app.use('/api/admin', superAdminRoutes);
 app.use('/api/interest-requests', interestRequestRoutes);
 app.use('/api/applicant-plans', applicantPlanRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/master-data', masterDataRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
 
 const start = async () => {
   await connectDB();
+  await seedMasterData();
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
   });

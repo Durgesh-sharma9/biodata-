@@ -135,10 +135,53 @@ export const getNotifications = () => api.get('/notifications');
 export const markNotificationRead = (id) => api.patch(`/notifications/${id}/read`);
 export const markAllNotificationsRead = () => api.patch('/notifications/read-all');
 
-// Settings
-export const getSettings = () => api.get('/settings');
-export const addSettingItem = (data) => api.post('/settings/add', data);
-export const removeSettingItem = (data) => api.post('/settings/remove', data);
+// Settings (deprecated - use master data instead)
+export const getSettings = () => getAllMasterData().then((r) => ({ data: { data: r.data.data } }));
+export const addSettingItem = (data) => {
+  // Map field to appropriate master data endpoint
+  const fieldToEndpoint = {
+    positions: 'positions',
+    subjects: 'subjects',
+    qualifications: 'qualifications',
+    classes: 'classes',
+  };
+  const endpoint = fieldToEndpoint[data.field];
+  if (!endpoint) return Promise.reject(new Error('Invalid field'));
+  return api.post(`/master-data/${endpoint}`, { name: data.value });
+};
+export const removeSettingItem = (data) => {
+  // This is deprecated - master data uses soft delete
+  return Promise.reject(new Error('Use master data endpoints instead'));
+};
+
+// Master Data (Super Admin)
+export const getAllMasterData = () => api.get('/master-data/all');
+
+// For dropdowns (returns array of strings)
+export const getPositions = () => api.get('/master-data/positions').then((r) => ({ data: { data: r.data.data.map((p) => p.name) } }));
+export const getSubjects = () => api.get('/master-data/subjects').then((r) => ({ data: { data: r.data.data.map((s) => s.name) } }));
+export const getQualifications = () => api.get('/master-data/qualifications').then((r) => ({ data: { data: r.data.data.map((q) => q.name) } }));
+export const getClasses = () => api.get('/master-data/classes').then((r) => ({ data: { data: r.data.data.map((c) => c.name) } }));
+
+// For Master Data page (returns full objects)
+export const getPositionsForAdmin = () => api.get('/master-data/positions');
+export const getSubjectsForAdmin = () => api.get('/master-data/subjects');
+export const getQualificationsForAdmin = () => api.get('/master-data/qualifications');
+export const getClassesForAdmin = () => api.get('/master-data/classes');
+
+// CRUD operations
+export const createPosition = (data) => api.post('/master-data/positions', data);
+export const updatePosition = (id, data) => api.put(`/master-data/positions/${id}`, data);
+export const deletePosition = (id) => api.delete(`/master-data/positions/${id}`);
+export const createSubject = (data) => api.post('/master-data/subjects', data);
+export const updateSubject = (id, data) => api.put(`/master-data/subjects/${id}`, data);
+export const deleteSubject = (id) => api.delete(`/master-data/subjects/${id}`);
+export const createQualification = (data) => api.post('/master-data/qualifications', data);
+export const updateQualification = (id, data) => api.put(`/master-data/qualifications/${id}`, data);
+export const deleteQualification = (id) => api.delete(`/master-data/qualifications/${id}`);
+export const createClass = (data) => api.post('/master-data/classes', data);
+export const updateClass = (id, data) => api.put(`/master-data/classes/${id}`, data);
+export const deleteClass = (id) => api.delete(`/master-data/classes/${id}`);
 
 export const uploadPublicFiles = (files) => {
   const formData = new FormData();
