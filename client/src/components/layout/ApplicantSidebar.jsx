@@ -12,13 +12,44 @@ import {
 import { useAuth } from '@/context/AuthContext';
 import { cn } from '@/lib/utils';
 
+// Har link ke liye alag colorful classes add ki hain
 const applicantLinks = [
-  { to: '/applicant/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { to: '/applicant/profile', label: 'My Profile', icon: User },
-  { to: '/applicant/documents', label: 'Documents', icon: FileText },
-  { to: '/applicant/requests', label: 'Received Requests', icon: Inbox },
-  { to: '/applicant/plan', label: 'My Plan', icon: CreditCard },
-  { to: '/applicant/notifications', label: 'Notifications', icon: Bell },
+  { 
+    to: '/applicant/dashboard', 
+    label: 'Dashboard', 
+    icon: LayoutDashboard, 
+    color: 'text-blue-500 group-hover:text-blue-600' 
+  },
+  { 
+    to: '/applicant/profile', 
+    label: 'My Profile', 
+    icon: User, 
+    color: 'text-purple-500 group-hover:text-purple-600' 
+  },
+  { 
+    to: '/applicant/documents', 
+    label: 'Documents', 
+    icon: FileText, 
+    color: 'text-emerald-500 group-hover:text-emerald-600' 
+  },
+  { 
+    to: '/applicant/requests', 
+    label: 'Received Requests', 
+    icon: Inbox, 
+    color: 'text-amber-500 group-hover:text-amber-600' 
+  },
+  { 
+    to: '/applicant/plan', 
+    label: 'My Plan', 
+    icon: CreditCard, 
+    color: 'text-pink-500 group-hover:text-pink-600' 
+  },
+  { 
+    to: '/applicant/notifications', 
+    label: 'Notifications', 
+    icon: Bell, 
+    color: 'text-indigo-500 group-hover:text-indigo-600' 
+  },
 ];
 
 export function ApplicantSidebar() {
@@ -45,7 +76,7 @@ export function ApplicantSidebar() {
 
       {/* Primary Navigation Row Links */}
       <nav className="flex-1 space-y-1 p-4 overflow-y-auto custom-scrollbar">
-        {applicantLinks.map(({ to, label, icon: Icon }) => (
+        {applicantLinks.map(({ to, label, icon: Icon, color }) => (
           <NavLink
             key={to}
             to={to}
@@ -54,7 +85,7 @@ export function ApplicantSidebar() {
                 'flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-semibold tracking-wide transition-all duration-200 select-none group relative active:scale-[0.98]',
                 isActive 
                   ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-indigo-600/10' 
-                  : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'
+                  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
               )
             }
           >
@@ -62,7 +93,7 @@ export function ApplicantSidebar() {
               <>
                 <Icon className={cn(
                   "h-4 w-4 transition-transform duration-200 group-hover:scale-110", 
-                  isActive ? "text-white" : "text-slate-400 group-hover:text-indigo-600"
+                  isActive ? "text-white" : color
                 )} />
                 <span>{label}</span>
                 {isActive && (

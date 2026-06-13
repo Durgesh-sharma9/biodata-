@@ -84,187 +84,191 @@ export default function ApplicantPlans() {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out">
-      {/* Premium Dashboard Action Header Controls */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-100 pb-5">
-        <PageHeader
-          title="Applicant Plans"
-          description="Design, structure, and configure active feature tier access subscriptions for self-registered system applicants."
-        />
+    <div className="space-y-6 p-6 max-w-7xl mx-auto antialiased bg-slate-50/50 dark:bg-slate-950 min-h-screen animate-in fade-in duration-500">
+      
+      {/* Top Action Header Controls (Description Text String Removed) */}
+      <div className="flex items-center justify-between border-b border-slate-200/60 pb-5 dark:border-slate-800">
+        <h1 className="text-xl font-extrabold tracking-tight text-slate-800 dark:text-white">
+          Applicant Plans
+        </h1>
         <Button 
           onClick={openCreate}
-          className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-xl shadow-md shadow-indigo-600/20 hover:from-blue-500 hover:to-indigo-500 transition-all duration-200 hover:-translate-y-0.5 active:scale-95"
+          className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-xl shadow-md shadow-indigo-600/10 hover:from-blue-500 hover:to-indigo-500 transition-all duration-200 hover:-translate-y-0.5 active:scale-95 text-xs h-9 px-4"
         >
-          <Plus className="mr-2 h-4 w-4 stroke-[3]" />
+          <Plus className="mr-1.5 h-3.5 w-3.5 stroke-[3]" />
           Add Product Plan
         </Button>
       </div>
 
-      {/* Main Administrative Product Architecture Grid Card */}
-      <Card className="border border-slate-100/80 bg-white/90 shadow-xl shadow-slate-100/40 rounded-2xl overflow-hidden">
+      {/* Main Administrative Plan Network Matrix Grid */}
+      <Card className="border border-slate-200/60 bg-white shadow-2xs rounded-xl overflow-hidden mt-2">
         <CardContent className="p-0">
-          <Table>
-            <TableHeader className="bg-slate-50/70 border-b border-slate-100">
-              <TableRow>
-                <TableHead className="pl-6 py-4">Plan Name</TableHead>
-                <TableHead>Billing Model</TableHead>
-                <TableHead>Price Rate</TableHead>
-                <TableHead>Metrics Allowance</TableHead>
-                <TableHead className="max-w-xs">Bundled Feature Provisions</TableHead>
-                <TableHead>Lifecycle Status</TableHead>
-                <TableHead className="pr-6 text-right">Operations</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {isLoading ? (
+          <div className="overflow-x-auto w-full">
+            <Table>
+              <TableHeader className="bg-slate-50 dark:bg-slate-900/40 border-b border-slate-200/50">
                 <TableRow>
-                  <TableCell colSpan={7} className="h-64 text-center">
-                    <div className="flex flex-col items-center justify-center p-8">
-                      <div className="relative flex h-12 w-12 items-center justify-center rounded-xl bg-slate-50 border border-slate-100 mb-3 shadow-sm">
-                        <Loader2 className="h-5 w-5 text-indigo-600 animate-spin" />
-                      </div>
-                      <p className="text-sm font-semibold text-slate-500 tracking-wide animate-pulse">
-                        Syncing applicant billing profiles...
-                      </p>
-                    </div>
-                  </TableCell>
+                  <TableHead className="pl-6 font-bold text-[11px] tracking-wider uppercase text-slate-500 py-3">Plan Name</TableHead>
+                  <TableHead className="font-bold text-[11px] tracking-wider uppercase text-slate-500 py-3">Billing Model</TableHead>
+                  <TableHead className="font-bold text-[11px] tracking-wider uppercase text-slate-500 py-3">Price Rate</TableHead>
+                  <TableHead className="font-bold text-[11px] tracking-wider uppercase text-slate-500 py-3">Metrics Allowance</TableHead>
+                  <TableHead className="max-w-xs font-bold text-[11px] tracking-wider uppercase text-slate-500 py-3">Bundled Feature Provisions</TableHead>
+                  <TableHead className="font-bold text-[11px] tracking-wider uppercase text-slate-500 py-3">Lifecycle Status</TableHead>
+                  <TableHead className="pr-6 text-right font-bold text-[11px] tracking-wider uppercase text-slate-500 py-3">Operations</TableHead>
                 </TableRow>
-              ) : plans.length > 0 ? (
-                plans.map((plan) => (
-                  <TableRow 
-                    key={plan._id}
-                    className="group border-b border-slate-100/70 last:border-0 hover:bg-gradient-to-r hover:from-indigo-50/20 hover:to-transparent transition-all duration-150"
-                  >
-                    {/* Plan Profile Title Column */}
-                    <TableCell className="pl-6 py-4.5 font-bold text-slate-800">
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-indigo-50 border border-indigo-100/40 text-indigo-600 font-bold transition-colors group-hover:bg-indigo-600 group-hover:text-white">
-                          <Layers className="h-4 w-4" />
+              </TableHeader>
+              <TableBody className="divide-y divide-white">
+                {isLoading ? (
+                  <TableRow>
+                    <TableCell colSpan={7} className="h-64 text-center">
+                      <div className="flex flex-col items-center justify-center p-8">
+                        <div className="relative flex h-11 w-11 items-center justify-center rounded-xl bg-slate-50 border border-slate-200 mb-3 shadow-2xs">
+                          <Loader2 className="h-4 w-4 text-indigo-600 animate-spin" />
                         </div>
-                        <span className="truncate max-w-[160px] block font-bold text-slate-800">{plan.name}</span>
-                      </div>
-                    </TableCell>
-
-                    {/* Billing Method Target Badge */}
-                    <TableCell className="py-4.5">
-                      <Badge 
-                        variant="outline" 
-                        className={cn(
-                          "px-2.5 py-0.5 font-bold tracking-wide text-[10px] uppercase rounded-md shadow-sm/5",
-                          plan.planType === 'REQUEST_BASED' 
-                            ? 'bg-purple-50 text-purple-700 border-purple-100/80' 
-                            : 'bg-cyan-50 text-cyan-700 border-cyan-100/80'
-                        )}
-                      >
-                        {plan.planType === 'REQUEST_BASED' ? 'Request Based' : 'Unlimited Tier'}
-                      </Badge>
-                    </TableCell>
-
-                    {/* Currency Display Area */}
-                    <TableCell className="py-4.5 font-extrabold text-slate-800 text-sm">
-                      <div className="inline-flex items-center text-slate-900 font-bold bg-slate-50 px-2 py-1 rounded-lg border border-slate-100">
-                        <IndianRupee className="h-3.5 w-3.5 text-slate-500 mr-0.5 stroke-[2.5]" />
-                        <span>{plan.price}</span>
-                      </div>
-                    </TableCell>
-
-                    {/* Limits Threshold Metrics */}
-                    <TableCell className="py-4.5 text-slate-600 font-semibold text-xs">
-                      <div className="flex items-center gap-1.5 text-slate-700">
-                        <Activity className="h-3.5 w-3.5 text-slate-400" />
-                        <span>
-                          {plan.planType === 'REQUEST_BASED' ? `${plan.requestCount} Requests` : `${plan.durationDays} Days Active`}
-                        </span>
-                      </div>
-                    </TableCell>
-
-                    {/* Features Array Truncated Cloud Token Elements */}
-                    <TableCell className="max-w-xs py-4.5">
-                      <div className="flex flex-wrap gap-1 max-w-[240px]">
-                        {plan.features?.slice(0, 3).map((feat, idx) => (
-                          <span key={idx} className="inline-block text-[11px] font-medium text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded">
-                            {feat}
-                          </span>
-                        ))}
-                        {plan.features?.length > 3 && (
-                          <span className="text-[10px] font-bold text-indigo-500 pl-0.5 self-center">+{plan.features.length - 3} more</span>
-                        )}
-                      </div>
-                    </TableCell>
-
-                    {/* Operational Lifecycle Badge */}
-                    <TableCell className="py-4.5">
-                      <Badge 
-                        variant="outline" 
-                        className={cn(
-                          "px-2.5 py-0.5 font-bold tracking-wide text-[10px] uppercase rounded-md inline-flex items-center gap-1 shadow-sm/5",
-                          plan.isActive ? 'bg-emerald-50 text-emerald-700 border-emerald-100/80' : 'bg-slate-50 text-slate-400 border-slate-200'
-                        )}
-                      >
-                        <div className={cn("h-1.5 w-1.5 rounded-full", plan.isActive ? "bg-emerald-500 animate-pulse" : "bg-slate-300")} />
-                        {plan.isActive ? 'Active' : 'Archived'}
-                      </Badge>
-                    </TableCell>
-
-                    {/* Interactive Operational Operations Column Trigger Links */}
-                    <TableCell className="pr-6 py-4.5 text-right">
-                      <div className="inline-flex items-center gap-1.5 justify-end">
-                        <Button 
-                          size="sm" 
-                          variant="outline" 
-                          onClick={() => openEdit(plan)}
-                          className="h-8 w-8 rounded-lg p-0 border-slate-200 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50/50 hover:border-indigo-100 shadow-sm/5 transition-all active:scale-95"
-                        >
-                          <Pencil className="h-3.5 w-3.5" />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="destructive"
-                          onClick={() => deleteMutation.mutate(plan._id)}
-                          disabled={!plan.isActive}
-                          className="h-8 w-8 rounded-lg p-0 bg-red-50 text-red-500 border border-red-100 hover:bg-red-600 hover:text-white hover:border-red-600 disabled:opacity-30 disabled:pointer-events-none shadow-sm/5 transition-all active:scale-95"
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </Button>
+                        <p className="text-xs font-semibold text-slate-500 tracking-wide animate-pulse">
+                          Syncing applicant billing profiles...
+                        </p>
                       </div>
                     </TableCell>
                   </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={7} className="h-64 text-center">
-                    <div className="flex flex-col items-center justify-center p-8">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-50 border border-dashed border-slate-200 text-slate-400 mb-3">
-                        <Layers className="h-5 w-5" />
+                ) : plans.length > 0 ? (
+                  plans.map((plan, index) => {
+                    const isRequestBased = plan.planType === 'REQUEST_BASED';
+
+                    return (
+                      <TableRow 
+                        key={plan._id}
+                        style={{ animationDelay: `${index * 40}ms` }}
+                        className={cn(
+                          "group transition-all duration-200 last:border-0 animate-in fade-in slide-in-from-left-2",
+                          // Soft modern light multi-color backdrops per architecture model status
+                          isRequestBased 
+                            ? "bg-purple-50/40 hover:bg-purple-50/80 dark:bg-purple-950/10" 
+                            : "bg-cyan-50/40 hover:bg-cyan-50/80 dark:bg-cyan-950/10"
+                        )}
+                      >
+                        {/* Plan Profile Title Column */}
+                        <TableCell className="pl-6 py-3.5 font-bold text-slate-700 text-sm">
+                          <div className="flex items-center gap-3">
+                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white border border-slate-200 text-indigo-600 font-bold shadow-2xs group-hover:scale-105 transition-transform duration-200">
+                              <Layers className="h-4 w-4" />
+                            </div>
+                            <span className="truncate max-w-[160px] block tracking-tight group-hover:text-indigo-600 transition-colors">{plan.name}</span>
+                          </div>
+                        </TableCell>
+
+                        {/* Billing Method Target Badge */}
+                        <TableCell className="py-3.5">
+                          <Badge 
+                            variant="outline" 
+                            className={cn(
+                              "px-2.5 py-0.5 font-bold tracking-wide text-[10px] uppercase rounded-md bg-white shadow-2xs",
+                              isRequestBased ? 'text-purple-700 border-purple-200' : 'text-cyan-700 border-cyan-200'
+                            )}
+                          >
+                            {isRequestBased ? 'Request Based' : 'Unlimited Tier'}
+                          </Badge>
+                        </TableCell>
+
+                        {/* Currency Display Area */}
+                        <TableCell className="py-3.5 text-slate-700 font-bold text-sm">
+                          <div className="inline-flex items-center bg-white px-2.5 py-1 rounded-md border border-slate-200/60 shadow-2xs">
+                            <IndianRupee className="h-3 w-3 text-slate-400 mr-0.5 stroke-[2.5]" />
+                            <span>{plan.price}</span>
+                          </div>
+                        </TableCell>
+
+                        {/* Limits Threshold Metrics */}
+                        <TableCell className="py-3.5 text-slate-700 font-bold text-sm">
+                          <div className="flex items-center gap-1.5">
+                            <Activity className="h-3.5 w-3.5 text-slate-400" />
+                            <span className="text-[13px] tracking-tight">
+                              {isRequestBased ? `${plan.requestCount} Requests` : `${plan.durationDays} Days Active`}
+                            </span>
+                          </div>
+                        </TableCell>
+
+                        {/* Features List Lines Map */}
+                        <TableCell className="max-w-xs py-3.5">
+                          <div className="flex flex-wrap gap-1 max-w-[240px]">
+                            {plan.features?.slice(0, 2).map((feat, idx) => (
+                              <span key={idx} className="inline-block text-[11px] font-semibold text-slate-600 bg-white border border-slate-200/60 px-2 py-0.5 rounded shadow-2xs">
+                                {feat}
+                              </span>
+                            ))}
+                            {plan.features?.length > 2 && (
+                              <span className="text-[10px] font-bold text-indigo-500 pl-0.5 self-center">+{plan.features.length - 2} more</span>
+                            )}
+                          </div>
+                        </TableCell>
+
+                        {/* Operational Lifecycle Status Badge */}
+                        <TableCell className="py-3.5">
+                          <Badge 
+                            variant="outline" 
+                            className={cn(
+                              "px-2.5 py-0.5 font-bold tracking-wide text-[10px] uppercase rounded-md inline-flex items-center gap-1 bg-white shadow-2xs",
+                              plan.isActive ? 'text-emerald-700 border-emerald-200' : 'text-slate-400 border-slate-200'
+                            )}
+                          >
+                            <div className={cn("h-1.5 w-1.5 rounded-full", plan.isActive ? "bg-emerald-500 animate-pulse" : "bg-slate-300")} />
+                            {plan.isActive ? 'Active' : 'Archived'}
+                          </Badge>
+                        </TableCell>
+
+                        {/* Operations Trigger Action Box */}
+                        <TableCell className="pr-6 py-3.5 text-right">
+                          <div className="inline-flex items-center gap-1.5 justify-end">
+                            <Button 
+                              size="sm" 
+                              variant="outline" 
+                              onClick={() => openEdit(plan)}
+                              className="h-8 w-8 rounded-lg p-0 border-slate-200 text-slate-500 hover:text-indigo-600 hover:bg-white hover:border-indigo-200 shadow-2xs transition-all active:scale-95"
+                            >
+                              <Pencil className="h-3.5 w-3.5" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="destructive"
+                              onClick={() => deleteMutation.mutate(plan._id)}
+                              disabled={!plan.isActive}
+                              className="h-8 w-8 rounded-lg p-0 bg-red-50 text-red-500 border border-red-100 hover:bg-red-600 hover:text-white hover:border-red-600 disabled:opacity-30 disabled:pointer-events-none shadow-2xs transition-all active:scale-95"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={7} className="h-48 text-center">
+                      <div className="flex flex-col items-center justify-center p-6 max-w-sm mx-auto">
+                        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-50 border border-dashed border-slate-200 text-slate-400 mb-3 shadow-2xs">
+                          <Layers className="h-4 w-4" />
+                        </div>
+                        <h4 className="text-xs font-bold text-slate-700">No applicant subscription tiers defined</h4>
                       </div>
-                      <h4 className="text-sm font-bold text-slate-700">No applicant subscription tiers defined</h4>
-                      <p className="text-xs text-slate-400 mt-1 max-w-sm mx-auto">
-                        Your monetization product catalog space is clean. Create configurations to allow incoming candidate tier registrations.
-                      </p>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
         </CardContent>
       </Card>
 
-      {/* Premium Product Configuration Sheet Drawer Dialog */}
+      {/* Product Drawer Configuration Dialog Sheets */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-lg border-slate-100 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl p-6 sm:p-8 animate-in fade-in zoom-in-95 duration-200 max-h-[92vh] overflow-y-auto custom-scrollbar">
-          <DialogHeader className="border-b border-slate-50 pb-4 mb-5">
-            <DialogTitle className="text-lg font-bold text-slate-800 tracking-tight flex items-center gap-2">
-              <ListPlus className="h-5 w-5 text-indigo-500" />
+        <DialogContent className="max-w-lg border-slate-200 bg-white rounded-2xl shadow-xl p-6 animate-in fade-in zoom-in-95 duration-200 font-sans max-h-[92vh] overflow-y-auto custom-scrollbar">
+          <DialogHeader className="border-b border-slate-100 pb-4 mb-4">
+            <DialogTitle className="text-base font-bold text-slate-800 tracking-tight flex items-center gap-2">
+              <ListPlus className="h-4 w-4 text-indigo-500" />
               {editPlan ? 'Modify Pricing Tier Configuration' : 'Register New Subscription Model'}
             </DialogTitle>
-            <p className="text-xs text-slate-400 font-medium mt-1">
-              Construct high-fidelity candidate feature provisioning limits and financial metrics layout lines.
-            </p>
           </DialogHeader>
           
-          <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Plan Display Descriptor Text Target Input */}
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-1.5">
               <Label className="text-xs font-bold uppercase tracking-wider text-slate-500">Plan Identifier Title</Label>
               <Input 
@@ -272,25 +276,24 @@ export default function ApplicantPlans() {
                 onChange={(e) => setForm({ ...form, name: e.target.value })} 
                 required 
                 placeholder="e.g. Executive Elite Candidate Package"
-                className="h-11 border-slate-200 rounded-xl focus:bg-white"
+                className="h-11 border-slate-200 rounded-xl font-semibold text-slate-700 focus:bg-white text-xs"
               />
             </div>
             
-            {/* Select Dropdown Pricing Framework Architecture */}
             <div className="space-y-1.5">
               <Label className="text-xs font-bold uppercase tracking-wider text-slate-500">Subscription Allocation Metric</Label>
               <Select value={form.planType} onValueChange={(value) => setForm({ ...form, planType: value })}>
-                <SelectTrigger className="h-11 rounded-xl border-slate-200 bg-slate-50/50 focus:bg-white text-sm font-medium transition-all">
+                <SelectTrigger className="h-11 rounded-xl border-slate-200 bg-slate-50/50 font-semibold text-slate-700 focus:bg-white text-xs transition-all">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="rounded-xl border-slate-100 bg-white shadow-2xl p-1.5">
-                  <SelectItem value="REQUEST_BASED" className="rounded-lg py-2.5 font-medium text-slate-600 focus:text-indigo-600 focus:bg-indigo-50/50">
+                <SelectContent className="rounded-xl border-slate-100 bg-white shadow-2xl p-1">
+                  <SelectItem value="REQUEST_BASED" className="rounded-lg py-2 font-semibold text-slate-600 focus:text-indigo-600 focus:bg-indigo-50/50 text-xs">
                     <div className="flex items-center gap-2">
                       <CreditCard className="h-4 w-4 text-purple-500" />
                       <span>Request Based Allocation (Token Bucket)</span>
                     </div>
                   </SelectItem>
-                  <SelectItem value="UNLIMITED" className="rounded-lg py-2.5 font-medium text-slate-600 focus:text-indigo-600 focus:bg-indigo-50/50">
+                  <SelectItem value="UNLIMITED" className="rounded-lg py-2 font-semibold text-slate-600 focus:text-indigo-600 focus:bg-indigo-50/50 text-xs">
                     <div className="flex items-center gap-2">
                       <Sparkles className="h-4 w-4 text-cyan-500" />
                       <span>Unlimited Access (Calendar Matrix Engine)</span>
@@ -300,7 +303,6 @@ export default function ApplicantPlans() {
               </Select>
             </div>
             
-            {/* Subscription Price Metric Block */}
             <div className="space-y-1.5">
               <Label className="text-xs font-bold uppercase tracking-wider text-slate-500">Financial Value Pricing (INR)</Label>
               <div className="relative group">
@@ -311,12 +313,11 @@ export default function ApplicantPlans() {
                   onChange={(e) => setForm({ ...form, price: e.target.value })}
                   required
                   placeholder="0 (For completely free onboarding options)"
-                  className="pl-10 h-11 border-slate-200 rounded-xl focus:bg-white text-sm font-medium"
+                  className="pl-10 h-11 border-slate-200 rounded-xl font-semibold focus:bg-white text-xs"
                 />
               </div>
             </div>
             
-            {/* Conditional Sub-input Configuration Targets */}
             {form.planType === 'REQUEST_BASED' && (
               <div className="space-y-1.5 animate-in slide-in-from-top-2 duration-200">
                 <Label className="text-xs font-bold uppercase tracking-wider text-purple-600">Total Profile Token Request Balance Allowance</Label>
@@ -326,7 +327,7 @@ export default function ApplicantPlans() {
                   onChange={(e) => setForm({ ...form, requestCount: e.target.value })}
                   required
                   placeholder="e.g. 50"
-                  className="h-11 border-purple-200 focus:border-purple-500/80 focus:ring-4 focus:ring-purple-500/10 rounded-xl bg-purple-50/10 focus:bg-white text-sm font-medium text-purple-900"
+                  className="h-11 border-purple-200 focus:border-purple-500/80 focus:ring-4 focus:ring-purple-500/10 rounded-xl bg-purple-50/10 focus:bg-white text-xs font-semibold text-purple-900"
                 />
               </div>
             )}
@@ -340,32 +341,30 @@ export default function ApplicantPlans() {
                   onChange={(e) => setForm({ ...form, durationDays: e.target.value })}
                   required
                   placeholder="e.g. 365"
-                  className="h-11 border-cyan-200 focus:border-cyan-500/80 focus:ring-4 focus:ring-cyan-500/10 rounded-xl bg-cyan-50/10 focus:bg-white text-sm font-medium text-cyan-900"
+                  className="h-11 border-cyan-200 focus:border-cyan-500/80 focus:ring-4 focus:ring-cyan-500/10 rounded-xl bg-cyan-50/10 focus:bg-white text-xs font-semibold text-cyan-900"
                 />
               </div>
             )}
             
-            {/* Product Feature Text Line Matrix Area Input */}
             <div className="space-y-1.5">
               <Label className="text-xs font-bold uppercase tracking-wider text-slate-500">Value Proposition Line Matrix (One item per row line)</Label>
               <Textarea
                 value={form.features}
                 onChange={(e) => setForm({ ...form, features: e.target.value })}
                 rows={4}
-                placeholder="View Recruiter Full Verification Profile&#10;Instant Messaging Priority Connect Channel&#10;Premium Resume Spotlight Position Layout Index"
-                className="rounded-xl border-slate-200 focus:bg-white p-4"
+                placeholder="View Recruiter Full Verification Profile&#10;Instant Messaging Priority Connect Channel"
+                className="rounded-xl border-slate-200 focus:bg-white p-3 font-semibold text-xs text-slate-700"
               />
             </div>
             
-            {/* Complete Structural Action Commit Changes Controls */}
             <Button 
               type="submit" 
               disabled={saveMutation.isPending}
-              className="w-full h-11 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold tracking-wide shadow-md shadow-indigo-500/20 hover:from-blue-500 hover:to-indigo-500 transition-all duration-200 active:scale-[0.99] disabled:opacity-50 mt-2 flex items-center justify-center gap-2"
+              className="w-full h-11 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-xs tracking-wider shadow-md shadow-indigo-500/10 hover:from-blue-500 hover:to-indigo-500 transition-all duration-200 active:scale-[0.99] disabled:opacity-50 mt-1 flex items-center justify-center gap-2"
             >
               {saveMutation.isPending ? (
                 <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
                   Synchronizing Plan Architecture...
                 </>
               ) : (

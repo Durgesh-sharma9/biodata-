@@ -20,36 +20,39 @@ import {
 import { useAuth } from '@/context/AuthContext';
 import { cn } from '@/lib/utils';
 
+// 1. School / Recruiter Links with individual colors
 const schoolLinks = [
-  { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { to: '/my-candidates', label: 'My Candidates', icon: Users },
-  { to: '/talent-pool', label: 'Talent Pool', icon: UserSearch },
-  { to: '/credits', label: 'Credits', icon: Coins },
-  { to: '/application-links', label: 'Application Links', icon: Link2 },
+  { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, color: 'text-blue-500 group-hover:text-blue-600' },
+  { to: '/my-candidates', label: 'My Candidates', icon: Users, color: 'text-purple-500 group-hover:text-purple-600' },
+  { to: '/talent-pool', label: 'Talent Pool', icon: UserSearch, color: 'text-emerald-500 group-hover:text-emerald-600' },
+  { to: '/credits', label: 'Credits', icon: Coins, color: 'text-amber-500 group-hover:text-amber-600' },
+  { to: '/application-links', label: 'Application Links', icon: Link2, color: 'text-pink-500 group-hover:text-pink-600' },
 ];
 
+// 2. Super Admin Links with individual colors
 const adminLinks = [
-  { to: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { to: '/admin/admins', label: 'Admins', icon: School },
-  { to: '/admin/plans', label: 'Plans', icon: Package },
-  { to: '/admin/credit-packages', label: 'Credit Packages', icon: CreditCard },
-  { to: '/admin/locations', label: 'Locations', icon: MapPin },
-  { to: '/admin/import', label: 'Candidate Import', icon: Upload },
-  { to: '/admin/applicant-plans', label: 'Applicant Plans', icon: CreditCard },
-  { to: '/admin/master-data', label: 'Master Data', icon: Database },
+  { to: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard, color: 'text-sky-500 group-hover:text-sky-600' },
+  { to: '/admin/admins', label: 'Admins', icon: School, color: 'text-violet-500 group-hover:text-violet-600' },
+  { to: '/admin/plans', label: 'Plans', icon: Package, color: 'text-amber-500 group-hover:text-amber-600' },
+  { to: '/admin/credit-packages', label: 'Credit Packages', icon: CreditCard, color: 'text-rose-500 group-hover:text-rose-600' },
+  { to: '/admin/locations', label: 'Locations', icon: MapPin, color: 'text-teal-500 group-hover:text-teal-600' },
+  { to: '/admin/import', label: 'Candidate Import', icon: Upload, color: 'text-indigo-500 group-hover:text-indigo-600' },
+  { to: '/admin/applicant-plans', label: 'Applicant Plans', icon: CreditCard, color: 'text-fuchsia-500 group-hover:text-fuchsia-600' },
+  { to: '/admin/master-data', label: 'Master Data', icon: Database, color: 'text-blue-600 group-hover:text-blue-700' },
 ];
 
+// 3. Applicant Links with individual colors
 const applicantLinks = [
-  { to: '/applicant/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { to: '/applicant/profile', label: 'My Profile', icon: Users },
-  { to: '/applicant/documents', label: 'Documents', icon: FileText },
-  { to: '/applicant/requests', label: 'Received Requests', icon: Inbox },
-  { to: '/applicant/plan', label: 'Active Plan', icon: CreditCard },
-  { to: '/applicant/notifications', label: 'Notifications', icon: Bell },
+  { to: '/applicant/dashboard', label: 'Dashboard', icon: LayoutDashboard, color: 'text-blue-500 group-hover:text-blue-600' },
+  { to: '/applicant/profile', label: 'My Profile', icon: Users, color: 'text-purple-500 group-hover:text-purple-600' },
+  { to: '/applicant/documents', label: 'Documents', icon: FileText, color: 'text-emerald-500 group-hover:text-emerald-600' },
+  { to: '/applicant/requests', label: 'Received Requests', icon: Inbox, color: 'text-amber-500 group-hover:text-amber-600' },
+  { to: '/applicant/plan', label: 'Active Plan', icon: CreditCard, color: 'text-pink-500 group-hover:text-pink-600' },
+  { to: '/applicant/notifications', label: 'Notifications', icon: Bell, color: 'text-indigo-500 group-hover:text-indigo-600' },
 ];
 
 export function Sidebar() {
-  const { user, school, logout, isSuperAdmin, isApplicant } = useAuth();
+  const { user, logout, isSuperAdmin, isApplicant } = useAuth();
   const links = isSuperAdmin ? adminLinks : isApplicant ? applicantLinks : schoolLinks;
 
   // Determine role pill label text
@@ -72,27 +75,11 @@ export function Sidebar() {
             </span>
           </div>
         </div>
-
-        {/* Dynamic Context Metadata Card */}
-        <div className="mt-1 rounded-xl bg-slate-50/60 border border-slate-100 p-3 shadow-inner/5">
-          <p className="truncate text-xs font-bold text-slate-700 leading-none">
-            {isSuperAdmin ? 'Platform Management' : isApplicant ? 'Candidate Hub' : school?.schoolName || 'Recruitment Panel'}
-          </p>
-          
-          {!isSuperAdmin && !isApplicant && school?.credits != null && (
-            <div className="mt-2 flex items-center gap-1.5 border-t border-slate-200/40 pt-2 animate-in fade-in duration-300">
-              <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <p className="text-xs font-semibold text-slate-500">
-                Credits Remaining: <span className="font-extrabold text-slate-800">{school.credits}</span>
-              </p>
-            </div>
-          )}
-        </div>
       </div>
 
       {/* Primary Context Links Grid */}
       <nav className="flex-1 space-y-1 p-4 overflow-y-auto custom-scrollbar">
-        {links.map(({ to, label, icon: Icon }) => (
+        {links.map(({ to, label, icon: Icon, color }) => (
           <NavLink
             key={to}
             to={to}
@@ -101,7 +88,7 @@ export function Sidebar() {
                 'flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-semibold tracking-wide transition-all duration-200 select-none group relative active:scale-[0.98]',
                 isActive 
                   ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-indigo-600/10' 
-                  : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'
+                  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
               )
             }
           >
@@ -109,7 +96,7 @@ export function Sidebar() {
               <>
                 <Icon className={cn(
                   "h-4 w-4 transition-transform duration-200 group-hover:scale-110", 
-                  isActive ? "text-white" : "text-slate-400 group-hover:text-indigo-600"
+                  isActive ? "text-white" : color
                 )} />
                 <span>{label}</span>
                 {isActive && (
