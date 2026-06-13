@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { registerApplicant } from '@/lib/api';
+import { signupApplicant } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -9,10 +9,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 export default function ApplicantSignup() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
-    name: '',
+    fullName: '',
+    mobile: '',
     email: '',
     password: '',
-    mobile: '',
+    confirmPassword: '',
     profileSharingConsent: false,
     contactConsent: false,
   });
@@ -24,7 +25,7 @@ export default function ApplicantSignup() {
     setError('');
     setLoading(true);
     try {
-      const res = await registerApplicant(form);
+      const res = await signupApplicant(form);
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('user', JSON.stringify(res.data.user));
       navigate('/applicant/dashboard');
@@ -40,31 +41,36 @@ export default function ApplicantSignup() {
     <div className="flex min-h-screen items-center justify-center bg-muted/30 p-6">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle>Self Applicant Signup</CardTitle>
+          <CardTitle>Applicant Signup</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <Label>Name</Label>
-              <Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
+              <Label>Full Name</Label>
+              <Input value={form.fullName} onChange={(e) => setForm({ ...form, fullName: e.target.value })} required />
+            </div>
+            <div>
+              <Label>Mobile Number</Label>
+              <Input value={form.mobile} onChange={(e) => setForm({ ...form, mobile: e.target.value })} required />
             </div>
             <div>
               <Label>Email</Label>
               <Input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
             </div>
             <div>
-              <Label>Mobile (optional — link existing profile)</Label>
-              <Input value={form.mobile} onChange={(e) => setForm({ ...form, mobile: e.target.value })} />
-            </div>
-            <div>
               <Label>Password</Label>
               <Input type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required />
+            </div>
+            <div>
+              <Label>Confirm Password</Label>
+              <Input type="password" value={form.confirmPassword} onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })} required />
             </div>
             <label className="flex items-start gap-2 text-sm">
               <input
                 type="checkbox"
                 checked={form.profileSharingConsent}
                 onChange={(e) => setForm({ ...form, profileSharingConsent: e.target.checked })}
+                required
               />
               I agree that my profile may be shared with verified schools on this recruitment platform.
             </label>
@@ -73,6 +79,7 @@ export default function ApplicantSignup() {
                 type="checkbox"
                 checked={form.contactConsent}
                 onChange={(e) => setForm({ ...form, contactConsent: e.target.checked })}
+                required
               />
               I agree to be contacted regarding relevant job opportunities.
             </label>

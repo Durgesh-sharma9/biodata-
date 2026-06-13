@@ -196,6 +196,7 @@ export function CandidateList({
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead>Photo</TableHead>
                     <TableHead className="cursor-pointer" onClick={() => handleSort('fullName')}>
                       Name
                     </TableHead>
@@ -220,13 +221,26 @@ export function CandidateList({
                 <TableBody>
                   {data?.data?.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={9} className="text-center text-muted-foreground">
+                      <TableCell colSpan={10} className="text-center text-muted-foreground">
                         No candidates found
                       </TableCell>
                     </TableRow>
                   ) : (
                     data?.data?.map((c) => (
                       <TableRow key={c._id}>
+                        <TableCell>
+                          {c.profilePhoto ? (
+                            <img
+                              src={c.profilePhoto}
+                              alt={c.fullName}
+                              className="h-10 w-10 rounded-full object-cover border"
+                            />
+                          ) : (
+                            <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center text-muted-foreground text-xs">
+                              {c.fullName?.charAt(0)?.toUpperCase() || '?'}
+                            </div>
+                          )}
+                        </TableCell>
                         <TableCell className="font-medium">
                           {c.fullName}
                           {c.isLocked && <Badge variant="outline" className="ml-2 text-xs">Locked</Badge>}

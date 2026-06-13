@@ -175,16 +175,27 @@ export default function Landing() {
             </div>
 
             {/* CTA Actions */}
-            <div className="hidden md:flex items-center space-x-4">
+            <div className="hidden md:flex items-center space-x-3">
+              <Link to="/applicant/login">
+                <Button variant="ghost" className="text-slate-700 hover:text-indigo-600 hover:bg-indigo-50 px-3 py-2 text-sm font-bold transition-all">
+                  Applicant Login
+                </Button>
+              </Link>
+              <Link to="/applicant/signup">
+                <Button variant="ghost" className="text-slate-700 hover:text-indigo-600 hover:bg-indigo-50 px-3 py-2 text-sm font-bold transition-all">
+                  Applicant Signup
+                </Button>
+              </Link>
+              <div className="w-px h-6 bg-slate-200" />
               <Link to="/login">
                 <Button variant="ghost" className="text-slate-700 hover:text-indigo-600 hover:bg-indigo-50 px-4 py-2 text-sm font-bold transition-all">
-                  Login
+                  School Login
                 </Button>
               </Link>
               <Link to="/signup">
                 <Button className="relative group overflow-hidden bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white font-bold text-sm px-6 py-2.5 rounded-xl shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30 transition-all duration-300 hover:-translate-y-0.5">
                   <span className="relative z-10 flex items-center gap-1.5">
-                    Free Trial <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    School Signup <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </span>
                 </Button>
               </Link>
@@ -217,11 +228,18 @@ export default function Landing() {
               </a>
             ))}
             <div className="pt-4 border-t border-slate-100 flex flex-col gap-3">
+              <Link to="/applicant/login" className="w-full">
+                <Button variant="outline" className="w-full py-2.5 text-slate-700 border-slate-200 font-bold">Applicant Login</Button>
+              </Link>
+              <Link to="/applicant/signup" className="w-full">
+                <Button variant="outline" className="w-full py-2.5 text-slate-700 border-slate-200 font-bold">Applicant Signup</Button>
+              </Link>
+              <div className="w-full h-px bg-slate-200" />
               <Link to="/login" className="w-full">
-                <Button variant="outline" className="w-full py-2.5 text-slate-700 border-slate-200 font-bold">Login</Button>
+                <Button variant="outline" className="w-full py-2.5 text-slate-700 border-slate-200 font-bold">School Login</Button>
               </Link>
               <Link to="/signup" className="w-full">
-                <Button className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-2.5 font-bold">Free Trial</Button>
+                <Button className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-2.5 font-bold">School Signup</Button>
               </Link>
             </div>
           </div>

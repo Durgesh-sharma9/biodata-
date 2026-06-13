@@ -39,8 +39,11 @@ const candidateSchema = new mongoose.Schema(
     fullName: { type: String, required: true, trim: true },
     mobile: { type: String, required: true, trim: true },
     email: { type: String, trim: true, lowercase: true },
+    gender: { type: String, trim: true },
+    dob: { type: Date },
     address: { type: String, trim: true },
     position: { type: String, required: true, trim: true },
+    profilePhoto: { type: String, trim: true },
     qualifications: [{ type: String, trim: true }],
     subjects: [{ type: String, trim: true }],
     classesCanTeach: [{ type: String, trim: true }],
@@ -56,6 +59,49 @@ const candidateSchema = new mongoose.Schema(
     notes: { type: String, trim: true },
     documents: [documentSchema],
     isDeleted: { type: Boolean, default: false, index: true },
+    // Teacher-specific fields
+    medium: { type: String, trim: true },
+    boardExperience: [{ type: String, trim: true }],
+    bEd: { type: Boolean, default: false },
+    mEd: { type: Boolean, default: false },
+    // Driver-specific fields
+    lightVehicle: { type: Boolean, default: false },
+    heavyVehicle: { type: Boolean, default: false },
+    schoolBusExperience: { type: Boolean, default: false },
+    drivingExperience: { type: Number, default: 0 },
+    // Accountant-specific fields
+    tallyKnowledge: { type: Boolean, default: false },
+    gstKnowledge: { type: Boolean, default: false },
+    payrollExperience: { type: Boolean, default: false },
+    schoolAccountingExperience: { type: Boolean, default: false },
+    erpExperience: { type: Boolean, default: false },
+    // Receptionist-specific fields
+    languagesKnown: [{ type: String, trim: true }],
+    computerSkills: { type: Boolean, default: false },
+    frontDeskExperience: { type: Boolean, default: false },
+    communicationSkills: { type: Boolean, default: false },
+    // Clerk-specific fields
+    typingSpeed: { type: String, trim: true },
+    msOfficeKnowledge: { type: Boolean, default: false },
+    excelKnowledge: { type: Boolean, default: false },
+    schoolOfficeExperience: { type: Boolean, default: false },
+    // Librarian-specific fields
+    libraryManagementExperience: { type: Boolean, default: false },
+    librarySoftwareKnowledge: { type: Boolean, default: false },
+    // Lab Assistant-specific fields
+    labType: { type: String, trim: true },
+    labExperience: { type: Boolean, default: false },
+    // Sports Coach-specific fields
+    sportsSpecialization: { type: String, trim: true },
+    coachingCertificates: [{ type: String, trim: true }],
+    coachingExperience: { type: Number, default: 0 },
+    // Security Guard-specific fields
+    securityExperience: { type: Boolean, default: false },
+    exArmy: { type: Boolean, default: false },
+    nightShiftAvailable: { type: Boolean, default: false },
+    // Cleaner-specific fields
+    cleaningExperience: { type: Boolean, default: false },
+    schoolExperience: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

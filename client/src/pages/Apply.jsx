@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { getSchoolBySlug, submitApplication, uploadPublicFiles } from '@/lib/api';
-import { CandidateApplicationForm } from '@/components/common/CandidateApplicationForm';
-import { DEFAULT_QUALIFICATIONS, DEFAULT_SUBJECTS, DEFAULT_CLASSES } from '@/config/defaults';
+import { getSchoolBySlug, submitApplication, uploadPublicFiles, getSettings } from '@/lib/api';
+import { DynamicCandidateForm } from '@/components/forms/DynamicCandidateForm';
+import { APPLICATION_POSITIONS } from '@/config/positionForms';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function Apply() {
@@ -13,6 +13,11 @@ export default function Apply() {
   const { data: school, isLoading, error } = useQuery({
     queryKey: ['apply-school', slug],
     queryFn: () => getSchoolBySlug(slug).then((r) => r.data.data),
+  });
+
+  const { data: settings } = useQuery({
+    queryKey: ['settings'],
+    queryFn: () => getSettings().then((r) => r.data.data),
   });
 
   const submitMutation = useMutation({
@@ -47,15 +52,14 @@ export default function Apply() {
             </p>
           </CardHeader>
           <CardContent>
-            <CandidateApplicationForm
+            <DynamicCandidateForm
               onSubmit={(data) => submitMutation.mutate(data)}
-              isSubmitting={submitMutation.isPending}
-              uploadFiles={uploadPublicFiles}
-              qualificationOptions={DEFAULT_QUALIFICATIONS}
-              subjectOptions={DEFAULT_SUBJECTS}
-              classOptions={DEFAULT_CLASSES}
-              requireConsent
-              submitLabel="Submit Application"
+              settings={settings}
+              positions={APPLICATION_POSITIONS}
+              isLoading={submitMutation.isPending}
+              submitButtonText="Submit Application"
+              showConsent
+              uploadFilesFn={uploadPublicFiles}
             />
           </CardContent>
         </Card>

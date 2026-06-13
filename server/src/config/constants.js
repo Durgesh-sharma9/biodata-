@@ -87,7 +87,7 @@ export const SUBSCRIPTION_STATUSES = ['active', 'expired', 'trial', 'cancelled']
 
 export const CANDIDATE_SOURCES = ['ADMIN', 'SCHOOL_LINK', 'SELF_APPLICANT', 'SUPER_ADMIN_IMPORT'];
 
-export const USER_ROLES = ['super_admin', 'school_admin', 'self_applicant'];
+export const USER_ROLES = ['super_admin', 'school_admin', 'self_applicant', 'applicant'];
 
 export const DOCUMENT_TYPES = ['photo', 'resume', 'certificate', 'experience_letter', 'other'];
 

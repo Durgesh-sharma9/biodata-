@@ -108,6 +108,8 @@ export const submitPublicApplication = (data) => api.post('/applicant/apply', da
 
 // Applicant
 export const registerApplicant = (data) => api.post('/applicant/register', data);
+export const signupApplicant = (data) => api.post('/applicant/signup', data);
+export const loginApplicant = (data) => api.post('/applicant/login', data);
 export const getApplicantProfile = () => api.get('/applicant/profile');
 export const updateApplicantProfile = (data) => api.put('/applicant/profile', data);
 export const getApplicantDashboard = () => api.get('/applicant/dashboard');

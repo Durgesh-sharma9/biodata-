@@ -4,6 +4,8 @@ import {
   getApplicantProfile,
   updateApplicantProfile,
   submitPublicApplication,
+  signupApplicant,
+  loginApplicant,
 } from '../controllers/applicantController.js';
 import {
   getApplicantSubscription,
@@ -19,14 +21,16 @@ const router = Router();
 
 router.post('/apply', submitPublicApplication);
 router.post('/register', registerApplicant);
+router.post('/signup', signupApplicant);
+router.post('/login', loginApplicant);
 
-router.get('/dashboard', protect, authorize('self_applicant'), getApplicantDashboard);
-router.get('/profile', protect, authorize('self_applicant'), getApplicantProfile);
-router.put('/profile', protect, authorize('self_applicant'), updateApplicantProfile);
-router.get('/requests', protect, authorize('self_applicant'), getReceivedRequests);
-router.get('/requests/:requestId/school', protect, authorize('self_applicant'), getRequestSchoolDetails);
-router.get('/subscription', protect, authorize('self_applicant'), getApplicantSubscription);
-router.get('/subscription/history', protect, authorize('self_applicant'), getApplicantSubscriptionHistory);
-router.post('/subscription/purchase', protect, authorize('self_applicant'), purchaseApplicantPlan);
+router.get('/dashboard', protect, authorize('self_applicant', 'applicant'), getApplicantDashboard);
+router.get('/profile', protect, authorize('self_applicant', 'applicant'), getApplicantProfile);
+router.put('/profile', protect, authorize('self_applicant', 'applicant'), updateApplicantProfile);
+router.get('/requests', protect, authorize('self_applicant', 'applicant'), getReceivedRequests);
+router.get('/requests/:requestId/school', protect, authorize('self_applicant', 'applicant'), getRequestSchoolDetails);
+router.get('/subscription', protect, authorize('self_applicant', 'applicant'), getApplicantSubscription);
+router.get('/subscription/history', protect, authorize('self_applicant', 'applicant'), getApplicantSubscriptionHistory);
+router.post('/subscription/purchase', protect, authorize('self_applicant', 'applicant'), purchaseApplicantPlan);
 
 export default router;

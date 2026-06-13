@@ -35,7 +35,7 @@ export const protect = async (req, res, next) => {
       req.school = school;
     }
 
-    if (user.role === 'self_applicant') {
+    if (user.role === 'self_applicant' || user.role === 'applicant') {
       req.applicantUserId = user._id;
       req.candidateId = user.candidateId;
     }

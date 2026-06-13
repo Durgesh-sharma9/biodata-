@@ -15,3 +15,4 @@ router.get('/school/:slug', getSchoolBySlug);
 router.post('/submit/:slug', submitApplication);
 
 export default router;
+

@@ -220,3 +220,75 @@ export const updateApplicantProfile = catchAsync(async (req, res) => {
 
   res.json({ success: true, data: candidate });
 });
+
+export const signupApplicant = catchAsync(async (req, res) => {
+  const { fullName, mobile, email, password, confirmPassword, profileSharingConsent, contactConsent } = req.body;
+
+  if (!fullName || !mobile || !email || !password || !confirmPassword) {
+    throw new ApiError(400, 'All fields are required');
+  }
+
+  if (password !== confirmPassword) {
+    throw new ApiError(400, 'Passwords do not match');
+  }
+
+  if (!profileSharingConsent || !contactConsent) {
+    throw new ApiError(400, 'Both consent checkboxes must be accepted');
+  }
+
+  const existingEmail = await User.findOne({ email: email.toLowerCase() });
+  if (existingEmail) throw new ApiError(400, 'Email already registered');
+
+  const existingMobile = await Candidate.findOne({ mobile: mobile.trim(), isDeleted: false });
+  if (existingMobile) throw new ApiError(400, 'Mobile number already registered');
+
+  const candidate = await Candidate.create({
+    fullName,
+    mobile: mobile.trim(),
+    email: email.toLowerCase(),
+    source: 'SELF_APPLICANT',
+    profileSharingConsent: true,
+    contactConsent: true,
+    position: 'Pending',
+  });
+
+  const user = await User.create({
+    name: fullName,
+    email: email.toLowerCase(),
+    password,
+    role: 'applicant',
+    candidateId: candidate._id,
+  });
+
+  candidate.applicantUserId = user._id;
+  await candidate.save();
+
+  const token = generateToken(user._id);
+
+  res.status(201).json({
+    success: true,
+    token,
+    user: formatUser(user),
+  });
+});
+
+export const loginApplicant = catchAsync(async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    throw new ApiError(400, 'Email and password are required');
+  }
+
+  const user = await User.findOne({ email: email.toLowerCase(), role: 'applicant' }).select('+password');
+  if (!user || !(await user.comparePassword(password))) {
+    throw new ApiError(401, 'Invalid email or password');
+  }
+
+  const token = generateToken(user._id);
+
+  res.json({
+    success: true,
+    token,
+    user: formatUser(user),
+  });
+});

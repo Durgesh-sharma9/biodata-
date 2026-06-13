@@ -135,8 +135,23 @@ export default function CandidateProfile() {
             <CardTitle>Basic Details</CardTitle>
           </CardHeader>
           <CardContent>
+            <div className="mb-4 flex justify-center">
+              {candidate.profilePhoto ? (
+                <img
+                  src={candidate.profilePhoto}
+                  alt={candidate.fullName}
+                  className="h-32 w-32 rounded-full object-cover border"
+                />
+              ) : (
+                <div className="h-32 w-32 rounded-full bg-muted flex items-center justify-center text-muted-foreground text-4xl">
+                  {candidate.fullName?.charAt(0)?.toUpperCase() || '?'}
+                </div>
+              )}
+            </div>
             <dl>
               <DetailRow label="Full Name" value={candidate.fullName} />
+              {candidate.gender && <DetailRow label="Gender" value={candidate.gender} />}
+              {candidate.dob && <DetailRow label="Date of Birth" value={new Date(candidate.dob).toLocaleDateString()} />}
               {!isContactHidden && <DetailRow label="Mobile" value={candidate.mobile} />}
               {!isContactHidden && <DetailRow label="Email" value={candidate.email} />}
               {!isContactHidden && <DetailRow label="Address" value={candidate.address} />}

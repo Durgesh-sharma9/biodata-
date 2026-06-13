@@ -1,12 +1,17 @@
 import { useState } from 'react';
-import { useMutation } from '@tanstack/react-query';
-import { submitPublicApplication, uploadPublicFiles } from '@/lib/api';
-import { CandidateApplicationForm } from '@/components/common/CandidateApplicationForm';
-import { DEFAULT_QUALIFICATIONS, DEFAULT_SUBJECTS, DEFAULT_CLASSES } from '@/config/defaults';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { submitPublicApplication, uploadPublicFiles, getSettings } from '@/lib/api';
+import { DynamicCandidateForm } from '@/components/forms/DynamicCandidateForm';
+import { APPLICATION_POSITIONS } from '@/config/positionForms';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function SelfApply() {
   const [submitted, setSubmitted] = useState(false);
+
+  const { data: settings } = useQuery({
+    queryKey: ['settings'],
+    queryFn: () => getSettings().then((r) => r.data.data),
+  });
 
   const submitMutation = useMutation({
     mutationFn: submitPublicApplication,
@@ -39,15 +44,14 @@ export default function SelfApply() {
             </p>
           </CardHeader>
           <CardContent>
-            <CandidateApplicationForm
+            <DynamicCandidateForm
               onSubmit={(data) => submitMutation.mutate(data)}
-              isSubmitting={submitMutation.isPending}
-              uploadFiles={uploadPublicFiles}
-              qualificationOptions={DEFAULT_QUALIFICATIONS}
-              subjectOptions={DEFAULT_SUBJECTS}
-              classOptions={DEFAULT_CLASSES}
-              requireConsent
-              submitLabel="Submit Application"
+              settings={settings}
+              positions={APPLICATION_POSITIONS}
+              isLoading={submitMutation.isPending}
+              submitButtonText="Submit Application"
+              showConsent
+              uploadFilesFn={uploadPublicFiles}
             />
           </CardContent>
         </Card>

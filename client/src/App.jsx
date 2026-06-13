@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
 import { ProtectedRoute } from '@/components/layout/ProtectedRoute';
 import { AppLayout } from '@/components/layout/AppLayout';
+import { ApplicantLayout } from '@/components/layout/ApplicantLayout';
 import Landing from '@/pages/Landing';
 import Features from '@/pages/Features';
 import Pricing from '@/pages/Pricing';
@@ -42,7 +43,7 @@ const queryClient = new QueryClient({
 
 function getDefaultRoute(role) {
   if (role === 'super_admin') return '/admin/dashboard';
-  if (role === 'self_applicant') return '/applicant/dashboard';
+  if (role === 'self_applicant' || role === 'applicant') return '/applicant/dashboard';
   return '/dashboard';
 }
 
@@ -110,8 +111,8 @@ export default function App() {
 
             <Route
               element={
-                <ProtectedRoute role="self_applicant">
-                  <AppLayout />
+                <ProtectedRoute role={['self_applicant', 'applicant']}>
+                  <ApplicantLayout />
                 </ProtectedRoute>
               }
             >
