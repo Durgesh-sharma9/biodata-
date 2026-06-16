@@ -94,7 +94,7 @@ export default function Landing() {
         Defined here for context, ensure these are in your actual CSS file 
         (e.g., globals.css or index.css)
       */}
-      <style jsx global>{`
+      <style>{`
         html { scroll-behavior: smooth; scroll-padding-top: 80px; } /* Ensures accurate scrolling on direct link access */
         
         /* Reveal Animations */

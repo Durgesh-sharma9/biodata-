@@ -22,6 +22,7 @@ const buildCandidatePayload = async (body) => {
     localityId,
     profileSharingConsent,
     contactConsent,
+    profilePhoto,
   } = body;
 
   if (!fullName || !mobile || !position) {
@@ -50,6 +51,7 @@ const buildCandidatePayload = async (body) => {
     experienceYears: experienceYears || 0,
     expectedSalary,
     documents: documents || [],
+    profilePhoto,
     profileSharingConsent: true,
     contactConsent: true,
     state: locationFields.state,
@@ -177,6 +179,7 @@ export const updateApplicantProfile = catchAsync(async (req, res) => {
     localityId,
     profileSharingConsent,
     contactConsent,
+    profilePhoto,
   } = req.body;
 
   if (!profileSharingConsent || !contactConsent) {
@@ -207,6 +210,7 @@ export const updateApplicantProfile = catchAsync(async (req, res) => {
     experienceYears: experienceYears || 0,
     expectedSalary,
     documents: documents || candidate.documents,
+    profilePhoto,
     profileSharingConsent: true,
     contactConsent: true,
   });

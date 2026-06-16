@@ -15,8 +15,10 @@ import { PageHeader } from '@/components/common/PageHeader';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
+  DialogBody,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
@@ -113,25 +115,23 @@ export default function CandidateForm() {
 
       {/* Polish Premium Collision Detection / Conflict Resolution Modal */}
       <Dialog open={!!duplicate} onOpenChange={() => setDuplicate(null)}>
-        <DialogContent className="sm:max-w-[480px] rounded-2xl border border-slate-200/60 shadow-xl overflow-hidden p-0 bg-background">
+        <DialogContent className="sm:max-w-[480px]">
           {/* Warning state indicator line banner */}
           <div className="h-1.5 w-full bg-gradient-to-r from-amber-500 via-orange-500 to-red-500" />
-          
-          <div className="p-6 space-y-6">
-            <DialogHeader className="space-y-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 shadow-3xs">
-                <ShieldAlert className="h-5 w-5 stroke-[2.2]" />
-              </div>
-              <div className="space-y-1">
-                <DialogTitle className="text-xl font-black tracking-tight text-slate-900 dark:text-white">
-                  Duplicate Index Checked
-                </DialogTitle>
-                <DialogDescription className="text-xs font-medium text-muted-foreground/90 leading-relaxed">
-                  A unique constraint collision has occurred. A candidate with mobile number <code className="bg-amber-500/10 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 px-1.5 py-0.5 rounded font-mono font-bold text-[11px]">{duplicate?.mobile}</code> already maps to a live entity record.
-                </DialogDescription>
-              </div>
-            </DialogHeader>
-
+          <DialogHeader className="space-y-3">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 shadow-3xs">
+              <ShieldAlert className="h-5 w-5 stroke-[2.2]" />
+            </div>
+            <div className="space-y-1">
+              <DialogTitle className="text-xl font-black tracking-tight text-slate-900 dark:text-white">
+                Duplicate Index Checked
+              </DialogTitle>
+              <DialogDescription className="text-xs font-medium text-muted-foreground/90 leading-relaxed">
+                A unique constraint collision has occurred. A candidate with mobile number <code className="bg-amber-500/10 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 px-1.5 py-0.5 rounded font-mono font-bold text-[11px]">{duplicate?.mobile}</code> already maps to a live entity record.
+              </DialogDescription>
+            </div>
+          </DialogHeader>
+          <DialogBody>
             {/* Entity Snapshot Alert Card Box */}
             <div className="rounded-xl border border-amber-200/50 bg-amber-500/[0.02] p-4 flex items-center justify-between gap-4">
               <div className="space-y-0.5 min-w-0">
@@ -142,38 +142,36 @@ export default function CandidateForm() {
                 Conflict Found
               </div>
             </div>
+          </DialogBody>
+          <DialogFooter className="flex flex-col sm:flex-row gap-2 pt-1 sm:justify-end">
+            <Button
+              variant="outline"
+              onClick={() => navigate(`/candidates/${duplicate?._id}`)}
+              className="rounded-xl h-10 text-xs font-bold border-slate-200 hover:bg-slate-50 gap-2 transition-all w-full sm:w-auto"
+            >
+              <Eye className="h-3.5 w-3.5 text-slate-500" />
+              <span>View Existing</span>
+            </Button>
 
-            {/* Advanced Responsive Form Actions Row Layout */}
-            <div className="flex flex-col sm:flex-row gap-2 pt-1 sm:justify-end">
-              <Button 
-                variant="outline" 
-                onClick={() => navigate(`/candidates/${duplicate?._id}`)}
-                className="rounded-xl h-10 text-xs font-bold border-slate-200 hover:bg-slate-50 gap-2 transition-all w-full sm:w-auto"
+            <Button
+              variant="outline"
+              onClick={() => navigate(`/candidates/${duplicate?._id}/edit`)}
+              className="rounded-xl h-10 text-xs font-bold border-slate-200 hover:bg-slate-50 gap-2 transition-all w-full sm:w-auto"
+            >
+              <FileEdit className="h-3.5 w-3.5 text-slate-500" />
+              <span>Update Record</span>
+            </Button>
+
+            {!isEdit && (
+              <Button
+                onClick={() => handleForceCreate(duplicate)}
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs rounded-xl h-10 gap-2 shadow-sm transition-all w-full sm:w-auto"
               >
-                <Eye className="h-3.5 w-3.5 text-slate-500" />
-                <span>View Existing</span>
+                <UserPlus className="h-3.5 w-3.5 stroke-[2.2]" />
+                <span>Create Anyway</span>
               </Button>
-              
-              <Button 
-                variant="outline" 
-                onClick={() => navigate(`/candidates/${duplicate?._id}/edit`)}
-                className="rounded-xl h-10 text-xs font-bold border-slate-200 hover:bg-slate-50 gap-2 transition-all w-full sm:w-auto"
-              >
-                <FileEdit className="h-3.5 w-3.5 text-slate-500" />
-                <span>Update Record</span>
-              </Button>
-              
-              {!isEdit && (
-                <Button 
-                  onClick={() => handleForceCreate(duplicate)}
-                  className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs rounded-xl h-10 gap-2 shadow-sm transition-all w-full sm:w-auto"
-                >
-                  <UserPlus className="h-3.5 w-3.5 stroke-[2.2]" />
-                  <span>Create Anyway</span>
-                </Button>
-              )}
-            </div>
-          </div>
+            )}
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

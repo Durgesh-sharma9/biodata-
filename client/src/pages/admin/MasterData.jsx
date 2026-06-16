@@ -28,8 +28,10 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
   Dialog,
+  DialogBody,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -244,17 +246,17 @@ function MasterDataTable({ tab }) {
 
       {/* Polish Premium Confirmation Dialog Form Box */}
       <Dialog open={!!editItem} onOpenChange={() => setEditItem(null)}>
-        <DialogContent className="sm:max-w-[425px] rounded-2xl border border-muted/60 shadow-xl overflow-hidden p-0">
+        <DialogContent className="sm:max-w-[425px]">
           <div className={`h-1.5 w-full bg-gradient-to-r ${tab.gradient}`} />
-          <div className="p-6 pt-5 space-y-5">
-            <DialogHeader>
-              <DialogTitle className="text-xl font-bold tracking-tight bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-transparent">
-                Update Row Entry
-              </DialogTitle>
-              <DialogDescription className="text-xs mt-1">
-                Refine parameters for global selection tags inside the infrastructure.
-              </DialogDescription>
-            </DialogHeader>
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold tracking-tight bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-transparent">
+              Update Row Entry
+            </DialogTitle>
+            <DialogDescription className="text-xs mt-1">
+              Refine parameters for global selection tags inside the infrastructure.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogBody>
             <div className="space-y-2">
               <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                 Item Identity Title Name
@@ -267,23 +269,23 @@ function MasterDataTable({ tab }) {
                 onKeyDown={(e) => e.key === 'Enter' && handleUpdate()}
               />
             </div>
-            <div className="flex gap-2 pt-2">
-              <Button 
-                variant="outline" 
-                onClick={() => setEditItem(null)}
-                className="w-full rounded-xl h-11 font-medium transition-all"
-              >
-                Cancel
-              </Button>
-              <Button 
-                onClick={handleUpdate} 
-                disabled={updateMutation.isPending || !editItem?.name?.trim()} 
-                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium rounded-xl h-11 shadow-sm transition-all"
-              >
-                {updateMutation.isPending ? 'Saving...' : 'Apply Overrides'}
-              </Button>
-            </div>
-          </div>
+          </DialogBody>
+          <DialogFooter className="flex gap-2 pt-2">
+            <Button
+              variant="outline"
+              onClick={() => setEditItem(null)}
+              className="w-full rounded-xl h-11 font-medium transition-all"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleUpdate}
+              disabled={updateMutation.isPending || !editItem?.name?.trim()}
+              className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium rounded-xl h-11 shadow-sm transition-all"
+            >
+              {updateMutation.isPending ? 'Saving...' : 'Apply Overrides'}
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

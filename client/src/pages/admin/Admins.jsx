@@ -7,7 +7,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogBody, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
@@ -237,56 +237,65 @@ export default function Admins() {
 
       {/* Resource Allocation Action Modal Panel Window */}
       <Dialog open={!!assignDialog} onOpenChange={() => setAssignDialog(null)}>
-        <DialogContent className="max-w-md border-slate-200 bg-white rounded-2xl shadow-xl p-6 animate-in fade-in zoom-in-95 duration-200 font-sans">
-          <DialogHeader className="border-b border-slate-100 pb-4 mb-4">
+        <DialogContent className="max-w-md">
+          <DialogHeader>
             <DialogTitle className="text-base font-bold text-slate-800 tracking-tight flex items-center gap-2">
               <Layers className="h-4 w-4 text-indigo-500" />
               Resource Distribution
             </DialogTitle>
-            <p className="text-xs text-slate-500 font-semibold mt-1">
+            <DialogDescription className="text-xs text-slate-500 font-semibold mt-1">
               Modifying workspace access parameters for <span className="font-extrabold text-indigo-600">{assignDialog?.schoolName}</span>
-            </p>
+            </DialogDescription>
           </DialogHeader>
-          
-          <div className="space-y-4">
-            <div className="space-y-1.5">
-              <Label className="text-xs font-bold uppercase tracking-wider text-slate-500">Subscription Tier</Label>
-              <Select value={planId} onValueChange={setPlanId}>
-                <SelectTrigger className="h-11 rounded-xl border-slate-200 bg-slate-50/50 font-semibold text-slate-700 focus:bg-white text-xs transition-all">
-                  <SelectValue placeholder="Retain current tier or select package" />
-                </SelectTrigger>
-                <SelectContent className="rounded-xl border-slate-100 bg-white shadow-2xl p-1">
-                  {plans.map((p) => (
-                    <SelectItem 
-                      key={p._id} 
-                      value={p._id}
-                      className="rounded-lg py-2 text-slate-600 focus:bg-gradient-to-r focus:from-indigo-50 focus:to-blue-50 focus:text-indigo-600 font-semibold text-xs"
-                    >
-                      {p.name} — <span className="text-indigo-600 font-bold">{p.credits} cr</span> / <span className="text-slate-400 font-normal">{p.durationDays} days</span>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div className="space-y-1.5">
-              <Label className="text-xs font-bold uppercase tracking-wider text-slate-500">Action Topup Credits</Label>
-              <div className="relative group">
-                <Coins className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
-                <Input
-                  type="number"
-                  placeholder="Enter manual credit quantity (e.g. 500)"
-                  className="pl-10 h-11 bg-slate-50/50 border-slate-200 rounded-xl font-semibold focus:bg-white text-xs"
-                  value={extraCredits}
-                  onChange={(e) => setExtraCredits(e.target.value)}
-                />
+          <DialogBody>
+            <div className="space-y-4">
+              <div className="space-y-1.5">
+                <Label className="text-xs font-bold uppercase tracking-wider text-slate-500">Subscription Tier</Label>
+                <Select value={planId} onValueChange={setPlanId}>
+                  <SelectTrigger className="h-11 rounded-xl border-slate-200 bg-slate-50/50 font-semibold text-slate-700 focus:bg-white text-xs transition-all">
+                    <SelectValue placeholder="Retain current tier or select package" />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl border-slate-100 bg-white shadow-2xl p-1">
+                    {plans.map((p) => (
+                      <SelectItem
+                        key={p._id}
+                        value={p._id}
+                        className="rounded-lg py-2 text-slate-600 focus:bg-gradient-to-r focus:from-indigo-50 focus:to-blue-50 focus:text-indigo-600 font-semibold text-xs"
+                      >
+                        {p.name} — <span className="text-indigo-600 font-bold">{p.credits} cr</span> / <span className="text-slate-400 font-normal">{p.durationDays} days</span>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-1.5">
+                <Label className="text-xs font-bold uppercase tracking-wider text-slate-500">Action Topup Credits</Label>
+                <div className="relative group">
+                  <Coins className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
+                  <Input
+                    type="number"
+                    placeholder="Enter manual credit quantity (e.g. 500)"
+                    className="pl-10 h-11 bg-slate-50/50 border-slate-200 rounded-xl font-semibold focus:bg-white text-xs"
+                    value={extraCredits}
+                    onChange={(e) => setExtraCredits(e.target.value)}
+                  />
+                </div>
               </div>
             </div>
-            
-            <Button 
-              onClick={handleAssign} 
+          </DialogBody>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setAssignDialog(null)}
+              className="rounded-xl h-11 font-medium transition-all"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleAssign}
               disabled={assignMutation.isPending}
-              className="w-full h-11 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-xs tracking-wider shadow-md shadow-indigo-500/10 hover:from-blue-500 hover:to-indigo-500 transition-all duration-200 active:scale-[0.99] disabled:opacity-50 mt-1 flex items-center justify-center gap-2"
+              className="rounded-xl h-11 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-xs tracking-wider shadow-md shadow-indigo-500/10 hover:from-blue-500 hover:to-indigo-500 transition-all duration-200 active:scale-[0.99] disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {assignMutation.isPending ? (
                 <>
@@ -297,7 +306,7 @@ export default function Admins() {
                 "Commit Configuration Allocation"
               )}
             </Button>
-          </div>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

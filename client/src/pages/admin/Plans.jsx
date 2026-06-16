@@ -6,7 +6,7 @@ import { PageHeader } from '@/components/common/PageHeader';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogBody, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
@@ -204,15 +204,14 @@ export default function Plans() {
 
       {/* Premium Form Creation/Edit Dialog Context Modal */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="sm:max-w-[425px] rounded-2xl border border-slate-200/60 shadow-xl overflow-hidden p-0 bg-background">
+        <DialogContent className="sm:max-w-[425px]">
           <div className="h-1.5 w-full bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-500" />
-          <div className="p-6 pt-5 space-y-5">
-            <DialogHeader>
-              <DialogTitle className="text-xl font-bold tracking-tight bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-transparent">
-                {editPlan ? '✨ Edit Plan Parameter' : '🚀 Launch Premium Plan'}
-              </DialogTitle>
-            </DialogHeader>
-            
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold tracking-tight bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-transparent">
+              {editPlan ? '✨ Edit Plan Parameter' : '🚀 Launch Premium Plan'}
+            </DialogTitle>
+          </DialogHeader>
+          <DialogBody>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-1.5">
                 <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Plan Title Name</Label>
@@ -275,7 +274,7 @@ export default function Plans() {
                 </Button>
               </div>
             </form>
-          </div>
+          </DialogBody>
         </DialogContent>
       </Dialog>
     </div>

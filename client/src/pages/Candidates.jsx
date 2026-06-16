@@ -6,7 +6,7 @@ import {
   Filter, MapPin, Briefcase, GraduationCap, Calendar, IndianRupee, 
   Users, ShieldAlert, SlidersHorizontal, ArrowUpDown, Loader2
 } from 'lucide-react';
-import { getCandidates, deleteCandidate, getSettings, getStates } from '@/lib/api';
+import { getCandidates, deleteCandidate, getSettings, getStates, getCities, getLocalities } from '@/lib/api';
 import { Badge } from '@/components/ui/badge';
 import { PageHeader } from '@/components/common/PageHeader';
 import { Button } from '@/components/ui/button';
@@ -14,7 +14,8 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { SearchableSelect } from '@/components/ui/searchable-select';
+import { Dialog, DialogBody, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { formatDate } from '@/lib/utils';
 
 const SOURCE_OPTIONS = ['ADMIN', 'SCHOOL_LINK', 'SELF_APPLICANT', 'SUPER_ADMIN_IMPORT'];
@@ -43,6 +44,8 @@ export function CandidateList({
     sortBy: 'createdAt',
     sortOrder: 'desc',
   });
+  const [filterStateId, setFilterStateId] = useState('');
+  const [filterCityId, setFilterCityId] = useState('');
   const [deleteId, setDeleteId] = useState(null);
 
   const { data: settings } = useQuery({
@@ -53,6 +56,18 @@ export function CandidateList({
   const { data: states = [] } = useQuery({
     queryKey: ['states'],
     queryFn: () => getStates().then((r) => r.data.data),
+  });
+
+  const { data: filterCities = [] } = useQuery({
+    queryKey: ['cities', filterStateId],
+    queryFn: () => getCities(filterStateId).then((r) => r.data.data),
+    enabled: !!filterStateId,
+  });
+
+  const { data: filterLocalities = [] } = useQuery({
+    queryKey: ['localities', filterCityId],
+    queryFn: () => getLocalities({ cityId: filterCityId }).then((r) => r.data.data),
+    enabled: !!filterCityId,
   });
 
   const { data, isLoading } = useQuery({
@@ -78,6 +93,24 @@ export function CandidateList({
   const updateFilter = (key, value) => {
     setPage(1);
     setFilters((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const handleStateFilterChange = (stateId, stateName) => {
+    setFilterStateId(stateId);
+    setFilterCityId('');
+    updateFilter('state', stateName);
+    updateFilter('city', '');
+    updateFilter('locality', '');
+  };
+
+  const handleCityFilterChange = (cityId, cityName) => {
+    setFilterCityId(cityId);
+    updateFilter('city', cityName);
+    updateFilter('locality', '');
+  };
+
+  const handleLocalityFilterChange = (localityName) => {
+    updateFilter('locality', localityName);
   };
 
   const handleSort = (field) => {
@@ -151,14 +184,16 @@ export function CandidateList({
               />
             </div>
 
-            <div className="relative">
-              <Input
-                placeholder="Search by mobile..."
-                className="h-11 bg-slate-50/50 border-slate-200 hover:border-slate-300 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 rounded-xl transition-all placeholder:text-slate-400 font-medium"
-                value={filters.mobile}
-                onChange={(e) => updateFilter('mobile', e.target.value)}
-              />
-            </div>
+            {section !== 'talent_pool' && (
+              <div className="relative">
+                <Input
+                  placeholder="Search by mobile..."
+                  className="h-11 bg-slate-50/50 border-slate-200 hover:border-slate-300 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 rounded-xl transition-all placeholder:text-slate-400 font-medium"
+                  value={filters.mobile}
+                  onChange={(e) => updateFilter('mobile', e.target.value)}
+                />
+              </div>
+            )}
 
             <Select value={filters.position || 'all'} onValueChange={(v) => updateFilter('position', v === 'all' ? '' : v)}>
               <SelectTrigger className="h-11 bg-slate-50/50 border-slate-200 hover:border-slate-300 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 rounded-xl transition-all text-slate-600 font-medium">
@@ -201,44 +236,48 @@ export function CandidateList({
               />
             </div>
 
-            <Select value={filters.state || 'all'} onValueChange={(v) => updateFilter('state', v === 'all' ? '' : v)}>
-              <SelectTrigger className="h-11 bg-slate-50/50 border-slate-200 hover:border-slate-300 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 rounded-xl transition-all text-slate-600 font-medium">
-                <SelectValue placeholder="All States" />
-              </SelectTrigger>
-              <SelectContent className="rounded-xl border-slate-200 max-h-64">
-                <SelectItem value="all" className="font-medium text-slate-500">All States</SelectItem>
-                {states.map((s) => (
-                  <SelectItem key={s._id} value={s.name} className="focus:bg-indigo-50/70 focus:text-indigo-600 font-medium rounded-lg">
-                    {s.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <SearchableSelect
+              options={[{ value: '', label: 'All States' }, ...states.map(s => ({ value: s._id, label: s.name }))]}
+              value={filterStateId}
+              onChange={(v) => {
+                if (v === '') {
+                  handleStateFilterChange('', '');
+                } else {
+                  const state = states.find(s => s._id === v);
+                  handleStateFilterChange(v, state?.name || '');
+                }
+              }}
+              placeholder="All States"
+            />
 
-            <Input placeholder="City" className="h-11 bg-slate-50/50 border-slate-200 hover:border-slate-300 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 rounded-xl transition-all placeholder:text-slate-400 font-medium" value={filters.city} onChange={(e) => updateFilter('city', e.target.value)} />
+            <SearchableSelect
+              options={[{ value: '', label: 'All Cities' }, ...filterCities.map(c => ({ value: c._id, label: c.name }))]}
+              value={filterCityId}
+              onChange={(v) => {
+                if (v === '') {
+                  handleCityFilterChange('', '');
+                } else {
+                  const city = filterCities.find(c => c._id === v);
+                  handleCityFilterChange(v, city?.name || '');
+                }
+              }}
+              placeholder={filterStateId ? "All Cities" : "Select State First"}
+              disabled={!filterStateId}
+            />
+
+            <SearchableSelect
+              options={[{ value: '', label: 'All Localities' }, ...filterLocalities.map(l => ({ value: l.name, label: l.name }))]}
+              value={filters.locality}
+              onChange={(v) => handleLocalityFilterChange(v)}
+              placeholder={filterCityId ? "All Localities" : "Select City First"}
+              disabled={!filterCityId}
+            />
             
-            <Input placeholder="Locality" className="h-11 bg-slate-50/50 border-slate-200 hover:border-slate-300 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 rounded-xl transition-all placeholder:text-slate-400 font-medium" value={filters.locality} onChange={(e) => updateFilter('locality', e.target.value)} />
-            
-            {section !== 'talent_pool' && (
-              <Select value={filters.source || 'all'} onValueChange={(v) => updateFilter('source', v === 'all' ? '' : v)}>
-                <SelectTrigger className="h-11 bg-slate-50/50 border-slate-200 hover:border-slate-300 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 rounded-xl transition-all text-slate-600 font-medium">
-                  <SelectValue placeholder="All Sources" />
-                </SelectTrigger>
-                <SelectContent className="rounded-xl border-slate-200 max-h-64">
-                  <SelectItem value="all" className="font-medium text-slate-500">All Sources</SelectItem>
-                  {sourceFilterOptions.map((s) => (
-                    <SelectItem key={s} value={s} className="focus:bg-indigo-50/70 focus:text-indigo-600 font-medium rounded-lg">
-                      {s.replace(/_/g, ' ')}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            )}
 
             <div className="relative">
               <Input
                 type="number"
-                placeholder="Min Salary"
+                placeholder="Min Monthly Salary"
                 className="h-11 bg-slate-50/50 border-slate-200 hover:border-slate-300 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 rounded-xl transition-all placeholder:text-slate-400 font-medium"
                 value={filters.expectedSalaryMin}
                 onChange={(e) => updateFilter('expectedSalaryMin', e.target.value)}
@@ -248,7 +287,7 @@ export function CandidateList({
             <div className="relative">
               <Input
                 type="number"
-                placeholder="Max Salary"
+                placeholder="Max Monthly Salary"
                 className="h-11 bg-slate-50/50 border-slate-200 hover:border-slate-300 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 rounded-xl transition-all placeholder:text-slate-400 font-medium"
                 value={filters.expectedSalaryMax}
                 onChange={(e) => updateFilter('expectedSalaryMax', e.target.value)}
@@ -304,13 +343,7 @@ export function CandidateList({
                       <TableHead className="text-slate-500 font-bold text-xs uppercase tracking-wider">
                         <div className="flex items-center gap-1.5"><MapPin className="h-3 w-3 text-slate-400" /> Location</div>
                       </TableHead>
-                      
-                      {section === 'talent_pool' && (
-                        <TableHead className="text-slate-500 font-bold text-xs uppercase tracking-wider">
-                          <div className="flex items-center gap-1.5"><Users className="h-3 w-3 text-slate-400" /> Pool</div>
-                        </TableHead>
-                      )}
-                      
+
                       <TableHead className="text-slate-500 font-bold text-xs uppercase tracking-wider">
                         <div className="flex items-center gap-1.5"><GraduationCap className="h-3 w-3 text-slate-400" /> Qualification</div>
                       </TableHead>
@@ -325,12 +358,12 @@ export function CandidateList({
                         </div>
                       </TableHead>
                       
-                      <TableHead 
-                        className="text-slate-500 font-bold text-xs uppercase tracking-wider cursor-pointer hover:text-indigo-600 transition-colors group select-none" 
+                      <TableHead
+                        className="text-slate-500 font-bold text-xs uppercase tracking-wider cursor-pointer hover:text-indigo-600 transition-colors group select-none"
                         onClick={() => handleSort('expectedSalary')}
                       >
                         <div className="flex items-center gap-1.5">
-                          <IndianRupee className="h-3 w-3 text-slate-400" /> Expected Salary
+                          <IndianRupee className="h-3 w-3 text-slate-400" /> Monthly Salary
                           <ArrowUpDown className="h-3 w-3 opacity-60 group-hover:opacity-100 transition-opacity" />
                         </div>
                       </TableHead>
@@ -353,7 +386,7 @@ export function CandidateList({
                     {data?.data?.length === 0 ? (
                       /* Enhanced Premium Empty State Component inside Table */
                       <TableRow className="hover:bg-transparent">
-                        <TableCell colSpan={section === 'talent_pool' ? 10 : 9} className="py-20 text-center">
+                        <TableCell colSpan={9} className="py-20 text-center">
                           <div className="max-w-md mx-auto flex flex-col items-center justify-center space-y-4">
                             <div className="p-4 bg-gradient-to-br from-slate-50 to-slate-100/80 border border-slate-200/50 rounded-2xl shadow-inner text-slate-400 group-hover:scale-105 transition-transform">
                               <Users className="h-10 w-10 text-indigo-400" />
@@ -402,13 +435,7 @@ export function CandidateList({
                           <TableCell className="text-slate-500 font-medium text-xs max-w-[180px] truncate">
                             {[c.city, c.locality].filter(Boolean).join(', ') || '—'}
                           </TableCell>
-                          
-                          {section === 'talent_pool' && (
-                            <TableCell className="align-middle">
-                              {getSourceBadge(c.source)}
-                            </TableCell>
-                          )}
-                          
+
                           <TableCell className="text-slate-600 font-medium text-xs max-w-[200px] truncate">
                             {c.qualifications?.join(', ') || '—'}
                           </TableCell>
@@ -500,30 +527,31 @@ export function CandidateList({
 
       {/* Premium Confirm Modal Overhaul */}
       <Dialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
-        <DialogContent className="sm:max-w-md rounded-2xl border-slate-100 shadow-2xl p-6 bg-white gap-0">
-          <div className="flex flex-col items-center text-center space-y-4">
-            <div className="p-3 bg-rose-50 border border-rose-100 rounded-2xl text-rose-600">
-              <ShieldAlert className="h-7 w-7" />
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-bold text-slate-800">Confirm Deletion</DialogTitle>
+            <DialogDescription className="text-sm text-slate-500 font-medium leading-relaxed">
+              This action will safely soft-delete this candidate from your secure school ecosystem database workspace.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogBody>
+            <div className="flex flex-col items-center text-center space-y-4 py-4">
+              <div className="p-3 bg-rose-50 border border-rose-100 rounded-2xl text-rose-600">
+                <ShieldAlert className="h-7 w-7" />
+              </div>
             </div>
-            <div className="space-y-1.5">
-              <DialogTitle className="text-lg font-bold text-slate-800">Confirm Deletion</DialogTitle>
-              <DialogDescription className="text-sm text-slate-500 font-medium leading-relaxed">
-                This action will safely soft-delete this candidate from your secure school ecosystem database workspace.
-              </DialogDescription>
-            </div>
-          </div>
-          
-          <DialogFooter className="mt-6 flex flex-col sm:flex-row gap-2 w-full sm:justify-end">
-            <Button 
-              variant="outline" 
+          </DialogBody>
+          <DialogFooter className="flex flex-col sm:flex-row gap-2 w-full sm:justify-end">
+            <Button
+              variant="outline"
               onClick={() => setDeleteId(null)}
               className="w-full sm:w-auto h-11 border-slate-200 text-slate-600 font-semibold rounded-xl hover:bg-slate-50 transition-colors"
             >
               Keep Candidate
             </Button>
-            <Button 
-              variant="destructive" 
-              onClick={() => deleteMutation.mutate(deleteId)} 
+            <Button
+              variant="destructive"
+              onClick={() => deleteMutation.mutate(deleteId)}
               disabled={deleteMutation.isPending}
               className="w-full sm:w-auto h-11 bg-rose-600 hover:bg-rose-500 text-white font-semibold rounded-xl shadow-lg shadow-rose-600/10 hover:shadow-rose-600/20 transition-all flex items-center justify-center gap-2"
             >
@@ -560,7 +588,7 @@ export function TalentPool() {
       section="talent_pool"
       title="Talent Pool"
       description="Browse platform candidates and profiles from other schools. Unlock profiles using credits."
-      sourceFilterOptions={['SELF_APPLICANT']}
+      sourceFilterOptions={[]}
     />
   );
 }

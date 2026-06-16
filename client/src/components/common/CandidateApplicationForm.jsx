@@ -192,14 +192,14 @@ export function CandidateApplicationForm({
           </div>
 
           <div className="space-y-2">
-            <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground/80">Expected Salary (₹)</Label>
+            <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground/80">Expected Monthly Salary (₹)</Label>
             <div className="relative">
               <Input
                 type="number"
                 min="0"
                 value={form.expectedSalary}
                 onChange={(e) => updateForm('expectedSalary', e.target.value)}
-                placeholder="e.g. 500000"
+                placeholder="e.g. 50000"
                 className="rounded-xl focus-visible:ring-indigo-500 h-11 pl-10 transition-all border-slate-200"
               />
               <IndianRupee className="absolute left-3.5 top-3.5 h-4 w-4 text-muted-foreground/50" />

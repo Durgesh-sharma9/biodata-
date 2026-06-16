@@ -264,13 +264,13 @@ export default function CandidateProfile() {
                 }
               />
               {canViewProfileDetails && candidate.expectedSalary != null && (
-                <DetailRow 
-                  label="Expected Salary" 
+                <DetailRow
+                  label="Expected Monthly Salary"
                   value={
                     <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-lg">
-                      ₹{candidate.expectedSalary.toLocaleString()} / Annum
+                      ₹{candidate.expectedSalary.toLocaleString()} / Month
                     </span>
-                  } 
+                  }
                 />
               )}
             </dl>

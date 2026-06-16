@@ -570,13 +570,13 @@ export function DynamicCandidateForm({
 
           {/* Expected Remuneration Pay Scale Input */}
           <div className="space-y-2 group md:col-span-2 sm:col-span-1">
-            <Label htmlFor="expectedSalary" className="text-xs font-bold uppercase tracking-wider text-muted-foreground/80 group-focus-within:text-indigo-600 transition-colors">Expected Salary Compensation (Annum ₹)</Label>
+            <Label htmlFor="expectedSalary" className="text-xs font-bold uppercase tracking-wider text-muted-foreground/80 group-focus-within:text-indigo-600 transition-colors">Expected Monthly Salary (₹)</Label>
             <div className="relative">
               <Input
                 id="expectedSalary"
                 type="number"
                 min="0"
-                placeholder="e.g. 600000"
+                placeholder="e.g. 50000"
                 {...register('expectedSalary')}
                 disabled={isFieldDisabled('expectedSalary')}
                 className="rounded-xl h-11 pl-10 border-slate-200 focus-visible:ring-indigo-500 shadow-2xs transition-all"

@@ -6,7 +6,7 @@ import { PageHeader } from '@/components/common/PageHeader';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogBody, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
@@ -136,58 +136,67 @@ export default function CreditPackages() {
 
       {/* Premium Package Architecture Asset Entry Dialog Sheet */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-md border-slate-100 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl p-6 sm:p-8 animate-in fade-in zoom-in-95 duration-200">
-          <DialogHeader className="border-b border-slate-50 pb-4 mb-5">
+        <DialogContent className="max-w-md">
+          <DialogHeader>
             <DialogTitle className="text-lg font-bold text-slate-800 tracking-tight flex items-center gap-2">
               <FolderPlus className="h-5 w-5 text-indigo-500" />
               Configure Top-Up Bundle
             </DialogTitle>
-            <p className="text-xs text-slate-400 font-medium mt-1">
+            <DialogDescription className="text-xs text-slate-400 font-medium mt-1">
               Construct localized standalone credit top-ups to supply platform operational tokens to recruitment entities.
-            </p>
+            </DialogDescription>
           </DialogHeader>
-
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              createMutation.mutate({ name: form.name, credits: Number(form.credits) });
-            }}
-            className="space-y-5"
-          >
-            {/* Package Label Text Field Input */}
-            <div className="space-y-1.5">
-              <Label className="text-xs font-bold uppercase tracking-wider text-slate-500">Package Label Title</Label>
-              <Input 
-                value={form.name} 
-                onChange={(e) => setForm({ ...form, name: e.target.value })} 
-                required 
-                placeholder="e.g. Mid-Season Recruiter Booster Pack"
-                className="h-11 border-slate-200 rounded-xl focus:bg-white"
-              />
-            </div>
-
-            {/* Total Balance Tokens Value Numerical Input */}
-            <div className="space-y-1.5">
-              <Label className="text-xs font-bold uppercase tracking-wider text-slate-500">Allocated Credit Balance Amount</Label>
-              <div className="relative group">
-                <Coins className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
+          <DialogBody>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                createMutation.mutate({ name: form.name, credits: Number(form.credits) });
+              }}
+              className="space-y-5"
+            >
+              {/* Package Label Text Field Input */}
+              <div className="space-y-1.5">
+                <Label className="text-xs font-bold uppercase tracking-wider text-slate-500">Package Label Title</Label>
                 <Input
-                  type="number"
-                  value={form.credits}
-                  onChange={(e) => setForm({ ...form, credits: e.target.value })}
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
                   required
-                  placeholder="e.g. 250"
-                  min="1"
-                  className="pl-10 h-11 border-slate-200 rounded-xl focus:bg-white text-sm font-medium"
+                  placeholder="e.g. Mid-Season Recruiter Booster Pack"
+                  className="h-11 border-slate-200 rounded-xl focus:bg-white"
                 />
               </div>
-            </div>
 
-            {/* Submission Interactive Button Trigger */}
-            <Button 
-              type="submit"
+              {/* Total Balance Tokens Value Numerical Input */}
+              <div className="space-y-1.5">
+                <Label className="text-xs font-bold uppercase tracking-wider text-slate-500">Allocated Credit Balance Amount</Label>
+                <div className="relative group">
+                  <Coins className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
+                  <Input
+                    type="number"
+                    value={form.credits}
+                    onChange={(e) => setForm({ ...form, credits: e.target.value })}
+                    required
+                    placeholder="e.g. 250"
+                    min="1"
+                    className="pl-10 h-11 border-slate-200 rounded-xl focus:bg-white text-sm font-medium"
+                  />
+                </div>
+              </div>
+            </form>
+          </DialogBody>
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setDialogOpen(false)}
+              className="rounded-xl h-11 font-medium transition-all"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => createMutation.mutate({ name: form.name, credits: Number(form.credits) })}
               disabled={createMutation.isPending}
-              className="w-full h-11 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold tracking-wide shadow-md shadow-indigo-500/20 hover:from-blue-500 hover:to-indigo-500 transition-all duration-200 active:scale-[0.99] disabled:opacity-50 mt-2 flex items-center justify-center gap-2"
+              className="rounded-xl h-11 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold tracking-wide shadow-md shadow-indigo-500/20 hover:from-blue-500 hover:to-indigo-500 transition-all duration-200 active:scale-[0.99] disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {createMutation.isPending ? (
                 <>
@@ -198,7 +207,7 @@ export default function CreditPackages() {
                 "Save Credit Bundle"
               )}
             </Button>
-          </form>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

@@ -12,6 +12,7 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
   Dialog,
+  DialogBody,
   DialogContent,
   DialogHeader,
   DialogTitle,
@@ -271,16 +272,15 @@ export default function Schools() {
 
       {/* Polish Premium Configuration Form Dialog Overlay Node */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto rounded-2xl border border-slate-200/60 shadow-xl overflow-hidden p-0 bg-background">
+        <DialogContent className="sm:max-w-[600px]">
           <div className="h-1.5 w-full bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-500" />
-          <div className="p-6 md:p-8 space-y-6">
-            <DialogHeader>
-              <DialogTitle className="text-xl font-bold tracking-tight bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-transparent flex items-center gap-2">
-                <Sparkles className="h-5 w-5 text-indigo-500" />
-                <span>Override Partner Configuration</span>
-              </DialogTitle>
-            </DialogHeader>
-            
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold tracking-tight bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-transparent flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-indigo-500" />
+              <span>Override Partner Configuration</span>
+            </DialogTitle>
+          </DialogHeader>
+          <DialogBody>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid gap-5 sm:grid-cols-2">
                 
@@ -377,8 +377,8 @@ export default function Schools() {
                 >
                   Cancel
                 </Button>
-                <Button 
-                  type="submit" 
+                <Button
+                  type="submit"
                   disabled={updateMutation.isPending}
                   className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-xl h-11 px-6 shadow-sm hover:shadow-md transition-all duration-200"
                 >
@@ -386,7 +386,7 @@ export default function Schools() {
                 </Button>
               </div>
             </form>
-          </div>
+          </DialogBody>
         </DialogContent>
       </Dialog>
     </div>
