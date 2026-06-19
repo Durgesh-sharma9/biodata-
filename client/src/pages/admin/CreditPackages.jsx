@@ -36,17 +36,16 @@ export default function CreditPackages() {
   });
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out">
+    <div className="space-y-6 p-6 max-w-7xl mx-auto bg-slate-50/50 dark:bg-slate-950 text-slate-800 dark:text-white antialiased min-h-screen animate-in fade-in duration-500">
       {/* Page Header Panel Layout */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200/60 dark:border-slate-800 pb-5">
         <PageHeader
           title="Credit Packages"
           description="Design, maintain, and publish standalone balance top-up token tiers for registered recruitment schools."
-          className="text-slate-800 dark:text-white font-bold tracking-tight text-xl"
         />
         <Button 
           onClick={() => setDialogOpen(true)}
-          className="bg-[#A05AFF] hover:bg-[#A05AFF]/90 text-white font-bold rounded-xl transition-all duration-200 active:scale-95"
+          className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold rounded-xl transition-all duration-200 active:scale-95"
         >
           <Plus className="mr-2 h-4 w-4 stroke-[3]" />
           Add Token Package
@@ -54,18 +53,18 @@ export default function CreditPackages() {
       </div>
 
       {/* Main Container Layer Constraint */}
-      <Card className="rounded-xl border-none bg-white shadow-sm dark:bg-slate-900 overflow-hidden">
+      <Card className="border border-slate-200/60 bg-white shadow-2xs dark:bg-slate-900 overflow-hidden">
         <CardContent className="p-0">
           <Table>
-            <TableHeader className="bg-slate-50/70 dark:bg-slate-900/20 text-slate-400 font-semibold text-[11px] uppercase tracking-wider border-b border-slate-100 dark:border-slate-800">
+            <TableHeader className="bg-slate-50/70 dark:bg-slate-900/20 border-b border-slate-200/60 dark:border-slate-800">
               <TableRow>
-                <TableHead className="pl-6 py-4 text-slate-400 dark:text-slate-500 font-bold text-[11px] uppercase tracking-wider">
+                <TableHead className="pl-6 py-4 text-slate-500 dark:text-slate-500 font-bold text-[11px] uppercase tracking-wider">
                   Package Identity Name
                 </TableHead>
-                <TableHead className="text-slate-400 dark:text-slate-500 font-bold text-[11px] uppercase tracking-wider">
+                <TableHead className="text-slate-500 dark:text-slate-500 font-bold text-[11px] uppercase tracking-wider">
                   Distributed Credit Balance
                 </TableHead>
-                <TableHead className="pr-6 text-right text-slate-400 dark:text-slate-500 font-bold text-[11px] uppercase tracking-wider">
+                <TableHead className="pr-6 text-right text-slate-500 dark:text-slate-500 font-bold text-[11px] uppercase tracking-wider">
                   Operations
                 </TableHead>
               </TableRow>
@@ -76,7 +75,7 @@ export default function CreditPackages() {
                   <TableCell colSpan={3} className="h-64 text-center">
                     <div className="flex flex-col items-center justify-center p-6">
                       <div className="relative flex h-12 w-12 items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800 mb-3">
-                        <Loader2 className="h-5 w-5 text-[#A05AFF] animate-spin" />
+                        <Loader2 className="h-5 w-5 text-indigo-600 animate-spin" />
                       </div>
                       <p className="text-sm font-semibold text-slate-500 dark:text-slate-400 tracking-wide animate-pulse">
                         Synchronizing balance top-up catalog...
@@ -88,12 +87,12 @@ export default function CreditPackages() {
                 packages.map((pkg) => (
                   <TableRow 
                     key={pkg._id}
-                    className="group border-b border-slate-100 dark:border-slate-800/60 last:border-none hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-all"
+                    className="group border-b border-slate-100/80 dark:border-slate-800/60 last:border-none hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-all"
                   >
                     {/* Package Identifier with Secondary Brand Accent Avatar */}
                     <TableCell className="pl-6 py-4 font-bold text-slate-800 dark:text-slate-200">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#A05AFF]/10 text-[#A05AFF]">
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-purple-100 text-purple-600">
                           <Bookmark className="h-4 w-4" />
                         </div>
                         <span className="truncate max-w-[240px] block font-bold text-slate-800 dark:text-slate-200">
@@ -104,7 +103,7 @@ export default function CreditPackages() {
 
                     {/* Modern Soft-Tint Badge Indicator */}
                     <TableCell className="py-4">
-                      <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold border border-[#4BCBEB]/30 bg-[#4BCBEB]/5 text-[#4BCBEB]">
+                      <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold border border-cyan-200/60 bg-cyan-50/80 text-cyan-700">
                         <Coins className="h-4 w-4 stroke-[2.5]" />
                         <span>{pkg.credits} Credits</span>
                       </div>
@@ -116,7 +115,7 @@ export default function CreditPackages() {
                         size="sm"
                         variant="destructive"
                         onClick={() => deleteMutation.mutate(pkg._id)}
-                        className="h-8 w-8 rounded-xl p-0 border border-[#FE9496]/30 bg-[#FE9496]/5 text-[#FE9496] hover:bg-[#FE9496] hover:text-white transition-all duration-200 active:scale-95"
+                        className="h-8 w-8 rounded-lg p-0 border border-rose-200/60 bg-rose-50/80 text-rose-600 hover:bg-rose-600 hover:text-white transition-all duration-200 active:scale-95"
                       >
                         <Trash2 className="h-3.5 w-3.5" />
                       </Button>
@@ -145,10 +144,10 @@ export default function CreditPackages() {
 
       {/* Premium Package Asset Entry Dialog Config */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-md rounded-xl border-none bg-white p-6 dark:bg-slate-900 shadow-sm">
+        <DialogContent className="max-w-md rounded-xl border border-slate-200/60 bg-white p-6 dark:bg-slate-900 shadow-lg">
           <DialogHeader>
             <DialogTitle className="text-sm font-bold tracking-wide text-slate-800 dark:text-slate-200 flex items-center gap-2">
-              <FolderPlus className="h-5 w-5 text-[#A05AFF]" />
+              <FolderPlus className="h-5 w-5 text-purple-600" />
               Configure Top-Up Bundle
             </DialogTitle>
             <DialogDescription className="text-xs text-slate-400 dark:text-slate-500 font-medium mt-1">
@@ -173,7 +172,7 @@ export default function CreditPackages() {
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                   required
                   placeholder="e.g. Mid-Season Recruiter Booster Pack"
-                  className="h-11 border-slate-200 rounded-xl focus:bg-white focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 dark:bg-slate-800 dark:border-slate-700"
+                  className="h-11 border-slate-200 rounded-xl dark:bg-slate-800 dark:border-slate-700"
                 />
               </div>
 
@@ -183,7 +182,7 @@ export default function CreditPackages() {
                   Allocated Credit Balance Amount
                 </Label>
                 <div className="relative group">
-                  <Coins className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400 group-focus-within:text-[#A05AFF] transition-colors" />
+                  <Coins className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400 group-focus-within:text-purple-600 transition-colors" />
                   <Input
                     type="number"
                     value={form.credits}
@@ -191,7 +190,7 @@ export default function CreditPackages() {
                     required
                     placeholder="e.g. 250"
                     min="1"
-                    className="pl-10 h-11 border-slate-200 rounded-xl focus:bg-white focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 text-sm font-medium dark:bg-slate-800 dark:border-slate-700"
+                    className="pl-10 h-11 border-slate-200 rounded-xl text-sm font-medium dark:bg-slate-800 dark:border-slate-700"
                   />
                 </div>
               </div>
@@ -209,7 +208,7 @@ export default function CreditPackages() {
             <Button
               onClick={() => createMutation.mutate({ name: form.name, credits: Number(form.credits) })}
               disabled={createMutation.isPending}
-              className="rounded-xl h-11 bg-[#A05AFF] hover:bg-[#A05AFF]/90 text-white font-bold tracking-wide transition-all duration-200 active:scale-[0.99] disabled:opacity-50 flex items-center justify-center gap-2"
+              className="rounded-xl h-11 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold tracking-wide transition-all duration-200 active:scale-[0.99] disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {createMutation.isPending ? (
                 <>

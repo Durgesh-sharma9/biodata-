@@ -78,36 +78,35 @@ export default function Locations() {
   });
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out">
+    <div className="space-y-6 p-6 max-w-7xl mx-auto bg-slate-50/50 dark:bg-slate-950 text-slate-800 dark:text-white antialiased min-h-screen animate-in fade-in duration-500">
       {/* Page Header Panel */}
-      <div className="border-b border-slate-100 dark:border-slate-800 pb-5">
+      <div className="border-b border-slate-200/60 dark:border-slate-800 pb-5">
         <PageHeader 
           title="Location Management" 
           description="Configure and audit the structural region parameters spanning State → City → Locality networks." 
-          className="text-slate-800 dark:text-white font-bold tracking-tight text-xl"
         />
       </div>
 
       <Tabs defaultValue="states" className="w-full space-y-6">
         {/* Soft Translucent Highlight Tabs Wrapper */}
-        <TabsList className="inline-flex h-12 items-center justify-center rounded-xl bg-white dark:bg-slate-900 p-1 border border-slate-200/40 dark:border-slate-800 shadow-sm">
+        <TabsList className="inline-flex h-12 items-center justify-center rounded-xl bg-white dark:bg-slate-900 p-1 border border-slate-200/60 dark:border-slate-800 shadow-sm">
           <TabsTrigger 
             value="states" 
-            className="inline-flex items-center gap-2 rounded-lg px-5 py-2 text-sm font-semibold tracking-wide transition-all data-[state=active]:bg-[#A05AFF]/10 data-[state=active]:text-[#A05AFF] active:scale-[0.97]"
+            className="inline-flex items-center gap-2 rounded-lg px-5 py-2 text-sm font-semibold tracking-wide transition-all data-[state=active]:bg-purple-50 data-[state=active]:text-purple-600 active:scale-[0.97]"
           >
             <Globe className="h-4 w-4" />
             States ({states.length})
           </TabsTrigger>
           <TabsTrigger 
             value="cities" 
-            className="inline-flex items-center gap-2 rounded-lg px-5 py-2 text-sm font-semibold tracking-wide transition-all data-[state=active]:bg-[#A05AFF]/10 data-[state=active]:text-[#A05AFF] active:scale-[0.97]"
+            className="inline-flex items-center gap-2 rounded-lg px-5 py-2 text-sm font-semibold tracking-wide transition-all data-[state=active]:bg-purple-50 data-[state=active]:text-purple-600 active:scale-[0.97]"
           >
             <Building2 className="h-4 w-4" />
             Cities ({cities.length})
           </TabsTrigger>
           <TabsTrigger 
             value="localities" 
-            className="inline-flex items-center gap-2 rounded-lg px-5 py-2 text-sm font-semibold tracking-wide transition-all data-[state=active]:bg-[#A05AFF]/10 data-[state=active]:text-[#A05AFF] active:scale-[0.97]"
+            className="inline-flex items-center gap-2 rounded-lg px-5 py-2 text-sm font-semibold tracking-wide transition-all data-[state=active]:bg-purple-50 data-[state=active]:text-purple-600 active:scale-[0.97]"
           >
             <Navigation className="h-4 w-4" />
             Localities Add
@@ -116,28 +115,28 @@ export default function Locations() {
 
         {/* States Tab Section */}
         <TabsContent value="states" className="outline-none focus:outline-none focus:ring-0 animate-in fade-in-30 slide-in-from-bottom-2 duration-300">
-          <Card className="rounded-xl border-none bg-white shadow-sm dark:bg-slate-900">
-            <CardHeader className="p-5 border-b border-slate-100 dark:border-slate-800">
+          <Card className="border border-slate-200/60 bg-white shadow-2xs dark:bg-slate-900">
+            <CardHeader className="p-5 border-b border-slate-200/60 dark:border-slate-800">
               <CardTitle className="text-sm font-bold tracking-wide text-slate-800 dark:text-slate-200 flex items-center gap-2">
-                <Globe className="h-4 w-4 text-[#A05AFF]" />
+                <Globe className="h-4 w-4 text-purple-600" />
                 Regional States Network
               </CardTitle>
             </CardHeader>
             <CardContent className="p-5 space-y-6">
               <div className="flex gap-3 max-w-xl group">
                 <div className="relative flex-1">
-                  <Compass className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400 group-focus-within:text-[#A05AFF] transition-colors" />
+                  <Compass className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400 group-focus-within:text-purple-600 transition-colors" />
                   <Input 
                     placeholder="Enter new state identifier (e.g. Rajasthan)" 
                     value={stateName} 
                     onChange={(e) => setStateName(e.target.value)} 
-                    className="pl-10 h-11 border-slate-200 rounded-xl focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 dark:bg-slate-800 dark:border-slate-700"
+                    className="pl-10 h-11 border-slate-200 rounded-xl dark:bg-slate-800 dark:border-slate-700"
                   />
                 </div>
                 <Button 
                   onClick={() => stateMutation.mutate({ name: stateName })}
                   disabled={stateMutation.isPending || !stateName.trim()}
-                  className="bg-[#A05AFF] hover:bg-[#A05AFF]/90 text-white font-bold h-11 px-5 rounded-xl transition-all active:scale-95 flex items-center gap-2"
+                  className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold h-11 px-5 rounded-xl transition-all active:scale-95 flex items-center gap-2"
                 >
                   {stateMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4 stroke-[3]" />}
                   Add State
@@ -150,7 +149,7 @@ export default function Locations() {
                 </Label>
                 {statesLoading ? (
                   <div className="flex items-center gap-2 py-4 text-slate-400 dark:text-slate-500 font-medium text-sm animate-pulse">
-                    <Loader2 className="h-4 w-4 animate-spin text-[#A05AFF]" /> Loading states catalog...
+                    <Loader2 className="h-4 w-4 animate-spin text-indigo-600" /> Loading states catalog...
                   </div>
                 ) : states.length === 0 ? (
                   <p className="text-sm font-medium text-slate-400 dark:text-slate-500 italic py-2">No regional states configured in platform ledger yet.</p>
@@ -160,13 +159,13 @@ export default function Locations() {
                       <Badge 
                         key={s._id} 
                         variant="outline" 
-                        className="gap-2.5 pl-3.5 pr-2 py-1.5 border-[#A05AFF]/30 bg-[#A05AFF]/5 text-[#A05AFF] shadow-none rounded-xl font-semibold text-xs transition-all duration-200 animate-in fade-in zoom-in-95"
+                        className="gap-2.5 pl-3.5 pr-2 py-1.5 border-purple-200/60 bg-purple-50/80 text-purple-700 shadow-none rounded-lg font-semibold text-xs transition-all duration-200 animate-in fade-in zoom-in-95"
                       >
-                        <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#A05AFF]" />
+                        <span className="inline-block w-1.5 h-1.5 rounded-full bg-purple-500" />
                         {s.name}
                         <button 
                           onClick={() => deleteState(s._id).then(invalidate)} 
-                          className="text-slate-400 hover:text-[#FE9496] hover:bg-[#FE9496]/10 p-1 rounded-md transition-all ml-1"
+                          className="text-slate-400 hover:text-rose-600 hover:bg-rose-50 p-1 rounded-md transition-all ml-1"
                           title={`Remove ${s.name}`}
                         >
                           ×
@@ -182,10 +181,10 @@ export default function Locations() {
 
         {/* Cities Tab Section */}
         <TabsContent value="cities" className="outline-none focus:outline-none focus:ring-0 animate-in fade-in-30 slide-in-from-bottom-2 duration-300">
-          <Card className="rounded-xl border-none bg-white shadow-sm dark:bg-slate-900">
-            <CardHeader className="p-5 border-b border-slate-100 dark:border-slate-800">
+          <Card className="border border-slate-200/60 bg-white shadow-2xs dark:bg-slate-900">
+            <CardHeader className="p-5 border-b border-slate-200/60 dark:border-slate-800">
               <CardTitle className="text-sm font-bold tracking-wide text-slate-800 dark:text-slate-200 flex items-center gap-2">
-                <Building2 className="h-4 w-4 text-[#A05AFF]" />
+                <Building2 className="h-4 w-4 text-purple-600" />
                 Urban Cities Mapping
               </CardTitle>
             </CardHeader>
@@ -195,7 +194,7 @@ export default function Locations() {
                 <div className="space-y-1.5">
                   <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Parent State Attachment</Label>
                   <Select value={cityStateId} onValueChange={setCityStateId}>
-                    <SelectTrigger className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-xl focus:ring-[#A05AFF]">
+                    <SelectTrigger className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-xl">
                       <SelectValue placeholder="Choose state map context" />
                     </SelectTrigger>
                     <SelectContent className="dark:bg-slate-800 rounded-xl">
@@ -209,13 +208,13 @@ export default function Locations() {
                     placeholder="e.g. Jaipur"
                     value={cityName} 
                     onChange={(e) => setCityName(e.target.value)} 
-                    className="h-11 border-slate-200 rounded-xl focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 dark:bg-slate-800 dark:border-slate-700"
+                    className="h-11 border-slate-200 rounded-xl dark:bg-slate-800 dark:border-slate-700"
                   />
                 </div>
                 <Button 
                   onClick={() => cityMutation.mutate({ name: cityName, stateId: cityStateId })}
                   disabled={cityMutation.isPending || !cityName.trim() || !cityStateId}
-                  className="bg-[#A05AFF] hover:bg-[#A05AFF]/90 text-white font-bold h-11 rounded-xl transition-all active:scale-95 flex items-center justify-center gap-2"
+                  className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold h-11 rounded-xl transition-all active:scale-95 flex items-center justify-center gap-2"
                 >
                   {cityMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4 stroke-[3]" />}
                   Add City Node
@@ -229,7 +228,7 @@ export default function Locations() {
                   <Label className="mb-2 inline-block text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 px-1">Registered Urban Hubs</Label>
                   {citiesLoading ? (
                     <div className="flex items-center gap-2 py-4 text-slate-400 dark:text-slate-500 font-medium text-sm pl-1 animate-pulse">
-                      <Loader2 className="h-4 w-4 animate-spin text-[#A05AFF]" /> Fetching cities register...
+                      <Loader2 className="h-4 w-4 animate-spin text-indigo-600" /> Fetching cities register...
                     </div>
                   ) : cities.length === 0 ? (
                     <p className="text-sm font-medium text-slate-400 dark:text-slate-500 italic py-2 pl-1">No cities mapped to state parameters yet.</p>
@@ -240,7 +239,7 @@ export default function Locations() {
                         className={cn(
                           "flex items-center justify-between rounded-xl border px-4 py-2.5 text-sm font-semibold transition-all duration-200",
                           viewCityId === c._id 
-                            ? "border-[#A05AFF]/40 bg-[#A05AFF]/5 text-[#A05AFF]" 
+                            ? "border-purple-200/60 bg-purple-50/80 text-purple-700" 
                             : "border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50/50 dark:hover:bg-slate-700/40"
                         )}
                       >
@@ -248,12 +247,12 @@ export default function Locations() {
                           className="text-left flex-1 font-semibold flex items-center gap-2 truncate" 
                           onClick={() => setViewCityId(c._id)}
                         >
-                          <Building2 className={cn("h-3.5 w-3.5 text-slate-400", viewCityId === c._id && "text-[#A05AFF]")} />
+                          <Building2 className={cn("h-3.5 w-3.5 text-slate-400", viewCityId === c._id && "text-purple-600")} />
                           <span>{c.name}</span>
                           <span className={cn(
                             "text-[11px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md", 
                             viewCityId === c._id 
-                              ? "border-[#A05AFF]/30 bg-[#A05AFF]/5 text-[#A05AFF]" 
+                              ? "border-purple-200/60 bg-purple-50/80 text-purple-700" 
                               : "text-slate-400 dark:text-slate-500 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800"
                           )}>
                             {c.stateId?.name || 'Global'}
@@ -263,7 +262,7 @@ export default function Locations() {
                           size="sm" 
                           variant="ghost" 
                           onClick={() => deleteCity(c._id).then(invalidate)}
-                          className="h-8 w-8 rounded-xl p-0 text-slate-400 hover:text-[#FE9496] hover:bg-[#FE9496]/10 transition-colors ml-2"
+                          className="h-8 w-8 rounded-lg p-0 text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors ml-2"
                         >
                           <Trash2 className="h-3.5 w-3.5" />
                         </Button>
@@ -275,13 +274,13 @@ export default function Locations() {
                 {/* Localities Drawer View */}
                 <div className="lg:col-span-2">
                   {viewCityId ? (
-                    <Card className="rounded-xl border border-[#A05AFF]/20 bg-white dark:bg-slate-900 shadow-sm overflow-hidden animate-in fade-in slide-in-from-right-3 duration-300">
+                    <Card className="rounded-xl border border-purple-200/60 bg-white dark:bg-slate-900 shadow-sm overflow-hidden animate-in fade-in slide-in-from-right-3 duration-300">
                       <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/20 flex flex-row items-center justify-between">
                         <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200 tracking-wide flex items-center gap-1.5">
-                          <Layers className="h-4 w-4 text-[#A05AFF]" />
+                          <Layers className="h-4 w-4 text-purple-600" />
                           Localities Inspection View
                         </h4>
-                        {localitiesFetching && <Loader2 className="h-3.5 w-3.5 text-[#A05AFF] animate-spin" />}
+                        {localitiesFetching && <Loader2 className="h-3.5 w-3.5 text-purple-600 animate-spin" />}
                       </div>
                       <CardContent className="p-5">
                         {cityLocalities.length === 0 ? (
@@ -297,7 +296,7 @@ export default function Locations() {
                                 key={l._id} 
                                 className="flex items-center gap-2 text-xs font-semibold text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-950/40 border border-slate-100 dark:border-slate-800/60 rounded-xl px-3 py-2 animate-in fade-in duration-200"
                               >
-                                <div className="h-1.5 w-1.5 rounded-full bg-[#1BCFB4]" />
+                                <div className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
                                 <span className="truncate">{l.name}</span>
                               </li>
                             ))}
@@ -322,10 +321,10 @@ export default function Locations() {
 
         {/* Localities Insertion Tab Section */}
         <TabsContent value="localities" className="outline-none focus:outline-none focus:ring-0 animate-in fade-in-30 slide-in-from-bottom-2 duration-300">
-          <Card className="rounded-xl border-none bg-white shadow-sm dark:bg-slate-900">
-            <CardHeader className="p-5 border-b border-slate-100 dark:border-slate-800">
+          <Card className="border border-slate-200/60 bg-white shadow-2xs dark:bg-slate-900">
+            <CardHeader className="p-5 border-b border-slate-200/60 dark:border-slate-800">
               <CardTitle className="text-sm font-bold tracking-wide text-slate-800 dark:text-slate-200 flex items-center gap-2">
-                <Navigation className="h-4 w-4 text-[#A05AFF]" />
+                <Navigation className="h-4 w-4 text-purple-600" />
                 Sectors & Localities Ledger Ingest
               </CardTitle>
             </CardHeader>
@@ -334,7 +333,7 @@ export default function Locations() {
                 <div className="space-y-1.5">
                   <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Parent City Mapping</Label>
                   <Select value={localityCityId} onValueChange={setLocalityCityId}>
-                    <SelectTrigger className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-xl focus:ring-[#A05AFF]">
+                    <SelectTrigger className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-xl">
                       <SelectValue placeholder="Choose target city matrix" />
                     </SelectTrigger>
                     <SelectContent className="dark:bg-slate-800 rounded-xl">
@@ -352,13 +351,13 @@ export default function Locations() {
                     placeholder="e.g. Vaishali Nagar"
                     value={localityName} 
                     onChange={(e) => setLocalityName(e.target.value)} 
-                    className="h-11 border-slate-200 rounded-xl focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 dark:bg-slate-800 dark:border-slate-700"
+                    className="h-11 border-slate-200 rounded-xl dark:bg-slate-800 dark:border-slate-700"
                   />
                 </div>
                 <Button 
                   onClick={() => localityMutation.mutate({ name: localityName, cityId: localityCityId })}
                   disabled={localityMutation.isPending || !localityName.trim() || !localityCityId}
-                  className="bg-[#A05AFF] hover:bg-[#A05AFF]/90 text-white font-bold h-11 rounded-xl transition-all active:scale-95 flex items-center justify-center gap-2"
+                  className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold h-11 rounded-xl transition-all active:scale-95 flex items-center justify-center gap-2"
                 >
                   {localityMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4 stroke-[3]" />}
                   Add Locality Block

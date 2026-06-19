@@ -10,18 +10,18 @@ import { formatDate } from '@/lib/utils';
 
 // Standardized Core Palette Icon mappings for the Purple Theme
 const statCardConfigs = [
-  { textTheme: 'text-[#A05AFF]', bgTheme: 'bg-[#A05AFF]/10' }, // Primary
-  { textTheme: 'text-[#1BCFB4]', bgTheme: 'bg-[#1BCFB4]/10' }, // Success
-  { textTheme: 'text-[#FE9496]', bgTheme: 'bg-[#FE9496]/10' }, // Danger
-  { textTheme: 'text-[#4BCBEB]', bgTheme: 'bg-[#4BCBEB]/10' }, // Info
-  { textTheme: 'text-[#9E58FF]', bgTheme: 'bg-[#9E58FF]/10' }, // Secondary Accent
+  { textTheme: 'text-purple-600', bgTheme: 'bg-purple-100' }, // Primary
+  { textTheme: 'text-emerald-600', bgTheme: 'bg-emerald-100' }, // Success
+  { textTheme: 'text-rose-600', bgTheme: 'bg-rose-100' }, // Danger
+  { textTheme: 'text-cyan-600', bgTheme: 'bg-cyan-100' }, // Info
+  { textTheme: 'text-indigo-600', bgTheme: 'bg-indigo-100' }, // Secondary Accent
 ];
 
 const subscriptionBarGradients = [
-  'bg-[#A05AFF]', // Primary Violet
-  'bg-[#9E58FF]', // Deep Purple
-  'bg-[#4BCBEB]', // Info Blue
-  'bg-[#1BCFB4]', // Success Teal
+  'bg-purple-600', // Primary Violet
+  'bg-indigo-600', // Deep Purple
+  'bg-cyan-600', // Info Blue
+  'bg-emerald-600', // Success Teal
 ];
 
 export default function PlatformStats() {
@@ -54,14 +54,13 @@ export default function PlatformStats() {
   const totalSchoolsCount = data?.totalSchools || 1;
 
   return (
-    <div className="space-y-6 p-5 max-w-7xl mx-auto antialiased text-slate-800 dark:text-white">
+    <div className="space-y-6 p-6 max-w-7xl mx-auto antialiased text-slate-800 dark:text-white bg-slate-50/50 dark:bg-slate-950 min-h-screen animate-in fade-in duration-500">
       
       {/* Minimalist Page Header Panel */}
-      <div className="border-b border-slate-100 dark:border-slate-800 pb-5">
+      <div className="border-b border-slate-200/60 dark:border-slate-800 pb-5">
         <PageHeader 
           title="Platform Statistics" 
           description="Comprehensive real-time dashboard analytics, active subscriptions, and onboarded institutions across HireHub." 
-          className="text-slate-800 dark:text-white font-bold tracking-tight text-xl"
         />
       </div>
 
@@ -78,7 +77,7 @@ export default function PlatformStats() {
           return (
             <Card 
               key={card.title} 
-              className="rounded-xl border-none bg-white shadow-sm dark:bg-slate-900 transition-all hover:bg-slate-50/30 dark:hover:bg-slate-800/20"
+              className="border border-slate-200/60 bg-white shadow-2xs dark:bg-slate-900 transition-all hover:bg-slate-50/50 dark:hover:bg-slate-800/30"
             >
               <CardContent className="p-5 relative flex items-center justify-between">
                 <StatCard 
@@ -100,10 +99,10 @@ export default function PlatformStats() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
         {/* Subscription Breakdown - Flat Standard Container */}
-        <Card className="rounded-xl border-none bg-white shadow-sm dark:bg-slate-900 flex flex-col justify-between">
-          <CardHeader className="p-5 border-b border-slate-100 dark:border-slate-800/60 bg-slate-50/70 dark:bg-slate-900/20">
+        <Card className="border border-slate-200/60 bg-white shadow-2xs dark:bg-slate-900 flex flex-col justify-between">
+          <CardHeader className="p-5 border-b border-slate-200/60 dark:border-slate-800/60 bg-slate-50/70 dark:bg-slate-900/20">
             <div className="flex items-center gap-3">
-              <div className="p-2.5 bg-[#A05AFF]/10 text-[#A05AFF] rounded-xl">
+              <div className="p-2.5 bg-purple-100 text-purple-600 rounded-xl">
                 <BarChart3 className="h-4 w-4 stroke-[2.2]" />
               </div>
               <div>
@@ -134,7 +133,7 @@ export default function PlatformStats() {
                         <div className="flex items-center gap-2">
                           <Badge 
                             variant="outline" 
-                            className="capitalize font-bold text-[11px] px-2.5 py-0.5 rounded-xl border-[#A05AFF]/30 bg-[#A05AFF]/5 text-[#A05AFF] shadow-none"
+                            className="capitalize font-bold text-[11px] px-2.5 py-0.5 rounded-lg border-purple-200/60 bg-purple-50/80 text-purple-700 shadow-none"
                           >
                             {item._id || 'Unknown Tier'}
                           </Badge>
@@ -163,10 +162,10 @@ export default function PlatformStats() {
         </Card>
 
         {/* Recent Schools - Flat Influx Lists Table Layout */}
-        <Card className="rounded-xl border-none bg-white shadow-sm dark:bg-slate-900 flex flex-col justify-between overflow-hidden">
-          <CardHeader className="p-5 border-b border-slate-100 dark:border-slate-800/60 bg-slate-50/70 dark:bg-slate-900/20">
+        <Card className="border border-slate-200/60 bg-white shadow-2xs dark:bg-slate-900 flex flex-col justify-between overflow-hidden">
+          <CardHeader className="p-5 border-b border-slate-200/60 dark:border-slate-800/60 bg-slate-50/70 dark:bg-slate-900/20">
             <div className="flex items-center gap-3">
-              <div className="p-2.5 bg-[#4BCBEB]/10 text-[#4BCBEB] rounded-xl">
+              <div className="p-2.5 bg-cyan-100 text-cyan-600 rounded-xl">
                 <Clock className="h-4 w-4 stroke-[2.2]" />
               </div>
               <div>
@@ -179,12 +178,12 @@ export default function PlatformStats() {
           <CardContent className="p-0 flex-grow">
             <div className="overflow-x-auto w-full">
               <Table>
-                <TableHeader className="bg-slate-50/70 dark:bg-slate-900/20 text-slate-400 font-semibold text-[11px] uppercase tracking-wider border-b border-slate-100 dark:border-slate-800">
+                <TableHeader className="bg-slate-50/70 dark:bg-slate-900/20 text-slate-400 font-semibold text-[11px] uppercase tracking-wider border-b border-slate-200/60 dark:border-slate-800">
                   <TableRow>
-                    <TableHead className="font-bold text-[11px] py-4 pl-5 tracking-wider uppercase text-slate-400 dark:text-slate-500">School</TableHead>
-                    <TableHead className="font-bold text-[11px] py-4 tracking-wider uppercase text-slate-400 dark:text-slate-500">Plan</TableHead>
-                    <TableHead className="font-bold text-[11px] py-4 tracking-wider uppercase text-slate-400 dark:text-slate-500">Status</TableHead>
-                    <TableHead className="font-bold text-[11px] py-4 pr-5 tracking-wider uppercase text-slate-400 dark:text-slate-500 text-right">Added</TableHead>
+                    <TableHead className="font-bold text-[11px] py-4 pl-5 tracking-wider uppercase text-slate-500 dark:text-slate-500">School</TableHead>
+                    <TableHead className="font-bold text-[11px] py-4 tracking-wider uppercase text-slate-500 dark:text-slate-500">Plan</TableHead>
+                    <TableHead className="font-bold text-[11px] py-4 tracking-wider uppercase text-slate-500 dark:text-slate-500">Status</TableHead>
+                    <TableHead className="font-bold text-[11px] py-4 pr-5 tracking-wider uppercase text-slate-500 dark:text-slate-500 text-right">Added</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -203,26 +202,26 @@ export default function PlatformStats() {
                         <TableCell className="font-bold py-4 pl-5 text-sm text-slate-800 dark:text-slate-200 max-w-[170px] truncate">
                           <div className="flex items-center gap-1">
                             <span className="truncate">{school.schoolName}</span>
-                            <ArrowUpRight className="h-3.5 w-3.5 opacity-0 group-hover:opacity-100 transition-opacity text-[#A05AFF] shrink-0 hidden sm:inline-block" />
+                            <ArrowUpRight className="h-3.5 w-3.5 opacity-0 group-hover:opacity-100 transition-opacity text-purple-600 shrink-0 hidden sm:inline-block" />
                           </div>
                         </TableCell>
                         <TableCell className="py-4">
                           <Badge 
                             variant="outline" 
-                            className="text-[11px] font-bold px-2.5 py-0.5 rounded-xl border-[#4BCBEB]/30 bg-[#4BCBEB]/5 text-[#4BCBEB] shadow-none capitalize"
+                            className="text-[11px] font-bold px-2.5 py-0.5 rounded-lg border-cyan-200/60 bg-cyan-50/80 text-cyan-700 shadow-none capitalize"
                           >
                             {school.subscriptionPlan || 'None'}
                           </Badge>
                         </TableCell>
                         <TableCell className="py-4">
                           {school.isActive ? (
-                            <Badge className="border-[#1BCFB4]/30 bg-[#1BCFB4]/5 text-[#1BCFB4] text-[11px] font-bold tracking-wide px-2.5 py-0.5 rounded-xl shadow-none variant-outline">
-                              <span className="h-1.5 w-1.5 rounded-full mr-1.5 inline-block bg-[#1BCFB4]" />
+                            <Badge className="border-emerald-200/60 bg-emerald-50/80 text-emerald-700 text-[11px] font-bold tracking-wide px-2.5 py-0.5 rounded-lg shadow-none variant-outline">
+                              <span className="h-1.5 w-1.5 rounded-full mr-1.5 inline-block bg-emerald-500" />
                               Active
                             </Badge>
                           ) : (
-                            <Badge className="border-[#FE9496]/30 bg-[#FE9496]/5 text-[#FE9496] text-[11px] font-bold tracking-wide px-2.5 py-0.5 rounded-xl shadow-none variant-outline">
-                              <span className="h-1.5 w-1.5 rounded-full mr-1.5 inline-block bg-[#FE9496]" />
+                            <Badge className="border-rose-200/60 bg-rose-50/80 text-rose-700 text-[11px] font-bold tracking-wide px-2.5 py-0.5 rounded-lg shadow-none variant-outline">
+                              <span className="h-1.5 w-1.5 rounded-full mr-1.5 inline-block bg-rose-500" />
                               Inactive
                             </Badge>
                           )}

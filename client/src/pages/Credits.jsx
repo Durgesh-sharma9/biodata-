@@ -48,19 +48,19 @@ export default function Credits() {
   });
 
   return (
-    <div className="space-y-6 max-w-[1600px] mx-auto p-5 antialiased text-slate-800 dark:text-slate-200">
+    <div className="space-y-6 max-w-[1600px] mx-auto p-6 antialiased text-slate-800 dark:text-slate-200 bg-slate-50/50 dark:bg-slate-950 min-h-screen animate-in fade-in duration-500">
       
       {/* Page Header Panel Layout */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h1 className="text-xl font-bold tracking-tight text-slate-800 dark:text-white flex items-center gap-2">
-            <Coins className="h-5 w-5 text-[#A05AFF]" /> Wallet &amp; Credits
+            <Coins className="h-5 w-5 text-purple-600" /> Wallet &amp; Credits
           </h1>
           <p className="mt-1 text-sm text-slate-500 dark:text-slate-400 font-medium">
             Scale your talent acquisition pipelines, purchase package extensions, and monitor historical profile unlocks.
           </p>
         </div>
-        <div className="inline-flex items-center border border-[#A05AFF]/30 bg-[#A05AFF]/5 text-[#A05AFF] rounded-xl px-3 py-1 text-xs font-semibold">
+        <div className="inline-flex items-center border border-purple-200/60 bg-purple-50/80 text-purple-700 rounded-lg px-3 py-1 text-xs font-semibold">
           School Ecosystem Base
         </div>
       </div>
@@ -69,31 +69,31 @@ export default function Credits() {
       <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
         
         {/* Available Balance Card Component */}
-        <Card className="rounded-xl border-none bg-white shadow-sm dark:bg-slate-900">
+        <Card className="border border-slate-200/60 bg-white shadow-2xs dark:bg-slate-900">
           <CardHeader className="p-5 pb-2 flex flex-row items-center justify-between space-y-0">
             <CardTitle className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 flex items-center gap-2">
               Available Credits
             </CardTitle>
-            <div className="p-2 border border-[#A05AFF]/30 bg-[#A05AFF]/5 text-[#A05AFF] rounded-xl">
+            <div className="p-2 border border-purple-200/60 bg-purple-50/80 text-purple-700 rounded-lg">
               <Sparkles className="h-4 w-4" />
             </div>
           </CardHeader>
           <CardContent className="p-5 pt-2">
             {isLoadingCredits ? (
-              <div className="h-16 flex items-center"><Loader2 className="h-6 w-6 text-[#A05AFF] animate-spin" /></div>
+              <div className="h-16 flex items-center"><Loader2 className="h-6 w-6 text-purple-600 animate-spin" /></div>
             ) : (
               <div>
                 <div className="flex items-baseline gap-2">
                   <p className="text-5xl font-bold text-slate-800 dark:text-white tracking-tight">
                     {credits?.credits ?? 0}
                   </p>
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#A05AFF] bg-[#A05AFF]/5 border border-[#A05AFF]/30 px-2 py-0.5 rounded-md">Token Units</span>
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-purple-700 bg-purple-50/80 border border-purple-200/60 px-2 py-0.5 rounded-lg">Token Units</span>
                 </div>
                 
                 {credits?.plan ? (
-                  <div className="mt-4 p-3 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-between text-xs font-medium text-slate-500 dark:bg-slate-950 dark:border-slate-800 dark:text-slate-400">
+                  <div className="mt-4 p-3 bg-slate-50/50 border border-slate-100 rounded-lg flex items-center justify-between text-xs font-medium text-slate-500 dark:bg-slate-950 dark:border-slate-800 dark:text-slate-400">
                     <span className="flex items-center gap-1.5">
-                      <span className="w-2 h-2 rounded-full bg-[#1BCFB4]" />
+                      <span className="w-2 h-2 rounded-full bg-emerald-600" />
                       Active Tier: <strong className="text-slate-800 dark:text-slate-200 font-bold">{credits.plan.name}</strong>
                     </span>
                     <span className="text-slate-400 dark:text-slate-500 text-[11px]">
@@ -109,12 +109,12 @@ export default function Credits() {
         </Card>
 
         {/* Storefront Card Component */}
-        <Card className="rounded-xl border-none bg-white shadow-sm dark:bg-slate-900">
+        <Card className="border border-slate-200/60 bg-white shadow-2xs dark:bg-slate-900">
           <CardHeader className="p-5 pb-2 flex flex-row items-center justify-between space-y-0">
             <CardTitle className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
               Available Storefront Extensions
             </CardTitle>
-            <div className="p-2 border border-[#1BCFB4]/30 bg-[#1BCFB4]/5 text-[#1BCFB4] rounded-xl">
+            <div className="p-2 border border-emerald-200/60 bg-emerald-50/80 text-emerald-600 rounded-lg">
               <ShoppingBag className="h-4 w-4" />
             </div>
           </CardHeader>
@@ -127,13 +127,13 @@ export default function Credits() {
               packages.filter((p) => p.isActive !== false).map((pkg) => (
                 <div 
                   key={pkg._id} 
-                  className="flex items-center justify-between rounded-xl border border-slate-100 bg-slate-50/50 p-3 transition-all hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-950/50 dark:hover:bg-slate-950"
+                  className="flex items-center justify-between rounded-lg border border-slate-200/60 bg-slate-50/50 p-3 transition-all hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-950/50 dark:hover:bg-slate-950"
                 >
                   <div className="space-y-0.5">
                     <p className="text-sm font-bold text-slate-800 dark:text-slate-200">
                       {pkg.name}
                     </p>
-                    <p className="text-[11px] font-bold uppercase tracking-wider text-[#A05AFF] bg-[#A05AFF]/5 border border-[#A05AFF]/30 rounded-md px-1.5 py-0.5 w-fit">
+                    <p className="text-[11px] font-bold uppercase tracking-wider text-purple-700 bg-purple-50/80 border border-purple-200/60 rounded-lg px-1.5 py-0.5 w-fit">
                       {pkg.credits} tokens
                     </p>
                   </div>
@@ -141,7 +141,7 @@ export default function Credits() {
                     size="sm" 
                     onClick={() => purchaseMutation.mutate(pkg._id)} 
                     disabled={purchaseMutation.isPending}
-                    className="h-9 rounded-xl bg-[#A05AFF] hover:bg-[#A05AFF]/90 text-white text-xs font-bold px-4 transition-all flex items-center gap-1.5"
+                    className="h-9 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-bold px-4 transition-all flex items-center gap-1.5"
                   >
                     {purchaseMutation.isPending && purchaseMutation.variables === pkg._id ? (
                       <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -159,15 +159,15 @@ export default function Credits() {
       </div>
 
       {/* Profile Unlock Audit Trail Section */}
-      <Card className="rounded-xl border-none bg-white shadow-sm dark:bg-slate-900 overflow-hidden">
-        <CardHeader className="p-5 border-b border-slate-100 dark:border-slate-800 flex flex-row items-center justify-between space-y-0">
+      <Card className="border border-slate-200/60 bg-white shadow-2xs dark:bg-slate-900 overflow-hidden">
+        <CardHeader className="p-5 border-b border-slate-200/60 dark:border-slate-800 flex flex-row items-center justify-between space-y-0">
           <div className="space-y-0.5">
             <CardTitle className="text-sm font-bold tracking-wide text-slate-800 dark:text-slate-200 flex items-center gap-2">
-              <History className="h-4 w-4 text-[#A05AFF]" /> Profile Unlock Audit Ledger
+              <History className="h-4 w-4 text-purple-600" /> Profile Unlock Audit Ledger
             </CardTitle>
             <p className="text-xs font-medium text-slate-400 dark:text-slate-500">Chronological verification records of asset consumption</p>
           </div>
-          <div className="border border-slate-200 bg-slate-50 text-slate-600 rounded-xl px-2.5 py-0.5 text-[11px] font-bold dark:border-slate-700 dark:bg-slate-950 dark:text-slate-400">
+          <div className="border border-slate-200/60 bg-slate-50/50 text-slate-600 rounded-lg px-2.5 py-0.5 text-[11px] font-bold dark:border-slate-800 dark:bg-slate-950 dark:text-slate-400">
             Total Logs: {history.length}
           </div>
         </CardHeader>
@@ -175,7 +175,7 @@ export default function Credits() {
           <div className="w-full overflow-x-auto">
             <Table>
               <TableHeader className="bg-slate-50/70 dark:bg-slate-900/20">
-                <TableRow className="hover:bg-transparent border-b border-slate-100 dark:border-slate-800">
+                <TableRow className="hover:bg-transparent border-b border-slate-200/60 dark:border-slate-800">
                   <TableHead className="text-slate-400 font-semibold text-[11px] uppercase tracking-wider pl-6 h-10">
                     <span className="flex items-center gap-1.5"><User className="h-3 w-3" /> Candidate</span>
                   </TableHead>
@@ -195,7 +195,7 @@ export default function Credits() {
                   <TableRow className="hover:bg-transparent">
                     <TableCell colSpan={4} className="py-12 text-center">
                       <div className="flex flex-col items-center justify-center gap-2">
-                        <Loader2 className="h-6 w-6 text-[#A05AFF] animate-spin" />
+                        <Loader2 className="h-6 w-6 text-purple-600 animate-spin" />
                         <span className="text-xs text-slate-400 font-semibold tracking-wide">Syncing data log matrices...</span>
                       </div>
                     </TableCell>
@@ -204,7 +204,7 @@ export default function Credits() {
                   <TableRow className="hover:bg-transparent">
                     <TableCell colSpan={4} className="py-12 text-center">
                       <div className="max-w-sm mx-auto flex flex-col items-center justify-center space-y-2">
-                        <div className="p-2.5 border border-slate-200 bg-slate-50 rounded-xl text-slate-400 dark:border-slate-800 dark:bg-slate-950">
+                        <div className="p-2.5 border border-slate-200/60 bg-slate-50/50 rounded-lg text-slate-400 dark:border-slate-800 dark:bg-slate-950">
                           <History className="h-5 w-5" />
                         </div>
                         <div className="space-y-0.5">
@@ -218,7 +218,7 @@ export default function Credits() {
                   </TableRow>
                 ) : (
                   history.map((h) => (
-                    <TableRow key={h._id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-all border-b border-slate-100 last:border-none dark:border-slate-800">
+                    <TableRow key={h._id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-all border-b border-slate-200/60 last:border-none dark:border-slate-800">
                       <TableCell className="font-bold text-slate-800 text-sm pl-6 dark:text-slate-200">
                         {h.candidateId?.fullName || <span className="text-slate-400 dark:text-slate-500 font-normal italic">Unavailable profile record</span>}
                       </TableCell>
@@ -227,11 +227,11 @@ export default function Credits() {
                       </TableCell>
                       <TableCell>
                         {h.candidateId?.source ? (
-                          <span className="inline-block border border-[#9E58FF]/30 bg-[#9E58FF]/5 text-[#9E58FF] font-semibold rounded-md px-2 py-0.5 text-xs">
+                          <span className="inline-block border border-indigo-200/60 bg-indigo-50/80 text-indigo-700 font-semibold rounded-lg px-2 py-0.5 text-xs">
                             {h.candidateId.source.replace(/_/g, ' ')}
                           </span>
                         ) : (
-                          <span className="inline-block border border-slate-200 text-slate-400 text-xs font-medium rounded-md px-2 py-0.5 dark:border-slate-700 dark:text-slate-500">
+                          <span className="inline-block border border-slate-200/60 text-slate-400 text-xs font-medium rounded-lg px-2 py-0.5 dark:border-slate-700 dark:text-slate-500">
                             Talent Pool
                           </span>
                         )}

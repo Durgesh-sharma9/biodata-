@@ -120,7 +120,7 @@ function MasterDataTable({ tab }) {
   return (
     <div className="space-y-6">
       {/* Input Entry Card Configuration */}
-      <Card className="rounded-xl border-none bg-white shadow-sm dark:bg-slate-900 overflow-hidden">
+      <Card className="border border-slate-200/60 bg-white shadow-2xs dark:bg-slate-900 overflow-hidden">
         <CardHeader className="p-5 pb-3">
           <CardTitle className="text-sm font-bold tracking-wide text-slate-800 dark:text-slate-200 flex items-center gap-2">
             Create New {tab.label.slice(0, -1)}
@@ -137,13 +137,13 @@ function MasterDataTable({ tab }) {
                 value={newItem}
                 onChange={(e) => setNewItem(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
-                className="h-11 border-slate-200 rounded-xl focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 dark:bg-slate-800 dark:border-slate-700 text-sm"
+                className="h-11 border-slate-200 rounded-xl dark:bg-slate-800 dark:border-slate-700 text-sm"
               />
             </div>
             <Button 
               onClick={handleAdd} 
               disabled={createMutation.isPending || !newItem.trim()}
-              className="bg-[#A05AFF] hover:bg-[#A05AFF]/90 text-white font-bold h-11 px-5 rounded-xl transition-all duration-200 shrink-0 flex items-center gap-1.5"
+              className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold h-11 px-5 rounded-xl transition-all duration-200 shrink-0 flex items-center gap-1.5"
             >
               {createMutation.isPending ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -159,11 +159,11 @@ function MasterDataTable({ tab }) {
       </Card>
 
       {/* Main Records Control Core Section */}
-      <Card className="rounded-xl border-none bg-white shadow-sm dark:bg-slate-900 overflow-hidden">
-        <CardHeader className="p-5 border-b border-slate-100 dark:border-slate-800/60 bg-slate-50/70 dark:bg-slate-900/20">
+      <Card className="border border-slate-200/60 bg-white shadow-2xs dark:bg-slate-900 overflow-hidden">
+        <CardHeader className="p-5 border-b border-slate-200/60 dark:border-slate-800/60 bg-slate-50/70 dark:bg-slate-900/20">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="p-2.5 bg-[#A05AFF]/10 text-[#A05AFF] rounded-xl">
+              <div className="p-2.5 bg-purple-100 text-purple-600 rounded-xl">
                 <TabIcon className="h-4 w-4" />
               </div>
               <div>
@@ -175,7 +175,7 @@ function MasterDataTable({ tab }) {
               <Search className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400" />
               <Input
                 placeholder={`Search ${tab.label.toLowerCase()}...`}
-                className="pl-10 pr-4 h-11 border-slate-200 rounded-xl focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 dark:bg-slate-800 dark:border-slate-700 text-sm"
+                className="pl-10 pr-4 h-11 border-slate-200 rounded-xl dark:bg-slate-800 dark:border-slate-700 text-sm"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -196,11 +196,11 @@ function MasterDataTable({ tab }) {
                       {item.name}
                     </span>
                     {item.isActive ?? true ? (
-                      <Badge className="border-[#1BCFB4]/30 bg-[#1BCFB4]/5 text-[#1BCFB4] text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md shadow-none variant-outline">
+                      <Badge className="border-emerald-200/60 bg-emerald-50/80 text-emerald-700 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md shadow-none">
                         Active
                       </Badge>
                     ) : (
-                      <Badge className="border-[#FE9496]/30 bg-[#FE9496]/5 text-[#FE9496] text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md shadow-none variant-outline">
+                      <Badge className="border-rose-200/60 bg-rose-50/80 text-rose-700 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md shadow-none">
                         Inactive
                       </Badge>
                     )}
@@ -211,7 +211,7 @@ function MasterDataTable({ tab }) {
                       variant="ghost" 
                       size="icon" 
                       onClick={() => handleEdit(item)}
-                      className="h-8 w-8 rounded-xl text-slate-400 hover:text-[#A05AFF] hover:bg-[#A05AFF]/10 transition-colors"
+                      className="h-8 w-8 rounded-lg text-slate-400 hover:text-purple-600 hover:bg-purple-50 transition-colors"
                       title="Edit Item"
                     >
                       <Edit2 className="h-3.5 w-3.5" />
@@ -220,7 +220,7 @@ function MasterDataTable({ tab }) {
                       variant="ghost" 
                       size="icon" 
                       onClick={() => handleDelete(item._id)}
-                      className="h-8 w-8 rounded-xl text-slate-400 hover:text-[#FE9496] hover:bg-[#FE9496]/10 transition-colors"
+                      className="h-8 w-8 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
                       title="Delete Item"
                     >
                       <Trash2 className="h-3.5 w-3.5" />
@@ -246,7 +246,7 @@ function MasterDataTable({ tab }) {
 
       {/* Polish Confirmation Dialog Form Box */}
       <Dialog open={!!editItem} onOpenChange={() => setEditItem(null)}>
-        <DialogContent className="max-w-md rounded-xl border-none bg-white p-6 dark:bg-slate-900 shadow-sm">
+        <DialogContent className="max-w-md rounded-xl border border-slate-200/60 bg-white p-6 dark:bg-slate-900 shadow-lg">
           <DialogHeader>
             <DialogTitle className="text-sm font-bold tracking-wide text-slate-800 dark:text-slate-200">
               Update Row Entry
@@ -263,7 +263,7 @@ function MasterDataTable({ tab }) {
               <Input
                 value={editItem?.name || ''}
                 onChange={(e) => setEditItem({ ...editItem, name: e.target.value })}
-                className="h-11 border-slate-200 rounded-xl focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 dark:bg-slate-800 dark:border-slate-700 text-sm"
+                className="h-11 border-slate-200 rounded-xl dark:bg-slate-800 dark:border-slate-700 text-sm"
                 placeholder="Modify name parameter..."
                 onKeyDown={(e) => e.key === 'Enter' && handleUpdate()}
               />
@@ -280,7 +280,7 @@ function MasterDataTable({ tab }) {
             <Button
               onClick={handleUpdate}
               disabled={updateMutation.isPending || !editItem?.name?.trim()}
-              className="bg-[#A05AFF] hover:bg-[#A05AFF]/90 text-white font-bold rounded-xl h-11 px-5 transition-all duration-200 active:scale-95"
+              className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold rounded-xl h-11 px-5 transition-all duration-200 active:scale-95"
             >
               {updateMutation.isPending ? 'Saving...' : 'Apply Overrides'}
             </Button>
@@ -295,19 +295,18 @@ export default function MasterData() {
   const [activeTab, setActiveTab] = useState('positions');
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto bg-[#f3f3f4] dark:bg-slate-950 text-slate-800 dark:text-white antialiased min-h-screen p-4 md:p-6 max-w-7xl mx-auto">
+    <div className="space-y-6 p-6 max-w-7xl mx-auto bg-slate-50/50 dark:bg-slate-950 text-slate-800 dark:text-white antialiased min-h-screen animate-in fade-in duration-500">
       {/* Saas Layout Header Block Container */}
-      <div className="border-b border-slate-100 dark:border-slate-800 pb-5">
+      <div className="border-b border-slate-200/60 dark:border-slate-800 pb-5">
         <PageHeader
           title="Master Data Management"
           description="Govern systematic parameters, structural attributes, global taxonomy indexes, and dropdown data feeds for HireHub."
-          className="text-slate-800 dark:text-white font-bold tracking-tight text-xl"
         />
       </div>
 
       {/* Advanced Purple Theme Navigational Tabs Panel Systems */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="inline-flex h-12 items-center justify-center rounded-xl bg-white dark:bg-slate-900 p-1 border border-slate-200/40 dark:border-slate-800 shadow-sm gap-1 w-auto max-w-full overflow-x-auto">
+        <TabsList className="inline-flex h-12 items-center justify-center rounded-xl bg-white dark:bg-slate-900 p-1 border border-slate-200/60 dark:border-slate-800 shadow-sm gap-1 w-auto max-w-full overflow-x-auto">
           {TABS.map((tab) => {
             const CurrentIcon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -315,9 +314,9 @@ export default function MasterData() {
               <TabsTrigger 
                 key={tab.id} 
                 value={tab.id}
-                className="inline-flex items-center gap-2 rounded-lg px-5 py-2 text-sm font-semibold tracking-wide transition-all data-[state=active]:bg-[#A05AFF]/10 data-[state=active]:text-[#A05AFF] active:scale-[0.97]"
+                className="inline-flex items-center gap-2 rounded-lg px-5 py-2 text-sm font-semibold tracking-wide transition-all data-[state=active]:bg-purple-50 data-[state=active]:text-purple-600 active:scale-[0.97]"
               >
-                <CurrentIcon className={`h-3.5 w-3.5 transition-transform ${isActive ? 'scale-110 text-[#A05AFF]' : 'text-slate-400'}`} />
+                <CurrentIcon className={`h-3.5 w-3.5 transition-transform ${isActive ? 'scale-110 text-purple-600' : 'text-slate-400'}`} />
                 <span>{tab.label}</span>
               </TabsTrigger>
             );

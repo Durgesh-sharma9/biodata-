@@ -9,10 +9,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
 const FIELDS = [
-  { key: 'positions', label: 'Positions', icon: Briefcase, badgeStyle: 'border-[#4BCBEB]/30 bg-[#4BCBEB]/5 text-[#4BCBEB]' },
-  { key: 'subjects', label: 'Subjects', icon: BookOpen, badgeStyle: 'border-[#9E58FF]/30 bg-[#9E58FF]/5 text-[#9E58FF]' },
-  { key: 'qualifications', label: 'Qualifications', icon: GraduationCap, badgeStyle: 'border-[#A05AFF]/30 bg-[#A05AFF]/5 text-[#A05AFF]' },
-  { key: 'classes', label: 'Classes', icon: Layers, badgeStyle: 'border-[#1BCFB4]/30 bg-[#1BCFB4]/5 text-[#1BCFB4]' },
+  { key: 'positions', label: 'Positions', icon: Briefcase, badgeStyle: 'border-cyan-200/60 bg-cyan-50/80 text-cyan-700' },
+  { key: 'subjects', label: 'Subjects', icon: BookOpen, badgeStyle: 'border-indigo-200/60 bg-indigo-50/80 text-indigo-700' },
+  { key: 'qualifications', label: 'Qualifications', icon: GraduationCap, badgeStyle: 'border-purple-200/60 bg-purple-50/80 text-purple-700' },
+  { key: 'classes', label: 'Classes', icon: Layers, badgeStyle: 'border-emerald-200/60 bg-emerald-50/80 text-emerald-700' },
 ];
 
 function SettingsSection({ field, label, items, onAdd, onRemove, isPending, icon: Icon, badgeStyle }) {
@@ -25,15 +25,15 @@ function SettingsSection({ field, label, items, onAdd, onRemove, isPending, icon
   };
 
   return (
-    <Card className="rounded-xl border-none bg-white shadow-sm dark:bg-slate-900">
+    <Card className="border border-slate-200/60 bg-white shadow-2xs dark:bg-slate-900">
       <CardHeader className="p-5 pb-2 flex flex-row items-center justify-between space-y-0">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 border border-[#A05AFF]/30 bg-[#A05AFF]/5 text-[#A05AFF] rounded-xl">
+          <div className="p-2.5 border border-purple-200/60 bg-purple-50/80 text-purple-700 rounded-xl">
             <Icon className="h-4 w-4" />
           </div>
           <CardTitle className="text-sm font-bold tracking-wide text-slate-800 dark:text-slate-200">{label}</CardTitle>
         </div>
-        <div className="border border-slate-200 bg-slate-50 text-slate-600 rounded-xl px-2.5 py-0.5 text-[11px] font-bold dark:border-slate-700 dark:bg-slate-950 dark:text-slate-400">
+        <div className="border border-slate-200/60 bg-slate-50/50 text-slate-600 rounded-xl px-2.5 py-0.5 text-[11px] font-bold dark:border-slate-800 dark:bg-slate-950 dark:text-slate-400">
           {items?.length || 0} Total
         </div>
       </CardHeader>
@@ -46,12 +46,12 @@ function SettingsSection({ field, label, items, onAdd, onRemove, isPending, icon
             value={newValue}
             onChange={(e) => setNewValue(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAdd())}
-            className="w-full h-11 px-4 bg-white border border-slate-200 rounded-xl transition-all placeholder:text-slate-400 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-0 focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 dark:bg-slate-950 dark:border-slate-800"
+            className="w-full h-11 px-4 bg-white border border-slate-200 rounded-xl transition-all placeholder:text-slate-400 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-0 focus-visible:ring-purple-600 focus-visible:border-purple-200/60 dark:bg-slate-950 dark:border-slate-800"
           />
           <Button 
             onClick={handleAdd} 
             disabled={isPending || !newValue.trim()}
-            className="h-11 w-11 shrink-0 rounded-xl bg-[#A05AFF] hover:bg-[#A05AFF]/90 text-white transition-all p-0 flex items-center justify-center disabled:opacity-40"
+            className="h-11 w-11 shrink-0 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white transition-all p-0 flex items-center justify-center disabled:opacity-40"
           >
             <Plus className="h-4 w-4" />
           </Button>
@@ -67,7 +67,7 @@ function SettingsSection({ field, label, items, onAdd, onRemove, isPending, icon
             items.map((item) => (
               <span 
                 key={item} 
-                className={`inline-flex items-center gap-1.5 py-1 pl-3 pr-1.5 text-xs font-semibold rounded-md border transition-all duration-200 ${badgeStyle}`}
+                className={`inline-flex items-center gap-1.5 py-1 pl-3 pr-1.5 text-xs font-semibold rounded-lg border transition-all duration-200 ${badgeStyle}`}
               >
                 <span className="tracking-tight">{item}</span>
                 <button
@@ -107,10 +107,10 @@ export default function Settings() {
 
   if (isLoading) {
     return (
-      <div className="flex h-[60vh] flex-col items-center justify-center space-y-4 antialiased bg-[#f3f3f4] dark:bg-slate-950">
+      <div className="flex h-[60vh] flex-col items-center justify-center space-y-4 antialiased bg-slate-50/50 dark:bg-slate-950">
         <div className="relative flex items-center justify-center">
-          <Loader2 className="h-10 w-10 text-[#A05AFF] animate-spin relative z-10" />
-          <div className="absolute inset-0 bg-[#A05AFF]/10 rounded-full blur-xl animate-pulse scale-150" />
+          <Loader2 className="h-10 w-10 text-purple-600 animate-spin relative z-10" />
+          <div className="absolute inset-0 bg-purple-100 rounded-full blur-xl animate-pulse scale-150" />
         </div>
         <p className="text-slate-500 dark:text-slate-400 font-bold tracking-wide text-xs">
           Synchronizing workspace configurations...
@@ -122,19 +122,19 @@ export default function Settings() {
   const isPending = addMutation.isPending || removeMutation.isPending;
 
   return (
-    <div className="space-y-6 max-w-[1600px] mx-auto p-5 antialiased text-slate-800 dark:text-slate-200 bg-[#f3f3f4] dark:bg-slate-950 min-h-screen">
+    <div className="space-y-6 max-w-[1600px] mx-auto p-6 antialiased text-slate-800 dark:text-slate-200 bg-slate-50/50 dark:bg-slate-950 min-h-screen animate-in fade-in duration-500">
       
       {/* Page Header Panel Layout */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white dark:bg-slate-900 p-5 rounded-xl shadow-sm border-none">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200/60 shadow-2xs">
         <div>
           <h1 className="text-xl font-bold tracking-tight text-slate-800 dark:text-white flex items-center gap-2">
-            <Sliders className="h-5 w-5 text-[#A05AFF]" /> System Configurations
+            <Sliders className="h-5 w-5 text-purple-600" /> System Configurations
           </h1>
           <p className="mt-1 text-sm text-slate-500 dark:text-slate-400 font-medium">
             Manage taxonomies across positions, subjects, classifications, and regulatory credentials.
           </p>
         </div>
-        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border border-[#A05AFF]/30 bg-[#A05AFF]/5 text-[#A05AFF] text-[11px] font-bold uppercase tracking-wider self-start md:self-auto">
+        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-purple-200/60 bg-purple-50/80 text-purple-700 text-[11px] font-bold uppercase tracking-wider self-start md:self-auto">
           <Sparkles className="h-3 w-3" /> Core Engine
         </div>
       </div>

@@ -19,26 +19,26 @@ export default function ApplicantDocuments() {
   const documents = profile?.documents || [];
 
   return (
-    <div>
+    <div className="space-y-6 p-6 max-w-7xl mx-auto bg-slate-50/50 dark:bg-slate-950 min-h-screen animate-in fade-in duration-500">
       <PageHeader
         title="Documents"
         description="Your uploaded resume and certificates"
         action={
-          <Button asChild variant="outline">
+          <Button asChild variant="outline" className="rounded-lg border-slate-200 hover:bg-slate-50 hover:text-purple-600">
             <Link to="/applicant/profile">Upload Documents</Link>
           </Button>
         }
       />
 
-      <Card>
+      <Card className="border border-slate-200/60 bg-white shadow-2xs dark:bg-slate-900">
         <CardHeader>
-          <CardTitle>Uploaded Documents ({documents.length})</CardTitle>
+          <CardTitle className="text-sm font-bold text-slate-800 dark:text-slate-200">Uploaded Documents ({documents.length})</CardTitle>
         </CardHeader>
         <CardContent>
           {documents.length === 0 ? (
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-slate-400 dark:text-slate-500">
               No documents uploaded yet.{' '}
-              <Link to="/applicant/profile" className="underline">
+              <Link to="/applicant/profile" className="underline text-purple-600 font-semibold">
                 Add documents in your profile
               </Link>
             </p>
@@ -50,12 +50,14 @@ export default function ApplicantDocuments() {
                   href={doc.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 rounded-md border p-4 transition-colors hover:bg-muted/50"
+                  className="flex items-center gap-3 rounded-lg border border-slate-200/60 p-4 transition-all hover:bg-slate-50 hover:border-purple-200/60 dark:hover:bg-slate-800/30"
                 >
-                  <FileText className="h-8 w-8 text-primary" />
+                  <div className="p-2 rounded-lg bg-purple-100 text-purple-600">
+                    <FileText className="h-6 w-6" />
+                  </div>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium">{doc.name}</p>
-                    <p className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <p className="truncate text-sm font-bold text-slate-800 dark:text-slate-200">{doc.name}</p>
+                    <p className="flex items-center gap-1 text-xs text-slate-400 dark:text-slate-500">
                       View <ExternalLink className="h-3 w-3" />
                     </p>
                   </div>

@@ -89,19 +89,18 @@ export default function CandidateForm() {
   }
 
   return (
-    <div className="space-y-6 p-5 max-w-4xl mx-auto bg-[#f3f3f4] dark:bg-slate-950 text-slate-800 dark:text-white antialiased min-h-screen">
+    <div className="space-y-6 p-6 max-w-4xl mx-auto bg-slate-50/50 dark:bg-slate-950 text-slate-800 dark:text-white antialiased min-h-screen animate-in fade-in duration-500">
       
       {/* Page Header Minimalist Panel */}
-      <div className="border-b border-slate-100 dark:border-slate-800 pb-5">
+      <div className="border-b border-slate-200/60 dark:border-slate-800 pb-5">
         <PageHeader
           title={isEdit ? 'Edit Candidate Profile' : 'Onboard New Candidate'}
           description={isEdit ? 'Modify background records, profile configurations, and dynamic meta indicators.' : 'Register and index a fresh talent entry profile directly into HireHub.'}
-          className="text-slate-800 dark:text-white font-bold tracking-tight text-xl"
         />
       </div>
 
       {/* Main Container Flat Layer Constraint Padding */}
-      <div className="rounded-xl border-none bg-white p-5 shadow-sm dark:bg-slate-900">
+      <div className="rounded-xl border border-slate-200/60 bg-white p-5 shadow-2xs dark:bg-slate-900">
         <DynamicCandidateForm
           initialValues={candidate}
           onSubmit={onSubmit}
@@ -115,10 +114,10 @@ export default function CandidateForm() {
 
       {/* Polish Premium Collision Detection / Conflict Resolution Modal */}
       <Dialog open={!!duplicate} onOpenChange={() => setDuplicate(null)}>
-        <DialogContent className="max-w-md rounded-xl border-none bg-white p-6 dark:bg-slate-900 shadow-sm">
+        <DialogContent className="max-w-md rounded-xl border border-slate-200/60 bg-white p-6 dark:bg-slate-900 shadow-lg">
           <DialogHeader className="space-y-3">
             {/* Soft Translucent Danger State Badge Icon */}
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-[#FE9496]/30 bg-[#FE9496]/5 text-[#FE9496]">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-rose-200/60 bg-rose-50/80 text-rose-600">
               <ShieldAlert className="h-5 w-5 stroke-[2.2]" />
             </div>
             <div className="space-y-1">
@@ -126,19 +125,19 @@ export default function CandidateForm() {
                 Duplicate Index Checked
               </DialogTitle>
               <DialogDescription className="text-xs text-slate-400 dark:text-slate-500 font-medium mt-1 leading-relaxed">
-                A unique constraint collision has occurred. A candidate with mobile number <code className="bg-[#FE9496]/10 text-[#FE9496] dark:bg-[#FE9496]/20 px-1.5 py-0.5 rounded font-mono font-bold text-[11px]">{duplicate?.mobile}</code> already maps to a live entity record.
+                A unique constraint collision has occurred. A candidate with mobile number <code className="bg-rose-50/80 text-rose-600 dark:bg-rose-900/30 px-1.5 py-0.5 rounded font-mono font-bold text-[11px]">{duplicate?.mobile}</code> already maps to a live entity record.
               </DialogDescription>
             </div>
           </DialogHeader>
 
           {/* Entity Snapshot Alert Card Box - Soft Danger Aesthetics */}
           <DialogBody className="pt-4">
-            <div className="rounded-xl border border-[#FE9496]/30 bg-[#FE9496]/5 p-4 flex items-center justify-between gap-4">
+            <div className="rounded-xl border border-rose-200/60 bg-rose-50/80 p-4 flex items-center justify-between gap-4">
               <div className="space-y-1 min-w-0">
                 <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 block">Existing Identity Matches</span>
                 <span className="text-sm font-bold text-slate-800 dark:text-slate-200 tracking-tight block truncate">{duplicate?.fullName}</span>
               </div>
-              <div className="inline-flex items-center text-xs font-bold text-[#FE9496] bg-[#FE9496]/10 border border-[#FE9496]/30 px-2.5 py-1 rounded-xl shrink-0">
+              <div className="inline-flex items-center text-xs font-bold text-rose-600 bg-rose-100 border border-rose-200/60 px-2.5 py-1 rounded-lg shrink-0">
                 Conflict Found
               </div>
             </div>
@@ -148,7 +147,7 @@ export default function CandidateForm() {
             <Button
               variant="outline"
               onClick={() => navigate(`/candidates/${duplicate?._id}`)}
-              className="rounded-xl h-11 border-slate-200 text-slate-700 dark:border-slate-700 dark:text-slate-300 font-medium gap-2 transition-all w-full sm:w-auto"
+              className="rounded-lg h-11 border-slate-200 text-slate-700 dark:border-slate-700 dark:text-slate-300 font-medium gap-2 transition-all w-full sm:w-auto"
             >
               <Eye className="h-3.5 w-3.5 text-slate-400" />
               <span>View Existing</span>
@@ -157,7 +156,7 @@ export default function CandidateForm() {
             <Button
               variant="outline"
               onClick={() => navigate(`/candidates/${duplicate?._id}/edit`)}
-              className="rounded-xl h-11 border-slate-200 text-slate-700 dark:border-slate-700 dark:text-slate-300 font-medium gap-2 transition-all w-full sm:w-auto"
+              className="rounded-lg h-11 border-slate-200 text-slate-700 dark:border-slate-700 dark:text-slate-300 font-medium gap-2 transition-all w-full sm:w-auto"
             >
               <FileEdit className="h-3.5 w-3.5 text-slate-400" />
               <span>Update Record</span>
@@ -166,7 +165,7 @@ export default function CandidateForm() {
             {!isEdit && (
               <Button
                 onClick={() => handleForceCreate(duplicate)}
-                className="bg-[#A05AFF] hover:bg-[#A05AFF]/90 text-white font-bold rounded-xl h-11 gap-2 transition-all duration-200 active:scale-95 w-full sm:w-auto"
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold rounded-lg h-11 gap-2 transition-all duration-200 active:scale-95 w-full sm:w-auto"
               >
                 <UserPlus className="h-3.5 w-3.5 stroke-[2.2]" />
                 <span>Create Anyway</span>

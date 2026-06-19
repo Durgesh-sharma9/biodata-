@@ -87,25 +87,24 @@ export default function Schools() {
   };
 
   return (
-    <div className="space-y-6 p-5 max-w-7xl mx-auto bg-[#f3f3f4] dark:bg-slate-950 text-slate-800 dark:text-white antialiased min-h-screen">
+    <div className="space-y-6 p-6 max-w-7xl mx-auto bg-slate-50/50 dark:bg-slate-950 text-slate-800 dark:text-white antialiased min-h-screen animate-in fade-in duration-500">
       
       {/* Page Header Panel */}
-      <div className="border-b border-slate-100 dark:border-slate-800 pb-5">
+      <div className="border-b border-slate-200/60 pb-5 dark:border-slate-800">
         <PageHeader
           title="Schools Management"
           description="Oversee partner institutions, audit infrastructure profiles, and tweak systematic licensing hierarchies."
-          className="text-slate-800 dark:text-white font-bold tracking-tight text-xl"
         />
       </div>
 
       {/* Filter Toolbar Section - Flat Container Layout */}
-      <Card className="rounded-xl border-none bg-white shadow-sm dark:bg-slate-900 overflow-hidden">
-        <CardContent className="flex flex-col sm:flex-row gap-6 p-5">
+      <Card className="border border-slate-200/60 bg-white shadow-2xs dark:bg-slate-900 overflow-hidden">
+        <CardContent className="flex flex-col sm:flex-row gap-6 p-4">
           <div className="relative flex-1">
             <Search className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400" />
             <Input
               placeholder="Filter institutions by key title metadata..."
-              className="pl-10 h-11 border-slate-200 rounded-xl focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 dark:bg-slate-800 dark:border-slate-700 text-sm"
+              className="pl-10 h-11 border-slate-200 rounded-xl dark:bg-slate-800 dark:border-slate-700 text-sm"
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);
@@ -115,7 +114,7 @@ export default function Schools() {
           </div>
           <div className="flex items-center gap-2">
             <Select value={status || 'all'} onValueChange={(v) => { setStatus(v === 'all' ? '' : v); setPage(1); }}>
-              <SelectTrigger className="w-full sm:w-44 h-11 border-slate-200 rounded-xl focus:ring-[#A05AFF] dark:bg-slate-800 dark:border-slate-700 text-sm font-medium">
+              <SelectTrigger className="w-full sm:w-44 h-11 border-slate-200 rounded-xl dark:bg-slate-800 dark:border-slate-700 text-sm font-medium">
                 <div className="flex items-center gap-2">
                   <Filter className="h-3.5 w-3.5 text-slate-400" />
                   <SelectValue placeholder="Filter Status" />
@@ -123,8 +122,8 @@ export default function Schools() {
               </SelectTrigger>
               <SelectContent className="rounded-xl dark:bg-slate-800">
                 <SelectItem value="all" className="font-medium rounded-lg">All Statuses</SelectItem>
-                <SelectItem value="active" className="font-medium rounded-lg text-[#1BCFB4]">Active Only</SelectItem>
-                <SelectItem value="inactive" className="font-medium rounded-lg text-[#FE9496]">Inactive Only</SelectItem>
+                <SelectItem value="active" className="font-medium rounded-lg text-emerald-600">Active Only</SelectItem>
+                <SelectItem value="inactive" className="font-medium rounded-lg text-rose-600">Inactive Only</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -132,12 +131,12 @@ export default function Schools() {
       </Card>
 
       {/* Core Operational Matrix Presentation Grid Card Layer Constraint */}
-      <Card className="rounded-xl border-none bg-white shadow-sm dark:bg-slate-900 overflow-hidden">
+      <Card className="border border-slate-200/60 bg-white shadow-2xs dark:bg-slate-900 overflow-hidden">
         <CardContent className="p-0">
           {isLoading ? (
             <div className="py-24 text-center">
               <div className="flex flex-col items-center justify-center space-y-3">
-                <Loader2 className="h-5 w-5 text-[#A05AFF] animate-spin" />
+                <Loader2 className="h-5 w-5 text-indigo-600 animate-spin" />
                 <span className="text-sm font-semibold text-slate-500 dark:text-slate-400 tracking-wide animate-pulse">Syncing Workspace Nodes...</span>
               </div>
             </div>
@@ -154,27 +153,27 @@ export default function Schools() {
           ) : (
             <div className="overflow-x-auto w-full">
               <Table>
-                <TableHeader className="bg-slate-50/70 dark:bg-slate-900/20 text-slate-400 font-semibold text-[11px] uppercase tracking-wider border-b border-slate-100 dark:border-slate-800">
+                <TableHeader className="bg-slate-50/70 dark:bg-slate-900/20 border-b border-slate-200/60 dark:border-slate-800">
                   <TableRow>
-                    <TableHead className="pl-6 font-bold text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-500 py-4">School Name</TableHead>
-                    <TableHead className="font-bold text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-500 py-4">Email Contact</TableHead>
-                    <TableHead className="font-bold text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-500 py-4">Plan Tier</TableHead>
-                    <TableHead className="font-bold text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-500 py-4">Billing Status</TableHead>
-                    <TableHead className="font-bold text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-500 py-4">State</TableHead>
-                    <TableHead className="font-bold text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-500 py-4">Expiry Cycle</TableHead>
-                    <TableHead className="pr-6 text-right font-bold text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-500 py-4">Actions</TableHead>
+                    <TableHead className="pl-6 font-bold text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-500 py-4">School Name</TableHead>
+                    <TableHead className="font-bold text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-500 py-4">Email Contact</TableHead>
+                    <TableHead className="font-bold text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-500 py-4">Plan Tier</TableHead>
+                    <TableHead className="font-bold text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-500 py-4">Billing Status</TableHead>
+                    <TableHead className="font-bold text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-500 py-4">State</TableHead>
+                    <TableHead className="font-bold text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-500 py-4">Expiry Cycle</TableHead>
+                    <TableHead className="pr-6 text-right font-bold text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-500 py-4">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {data.data.map((school) => (
                     <TableRow 
                       key={school._id} 
-                      className="group hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-all border-b border-slate-100 dark:border-slate-800/60 last:border-none"
+                      className="group hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-all border-b border-slate-100/80 dark:border-slate-800/60 last:border-none"
                     >
                       {/* Name Meta Field with Secondary Brand Accent Tint Avatar */}
                       <TableCell className="pl-6 py-4 font-bold text-slate-800 dark:text-slate-200 text-sm tracking-tight">
                         <div className="flex items-center gap-3">
-                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#9E58FF]/10 text-[#9E58FF] text-xs transition-colors">
+                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-purple-100 text-purple-600 text-xs transition-colors">
                             <School className="h-4 w-4" />
                           </div>
                           <span className="truncate max-w-[180px] sm:max-w-[240px] tracking-tight">{school.schoolName}</span>
@@ -193,7 +192,7 @@ export default function Schools() {
                       <TableCell className="py-4">
                         <Badge 
                           variant="outline" 
-                          className="text-[11px] font-bold px-2.5 py-0.5 rounded-xl border-[#A05AFF]/30 bg-[#A05AFF]/5 text-[#A05AFF] shadow-none"
+                          className="text-[11px] font-bold px-2.5 py-0.5 rounded-lg border-purple-200/60 bg-purple-50/80 text-purple-700 shadow-none"
                         >
                           {school.subscriptionPlan}
                         </Badge>
@@ -202,9 +201,9 @@ export default function Schools() {
                       {/* Modern Soft-Tint Info State Badge */}
                       <TableCell className="py-4">
                         <Badge 
-                          className={`text-xs font-bold px-2.5 py-0.5 rounded-xl border shadow-none text-[11px] tracking-wide uppercase ${
+                          className={`text-xs font-bold px-2.5 py-0.5 rounded-lg border shadow-none text-[11px] tracking-wide uppercase ${
                             school.subscriptionStatus === 'active' 
-                              ? 'border-[#4BCBEB]/30 bg-[#4BCBEB]/5 text-[#4BCBEB]' 
+                              ? 'border-cyan-200/60 bg-cyan-50/80 text-cyan-700' 
                               : 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-500'
                           }`}
                         >
@@ -215,13 +214,13 @@ export default function Schools() {
                       {/* System Infrastructure Activity Success/Danger Soft-Tint Badge */}
                       <TableCell className="py-4">
                         {school.isActive ? (
-                          <Badge className="border-[#1BCFB4]/30 bg-[#1BCFB4]/5 text-[#1BCFB4] text-xs font-semibold px-2.5 py-0.5 rounded-xl shadow-none variant-outline tracking-wide">
-                            <span className="h-1.5 w-1.5 rounded-full mr-1.5 inline-block bg-[#1BCFB4]" />
+                          <Badge className="border-emerald-200/60 bg-emerald-50/80 text-emerald-700 text-xs font-semibold px-2.5 py-0.5 rounded-lg shadow-none tracking-wide">
+                            <span className="h-1.5 w-1.5 rounded-full mr-1.5 inline-block bg-emerald-500" />
                             Active
                           </Badge>
                         ) : (
-                          <Badge className="border-[#FE9496]/30 bg-[#FE9496]/5 text-[#FE9496] text-xs font-semibold px-2.5 py-0.5 rounded-xl shadow-none variant-outline tracking-wide">
-                            <span className="h-1.5 w-1.5 rounded-full mr-1.5 inline-block bg-[#FE9496]" />
+                          <Badge className="border-rose-200/60 bg-rose-50/80 text-rose-700 text-xs font-semibold px-2.5 py-0.5 rounded-lg shadow-none tracking-wide">
+                            <span className="h-1.5 w-1.5 rounded-full mr-1.5 inline-block bg-rose-500" />
                             Inactive
                           </Badge>
                         )}
@@ -229,7 +228,7 @@ export default function Schools() {
 
                       {/* Date Field Tracker */}
                       <TableCell className="py-4 text-xs text-slate-500 dark:text-slate-400 font-semibold whitespace-nowrap">
-                        <div className="inline-flex items-center gap-1.5 border border-slate-200 dark:border-slate-700 px-2.5 py-1 rounded-xl bg-slate-50/50 dark:bg-slate-950/20">
+                        <div className="inline-flex items-center gap-1.5 border border-slate-200 dark:border-slate-700 px-2.5 py-1 rounded-lg bg-slate-50/50 dark:bg-slate-950/20">
                           <Calendar className="h-3.5 w-3.5 text-slate-400" />
                           <span>{formatDate(school.expiryDate)}</span>
                         </div>
@@ -242,7 +241,7 @@ export default function Schools() {
                             variant="ghost" 
                             size="icon" 
                             onClick={() => openEdit(school)}
-                            className="h-8 w-8 rounded-xl text-slate-400 hover:text-[#A05AFF] hover:bg-[#A05AFF]/10 transition-colors"
+                            className="h-8 w-8 rounded-lg text-slate-400 hover:text-purple-600 hover:bg-purple-50 transition-colors"
                             title="Edit Parameters"
                           >
                             <Pencil className="h-3.5 w-3.5" />
@@ -252,10 +251,10 @@ export default function Schools() {
                             size="icon"
                             onClick={() => toggleMutation.mutate(school._id)}
                             disabled={toggleMutation.isPending}
-                            className={`h-8 w-8 rounded-xl transition-colors ${
+                            className={`h-8 w-8 rounded-lg transition-colors ${
                               school.isActive 
-                                ? 'text-slate-400 hover:text-[#FE9496] hover:bg-[#FE9496]/10' 
-                                : 'text-slate-400 hover:text-[#1BCFB4] hover:bg-[#1BCFB4]/10'
+                                ? 'text-slate-400 hover:text-rose-600 hover:bg-rose-50' 
+                                : 'text-slate-400 hover:text-emerald-600 hover:bg-emerald-50'
                             }`}
                             title={school.isActive ? "Deactivate Node" : "Activate Node"}
                           >
@@ -274,10 +273,10 @@ export default function Schools() {
 
       {/* Polish Premium Configuration Form Dialog Overlay Node */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-2xl rounded-xl border-none bg-white p-6 dark:bg-slate-900 shadow-sm">
+        <DialogContent className="max-w-2xl rounded-xl border border-slate-200/60 bg-white p-6 dark:bg-slate-900 shadow-lg">
           <DialogHeader>
             <DialogTitle className="text-sm font-bold tracking-wide text-slate-800 dark:text-slate-200 flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-[#A05AFF]" />
+              <Sparkles className="h-4 w-4 text-purple-600" />
               <span>Override Partner Configuration</span>
             </DialogTitle>
           </DialogHeader>
@@ -292,7 +291,7 @@ export default function Schools() {
                     value={form.schoolName}
                     onChange={(e) => setForm({ ...form, schoolName: e.target.value })}
                     placeholder="Enter official institutional title..."
-                    className="h-11 border-slate-200 rounded-xl focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 dark:bg-slate-800 dark:border-slate-700 text-sm"
+                    className="h-11 border-slate-200 rounded-xl dark:bg-slate-800 dark:border-slate-700 text-sm"
                     required
                   />
                 </div>
@@ -321,9 +320,9 @@ export default function Schools() {
                       value={form.phone} 
                       onChange={(e) => setForm({ ...form, phone: e.target.value })} 
                       placeholder="+1 (555) 000-0000"
-                      className="pl-10 h-11 border-slate-200 rounded-xl focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 dark:bg-slate-800 dark:border-slate-700 text-sm"
+                      className="pl-10 h-11 border-slate-200 rounded-xl dark:bg-slate-800 dark:border-slate-700 text-sm"
                     />
-                    <Phone className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400 group-focus-within:text-[#A05AFF] transition-colors" />
+                    <Phone className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400 group-focus-within:text-purple-600 transition-colors" />
                   </div>
                 </div>
                 
@@ -331,9 +330,9 @@ export default function Schools() {
                 <div className="space-y-1.5">
                   <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Assigned Licensing Plan Bundle</Label>
                   <Select value={form.subscriptionPlan} onValueChange={(v) => setForm({ ...form, subscriptionPlan: v })}>
-                    <SelectTrigger className="h-11 border-slate-200 rounded-xl focus:ring-[#A05AFF] dark:bg-slate-800 dark:border-slate-700 text-sm">
+                    <SelectTrigger className="h-11 border-slate-200 rounded-xl dark:bg-slate-800 dark:border-slate-700 text-sm">
                       <div className="flex items-center gap-2">
-                        <ShieldCheck className="h-4 w-4 text-[#A05AFF]" />
+                        <ShieldCheck className="h-4 w-4 text-purple-600" />
                         <SelectValue />
                       </div>
                     </SelectTrigger>
@@ -349,13 +348,13 @@ export default function Schools() {
                 <div className="space-y-1.5">
                   <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Current Billing Status Track</Label>
                   <Select value={form.subscriptionStatus} onValueChange={(v) => setForm({ ...form, subscriptionStatus: v })}>
-                    <SelectTrigger className="h-11 border-slate-200 rounded-xl focus:ring-[#A05AFF] dark:bg-slate-800 dark:border-slate-700 text-sm">
+                    <SelectTrigger className="h-11 border-slate-200 rounded-xl dark:bg-slate-800 dark:border-slate-700 text-sm">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="rounded-xl dark:bg-slate-800">
-                      <SelectItem value="trial" className="rounded-lg text-orange-600">Evaluation Trial</SelectItem>
-                      <SelectItem value="active" className="rounded-lg text-[#1BCFB4]">Active Pipeline</SelectItem>
-                      <SelectItem value="expired" className="rounded-lg text-[#FE9496]">Expired Cycle</SelectItem>
+                      <SelectItem value="trial" className="rounded-lg text-amber-600">Evaluation Trial</SelectItem>
+                      <SelectItem value="active" className="rounded-lg text-emerald-600">Active Pipeline</SelectItem>
+                      <SelectItem value="expired" className="rounded-lg text-rose-600">Expired Cycle</SelectItem>
                       <SelectItem value="cancelled" className="rounded-lg text-slate-400">Terminated / Cancelled</SelectItem>
                     </SelectContent>
                   </Select>
@@ -364,13 +363,13 @@ export default function Schools() {
                 {/* Start Date Form Node */}
                 <div className="space-y-1.5">
                   <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Lifecycle Activation Start Date</Label>
-                  <Input type="date" value={form.startDate} onChange={(e) => setForm({ ...form, startDate: e.target.value })} className="h-11 border-slate-200 rounded-xl focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 dark:bg-slate-800 dark:border-slate-700 text-sm" />
+                  <Input type="date" value={form.startDate} onChange={(e) => setForm({ ...form, startDate: e.target.value })} className="h-11 border-slate-200 rounded-xl dark:bg-slate-800 dark:border-slate-700 text-sm" />
                 </div>
                 
                 {/* Expiry Date Form Node */}
                 <div className="space-y-1.5 md:col-span-2">
                   <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">License Termination Expiry Date</Label>
-                  <Input type="date" value={form.expiryDate} onChange={(e) => setForm({ ...form, expiryDate: e.target.value })} className="h-11 border-slate-200 rounded-xl focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 dark:bg-slate-800 dark:border-slate-700 text-sm" />
+                  <Input type="date" value={form.expiryDate} onChange={(e) => setForm({ ...form, expiryDate: e.target.value })} className="h-11 border-slate-200 rounded-xl dark:bg-slate-800 dark:border-slate-700 text-sm" />
                 </div>
                 
               </div>
@@ -389,7 +388,7 @@ export default function Schools() {
               type="submit"
               form="school-mgmt-form"
               disabled={updateMutation.isPending}
-              className="bg-[#A05AFF] hover:bg-[#A05AFF]/90 text-white font-bold rounded-xl h-11 px-6 transition-all duration-200"
+              className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold rounded-xl h-11 px-6 transition-all duration-200"
             >
               {updateMutation.isPending ? 'Committing Modifications...' : 'Apply Modifications'}
             </Button>

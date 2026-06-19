@@ -85,41 +85,41 @@ export default function ApplicantRequests() {
   const unlimitedPlans = plans.filter((p) => p.planType === 'UNLIMITED' && p.price > 0 && p.isActive);
 
   return (
-    <div>
+    <div className="space-y-6 p-6 max-w-7xl mx-auto bg-slate-50/50 dark:bg-slate-950 min-h-screen animate-in fade-in duration-500">
       <PageHeader
         title="Received Requests"
         description="Schools interested in your profile"
       />
 
-      <Card>
+      <Card className="border border-slate-200/60 bg-white shadow-2xs dark:bg-slate-900">
         <CardContent className="pt-6">
           {isLoading ? (
-            <p className="text-center py-8">Loading...</p>
+            <p className="text-center py-8 text-slate-400 dark:text-slate-500">Loading...</p>
           ) : data?.data?.length === 0 ? (
-            <p className="text-center py-8 text-muted-foreground">
+            <p className="text-center py-8 text-slate-400 dark:text-slate-500">
               No requests yet. Complete your profile to attract schools.
             </p>
           ) : (
             <div className="space-y-4">
               {data.data.map((request) => (
-                <div key={request._id} className="rounded-lg border p-4">
+                <div key={request._id} className="rounded-lg border border-slate-200/60 p-4 hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-all">
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <h3 className="font-semibold">{request.schoolName}</h3>
-                      <p className="text-sm text-muted-foreground">
+                      <h3 className="font-bold text-slate-800 dark:text-slate-200">{request.schoolName}</h3>
+                      <p className="text-sm text-slate-400 dark:text-slate-500">
                         Position: {request.positionOffered}
                       </p>
-                      <p className="mt-2 text-sm">{request.message}</p>
-                      <p className="mt-2 text-xs text-muted-foreground">
+                      <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">{request.message}</p>
+                      <p className="mt-2 text-xs text-slate-400 dark:text-slate-500">
                         {formatDate(request.createdAt)}
                       </p>
                     </div>
                     <div className="flex flex-col gap-2 items-end">
-                      <Badge variant={request.status === 'viewed' ? 'secondary' : 'default'}>
+                      <Badge className={request.status === 'viewed' ? 'bg-slate-100 text-slate-600 border-slate-200/60' : 'bg-purple-100 text-purple-700 border-purple-200/60'}>
                         {request.status}
                       </Badge>
                       {request.isUnlocked && (
-                        <Badge variant="outline" className="text-xs">
+                        <Badge variant="outline" className="text-xs border-emerald-200/60 bg-emerald-50/80 text-emerald-700">
                           Unlocked
                         </Badge>
                       )}
@@ -127,7 +127,7 @@ export default function ApplicantRequests() {
                   </div>
                   {request.isUnlocked ? (
                     <Button
-                      className="mt-4"
+                      className="mt-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold rounded-lg"
                       size="sm"
                       onClick={() => handleViewSchool(request)}
                     >
@@ -135,7 +135,7 @@ export default function ApplicantRequests() {
                     </Button>
                   ) : (
                     <Button
-                      className="mt-4"
+                      className="mt-4 rounded-lg border-slate-200 hover:bg-slate-50 hover:text-purple-600"
                       size="sm"
                       variant="outline"
                       onClick={() => handleUnlockRequest(request)}
@@ -152,54 +152,54 @@ export default function ApplicantRequests() {
       </Card>
 
       <Dialog open={!!schoolDetails} onOpenChange={() => setSchoolDetails(null)}>
-        <DialogContent>
+        <DialogContent className="border border-slate-200/60 bg-white dark:bg-slate-900 shadow-lg rounded-xl">
           <DialogHeader>
-            <DialogTitle>{schoolDetails?.request?.schoolName}</DialogTitle>
+            <DialogTitle className="text-sm font-bold text-slate-800 dark:text-slate-200">{schoolDetails?.request?.schoolName}</DialogTitle>
           </DialogHeader>
           <DialogBody>
             {schoolDetails && (
               <div className="space-y-3 text-sm">
-                <p><strong>Position:</strong> {schoolDetails.request.positionOffered}</p>
-                <p><strong>Message:</strong> {schoolDetails.request.message}</p>
-                <hr />
-                <p><strong>Email:</strong> {schoolDetails.school.email}</p>
-                <p><strong>Phone:</strong> {schoolDetails.school.phone || 'Not provided'}</p>
-                <Button asChild className="w-full">
+                <p><strong className="text-slate-800 dark:text-slate-200">Position:</strong> {schoolDetails.request.positionOffered}</p>
+                <p><strong className="text-slate-800 dark:text-slate-200">Message:</strong> {schoolDetails.request.message}</p>
+                <hr className="border-slate-200/60 dark:border-slate-800" />
+                <p><strong className="text-slate-800 dark:text-slate-200">Email:</strong> {schoolDetails.school.email}</p>
+                <p><strong className="text-slate-800 dark:text-slate-200">Phone:</strong> {schoolDetails.school.phone || 'Not provided'}</p>
+                <Button asChild className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold rounded-lg">
                   <a href={`mailto:${schoolDetails.school.email}`}>Contact School</a>
                 </Button>
               </div>
             )}
           </DialogBody>
           <DialogFooter>
-            <Button onClick={() => setSchoolDetails(null)}>Close</Button>
+            <Button variant="outline" className="rounded-lg border-slate-200 hover:bg-slate-50" onClick={() => setSchoolDetails(null)}>Close</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
       <Dialog open={showPayment} onOpenChange={setShowPayment}>
-        <DialogContent className="sm:max-w-2xl max-h-[85vh]">
+        <DialogContent className="sm:max-w-2xl max-h-[85vh] border border-slate-200/60 bg-white dark:bg-slate-900 shadow-lg rounded-xl">
           <DialogHeader>
-            <DialogTitle>Purchase Plan to Unlock</DialogTitle>
+            <DialogTitle className="text-sm font-bold text-slate-800 dark:text-slate-200">Purchase Plan to Unlock</DialogTitle>
           </DialogHeader>
           <DialogBody>
-            <p className="text-sm text-muted-foreground mb-4">
+            <p className="text-sm text-slate-400 dark:text-slate-500 mb-4">
               Purchase a plan to unlock school contact information and connect directly.
             </p>
 
             <div className="space-y-4">
               <div>
-                <h3 className="font-medium mb-2">Request-Based Plans</h3>
+                <h3 className="font-bold text-slate-800 dark:text-slate-200 mb-2">Request-Based Plans</h3>
                 <div className="space-y-2">
                   {requestBasedPlans.map((plan) => (
-                    <Card key={plan._id}>
+                    <Card key={plan._id} className="border border-slate-200/60 bg-slate-50/50 dark:bg-slate-900/30">
                       <CardHeader className="pb-2">
-                        <CardTitle className="text-base">{plan.name}</CardTitle>
+                        <CardTitle className="text-base font-bold text-slate-800 dark:text-slate-200">{plan.name}</CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <p className="text-2xl font-bold">₹{plan.price}</p>
-                        <p className="text-sm text-muted-foreground">{plan.requestCount} request credits</p>
+                        <p className="text-2xl font-black text-slate-800 dark:text-white tracking-tight">₹{plan.price}</p>
+                        <p className="text-sm text-slate-400 dark:text-slate-500">{plan.requestCount} request credits</p>
                         <Button
-                          className="mt-3 w-full"
+                          className="mt-3 w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold rounded-lg"
                           onClick={() => purchaseMutation.mutate(plan._id)}
                           disabled={purchaseMutation.isPending}
                         >
@@ -212,18 +212,18 @@ export default function ApplicantRequests() {
               </div>
 
               <div>
-                <h3 className="font-medium mb-2">Unlimited Plans</h3>
+                <h3 className="font-bold text-slate-800 dark:text-slate-200 mb-2">Unlimited Plans</h3>
                 <div className="space-y-2">
                   {unlimitedPlans.map((plan) => (
-                    <Card key={plan._id}>
+                    <Card key={plan._id} className="border border-slate-200/60 bg-slate-50/50 dark:bg-slate-900/30">
                       <CardHeader className="pb-2">
-                        <CardTitle className="text-base">{plan.name}</CardTitle>
+                        <CardTitle className="text-base font-bold text-slate-800 dark:text-slate-200">{plan.name}</CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <p className="text-2xl font-bold">₹{plan.price}</p>
-                        <p className="text-sm text-muted-foreground">{plan.durationDays} days</p>
+                        <p className="text-2xl font-black text-slate-800 dark:text-white tracking-tight">₹{plan.price}</p>
+                        <p className="text-sm text-slate-400 dark:text-slate-500">{plan.durationDays} days</p>
                         <Button
-                          className="mt-3 w-full"
+                          className="mt-3 w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold rounded-lg"
                           onClick={() => purchaseMutation.mutate(plan._id)}
                           disabled={purchaseMutation.isPending}
                         >
@@ -237,7 +237,7 @@ export default function ApplicantRequests() {
             </div>
           </DialogBody>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setShowPayment(false)}>Cancel</Button>
+            <Button variant="outline" className="rounded-lg border-slate-200 hover:bg-slate-50" onClick={() => setShowPayment(false)}>Cancel</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

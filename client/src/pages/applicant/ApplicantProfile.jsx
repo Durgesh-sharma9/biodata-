@@ -32,7 +32,7 @@ export default function ApplicantProfile() {
   if (isLoading) return <div className="flex h-64 items-center justify-center">Loading...</div>;
 
   return (
-    <div>
+    <div className="space-y-6 p-6 max-w-7xl mx-auto bg-slate-50/50 dark:bg-slate-950 min-h-screen animate-in fade-in duration-500">
       <PageHeader title="My Profile" description="Complete your profile to join the talent pool" />
 
       <DynamicCandidateForm
