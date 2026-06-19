@@ -44,28 +44,21 @@ export default function Login({ redirectTo, signupLink = '/signup', title = 'Sig
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 font-sans selection:bg-indigo-500/20 selection:text-indigo-900 overflow-x-hidden antialiased flex flex-col justify-between relative">
+    <div className="min-h-screen bg-[#f3f3f4] text-slate-800 font-sans antialiased flex flex-col justify-between relative dark:bg-slate-950 dark:text-slate-200">
       
-      {/* VIBRANT BACKGROUND BACKDROP BLURS */}
-      <div className="absolute top-0 left-[-10%] w-[500px] h-[500px] bg-gradient-to-tr from-indigo-300/20 via-cyan-200/20 to-transparent rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[10%] right-[-10%] w-[600px] h-[600px] bg-gradient-to-br from-purple-300/20 via-pink-200/20 to-transparent rounded-full blur-[140px] pointer-events-none" />
-
-      {/* FIXED GLASSMORPHISM NAVBAR */}
-      <nav className="fixed top-0 left-0 right-0 z-[100] w-full h-20 border-b border-white/60 bg-white/70 backdrop-blur-xl supports-[backdrop-filter]:bg-white/60 shadow-[0_4px_30px_-10px_rgba(99,102,241,0.05)]">
+      {/* FIXED NAVBAR MODULE */}
+      <nav className="fixed top-0 left-0 right-0 z-[100] w-full h-20 border-b border-slate-100 bg-white shadow-sm dark:bg-slate-900 dark:border-slate-800">
         <div className="max-w-7xl mx-auto h-full px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-full items-center">
             
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-2.5 group cursor-pointer">
-              <div className="p-2.5 bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-600 rounded-xl shadow-lg shadow-indigo-500/20 group-hover:rotate-6 transition-transform duration-300">
-                <Database className="w-5 h-5 text-white" />
-              </div>
-              <span className="text-2xl font-black tracking-tight bg-gradient-to-r from-slate-900 via-indigo-950 to-purple-900 bg-clip-text text-transparent">
-                EduBase<span className="text-pink-500">.</span>
+            <Link to="/" className="flex items-center gap-2 group cursor-pointer">
+              <span className="text-xl font-bold tracking-tight text-[#A05AFF]">
+                EduBase
               </span>
             </Link>
             
-            {/* Navigation Links */}
+            {/* Navigation links */}
             <div className="hidden md:flex items-center space-x-1">
               {[
                 { label: 'Features', target: '/#features' },
@@ -76,20 +69,18 @@ export default function Login({ redirectTo, signupLink = '/signup', title = 'Sig
                 <Link 
                   key={item.label}
                   to={item.target}
-                  className="px-4 py-2 text-sm font-bold text-slate-600 hover:text-indigo-600 rounded-xl hover:bg-indigo-50/70 transition-all duration-200"
+                  className="px-4 py-2 text-sm font-semibold text-slate-600 hover:text-[#A05AFF] rounded-xl hover:bg-slate-50 transition-all dark:text-slate-400 dark:hover:bg-slate-800"
                 >
                   {item.label}
                 </Link>
               ))}
             </div>
 
-            {/* Right Action */}
+            {/* Right Action Trigger */}
             <div className="flex items-center space-x-4">
               <Link to="/signup">
-                <Button className="relative group overflow-hidden bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white font-bold text-sm px-5 py-2.5 rounded-xl shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30 transition-all duration-300 hover:-translate-y-0.5">
-                  <span className="relative z-10 flex items-center gap-1.5">
-                    Start Free Trial <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </span>
+                <Button className="h-10 rounded-xl bg-[#A05AFF] hover:bg-[#A05AFF]/90 text-white font-semibold shadow-sm px-5 transition-all">
+                  Start Free Trial <ArrowRight className="w-4 h-4 ml-1.5" />
                 </Button>
               </Link>
             </div>
@@ -97,57 +88,52 @@ export default function Login({ redirectTo, signupLink = '/signup', title = 'Sig
         </div>
       </nav>
 
-      {/* MAIN AUTHENTICATION CONTAINER */}
-      <main className="flex-1 flex items-center justify-center px-4 pt-36 pb-20 relative z-10">
+      {/* MAIN AUTHENTICATION CARD BLOCK CONTAINER */}
+      <main className="flex-1 flex items-center justify-center px-4 pt-32 pb-16">
         <div className="w-full max-w-md relative">
           
-          {/* Subtle Backglow behind card */}
-          <div className="absolute inset-0 bg-gradient-to-tr from-indigo-500/10 via-purple-500/10 to-pink-500/10 rounded-3xl blur-2xl opacity-80 pointer-events-none" />
-
-          <Card className="border border-white bg-white/80 rounded-3xl shadow-[0_20px_50px_rgba(99,102,241,0.08)] ring-1 ring-slate-100 backdrop-blur-md overflow-hidden relative">
-            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500" />
-            
-            <CardHeader className="text-center pt-8 pb-4">
-              <div className="inline-flex items-center gap-1.5 self-center px-3 py-1 mb-3 rounded-full border border-indigo-100 bg-indigo-50/60 text-[10px] font-black tracking-wider uppercase text-indigo-700 shadow-sm">
-                <Sparkles className="w-3 h-3 text-indigo-500 fill-indigo-500" /> Secure Cloud Vault
+          <Card className="rounded-xl border-none bg-white shadow-sm dark:bg-slate-900 overflow-hidden">
+            <CardHeader className="text-center p-6 pb-2">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border border-[#A05AFF]/30 bg-[#A05AFF]/5 text-[#A05AFF] text-[11px] font-bold uppercase tracking-wider mb-2 self-center">
+                <Sparkles className="w-3 h-3" /> Secure Cloud Vault
               </div>
-              <CardTitle className="text-3xl font-black tracking-tight text-slate-900">{title}</CardTitle>
-              <CardDescription className="text-slate-500 font-medium text-sm mt-1">Access your operational school node</CardDescription>
+              <CardTitle className="text-xl font-bold tracking-tight text-slate-800 dark:text-white">{title}</CardTitle>
+              <CardDescription className="text-slate-400 dark:text-slate-500 font-medium text-xs mt-1">Access your operational school node</CardDescription>
             </CardHeader>
             
-            <CardContent className="pb-8">
+            <CardContent className="p-6 pt-2">
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                 
                 {error && (
-                  <div className="rounded-2xl bg-rose-50 border border-rose-100 p-4 text-xs font-bold text-rose-600 shadow-inner flex items-start gap-2.5 animate-headShake">
-                    <span className="w-1.5 h-1.5 rounded-full bg-rose-500 mt-1.5 flex-shrink-0" />
+                  <div className="rounded-xl border border-[#FE9496]/30 bg-[#FE9496]/5 text-[#FE9496] p-4 text-xs font-bold flex items-start gap-2.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#FE9496] mt-1.5 flex-shrink-0" />
                     <span>{error}</span>
                   </div>
                 )}
                 
-                {/* Email Field */}
+                {/* Email Input Field */}
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="text-xs font-bold text-slate-700 tracking-wide uppercase">Institutional Email</Label>
+                  <Label htmlFor="email" className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Institutional Email</Label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
-                      <Mail className="w-4 h-4 group-focus-within:text-indigo-500 transition-colors" />
+                      <Mail className="w-4 h-4" />
                     </div>
                     <Input 
                       id="email" 
                       type="email" 
                       placeholder="admin@school.edu" 
-                      className="pl-11 bg-slate-50/50 border-slate-200 rounded-xl h-12 text-slate-900 placeholder-slate-400 font-medium text-sm focus-visible:ring-indigo-500 focus-visible:border-indigo-500 transition-all shadow-inner"
+                      className="w-full h-11 pl-11 px-4 bg-white border border-slate-200 rounded-xl transition-all placeholder:text-slate-400 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-0 focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 dark:bg-slate-950 dark:border-slate-800"
                       {...register('email')} 
                     />
                   </div>
-                  {errors.email && <p className="text-xs font-bold text-rose-500 pl-1">{errors.email.message}</p>}
+                  {errors.email && <p className="text-xs font-bold text-[#FE9496] pl-1">{errors.email.message}</p>}
                 </div>
                 
-                {/* Password Field */}
+                {/* Password Input Field */}
                 <div className="space-y-2">
                   <div className="flex justify-between items-center">
-                    <Label htmlFor="password" className="text-xs font-bold text-slate-700 tracking-wide uppercase">Secure Password</Label>
-                    <span className="text-[11px] font-bold text-indigo-600 hover:text-indigo-700 cursor-pointer transition-colors">Forgot credentials?</span>
+                    <Label htmlFor="password" className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Secure Password</Label>
+                    <span className="text-[11px] font-bold text-[#A05AFF] hover:underline cursor-pointer transition-colors">Forgot credentials?</span>
                   </div>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
@@ -157,24 +143,24 @@ export default function Login({ redirectTo, signupLink = '/signup', title = 'Sig
                       id="password" 
                       type={showPassword ? "text" : "password"} 
                       placeholder="••••••••" 
-                      className="pl-11 pr-11 bg-slate-50/50 border-slate-200 rounded-xl h-12 text-slate-900 placeholder-slate-400 font-medium text-sm focus-visible:ring-indigo-500 focus-visible:border-indigo-500 transition-all shadow-inner"
+                      className="w-full h-11 pl-11 pr-11 px-4 bg-white border border-slate-200 rounded-xl transition-all placeholder:text-slate-400 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-0 focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 dark:bg-slate-950 dark:border-slate-800"
                       {...register('password')} 
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
+                      className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-slate-600 transition-colors dark:hover:text-slate-300"
                     >
                       {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
                   </div>
-                  {errors.password && <p className="text-xs font-bold text-rose-500 pl-1">{errors.password.message}</p>}
+                  {errors.password && <p className="text-xs font-bold text-[#FE9496] pl-1">{errors.password.message}</p>}
                 </div>
                 
-                {/* Submit Trigger */}
+                {/* Submit Trigger Action node */}
                 <Button 
                   type="submit" 
-                  className="w-full h-12 mt-2 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:opacity-95 text-white font-bold rounded-xl shadow-lg shadow-indigo-500/20 transition-all transform active:scale-[0.98]" 
+                  className="w-full h-11 bg-[#A05AFF] hover:bg-[#A05AFF]/90 text-white font-bold rounded-xl shadow-sm transition-all text-sm mt-2" 
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? (
@@ -186,13 +172,13 @@ export default function Login({ redirectTo, signupLink = '/signup', title = 'Sig
                 </Button>
               </form>
               
-              <div className="mt-8 pt-6 border-t border-slate-100 flex items-center justify-center gap-1.5 text-xs text-slate-400 font-bold uppercase tracking-wider">
-                <ShieldCheck className="w-4 h-4 text-emerald-500" /> FERPA Compliant Tunnel
+              <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-[#1BCFB4] dark:border-slate-800">
+                <ShieldCheck className="w-4 h-4" /> FERPA Compliant Tunnel
               </div>
 
-              <p className="mt-6 text-center text-sm text-slate-600 font-semibold">
+              <p className="mt-5 text-center text-xs text-slate-500 font-semibold dark:text-slate-400">
                 Don't have an asset space account?{' '}
-                <Link to={signupLink} className="text-indigo-600 hover:text-indigo-700 font-bold transition-colors">
+                <Link to={signupLink} className="text-[#A05AFF] hover:underline font-bold transition-colors">
                   Start free sandbox trial
                 </Link>
               </p>
@@ -201,19 +187,16 @@ export default function Login({ redirectTo, signupLink = '/signup', title = 'Sig
         </div>
       </main>
 
-      {/* PREMIUM HIGH-CONTRAST FOOTER */}
-      <footer className="bg-white border-t border-slate-200 text-slate-500 text-xs py-12 relative z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4 font-bold text-[11px] uppercase tracking-wider">
+      {/* MODERN FLAT CANVAS FOOTER LAYOUT */}
+      <footer className="bg-white border-t border-slate-100 py-6 dark:bg-slate-900 dark:border-slate-800 relative z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4 font-bold text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-500">
           <div className="flex items-center gap-2">
-            <div className="p-1.5 bg-indigo-600 rounded-lg">
-              <Database className="w-3.5 h-3.5 text-white" />
-            </div>
-            <span className="text-slate-900">EduBase Engine Instance</span>
+            <span className="text-slate-800 dark:text-slate-200 font-bold">EduBase Engine Instance</span>
           </div>
           <div>&copy; 2026 EduBase Technology Inc. All cloud systems secure.</div>
-          <div className="flex space-x-6 text-slate-400">
-            <span className="hover:text-slate-600 cursor-pointer transition-colors">Privacy Framework</span>
-            <span className="hover:text-slate-600 cursor-pointer transition-colors">SLA Constants</span>
+          <div className="flex space-x-6">
+            <span className="hover:text-[#A05AFF] cursor-pointer transition-colors">Privacy Framework</span>
+            <span className="hover:text-[#A05AFF] cursor-pointer transition-colors">SLA Constants</span>
           </div>
         </div>
       </footer>

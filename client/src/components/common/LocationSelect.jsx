@@ -33,16 +33,16 @@ export function LocationSelect({ value = {}, onChange, errors = {} }) {
 
   return (
     <div className="w-full space-y-2">
-      {/* Sub-label group header to provide premium onboarding feedback */}
-      <div className="flex items-center gap-1.5 mb-1 text-slate-500 dark:text-slate-400">
-        <MapPin className="h-3.5 w-3.5 text-indigo-500" />
+      {/* Sub-label group header formatted to exact metadata specifications */}
+      <div className="flex items-center gap-1.5 mb-1 text-slate-400 dark:text-slate-500">
+        <MapPin className="h-3.5 w-3.5 text-[#A05AFF]" />
         <span className="text-[11px] font-bold uppercase tracking-wider">Geographic Alignment Matrix</span>
       </div>
 
-      <div className="grid gap-5 grid-cols-1 md:grid-cols-3">
+      <div className="grid gap-6 grid-cols-1 md:grid-cols-3">
         {/* State Selection Dropdown Wrapper */}
         <div className="space-y-1.5 group">
-          <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground/90 group-focus-within:text-indigo-600 transition-colors">
+          <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 group-focus-within:text-[#A05AFF] transition-colors">
             State / Region
           </Label>
           <Select
@@ -53,13 +53,13 @@ export function LocationSelect({ value = {}, onChange, errors = {} }) {
               setLocalityId('');
             }}
           >
-            <SelectTrigger className="rounded-xl h-11 border-slate-200 bg-background font-medium focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-2xs">
+            <SelectTrigger className="rounded-xl h-11 border-slate-200 bg-white dark:bg-slate-900 font-medium focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 transition-all shadow-sm">
               <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
-                <Compass className="h-4 w-4 text-muted-foreground/60 group-hover:text-indigo-500 transition-colors shrink-0" />
+                <Compass className="h-4 w-4 text-slate-400 dark:text-slate-500 group-hover:text-[#A05AFF] transition-colors shrink-0" />
                 <SelectValue placeholder="Select region" />
               </div>
             </SelectTrigger>
-            <SelectContent className="rounded-xl max-h-[300px] shadow-lg border-slate-100 dark:border-slate-800">
+            <SelectContent className="rounded-xl max-h-[300px] shadow-sm border-none bg-white dark:bg-slate-900">
               {states.map((s) => (
                 <SelectItem key={s._id} value={s._id} className="rounded-lg font-medium py-2.5 cursor-pointer">
                   {s.name}
@@ -68,7 +68,7 @@ export function LocationSelect({ value = {}, onChange, errors = {} }) {
             </SelectContent>
           </Select>
           {errors.state && (
-            <div className="flex items-center gap-1 text-xs text-rose-600 dark:text-rose-400 font-semibold mt-1 animate-shake">
+            <div className="flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-[#FE9496] mt-1">
               <AlertCircle className="h-3.5 w-3.5 shrink-0" />
               <p>{errors.state}</p>
             </div>
@@ -77,7 +77,7 @@ export function LocationSelect({ value = {}, onChange, errors = {} }) {
 
         {/* City Selection Dropdown Wrapper */}
         <div className="space-y-1.5 group">
-          <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground/90 group-focus-within:text-indigo-600 transition-colors">
+          <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 group-focus-within:text-[#A05AFF] transition-colors">
             City / Territory
           </Label>
           <Select
@@ -88,13 +88,13 @@ export function LocationSelect({ value = {}, onChange, errors = {} }) {
             }}
             disabled={!stateId}
           >
-            <SelectTrigger className="rounded-xl h-11 border-slate-200 bg-background font-medium focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 disabled:bg-slate-50/50 disabled:text-muted-foreground/40 disabled:cursor-not-allowed dark:disabled:bg-slate-900/40 transition-all shadow-2xs">
+            <SelectTrigger className="rounded-xl h-11 border-slate-200 bg-white dark:bg-slate-900 font-medium focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 disabled:bg-slate-50/50 disabled:text-slate-400/40 disabled:cursor-not-allowed dark:disabled:bg-slate-900/40 transition-all shadow-sm">
               <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
-                <Map className="h-4 w-4 text-muted-foreground/60 group-hover:text-indigo-500 transition-colors shrink-0" />
+                <Map className="h-4 w-4 text-slate-400 dark:text-slate-500 group-hover:text-[#A05AFF] transition-colors shrink-0" />
                 <SelectValue placeholder="Select city" />
               </div>
             </SelectTrigger>
-            <SelectContent className="rounded-xl max-h-[300px] shadow-lg border-slate-100 dark:border-slate-800">
+            <SelectContent className="rounded-xl max-h-[300px] shadow-sm border-none bg-white dark:bg-slate-900">
               {cities.map((c) => (
                 <SelectItem key={c._id} value={c._id} className="rounded-lg font-medium py-2.5 cursor-pointer">
                   {c.name}
@@ -103,7 +103,7 @@ export function LocationSelect({ value = {}, onChange, errors = {} }) {
             </SelectContent>
           </Select>
           {errors.city && (
-            <div className="flex items-center gap-1 text-xs text-rose-600 dark:text-rose-400 font-semibold mt-1 animate-shake">
+            <div className="flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-[#FE9496] mt-1">
               <AlertCircle className="h-3.5 w-3.5 shrink-0" />
               <p>{errors.city}</p>
             </div>
@@ -112,17 +112,17 @@ export function LocationSelect({ value = {}, onChange, errors = {} }) {
 
         {/* Locality Selection Dropdown Wrapper */}
         <div className="space-y-1.5 group">
-          <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground/90 group-focus-within:text-indigo-600 transition-colors">
+          <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 group-focus-within:text-[#A05AFF] transition-colors">
             Specific Locality
           </Label>
           <Select value={localityId} onValueChange={setLocalityId} disabled={!cityId}>
-            <SelectTrigger className="rounded-xl h-11 border-slate-200 bg-background font-medium focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 disabled:bg-slate-50/50 disabled:text-muted-foreground/40 disabled:cursor-not-allowed dark:disabled:bg-slate-900/40 transition-all shadow-2xs">
+            <SelectTrigger className="rounded-xl h-11 border-slate-200 bg-white dark:bg-slate-900 font-medium focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 disabled:bg-slate-50/50 disabled:text-slate-400/40 disabled:cursor-not-allowed dark:disabled:bg-slate-900/40 transition-all shadow-sm">
               <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
-                <Navigation className="h-4 w-4 text-muted-foreground/60 group-hover:text-indigo-500 transition-colors shrink-0" />
+                <Navigation className="h-4 w-4 text-slate-400 dark:text-slate-500 group-hover:text-[#A05AFF] transition-colors shrink-0" />
                 <SelectValue placeholder="Select locality" />
               </div>
             </SelectTrigger>
-            <SelectContent className="rounded-xl max-h-[300px] shadow-lg border-slate-100 dark:border-slate-800">
+            <SelectContent className="rounded-xl max-h-[300px] shadow-sm border-none bg-white dark:bg-slate-900">
               {localities.map((l) => (
                 <SelectItem key={l._id} value={l._id} className="rounded-lg font-medium py-2.5 cursor-pointer">
                   {l.name}
@@ -131,7 +131,7 @@ export function LocationSelect({ value = {}, onChange, errors = {} }) {
             </SelectContent>
           </Select>
           {errors.locality && (
-            <div className="flex items-center gap-1 text-xs text-rose-600 dark:text-rose-400 font-semibold mt-1 animate-shake">
+            <div className="flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-[#FE9496] mt-1">
               <AlertCircle className="h-3.5 w-3.5 shrink-0" />
               <p>{errors.locality}</p>
             </div>

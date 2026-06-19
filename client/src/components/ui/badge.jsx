@@ -2,16 +2,17 @@ import { cva } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const badgeVariants = cva(
-  'inline-flex items-center rounded-lg border px-2.5 py-0.5 text-xs font-semibold tracking-wide shadow-sm/5 transition-all duration-300 backdrop-blur-[2px]',
+  'inline-flex items-center rounded-lg border px-2.5 py-0.5 text-xs font-semibold tracking-wide shadow-2xs transition-all duration-300 backdrop-blur-[2px] uppercase text-[10px]',
   {
     variants: {
       variant: {
-        default: 'border-blue-200/60 bg-gradient-to-r from-blue-50/90 to-indigo-50/90 text-indigo-700 shadow-sm shadow-indigo-500/5',
-        secondary: 'border-purple-200/60 bg-gradient-to-r from-purple-50/90 to-fuchsia-50/90 text-purple-700 shadow-sm shadow-purple-500/5',
-        destructive: 'border-red-200/60 bg-red-50/80 text-red-700 shadow-sm shadow-red-500/5',
-        outline: 'border-slate-200 bg-white/80 text-slate-600 hover:border-slate-300 hover:text-slate-800',
-        success: 'border-emerald-200/60 bg-emerald-50/90 text-emerald-700 shadow-sm shadow-emerald-500/5',
-        warning: 'border-amber-200/60 bg-amber-50/90 text-amber-700 shadow-sm shadow-amber-500/5',
+        default: 'border-[#A05AFF]/30 bg-[#A05AFF]/5 text-[#A05AFF] dark:border-[#A05AFF]/40',
+        secondary: 'border-[#9E58FF]/30 bg-[#9E58FF]/5 text-[#9E58FF] dark:border-[#9E58FF]/40',
+        destructive: 'border-[#FE9496]/30 bg-[#FE9496]/5 text-[#FE9496] dark:border-[#FE9496]/40',
+        outline: 'border-slate-200 bg-white/80 text-slate-500 hover:border-slate-300 hover:text-slate-800 dark:border-slate-800 dark:bg-slate-900',
+        success: 'border-[#1BCFB4]/30 bg-[#1BCFB4]/5 text-[#1BCFB4] dark:border-[#1BCFB4]/40',
+        warning: 'border-amber-200 bg-amber-50/60 text-amber-600 dark:border-amber-900/30 dark:bg-amber-950/20 dark:text-amber-400',
+        info: 'border-[#4BCBEB]/30 bg-[#4BCBEB]/5 text-[#4BCBEB] dark:border-[#4BCBEB]/40',
       },
     },
     defaultVariants: {

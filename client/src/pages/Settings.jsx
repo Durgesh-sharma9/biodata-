@@ -9,13 +9,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
 const FIELDS = [
-  { key: 'positions', label: 'Positions', icon: Briefcase, color: 'from-blue-500 to-indigo-600', badgeStyle: 'bg-blue-500/5 text-blue-600 border-blue-200/50 hover:bg-blue-500/10' },
-  { key: 'subjects', label: 'Subjects', icon: BookOpen, color: 'from-purple-500 to-pink-600', badgeStyle: 'bg-purple-500/5 text-purple-600 border-purple-200/50 hover:bg-purple-500/10' },
-  { key: 'qualifications', label: 'Qualifications', icon: GraduationCap, color: 'from-cyan-500 to-blue-600', badgeStyle: 'bg-cyan-500/5 text-cyan-600 border-cyan-200/50 hover:bg-cyan-500/10' },
-  { key: 'classes', label: 'Classes', icon: Layers, color: 'from-amber-500 to-orange-600', badgeStyle: 'bg-amber-500/5 text-amber-600 border-amber-200/50 hover:bg-amber-500/10' },
+  { key: 'positions', label: 'Positions', icon: Briefcase, badgeStyle: 'border-[#4BCBEB]/30 bg-[#4BCBEB]/5 text-[#4BCBEB]' },
+  { key: 'subjects', label: 'Subjects', icon: BookOpen, badgeStyle: 'border-[#9E58FF]/30 bg-[#9E58FF]/5 text-[#9E58FF]' },
+  { key: 'qualifications', label: 'Qualifications', icon: GraduationCap, badgeStyle: 'border-[#A05AFF]/30 bg-[#A05AFF]/5 text-[#A05AFF]' },
+  { key: 'classes', label: 'Classes', icon: Layers, badgeStyle: 'border-[#1BCFB4]/30 bg-[#1BCFB4]/5 text-[#1BCFB4]' },
 ];
 
-function SettingsSection({ field, label, items, onAdd, onRemove, isPending, icon: Icon, color, badgeStyle }) {
+function SettingsSection({ field, label, items, onAdd, onRemove, isPending, icon: Icon, badgeStyle }) {
   const [newValue, setNewValue] = useState('');
 
   const handleAdd = () => {
@@ -25,63 +25,60 @@ function SettingsSection({ field, label, items, onAdd, onRemove, isPending, icon
   };
 
   return (
-    <Card className="border-slate-200/70 shadow-md shadow-slate-100/50 rounded-2xl overflow-hidden bg-white transition-all duration-300 hover:shadow-lg group">
-      {/* Decorative Gradient Accent Strip */}
-      <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${color}`} />
-      
-      <CardHeader className="pb-3 pt-6 flex flex-row items-center justify-between space-y-0">
+    <Card className="rounded-xl border-none bg-white shadow-sm dark:bg-slate-900">
+      <CardHeader className="p-5 pb-2 flex flex-row items-center justify-between space-y-0">
         <div className="flex items-center gap-3">
-          <div className={`p-2.5 bg-gradient-to-tr ${color} text-white rounded-xl shadow-md transition-transform duration-300 group-hover:scale-105 group-hover:rotate-3`}>
+          <div className="p-2.5 border border-[#A05AFF]/30 bg-[#A05AFF]/5 text-[#A05AFF] rounded-xl">
             <Icon className="h-4 w-4" />
           </div>
-          <CardTitle className="text-base font-bold text-slate-800 tracking-tight">{label}</CardTitle>
+          <CardTitle className="text-sm font-bold tracking-wide text-slate-800 dark:text-slate-200">{label}</CardTitle>
         </div>
-        <Badge variant="outline" className="text-[10px] font-bold text-slate-400 bg-slate-50 border-slate-200 px-2 py-0.5 rounded-lg">
+        <div className="border border-slate-200 bg-slate-50 text-slate-600 rounded-xl px-2.5 py-0.5 text-[11px] font-bold dark:border-slate-700 dark:bg-slate-950 dark:text-slate-400">
           {items?.length || 0} Total
-        </Badge>
+        </div>
       </CardHeader>
 
-      <CardContent className="p-6 pt-2 space-y-5">
-        {/* Dynamic Form Control Node */}
-        <div className="flex gap-2 relative group/input">
+      <CardContent className="p-5 pt-2 space-y-4">
+        {/* Input Control Node */}
+        <div className="flex gap-2">
           <Input
             placeholder={`Add new ${label.toLowerCase().slice(0, -1)}...`}
             value={newValue}
             onChange={(e) => setNewValue(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAdd())}
-            className="h-11 bg-slate-50/50 border-slate-200 hover:border-slate-300 focus:bg-white focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-500 rounded-xl transition-all placeholder:text-slate-400 font-medium text-sm shadow-inner"
+            className="w-full h-11 px-4 bg-white border border-slate-200 rounded-xl transition-all placeholder:text-slate-400 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-0 focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 dark:bg-slate-950 dark:border-slate-800"
           />
           <Button 
             onClick={handleAdd} 
             disabled={isPending || !newValue.trim()}
-            className={`h-11 w-11 shrink-0 rounded-xl bg-slate-900 text-white hover:bg-indigo-600 transition-all shadow-md active:scale-95 disabled:opacity-40 p-0 flex items-center justify-center`}
+            className="h-11 w-11 shrink-0 rounded-xl bg-[#A05AFF] hover:bg-[#A05AFF]/90 text-white transition-all p-0 flex items-center justify-center disabled:opacity-40"
           >
-            <Plus className="h-4 w-4 stroke-[2.5]" />
+            <Plus className="h-4 w-4" />
           </Button>
         </div>
 
         {/* Badges Display Cloud Layout */}
-        <div className="min-h-[76px] p-4 bg-slate-50/50 border border-slate-100 rounded-xl flex flex-wrap gap-2 items-start transition-colors group-hover:bg-slate-50/80">
+        <div className="min-h-[76px] p-4 bg-slate-50/50 border border-slate-100 rounded-xl flex flex-wrap gap-2 items-start dark:bg-slate-950/50 dark:border-slate-800">
           {!items || items.length === 0 ? (
-            <div className="text-xs font-medium text-slate-400/80 italic py-4 w-full text-center">
+            <div className="text-xs font-medium text-slate-400 dark:text-slate-500 italic py-4 w-full text-center">
               No list metrics configured. Define parameters above.
             </div>
           ) : (
             items.map((item) => (
-              <Badge 
+              <span 
                 key={item} 
-                className={`gap-1.5 py-1.5 pl-3.5 pr-1 text-xs font-semibold rounded-xl border transition-all duration-200 ${badgeStyle} group/badge`}
+                className={`inline-flex items-center gap-1.5 py-1 pl-3 pr-1.5 text-xs font-semibold rounded-md border transition-all duration-200 ${badgeStyle}`}
               >
                 <span className="tracking-tight">{item}</span>
                 <button
                   type="button"
                   onClick={() => onRemove(field, item)}
-                  className="rounded-lg p-0.5 hover:bg-white hover:text-rose-600 hover:shadow-sm transition-all disabled:opacity-40"
+                  className="rounded-md p-0.5 hover:bg-slate-200 dark:hover:bg-slate-800 transition-all disabled:opacity-40"
                   disabled={isPending}
                 >
-                  <X className="h-3 w-3 stroke-[2.5]" />
+                  <X className="h-3 w-3" />
                 </button>
-              </Badge>
+              </span>
             ))
           )}
         </div>
@@ -110,12 +107,12 @@ export default function Settings() {
 
   if (isLoading) {
     return (
-      <div className="flex h-[60vh] flex-col items-center justify-center space-y-4 antialiased">
+      <div className="flex h-[60vh] flex-col items-center justify-center space-y-4 antialiased bg-[#f3f3f4] dark:bg-slate-950">
         <div className="relative flex items-center justify-center">
-          <Loader2 className="h-10 w-10 text-indigo-600 animate-spin relative z-10" />
-          <div className="absolute inset-0 bg-indigo-500/10 rounded-full blur-xl animate-pulse scale-150" />
+          <Loader2 className="h-10 w-10 text-[#A05AFF] animate-spin relative z-10" />
+          <div className="absolute inset-0 bg-[#A05AFF]/10 rounded-full blur-xl animate-pulse scale-150" />
         </div>
-        <p className="text-slate-400 font-bold tracking-wide text-xs animate-pulse">
+        <p className="text-slate-500 dark:text-slate-400 font-bold tracking-wide text-xs">
           Synchronizing workspace configurations...
         </p>
       </div>
@@ -125,35 +122,31 @@ export default function Settings() {
   const isPending = addMutation.isPending || removeMutation.isPending;
 
   return (
-    <div className="space-y-8 max-w-[1600px] mx-auto p-4 md:p-6 lg:p-8 antialiased text-slate-800">
+    <div className="space-y-6 max-w-[1600px] mx-auto p-5 antialiased text-slate-800 dark:text-slate-200 bg-[#f3f3f4] dark:bg-slate-950 min-h-screen">
       
-      {/* Redesigned Premium Title Container Block */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 p-6 md:p-8 shadow-xl border border-slate-800/50 group">
-        <div className="absolute top-0 right-0 -mt-8 -mr-8 w-64 h-64 bg-gradient-to-br from-indigo-500/10 to-transparent rounded-full blur-2xl pointer-events-none" />
-        <div className="relative flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="space-y-1">
-            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-white flex items-center gap-2.5">
-              <Sliders className="h-6 w-6 text-indigo-400" /> System Configurations
-            </h1>
-            <p className="text-xs md:text-sm text-slate-300 font-medium">
-              Manage taxonomies across positions, subjects, classifications, and regulatory credentials.
-            </p>
-          </div>
-          <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-bold uppercase tracking-wider">
-            <Sparkles className="h-3 w-3" /> Core Engine Engine
-          </div>
+      {/* Page Header Panel Layout */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white dark:bg-slate-900 p-5 rounded-xl shadow-sm border-none">
+        <div>
+          <h1 className="text-xl font-bold tracking-tight text-slate-800 dark:text-white flex items-center gap-2">
+            <Sliders className="h-5 w-5 text-[#A05AFF]" /> System Configurations
+          </h1>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400 font-medium">
+            Manage taxonomies across positions, subjects, classifications, and regulatory credentials.
+          </p>
+        </div>
+        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border border-[#A05AFF]/30 bg-[#A05AFF]/5 text-[#A05AFF] text-[11px] font-bold uppercase tracking-wider self-start md:self-auto">
+          <Sparkles className="h-3 w-3" /> Core Engine
         </div>
       </div>
 
-      {/* Grid Allocation Layout System */}
-      <div className="grid gap-6 md:grid-cols-2">
-        {FIELDS.map(({ key, label, icon, color, badgeStyle }) => (
+      {/* Structural Layout Grid */}
+      <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
+        {FIELDS.map(({ key, label, icon, badgeStyle }) => (
           <SettingsSection
             key={key}
             field={key}
             label={label}
             icon={icon}
-            color={color}
             badgeStyle={badgeStyle}
             items={settings?.[key]}
             isPending={isPending}

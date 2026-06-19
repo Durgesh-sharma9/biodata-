@@ -72,36 +72,36 @@ export default function CandidateForm() {
     saveMutation.mutate(data);
   };
 
-  // Modern SaaS Skeleton loading placeholder
+  // Modern Flat Shimmer Placeholder Loading State
   if (isEdit && isLoading) {
     return (
-      <div className="space-y-6 p-4 md:p-8 animate-pulse max-w-4xl mx-auto">
+      <div className="space-y-6 p-5 animate-pulse max-w-4xl mx-auto">
         <div className="space-y-2">
-          <div className="h-8 bg-muted/60 rounded-xl w-1/3" />
-          <div className="h-4 bg-muted/40 rounded-lg w-1/2" />
+          <div className="h-7 bg-slate-200 dark:bg-slate-800 rounded-xl w-1/3" />
+          <div className="h-4 bg-slate-200/60 dark:bg-slate-800/60 rounded-xl w-1/2" />
         </div>
-        <div className="space-y-4 pt-4">
-          <div className="h-48 bg-muted/30 rounded-2xl border border-muted/20 w-full" />
-          <div className="h-32 bg-muted/30 rounded-2xl border border-muted/20 w-full" />
+        <div className="space-y-6 pt-4">
+          <div className="h-48 bg-slate-200/40 dark:bg-slate-800/40 rounded-xl w-full" />
+          <div className="h-32 bg-slate-200/40 dark:bg-slate-800/40 rounded-xl w-full" />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-8 p-4 md:p-8 max-w-4xl mx-auto antialiased text-foreground bg-background">
+    <div className="space-y-6 p-5 max-w-4xl mx-auto bg-[#f3f3f4] dark:bg-slate-950 text-slate-800 dark:text-white antialiased min-h-screen">
       
-      {/* Premium Header Layout Module Container */}
-      <div className="relative overflow-hidden rounded-2xl border border-slate-200/60 bg-gradient-to-r from-slate-50 via-white to-slate-50/50 p-6 dark:from-slate-950 dark:via-background dark:to-slate-950/50 shadow-2xs">
-        <div className="absolute right-0 top-0 -mr-12 -mt-12 w-40 h-40 bg-gradient-to-br from-blue-500/10 via-indigo-500/5 to-transparent rounded-full blur-3xl pointer-events-none" />
+      {/* Page Header Minimalist Panel */}
+      <div className="border-b border-slate-100 dark:border-slate-800 pb-5">
         <PageHeader
           title={isEdit ? 'Edit Candidate Profile' : 'Onboard New Candidate'}
           description={isEdit ? 'Modify background records, profile configurations, and dynamic meta indicators.' : 'Register and index a fresh talent entry profile directly into HireHub.'}
+          className="text-slate-800 dark:text-white font-bold tracking-tight text-xl"
         />
       </div>
 
-      {/* Main Core Application Form Wrapper Component */}
-      <div className="rounded-2xl border border-slate-200/50 bg-card p-2 shadow-2xs">
+      {/* Main Container Flat Layer Constraint Padding */}
+      <div className="rounded-xl border-none bg-white p-5 shadow-sm dark:bg-slate-900">
         <DynamicCandidateForm
           initialValues={candidate}
           onSubmit={onSubmit}
@@ -115,57 +115,58 @@ export default function CandidateForm() {
 
       {/* Polish Premium Collision Detection / Conflict Resolution Modal */}
       <Dialog open={!!duplicate} onOpenChange={() => setDuplicate(null)}>
-        <DialogContent className="sm:max-w-[480px]">
-          {/* Warning state indicator line banner */}
-          <div className="h-1.5 w-full bg-gradient-to-r from-amber-500 via-orange-500 to-red-500" />
+        <DialogContent className="max-w-md rounded-xl border-none bg-white p-6 dark:bg-slate-900 shadow-sm">
           <DialogHeader className="space-y-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 shadow-3xs">
+            {/* Soft Translucent Danger State Badge Icon */}
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-[#FE9496]/30 bg-[#FE9496]/5 text-[#FE9496]">
               <ShieldAlert className="h-5 w-5 stroke-[2.2]" />
             </div>
             <div className="space-y-1">
-              <DialogTitle className="text-xl font-black tracking-tight text-slate-900 dark:text-white">
+              <DialogTitle className="text-sm font-bold tracking-wide text-slate-800 dark:text-slate-200">
                 Duplicate Index Checked
               </DialogTitle>
-              <DialogDescription className="text-xs font-medium text-muted-foreground/90 leading-relaxed">
-                A unique constraint collision has occurred. A candidate with mobile number <code className="bg-amber-500/10 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 px-1.5 py-0.5 rounded font-mono font-bold text-[11px]">{duplicate?.mobile}</code> already maps to a live entity record.
+              <DialogDescription className="text-xs text-slate-400 dark:text-slate-500 font-medium mt-1 leading-relaxed">
+                A unique constraint collision has occurred. A candidate with mobile number <code className="bg-[#FE9496]/10 text-[#FE9496] dark:bg-[#FE9496]/20 px-1.5 py-0.5 rounded font-mono font-bold text-[11px]">{duplicate?.mobile}</code> already maps to a live entity record.
               </DialogDescription>
             </div>
           </DialogHeader>
-          <DialogBody>
-            {/* Entity Snapshot Alert Card Box */}
-            <div className="rounded-xl border border-amber-200/50 bg-amber-500/[0.02] p-4 flex items-center justify-between gap-4">
-              <div className="space-y-0.5 min-w-0">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block">Existing Identity Matches</span>
-                <span className="text-sm font-extrabold text-slate-800 dark:text-slate-200 tracking-tight block truncate">{duplicate?.fullName}</span>
+
+          {/* Entity Snapshot Alert Card Box - Soft Danger Aesthetics */}
+          <DialogBody className="pt-4">
+            <div className="rounded-xl border border-[#FE9496]/30 bg-[#FE9496]/5 p-4 flex items-center justify-between gap-4">
+              <div className="space-y-1 min-w-0">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 block">Existing Identity Matches</span>
+                <span className="text-sm font-bold text-slate-800 dark:text-slate-200 tracking-tight block truncate">{duplicate?.fullName}</span>
               </div>
-              <div className="inline-flex items-center text-xs font-bold text-amber-600 bg-amber-500/10 px-2 py-0.5 rounded-md">
+              <div className="inline-flex items-center text-xs font-bold text-[#FE9496] bg-[#FE9496]/10 border border-[#FE9496]/30 px-2.5 py-1 rounded-xl shrink-0">
                 Conflict Found
               </div>
             </div>
           </DialogBody>
-          <DialogFooter className="flex flex-col sm:flex-row gap-2 pt-1 sm:justify-end">
+
+          <DialogFooter className="mt-6 flex flex-col sm:flex-row gap-2 sm:justify-end">
             <Button
               variant="outline"
               onClick={() => navigate(`/candidates/${duplicate?._id}`)}
-              className="rounded-xl h-10 text-xs font-bold border-slate-200 hover:bg-slate-50 gap-2 transition-all w-full sm:w-auto"
+              className="rounded-xl h-11 border-slate-200 text-slate-700 dark:border-slate-700 dark:text-slate-300 font-medium gap-2 transition-all w-full sm:w-auto"
             >
-              <Eye className="h-3.5 w-3.5 text-slate-500" />
+              <Eye className="h-3.5 w-3.5 text-slate-400" />
               <span>View Existing</span>
             </Button>
 
             <Button
               variant="outline"
               onClick={() => navigate(`/candidates/${duplicate?._id}/edit`)}
-              className="rounded-xl h-10 text-xs font-bold border-slate-200 hover:bg-slate-50 gap-2 transition-all w-full sm:w-auto"
+              className="rounded-xl h-11 border-slate-200 text-slate-700 dark:border-slate-700 dark:text-slate-300 font-medium gap-2 transition-all w-full sm:w-auto"
             >
-              <FileEdit className="h-3.5 w-3.5 text-slate-500" />
+              <FileEdit className="h-3.5 w-3.5 text-slate-400" />
               <span>Update Record</span>
             </Button>
 
             {!isEdit && (
               <Button
                 onClick={() => handleForceCreate(duplicate)}
-                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs rounded-xl h-10 gap-2 shadow-sm transition-all w-full sm:w-auto"
+                className="bg-[#A05AFF] hover:bg-[#A05AFF]/90 text-white font-bold rounded-xl h-11 gap-2 transition-all duration-200 active:scale-95 w-full sm:w-auto"
               >
                 <UserPlus className="h-3.5 w-3.5 stroke-[2.2]" />
                 <span>Create Anyway</span>

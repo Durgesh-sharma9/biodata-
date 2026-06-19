@@ -30,34 +30,32 @@ export default function Apply() {
     onSuccess: () => setSubmitted(true),
   });
 
-  // Premium Micro-Spinner Full Page Loading State
+  // Flat Micro-Spinner Page Loading State
   if (isLoading) {
     return (
-      <div className="flex min-h-screen w-full flex-col items-center justify-center p-6 bg-slate-50/50 dark:bg-slate-950/40 antialiased">
-        <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-background shadow-xl border border-muted/40 mb-4 animate-in fade-in duration-300">
-          <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 opacity-10 animate-pulse" />
-          <Loader2 className="h-6 w-6 text-indigo-600 dark:text-indigo-400 animate-spin" />
+      <div className="flex min-h-screen w-full flex-col items-center justify-center p-5 bg-[#f3f3f4] dark:bg-slate-950 antialiased">
+        <div className="relative flex h-12 w-12 items-center justify-center rounded-xl bg-white dark:bg-slate-900 shadow-sm mb-3 animate-in fade-in duration-300">
+          <Loader2 className="h-5 w-5 text-[#A05AFF] animate-spin" />
         </div>
-        <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground/80 animate-pulse">
+        <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 animate-pulse">
           Syncing portal gateways...
         </p>
       </div>
     );
   }
 
-  // Premium Fallback Error Component State
+  // Fallback Error Component State using Soft-Tint Badging layout constraints
   if (error || !school) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-50/50 dark:bg-slate-950/40 p-6 antialiased">
-        <Card className="max-w-md border-rose-500/20 shadow-xl rounded-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-          <div className="h-1.5 w-full bg-rose-500" />
-          <CardContent className="pt-8 pb-6 text-center space-y-4 px-6 sm:px-8">
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-500/10 text-rose-600 shadow-3xs">
+      <div className="flex min-h-screen items-center justify-center bg-[#f3f3f4] dark:bg-slate-950 p-5 antialiased">
+        <Card className="max-w-md rounded-xl border-none bg-white shadow-sm dark:bg-slate-900 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+          <CardContent className="p-5 text-center space-y-4">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl border border-[#FE9496]/30 bg-[#FE9496]/5 text-[#FE9496]">
               <AlertTriangle className="h-5 w-5 stroke-[2.2]" />
             </div>
             <div className="space-y-1.5">
-              <h2 className="text-lg font-black tracking-tight text-foreground">Application Link Expired</h2>
-              <p className="text-xs font-medium text-muted-foreground leading-relaxed">
+              <h2 className="text-sm font-bold tracking-wide text-slate-800 dark:text-slate-200">Application Link Expired</h2>
+              <p className="text-xs font-medium text-slate-400 dark:text-slate-500 leading-relaxed">
                 The targeted institutional route is unavailable. Please verify the URL string parameter or get in touch with the administrator.
               </p>
             </div>
@@ -67,21 +65,19 @@ export default function Apply() {
     );
   }
 
-  // Premium Success Confirmation State Interface Look
+  // Success Confirmation State using Soft-Tint Success Badging specs
   if (submitted) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50/60 via-slate-100/30 to-background dark:from-slate-950 dark:to-slate-900 p-6 antialiased">
-        <Card className="max-w-md border-emerald-500/20 bg-background shadow-2xl rounded-2xl overflow-hidden relative animate-in fade-in zoom-in-95 duration-300">
-          <div className="absolute right-0 top-0 -mr-12 -mt-12 w-32 h-32 bg-emerald-500/5 rounded-full blur-2xl pointer-events-none" />
-          <div className="h-1.5 w-full bg-gradient-to-r from-emerald-500 to-teal-500" />
-          <CardContent className="pt-8 pb-8 text-center space-y-4 px-6 sm:px-10">
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-600 shadow-sm animate-bounce-short">
-              <CheckCircle2 className="h-6 w-6 stroke-[2.5]" />
+      <div className="flex min-h-screen items-center justify-center bg-[#f3f3f4] dark:bg-slate-950 p-5 antialiased">
+        <Card className="max-w-md rounded-xl border-none bg-white shadow-sm dark:bg-slate-900 overflow-hidden animate-in fade-in zoom-in-95 duration-300">
+          <CardContent className="p-6 text-center space-y-4">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl border border-[#1BCFB4]/30 bg-[#1BCFB4]/5 text-[#1BCFB4]">
+              <CheckCircle2 className="h-5 w-5 stroke-[2.5]" />
             </div>
             <div className="space-y-2">
-              <h2 className="text-xl font-black tracking-tight text-slate-900 dark:text-white">Application Received!</h2>
-              <p className="text-sm font-medium text-muted-foreground/95 leading-relaxed">
-                Thank you for applying to <strong className="text-foreground font-bold">{school.schoolName}</strong>. Your profile bundle is safely locked inside our talent cloud dashboard.
+              <h2 className="text-sm font-bold tracking-wide text-slate-800 dark:text-slate-200">Application Received!</h2>
+              <p className="text-xs font-medium text-slate-400 dark:text-slate-500 leading-relaxed">
+                Thank you for applying to <span className="font-bold text-slate-800 dark:text-slate-200">{school.schoolName}</span>. Your profile bundle is safely locked inside our talent cloud dashboard.
               </p>
             </div>
           </CardContent>
@@ -91,32 +87,30 @@ export default function Apply() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100/40 to-background dark:from-slate-950 dark:via-background dark:to-slate-950/60 p-4 md:p-8 flex items-center justify-center antialiased">
+    <div className="min-h-screen bg-[#f3f3f4] dark:bg-slate-950 p-5 flex items-center justify-center antialiased">
       <div className="w-full max-w-4xl mx-auto space-y-6">
         
         {/* Main Application Base Profile Hub Container */}
-        <Card className="border border-slate-200/60 bg-card shadow-md rounded-2xl overflow-hidden transition-all duration-300">
-          <CardHeader className="border-b border-muted/40 bg-gradient-to-b from-slate-50/70 via-background to-background dark:from-slate-950/30 p-6 sm:p-8 relative">
-            <div className="absolute right-0 top-0 -mr-16 -mt-16 w-44 h-44 bg-gradient-to-br from-indigo-500/10 to-transparent rounded-full blur-3xl pointer-events-none" />
-            
+        <Card className="rounded-xl border-none bg-white shadow-sm dark:bg-slate-900 overflow-hidden">
+          <CardHeader className="p-5 border-b border-slate-100 dark:border-slate-800/60 bg-slate-50/70 dark:bg-slate-900/20">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 <div className="flex items-center gap-2.5">
-                  <div className="p-2 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-xl shadow-3xs shrink-0">
+                  <div className="p-2 bg-[#A05AFF]/10 text-[#A05AFF] rounded-xl shrink-0">
                     <School className="h-4 w-4 stroke-[2.2]" />
                   </div>
-                  <CardTitle className="text-xl font-black tracking-tight text-slate-900 dark:text-white sm:text-2xl bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-transparent">
+                  <CardTitle className="text-xl font-bold tracking-tight text-slate-800 dark:text-white">
                     Apply to {school.schoolName}
                   </CardTitle>
                 </div>
-                <CardDescription className="text-xs font-medium text-muted-foreground leading-relaxed max-w-xl pl-0 sm:pl-9">
+                <CardDescription className="text-xs font-medium text-slate-400 dark:text-slate-500 leading-relaxed max-w-xl">
                   Complete the professional entry options profile block grid below. Your registration files will index instantly onto this institution's secure global matrix tracker.
                 </CardDescription>
               </div>
 
-              {/* Secure Channel Badge Pillar */}
+              {/* Secure Channel Badge Pillar (Modern Soft-Tint) */}
               <div className="self-start sm:self-center shrink-0">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-bold text-[11px] uppercase tracking-wider rounded-lg border border-indigo-500/10 shadow-3xs">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-[#A05AFF]/30 bg-[#A05AFF]/5 text-[#A05AFF] font-bold text-[11px] uppercase tracking-wider rounded-xl shadow-none">
                   <ShieldCheck className="h-3.5 w-3.5" />
                   <span>Secure Channel</span>
                 </div>
@@ -124,7 +118,7 @@ export default function Apply() {
             </div>
           </CardHeader>
           
-          <CardContent className="p-4 sm:p-8 bg-background">
+          <CardContent className="p-5 bg-white dark:bg-slate-900">
             {settings && positions ? (
               <DynamicCandidateForm
                 onSubmit={(data) => submitMutation.mutate(data)}
@@ -136,14 +130,14 @@ export default function Apply() {
                 uploadFilesFn={uploadPublicFiles}
               />
             ) : (
-              /* High-Fidelity Form Shimmer Placeholder fallback layout if data drops */
-              <div className="space-y-6 animate-pulse p-4">
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div className="h-11 bg-muted/50 rounded-xl sm:col-span-2" />
-                  <div className="h-11 bg-muted/40 rounded-xl" />
-                  <div className="h-11 bg-muted/40 rounded-xl" />
+              /* Flat procedural Shimmer Skeleton fallback track for missing feeds */
+              <div className="space-y-5 animate-pulse">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="h-11 bg-slate-100 dark:bg-slate-800 rounded-xl md:col-span-2" />
+                  <div className="h-11 bg-slate-100 dark:bg-slate-800 rounded-xl" />
+                  <div className="h-11 bg-slate-100 dark:bg-slate-800 rounded-xl" />
                 </div>
-                <div className="h-12 bg-muted/50 rounded-xl w-full mt-4" />
+                <div className="h-11 bg-slate-100 dark:bg-slate-800 rounded-xl w-full" />
               </div>
             )}
           </CardContent>
@@ -151,8 +145,8 @@ export default function Apply() {
         
         {/* Subtle Network Security Footer Mark */}
         <div className="text-center">
-          <p className="text-[10px] font-bold tracking-wider uppercase text-muted-foreground/50 flex items-center justify-center gap-1.5">
-            <GraduationCap className="h-3.5 w-3.5" />
+          <p className="text-[11px] font-bold tracking-wider uppercase text-slate-400 dark:text-slate-500 flex items-center justify-center gap-1.5">
+            <GraduationCap className="h-3.5 w-3.5 text-slate-400" />
             <span>Powered by HireHub Recruitment Ecosystem Network Infrastructure</span>
           </p>
         </div>

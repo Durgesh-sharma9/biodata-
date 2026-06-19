@@ -89,95 +89,95 @@ export function CandidateApplicationForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-8 max-w-4xl mx-auto antialiased">
       
-      {/* Premium Header Typography block */}
+      {/* Vibrant Gradient Header Block */}
       {(title || subtitle) && (
-        <div className="relative overflow-hidden rounded-2xl border border-slate-200/60 bg-gradient-to-r from-slate-50 via-white to-slate-50/50 p-6 dark:from-slate-950 dark:via-background dark:to-slate-950/50 shadow-xs mb-2">
-          <div className="absolute right-0 top-0 -mr-12 -mt-12 w-40 h-40 bg-gradient-to-br from-blue-500/10 via-indigo-500/5 to-transparent rounded-full blur-3xl pointer-events-none" />
-          <div className="flex items-start gap-3">
-            <div className="p-2 bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 rounded-xl shadow-2xs mt-0.5">
+        <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-[#A05AFF] via-[#9E58FF] to-[#4BCBEB] p-6 text-white shadow-md mb-2">
+          <div className="absolute right-[-10px] top-[-10px] w-32 h-32 rounded-full bg-white/10 blur-xl pointer-events-none" />
+          <div className="flex items-start gap-4 relative z-10">
+            <div className="p-2 bg-white/15 text-white rounded-xl shadow-xs mt-0.5">
               <Sparkles className="h-5 w-5" />
             </div>
             <div>
-              {title && <h2 className="text-xl font-extrabold tracking-tight text-foreground">{title}</h2>}
-              {subtitle && <p className="mt-1 text-xs font-medium text-muted-foreground">{subtitle}</p>}
+              {title && <h2 className="text-xl font-extrabold tracking-tight">{title}</h2>}
+              {subtitle && <p className="mt-1 text-xs font-medium text-white/80">{subtitle}</p>}
             </div>
           </div>
         </div>
       )}
 
       {/* Main Structural Form Fields Box */}
-      <div className="rounded-2xl border border-slate-200/60 bg-card p-6 md:p-8 shadow-xs space-y-6">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground/90 pb-3 border-b border-muted/40 flex items-center gap-2">
-          <User className="h-4 w-4 text-indigo-500" />
+      <div className="rounded-xl border border-none bg-white p-6 md:p-8 shadow-sm space-y-6 dark:bg-slate-900">
+        <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 pb-3 border-b border-slate-100 dark:border-slate-800 flex items-center gap-2">
+          <User className="h-4 w-4 text-[#A05AFF]" />
           Personal & Profile Details
         </h3>
         
         <div className="grid gap-5 md:grid-cols-2">
           <div className="space-y-2 md:col-span-2">
-            <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground/80">Full Name *</Label>
+            <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Full Name *</Label>
             <div className="relative">
               <Input 
                 value={form.fullName} 
                 onChange={(e) => updateForm('fullName', e.target.value)} 
                 placeholder="John Doe"
-                className="rounded-xl focus-visible:ring-indigo-500 h-11 pl-10 transition-all border-slate-200"
+                className="rounded-xl focus-visible:ring-[#A05AFF] h-11 pl-10 transition-all border-slate-200 bg-white"
                 required 
               />
-              <User className="absolute left-3.5 top-3.5 h-4 w-4 text-muted-foreground/50" />
+              <User className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400" />
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground/80">Mobile *</Label>
+            <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Mobile *</Label>
             <div className="relative">
               <Input 
                 value={form.mobile} 
                 onChange={(e) => updateForm('mobile', e.target.value)} 
                 placeholder="9876543210"
-                className="rounded-xl focus-visible:ring-indigo-500 h-11 pl-10 transition-all border-slate-200"
+                className="rounded-xl focus-visible:ring-[#A05AFF] h-11 pl-10 transition-all border-slate-200 bg-white"
                 required 
               />
-              <Phone className="absolute left-3.5 top-3.5 h-4 w-4 text-muted-foreground/50" />
+              <Phone className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400" />
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground/80">Email Address</Label>
+            <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Email Address</Label>
             <div className="relative">
               <Input 
                 type="email" 
                 value={form.email} 
                 onChange={(e) => updateForm('email', e.target.value)} 
                 placeholder="john@example.com"
-                className="rounded-xl focus-visible:ring-indigo-500 h-11 pl-10 transition-all border-slate-200"
+                className="rounded-xl focus-visible:ring-[#A05AFF] h-11 pl-10 transition-all border-slate-200 bg-white"
               />
-              <Mail className="absolute left-3.5 top-3.5 h-4 w-4 text-muted-foreground/50" />
+              <Mail className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400" />
             </div>
           </div>
 
           <div className="space-y-2 md:col-span-2">
-            <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground/80">Street Address</Label>
+            <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Street Address</Label>
             <div className="relative">
               <Input 
                 value={form.address} 
                 onChange={(e) => updateForm('address', e.target.value)} 
                 placeholder="Apartment, Street Name, Block"
-                className="rounded-xl focus-visible:ring-indigo-500 h-11 pl-10 transition-all border-slate-200"
+                className="rounded-xl focus-visible:ring-[#A05AFF] h-11 pl-10 transition-all border-slate-200 bg-white"
               />
-              <MapPin className="absolute left-3.5 top-3.5 h-4 w-4 text-muted-foreground/50" />
+              <MapPin className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400" />
             </div>
           </div>
 
-          <div className="space-y-2 md:col-span-2 rounded-xl bg-slate-50/50 dark:bg-slate-900/40 border border-dashed border-slate-200/60 p-4">
+          <div className="space-y-2 md:col-span-2 rounded-xl bg-slate-50/50 dark:bg-slate-900/40 border border-dashed border-slate-200 p-4">
             <LocationSelect value={location} onChange={setLocation} />
           </div>
 
           <div className="space-y-2">
-            <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground/80">Position Applied For *</Label>
+            <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Position Applied For *</Label>
             <Select value={form.position} onValueChange={(v) => updateForm('position', v)}>
-              <SelectTrigger className="rounded-xl h-11 focus:ring-indigo-500 border-slate-200 font-medium bg-background">
+              <SelectTrigger className="rounded-xl h-11 focus:ring-[#A05AFF] border-slate-200 font-medium bg-white">
                 <div className="flex items-center gap-2">
-                  <Briefcase className="h-4 w-4 text-muted-foreground/60" />
+                  <Briefcase className="h-4 w-4 text-slate-400" />
                   <SelectValue placeholder="Select position" />
                 </div>
               </SelectTrigger>
@@ -192,7 +192,7 @@ export function CandidateApplicationForm({
           </div>
 
           <div className="space-y-2">
-            <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground/80">Expected Monthly Salary (₹)</Label>
+            <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Expected Monthly Salary (₹)</Label>
             <div className="relative">
               <Input
                 type="number"
@@ -200,14 +200,14 @@ export function CandidateApplicationForm({
                 value={form.expectedSalary}
                 onChange={(e) => updateForm('expectedSalary', e.target.value)}
                 placeholder="e.g. 50000"
-                className="rounded-xl focus-visible:ring-indigo-500 h-11 pl-10 transition-all border-slate-200"
+                className="rounded-xl focus-visible:ring-[#A05AFF] h-11 pl-10 transition-all border-slate-200 bg-white"
               />
-              <IndianRupee className="absolute left-3.5 top-3.5 h-4 w-4 text-muted-foreground/50" />
+              <IndianRupee className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400" />
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground/80">Academic Qualifications</Label>
+            <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Academic Qualifications</Label>
             <MultiSelect
               options={qualificationOptions}
               value={form.qualifications}
@@ -218,16 +218,16 @@ export function CandidateApplicationForm({
           </div>
 
           <div className="space-y-2">
-            <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground/80">Total Experience (Years)</Label>
+            <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Total Experience (Years)</Label>
             <div className="relative">
               <Input
                 type="number"
                 min="0"
                 value={form.experienceYears}
                 onChange={(e) => updateForm('experienceYears', e.target.value)}
-                className="rounded-xl focus-visible:ring-indigo-500 h-11 pl-10 transition-all border-slate-200"
+                className="rounded-xl focus-visible:ring-[#A05AFF] h-11 pl-10 transition-all border-slate-200 bg-white"
               />
-              <GraduationCap className="absolute left-3.5 top-3.5 h-4 w-4 text-muted-foreground/50" />
+              <GraduationCap className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400" />
             </div>
           </div>
 
@@ -246,22 +246,22 @@ export function CandidateApplicationForm({
       </div>
 
       {/* Polish File Upload Area Block Section */}
-      <div className="rounded-2xl border border-slate-200/60 bg-card p-6 md:p-8 shadow-xs space-y-4">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground/90 pb-3 border-b border-muted/40 flex items-center gap-2">
-          <FileText className="h-4 w-4 text-indigo-500" />
+      <div className="rounded-xl border border-none bg-white p-6 md:p-8 shadow-sm space-y-4 dark:bg-slate-900">
+        <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 pb-3 border-b border-slate-100 dark:border-slate-800 flex items-center gap-2">
+          <FileText className="h-4 w-4 text-[#A05AFF]" />
           Supporting Credentials
         </h3>
         
-        <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground/80 block">Documents (Resume, Certificates)</Label>
-        <label className="flex flex-col items-center justify-center cursor-pointer gap-3 rounded-2xl border-2 border-dashed border-slate-200 hover:border-indigo-500/50 p-6 text-center transition-all bg-slate-50/40 dark:bg-slate-900/10 hover:bg-indigo-500/5 group">
-          <div className="p-3 rounded-xl bg-background border border-muted/60 text-muted-foreground/70 group-hover:text-indigo-600 group-hover:scale-105 transition-all shadow-2xs">
+        <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 block">Documents (Resume, Certificates)</Label>
+        <label className="flex flex-col items-center justify-center cursor-pointer gap-3 rounded-xl border-2 border-dashed border-slate-200 hover:border-[#A05AFF]/60 p-6 text-center transition-all bg-slate-50/50 dark:bg-slate-900/10 hover:bg-[#A05AFF]/5 group">
+          <div className="p-3 rounded-xl bg-white border border-slate-200 text-slate-400 group-hover:text-[#A05AFF] group-hover:scale-105 transition-all shadow-xs">
             <Upload className="h-5 w-5" />
           </div>
           <div className="space-y-1">
-            <p className="text-sm font-bold text-slate-800 dark:text-slate-200">
+            <p className="text-sm font-bold text-slate-700 dark:text-slate-200">
               {uploading ? 'Processing Server Upload...' : 'Click to upload files'}
             </p>
-            <p className="text-xs text-muted-foreground/80">Max 10 files, up to 10MB each (Images, PDF, DOC, DOCX)</p>
+            <p className="text-xs text-slate-400">Max 10 files, up to 10MB each (Images, PDF, DOC, DOCX)</p>
           </div>
           <input
             type="file"
@@ -273,13 +273,13 @@ export function CandidateApplicationForm({
           />
         </label>
 
-        {/* Uploaded Documents List Map View */}
+        {/* Uploaded Documents List */}
         {documents.length > 0 && (
           <div className="grid gap-2 sm:grid-cols-2 pt-2">
             {documents.map((doc, i) => (
-              <div key={i} className="flex items-center justify-between rounded-xl border border-slate-100 dark:border-slate-800 p-3 bg-background group hover:border-indigo-200 transition-colors shadow-2xs">
+              <div key={i} className="flex items-center justify-between rounded-xl border border-slate-100 dark:border-slate-800 p-3 bg-white group hover:border-[#4BCBEB]/50 transition-colors shadow-xs">
                 <div className="flex items-center gap-2.5 min-w-0">
-                  <div className="p-2 bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 rounded-lg shrink-0">
+                  <div className="p-2 bg-[#4BCBEB]/10 text-[#4BCBEB] rounded-lg shrink-0">
                     <FileText className="h-4 w-4" />
                   </div>
                   <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate max-w-[180px]">{doc.name}</span>
@@ -289,7 +289,7 @@ export function CandidateApplicationForm({
                   variant="ghost" 
                   size="icon" 
                   onClick={() => setDocuments(documents.filter((_, idx) => idx !== i))}
-                  className="h-8 w-8 rounded-lg hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950 transition-colors"
+                  className="h-8 w-8 rounded-lg hover:bg-[#FE9496]/10 hover:text-[#FE9496] transition-colors"
                 >
                   <X className="h-3.5 w-3.5" />
                 </Button>
@@ -301,22 +301,22 @@ export function CandidateApplicationForm({
 
       {/* Network Privacy Consent Aggregation Panel Box */}
       {requireConsent && (
-        <div className="rounded-2xl border border-slate-200/60 bg-slate-50/50 dark:bg-slate-900/20 p-5 md:p-6 space-y-4">
-          <h4 className="text-sm font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 flex items-center gap-2">
-            <ClipboardCheck className="h-4 w-4 text-indigo-500" />
+        <div className="rounded-xl border border-none bg-white p-6 shadow-sm space-y-4 dark:bg-slate-900">
+          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-slate-800">
+            <ClipboardCheck className="h-4 w-4 text-[#A05AFF]" />
             Declaration & System Consents
           </h4>
           
-          <div className="space-y-3.5">
+          <div className="space-y-4 pt-1">
             <label className="flex items-start gap-3 text-sm font-medium text-slate-600 dark:text-slate-400 cursor-pointer select-none group">
               <input
                 type="checkbox"
                 checked={form.profileSharingConsent}
                 onChange={(e) => updateForm('profileSharingConsent', e.target.checked)}
-                className="mt-1 h-4 w-4 rounded-md border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer accent-indigo-600"
+                className="mt-1 h-4 w-4 rounded-md border-slate-300 text-[#A05AFF] focus:ring-[#A05AFF] cursor-pointer accent-[#A05AFF]"
                 required
               />
-              <span className="group-hover:text-foreground transition-colors leading-relaxed">
+              <span className="group-hover:text-slate-800 dark:group-hover:text-slate-200 transition-colors leading-relaxed">
                 I consent to share my profile with schools on the School Recruitment Network for recruitment purposes. *
               </span>
             </label>
@@ -326,10 +326,10 @@ export function CandidateApplicationForm({
                 type="checkbox"
                 checked={form.contactConsent}
                 onChange={(e) => updateForm('contactConsent', e.target.checked)}
-                className="mt-1 h-4 w-4 rounded-md border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer accent-indigo-600"
+                className="mt-1 h-4 w-4 rounded-md border-slate-300 text-[#A05AFF] focus:ring-[#A05AFF] cursor-pointer accent-[#A05AFF]"
                 required
               />
-              <span className="group-hover:text-foreground transition-colors leading-relaxed">
+              <span className="group-hover:text-slate-800 dark:group-hover:text-slate-200 transition-colors leading-relaxed">
                 I consent to be contacted by schools regarding job opportunities. *
               </span>
             </label>
@@ -337,19 +337,19 @@ export function CandidateApplicationForm({
         </div>
       )}
 
-      {/* Form Error Processing Alert String View */}
+      {/* Form Error Processing Alert */}
       {error && (
-        <div className="flex items-center gap-2 p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 text-sm font-semibold animate-shake">
+        <div className="flex items-center gap-2 p-4 rounded-xl bg-[#FE9496]/10 border border-[#FE9496]/30 text-[#FE9496] text-sm font-semibold">
           <AlertCircle className="h-4 w-4 shrink-0" />
           <span>{error}</span>
         </div>
       )}
 
-      {/* Main Submission Call to Action Control Node */}
+      {/* Vibrant Purple Theme Submit Button */}
       <Button 
         type="submit" 
         disabled={isSubmitting || uploading} 
-        className="w-full bg-gradient-to-r from-blue-600 via-indigo-600 to-indigo-700 hover:from-blue-700 hover:via-indigo-700 hover:to-indigo-800 text-white font-bold h-12 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 text-base"
+        className="w-full bg-gradient-to-r from-[#A05AFF] via-[#9E58FF] to-[#4BCBEB] hover:opacity-95 text-white font-bold h-12 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 text-base border-none"
       >
         {isSubmitting ? 'Committing Application Pack...' : submitLabel}
       </Button>

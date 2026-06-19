@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Plus, Pencil, Trash2, Coins, Calendar, Sparkles, ArrowUpRight } from 'lucide-react';
+import { Plus, Pencil, Trash2, Coins, Calendar, Sparkles, ArrowUpRight, Loader2 } from 'lucide-react';
 import { getPlans, createPlan, updatePlan, deletePlan } from '@/lib/api';
 import { PageHeader } from '@/components/common/PageHeader';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Dialog, DialogBody, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogBody, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
@@ -65,57 +65,59 @@ export default function Plans() {
   };
 
   return (
-    <div className="space-y-8 p-4 md:p-8 max-w-7xl mx-auto antialiased text-foreground bg-background">
+    <div className="space-y-6 p-4 md:p-6 max-w-7xl mx-auto bg-[#f3f3f4] dark:bg-slate-950 text-slate-800 dark:text-white antialiased min-h-screen">
       
-      {/* Modern SaaS Header Frame */}
-      <div className="relative overflow-hidden rounded-2xl border border-slate-200/60 bg-gradient-to-r from-slate-50 via-white to-slate-50/50 p-6 dark:from-slate-950 dark:via-background dark:to-slate-950/50 shadow-xs flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="absolute right-0 top-0 -mr-12 -mt-12 w-40 h-40 bg-gradient-to-br from-blue-500/10 via-indigo-500/5 to-transparent rounded-full blur-3xl pointer-events-none" />
+      {/* Page Header Panel Wrapper */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-5">
         <PageHeader
           title="Subscription Plans"
           description="Configure, customize, and manage active system token bundles and recurring plan nodes for HireHub."
+          className="text-slate-800 dark:text-white font-bold tracking-tight text-xl"
         />
         <Button 
           onClick={openCreate}
-          className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-xl h-10 px-4 shadow-sm hover:shadow-md transition-all duration-200 self-start sm:self-auto shrink-0 z-10 gap-2"
+          className="bg-[#A05AFF] hover:bg-[#A05AFF]/90 text-white font-bold rounded-xl transition-all duration-200 active:scale-95 shrink-0 gap-2"
         >
-          <Plus className="h-4 w-4 stroke-[2.5]" />
+          <Plus className="h-4 w-4 stroke-[3]" />
           Add Plan
         </Button>
       </div>
 
-      {/* Main Table Interface Shell */}
-      <Card className="border border-slate-200/60 bg-background shadow-xs rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-sm">
-        <CardHeader className="border-b border-slate-100 dark:border-slate-800 p-6 sm:p-8 bg-gradient-to-b from-slate-50/50 via-background to-background dark:from-slate-950/20">
-          <CardTitle className="text-base font-bold text-foreground tracking-tight flex items-center gap-2.5">
-            <div className="p-2 bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 rounded-xl shadow-2xs">
+      {/* Main Table Interface Layer Constraint */}
+      <Card className="rounded-xl border-none bg-white shadow-sm dark:bg-slate-900 overflow-hidden">
+        <CardHeader className="p-5 border-b border-slate-100 dark:border-slate-800/60 bg-slate-50/70 dark:bg-slate-900/20">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 bg-[#A05AFF]/10 text-[#A05AFF] rounded-xl">
               <Sparkles className="h-4 w-4" />
             </div>
-            <span>Available Packages</span>
-          </CardTitle>
-          <CardDescription className="text-xs font-medium text-muted-foreground pl-10">
-            Overview of tier allocations and validity lengths currently integrated into the user interface.
-          </CardDescription>
+            <div>
+              <CardTitle className="text-sm font-bold tracking-wide text-slate-800 dark:text-slate-200">Available Packages</CardTitle>
+              <CardDescription className="text-xs text-slate-400 dark:text-slate-500 font-medium">
+                Overview of tier allocations and validity lengths currently integrated into the user interface.
+              </CardDescription>
+            </div>
+          </div>
         </CardHeader>
         
         <CardContent className="p-0">
           <div className="overflow-x-auto w-full">
             <Table>
-              <TableHeader className="bg-slate-50/60 dark:bg-slate-900/40 border-b border-slate-200/60 dark:border-slate-800">
+              <TableHeader className="bg-slate-50/70 dark:bg-slate-900/20 text-slate-400 font-semibold text-[11px] uppercase tracking-wider border-b border-slate-100 dark:border-slate-800">
                 <TableRow>
-                  <TableHead className="pl-6 sm:pl-8 font-bold text-xs tracking-wider uppercase text-muted-foreground/90 py-3.5">Name</TableHead>
-                  <TableHead className="font-bold text-xs tracking-wider uppercase text-muted-foreground/90 py-3.5">Credits</TableHead>
-                  <TableHead className="font-bold text-xs tracking-wider uppercase text-muted-foreground/90 py-3.5">Duration</TableHead>
-                  <TableHead className="font-bold text-xs tracking-wider uppercase text-muted-foreground/90 py-3.5">Status</TableHead>
-                  <TableHead className="pr-6 sm:pr-8 text-right font-bold text-xs tracking-wider uppercase text-muted-foreground/90 py-3.5">Actions</TableHead>
+                  <TableHead className="pl-6 font-bold text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-500 py-4">Name</TableHead>
+                  <TableHead className="font-bold text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-500 py-4">Credits</TableHead>
+                  <TableHead className="font-bold text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-500 py-4">Duration</TableHead>
+                  <TableHead className="font-bold text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-500 py-4">Status</TableHead>
+                  <TableHead className="pr-6 text-right font-bold text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-500 py-4">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {isLoading ? (
                   <TableRow>
                     <TableCell colSpan={5} className="py-20 text-center">
-                      <div className="flex flex-col items-center justify-center space-y-3 animate-pulse">
-                        <div className="h-8 w-8 rounded-full border-4 border-indigo-500 border-t-transparent animate-spin" />
-                        <span className="text-xs font-semibold text-muted-foreground tracking-wide">Syncing product matrices...</span>
+                      <div className="flex flex-col items-center justify-center space-y-3">
+                        <Loader2 className="h-5 w-5 text-[#A05AFF] animate-spin" />
+                        <span className="text-sm font-semibold text-slate-500 dark:text-slate-400 tracking-wide animate-pulse">Syncing product matrices...</span>
                       </div>
                     </TableCell>
                   </TableRow>
@@ -123,11 +125,11 @@ export default function Plans() {
                   <TableRow>
                     <TableCell colSpan={5} className="py-16 text-center">
                       <div className="flex flex-col items-center justify-center max-w-sm mx-auto p-4">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-50 dark:bg-slate-900 border border-dashed border-slate-200 dark:border-slate-800 text-muted-foreground/60 mb-3.5 shadow-2xs">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-950 text-slate-400 mb-3.5 border border-slate-100 dark:border-slate-800">
                           <Sparkles className="h-5 w-5 stroke-[1.5]" />
                         </div>
-                        <h4 className="text-sm font-bold text-foreground tracking-tight">No active plans configured</h4>
-                        <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
+                        <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200 tracking-wide">No active plans configured</h4>
+                        <p className="text-xs text-slate-400 dark:text-slate-500 mt-1.5 leading-relaxed">
                           Initialize tiered premium attributes for user deployments by triggering the plan onboarding matrix setup modal.
                         </p>
                       </div>
@@ -137,49 +139,54 @@ export default function Plans() {
                   plans.map((plan) => (
                     <TableRow 
                       key={plan._id} 
-                      className="group hover:bg-slate-50/40 dark:hover:bg-slate-900/20 border-b border-slate-100 dark:border-slate-800/60 transition-colors last:border-none"
+                      className="group hover:bg-slate-50/50 dark:hover:bg-slate-800/30 border-b border-slate-100 dark:border-slate-800/60 transition-all last:border-none"
                     >
-                      <TableCell className="pl-6 sm:pl-8 py-4 font-bold text-slate-900 dark:text-slate-100 text-sm tracking-tight">
+                      <TableCell className="pl-6 py-4 font-bold text-slate-800 dark:text-slate-200 text-sm tracking-tight">
                         <div className="flex items-center gap-1.5">
                           <span>{plan.name}</span>
-                          <ArrowUpRight className="h-3.5 w-3.5 opacity-0 group-hover:opacity-100 transition-opacity text-indigo-500" />
+                          <ArrowUpRight className="h-3.5 w-3.5 opacity-0 group-hover:opacity-100 transition-opacity text-[#A05AFF]" />
                         </div>
                       </TableCell>
                       
+                      {/* Modern Soft-Tint Info State Badge */}
                       <TableCell className="py-4">
-                        <div className="inline-flex items-center gap-1.5 font-semibold text-sm bg-blue-500/10 text-blue-600 dark:bg-blue-950 dark:text-blue-400 px-2.5 py-1 rounded-lg">
+                        <div className="inline-flex items-center gap-1.5 text-xs font-bold border border-[#4BCBEB]/30 bg-[#4BCBEB]/5 text-[#4BCBEB] px-2.5 py-1 rounded-xl">
                           <Coins className="h-3.5 w-3.5 shrink-0" />
                           <span>{plan.credits} Tokens</span>
                         </div>
                       </TableCell>
                       
+                      {/* Modern Soft-Tint Default Brand State Badge */}
                       <TableCell className="py-4">
-                        <div className="inline-flex items-center gap-1.5 text-xs text-muted-foreground font-semibold bg-slate-100 dark:bg-slate-900 border border-slate-200/40 dark:border-slate-800 px-2.5 py-1 rounded-lg">
-                          <Calendar className="h-3.5 w-3.5 text-muted-foreground/70" />
+                        <div className="inline-flex items-center gap-1.5 text-xs font-bold border border-[#A05AFF]/30 bg-[#A05AFF]/5 text-[#A05AFF] px-2.5 py-1 rounded-xl">
+                          <Calendar className="h-3.5 w-3.5 shrink-0" />
                           <span>{plan.durationDays} Days</span>
                         </div>
                       </TableCell>
                       
+                      {/* Modern Soft-Tint Success State Badge */}
                       <TableCell className="py-4">
-                        <Badge 
-                          className={`text-xs font-semibold px-2.5 py-0.5 rounded-full border shadow-2xs tracking-wide ${
-                            plan.isActive ?? true
-                              ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20 dark:bg-emerald-500/20 dark:text-emerald-400' 
-                              : 'bg-slate-500/10 text-slate-600 border-slate-500/20 dark:bg-slate-500/20 dark:text-slate-400'
-                          }`}
-                        >
-                          <span className={`h-1.5 w-1.5 rounded-full mr-1.5 inline-block ${plan.isActive ?? true ? 'bg-emerald-500' : 'bg-slate-400'}`} />
-                          {plan.isActive ?? true ? 'Active' : 'Inactive'}
-                        </Badge>
+                        {plan.isActive ?? true ? (
+                          <Badge className="border-[#1BCFB4]/30 bg-[#1BCFB4]/5 text-[#1BCFB4] text-xs font-semibold px-2.5 py-0.5 rounded-xl shadow-none variant-outline tracking-wide">
+                            <span className="h-1.5 w-1.5 rounded-full mr-1.5 inline-block bg-[#1BCFB4]" />
+                            Active
+                          </Badge>
+                        ) : (
+                          <Badge className="border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-500 text-xs font-semibold px-2.5 py-0.5 rounded-xl shadow-none variant-outline tracking-wide">
+                            <span className="h-1.5 w-1.5 rounded-full mr-1.5 inline-block bg-slate-400" />
+                            Inactive
+                          </Badge>
+                        )}
                       </TableCell>
                       
-                      <TableCell className="pr-6 sm:pr-8 py-4 text-right">
+                      {/* Action Triggers Grid Matrix */}
+                      <TableCell className="pr-6 py-4 text-right">
                         <div className="inline-flex items-center gap-1">
                           <Button 
                             variant="ghost" 
                             size="icon" 
                             onClick={() => openEdit(plan)}
-                            className="h-9 w-9 rounded-xl text-muted-foreground hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-950/50 transition-colors"
+                            className="h-8 w-8 rounded-xl text-slate-400 hover:text-[#A05AFF] hover:bg-[#A05AFF]/10 transition-colors"
                           >
                             <Pencil className="h-3.5 w-3.5" />
                           </Button>
@@ -187,7 +194,7 @@ export default function Plans() {
                             variant="ghost"
                             size="icon"
                             onClick={() => deleteMutation.mutate(plan._id)}
-                            className="h-9 w-9 rounded-xl text-muted-foreground hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/50 transition-colors"
+                            className="h-8 w-8 rounded-xl text-slate-400 hover:text-[#FE9496] hover:bg-[#FE9496]/10 transition-colors"
                           >
                             <Trash2 className="h-3.5 w-3.5" />
                           </Button>
@@ -202,79 +209,78 @@ export default function Plans() {
         </CardContent>
       </Card>
 
-      {/* Premium Form Creation/Edit Dialog Context Modal */}
+      {/* Unified Multi-Form Modal Framework */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="sm:max-w-[425px]">
-          <div className="h-1.5 w-full bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-500" />
+        <DialogContent className="max-w-md rounded-xl border-none bg-white p-6 dark:bg-slate-900 shadow-sm">
           <DialogHeader>
-            <DialogTitle className="text-xl font-bold tracking-tight bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-transparent">
+            <DialogTitle className="text-sm font-bold tracking-wide text-slate-800 dark:text-slate-200">
               {editPlan ? '✨ Edit Plan Parameter' : '🚀 Launch Premium Plan'}
             </DialogTitle>
           </DialogHeader>
-          <DialogBody>
-            <form onSubmit={handleSubmit} className="space-y-4">
+          <DialogBody className="pt-4">
+            <form id="plan-form" onSubmit={handleSubmit} className="space-y-5">
               <div className="space-y-1.5">
-                <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Plan Title Name</Label>
+                <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Plan Title Name</Label>
                 <Input 
                   value={form.name} 
                   onChange={(e) => setForm({ ...form, name: e.target.value })} 
                   placeholder="e.g. Enterprise Tier, Starter Pack"
-                  className="rounded-xl focus-visible:ring-indigo-500 h-11 pl-4 transition-all"
+                  className="h-11 border-slate-200 rounded-xl focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 dark:bg-slate-800 dark:border-slate-700 text-sm"
                   required 
                 />
               </div>
               
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-1.5">
-                  <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Included Credits</Label>
-                  <div className="relative">
+                  <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Included Credits</Label>
+                  <div className="relative group">
+                    <Coins className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400 group-focus-within:text-[#A05AFF] transition-colors" />
                     <Input
                       type="number"
                       value={form.credits}
                       onChange={(e) => setForm({ ...form, credits: e.target.value })}
                       placeholder="500"
-                      className="rounded-xl focus-visible:ring-indigo-500 h-11 pl-9 transition-all"
+                      className="pl-10 h-11 border-slate-200 rounded-xl focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 dark:bg-slate-800 dark:border-slate-700 text-sm font-medium"
                       required
                     />
-                    <Coins className="absolute left-3 top-3.5 h-4 w-4 text-muted-foreground/60" />
                   </div>
                 </div>
                 
                 <div className="space-y-1.5">
-                  <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Validity Duration</Label>
-                  <div className="relative">
+                  <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Validity Duration (Days)</Label>
+                  <div className="relative group">
+                    <Calendar className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400 group-focus-within:text-[#A05AFF] transition-colors" />
                     <Input
                       type="number"
                       value={form.durationDays}
                       onChange={(e) => setForm({ ...form, durationDays: e.target.value })}
-                      placeholder="30 days"
-                      className="rounded-xl focus-visible:ring-indigo-500 h-11 pl-9 transition-all"
+                      placeholder="30"
+                      className="pl-10 h-11 border-slate-200 rounded-xl focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 dark:bg-slate-800 dark:border-slate-700 text-sm font-medium"
                       required
                     />
-                    <Calendar className="absolute left-3 top-3.5 h-4 w-4 text-muted-foreground/60" />
                   </div>
                 </div>
               </div>
-              
-              <div className="flex gap-2 pt-3">
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  onClick={() => setDialogOpen(false)}
-                  className="w-full rounded-xl h-11 font-medium transition-all"
-                >
-                  Cancel
-                </Button>
-                <Button 
-                  type="submit" 
-                  disabled={saveMutation.isPending}
-                  className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium rounded-xl h-11 shadow-sm hover:shadow-md transition-all"
-                >
-                  {saveMutation.isPending ? 'Processing...' : 'Apply Configurations'}
-                </Button>
-              </div>
             </form>
           </DialogBody>
+          <DialogFooter className="mt-6 flex gap-2">
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={() => setDialogOpen(false)}
+              className="rounded-xl h-11 font-medium transition-all border-slate-200 text-slate-700 dark:border-slate-700 dark:text-slate-300"
+            >
+              Cancel
+            </Button>
+            <Button 
+              type="submit"
+              form="plan-form"
+              disabled={saveMutation.isPending}
+              className="bg-[#A05AFF] hover:bg-[#A05AFF]/90 text-white font-bold rounded-xl h-11 px-5 transition-all duration-200 active:scale-95"
+            >
+              {saveMutation.isPending ? 'Processing...' : 'Apply Configurations'}
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

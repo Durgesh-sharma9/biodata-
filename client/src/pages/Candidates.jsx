@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { 
   Plus, Search, Eye, Pencil, Trash2, ChevronLeft, ChevronRight, 
-  Filter, MapPin, Briefcase, GraduationCap, Calendar, IndianRupee, 
+  MapPin, Briefcase, GraduationCap, Calendar, IndianRupee, 
   Users, ShieldAlert, SlidersHorizontal, ArrowUpDown, Loader2
 } from 'lucide-react';
 import { getCandidates, deleteCandidate, getSettings, getStates, getCities, getLocalities } from '@/lib/api';
@@ -121,64 +121,56 @@ export function CandidateList({
     }));
   };
 
-  // UI helper for dynamic and vibrant source badges
+  // Modern Soft-Tint Badges customized cleanly for the Purple Theme specifications
   const getSourceBadge = (source) => {
     const formatStr = (str) => str?.replace(/_/g, ' ') || '';
     switch(source) {
       case 'ADMIN':
-        return <Badge className="bg-blue-500/10 text-blue-600 hover:bg-blue-500/20 border-blue-200/50 transition-colors font-medium rounded-full px-2.5 py-0.5">{formatStr(source)}</Badge>;
+        return <Badge className="border-[#4BCBEB]/30 bg-[#4BCBEB]/5 text-[#4BCBEB] font-bold px-2.5 py-0.5 rounded-xl variant-outline shadow-none">{formatStr(source)}</Badge>;
       case 'SCHOOL_LINK':
-        return <Badge className="bg-purple-500/10 text-purple-600 hover:bg-purple-500/20 border-purple-200/50 transition-colors font-medium rounded-full px-2.5 py-0.5">{formatStr(source)}</Badge>;
+        return <Badge className="border-[#A05AFF]/30 bg-[#A05AFF]/5 text-[#A05AFF] font-bold px-2.5 py-0.5 rounded-xl variant-outline shadow-none">{formatStr(source)}</Badge>;
       case 'SELF_APPLICANT':
-        return <Badge className="bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20 border-emerald-200/50 transition-colors font-medium rounded-full px-2.5 py-0.5">{formatStr(source)}</Badge>;
+        return <Badge className="border-[#1BCFB4]/30 bg-[#1BCFB4]/5 text-[#1BCFB4] font-bold px-2.5 py-0.5 rounded-xl variant-outline shadow-none">{formatStr(source)}</Badge>;
       case 'SUPER_ADMIN_IMPORT':
-        return <Badge className="bg-amber-500/10 text-amber-600 hover:bg-amber-500/20 border-amber-200/50 transition-colors font-medium rounded-full px-2.5 py-0.5">{formatStr(source)}</Badge>;
+        return <Badge className="border-[#9E58FF]/30 bg-[#9E58FF]/5 text-[#9E58FF] font-bold px-2.5 py-0.5 rounded-xl variant-outline shadow-none">{formatStr(source)}</Badge>;
       default:
-        return <Badge variant="outline" className="text-muted-foreground border-slate-200/60 font-medium rounded-full px-2.5 py-0.5">Talent Pool</Badge>;
+        return <Badge className="border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800 text-slate-500 font-bold px-2.5 py-0.5 rounded-xl variant-outline shadow-none">Talent Pool</Badge>;
     }
   };
 
   return (
-    <div className="space-y-8 max-w-[1600px] mx-auto p-4 md:p-6 lg:p-8 antialiased selection:bg-indigo-500/10 text-slate-800">
-      {/* Page Header Section Wrap */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-900 via-indigo-950 to-purple-950 p-6 md:p-8 shadow-xl border border-slate-800/40 group">
-        <div className="absolute top-0 right-0 -mt-12 -mr-12 w-96 h-96 bg-gradient-to-br from-indigo-500/20 to-purple-500/0 rounded-full blur-3xl pointer-events-none group-hover:scale-110 transition-transform duration-1000" />
-        <div className="absolute -bottom-8 left-1/3 w-64 h-64 bg-cyan-500/10 rounded-full blur-2xl pointer-events-none" />
-        
-        <div className="relative flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-          <div className="space-y-2 max-w-3xl">
-            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-white bg-clip-text bg-gradient-to-r from-white via-slate-100 to-slate-300">
-              {title}
-            </h1>
-            <p className="text-sm md:text-base text-slate-300/90 leading-relaxed font-medium">
-              {description}
-            </p>
-          </div>
-          {showAddButton && (
-            <Button asChild className="relative overflow-hidden bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold tracking-wide rounded-xl px-5 py-6 shadow-md shadow-indigo-600/20 hover:shadow-xl hover:shadow-indigo-500/30 transition-all duration-300 hover:-translate-y-0.5 flex items-center shrink-0 border border-indigo-400/20 group/btn">
-              <Link to="/candidates/new">
-                <Plus className="mr-2 h-5 w-5 transition-transform duration-300 group-hover/btn:rotate-90" />
-                Add Candidate
-              </Link>
-            </Button>
-          )}
-        </div>
+    <div className="space-y-6 p-5 max-w-[1600px] mx-auto bg-[#f3f3f4] dark:bg-slate-950 text-slate-800 dark:text-white antialiased min-h-screen">
+      {/* Minimalist Page Header Panel Layout */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-5">
+        <PageHeader
+          title={title}
+          description={description}
+          className="text-slate-800 dark:text-white font-bold tracking-tight text-xl"
+        />
+        {showAddButton && (
+          <Button asChild className="bg-[#A05AFF] hover:bg-[#A05AFF]/90 text-white font-bold rounded-xl transition-all duration-200 active:scale-95 shrink-0">
+            <Link to="/candidates/new">
+              <Plus className="mr-2 h-4 w-4 stroke-[3]" />
+              Add Candidate
+            </Link>
+          </Button>
+        )}
       </div>
 
       {/* Advanced Filtering Control Center */}
-      <Card className="border-slate-200/70 shadow-sm rounded-2xl overflow-hidden bg-white/70 backdrop-blur-md">
-        <CardContent className="p-6">
-          <div className="flex items-center gap-2 mb-5 border-b border-slate-100 pb-3">
-            <SlidersHorizontal className="h-4 w-4 text-indigo-500" />
-            <h2 className="text-xs font-bold text-slate-400 uppercase tracking-widest">Filter Engine</h2>
+      <Card className="rounded-xl border-none bg-white shadow-sm dark:bg-slate-900 overflow-hidden">
+        <CardContent className="p-5">
+          <div className="flex items-center gap-2 mb-4 border-b border-slate-100 dark:border-slate-800 pb-3">
+            <SlidersHorizontal className="h-4 w-4 text-[#A05AFF]" />
+            <h2 className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Filter Engine</h2>
           </div>
           
-          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="relative group">
-              <Search className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
+              <Search className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400 group-focus-within:text-[#A05AFF] transition-colors" />
               <Input
                 placeholder="Search by name..."
-                className="pl-10 h-11 bg-slate-50/50 border-slate-200 hover:border-slate-300 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 rounded-xl transition-all placeholder:text-slate-400 font-medium"
+                className="pl-10 h-11 border-slate-200 rounded-xl focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 dark:bg-slate-800 dark:border-slate-700 text-sm font-medium"
                 value={filters.name}
                 onChange={(e) => updateFilter('name', e.target.value)}
               />
@@ -188,7 +180,7 @@ export function CandidateList({
               <div className="relative">
                 <Input
                   placeholder="Search by mobile..."
-                  className="h-11 bg-slate-50/50 border-slate-200 hover:border-slate-300 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 rounded-xl transition-all placeholder:text-slate-400 font-medium"
+                  className="h-11 border-slate-200 rounded-xl focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 dark:bg-slate-800 dark:border-slate-700 text-sm font-medium"
                   value={filters.mobile}
                   onChange={(e) => updateFilter('mobile', e.target.value)}
                 />
@@ -196,13 +188,13 @@ export function CandidateList({
             )}
 
             <Select value={filters.position || 'all'} onValueChange={(v) => updateFilter('position', v === 'all' ? '' : v)}>
-              <SelectTrigger className="h-11 bg-slate-50/50 border-slate-200 hover:border-slate-300 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 rounded-xl transition-all text-slate-600 font-medium">
+              <SelectTrigger className="h-11 border-slate-200 rounded-xl focus:ring-[#A05AFF] dark:bg-slate-800 dark:border-slate-700 text-sm font-medium">
                 <SelectValue placeholder="All Positions" />
               </SelectTrigger>
-              <SelectContent className="rounded-xl border-slate-200 max-h-64">
-                <SelectItem value="all" className="font-medium text-slate-500">All Positions</SelectItem>
+              <SelectContent className="rounded-xl dark:bg-slate-800 max-h-64">
+                <SelectItem value="all" className="font-medium text-slate-400">All Positions</SelectItem>
                 {settings?.positions?.map((p) => (
-                  <SelectItem key={p} value={p} className="focus:bg-indigo-50/70 focus:text-indigo-600 font-medium rounded-lg">
+                  <SelectItem key={p} value={p} className="font-medium rounded-lg">
                     {p}
                   </SelectItem>
                 ))}
@@ -213,13 +205,13 @@ export function CandidateList({
               value={filters.qualification || 'all'}
               onValueChange={(v) => updateFilter('qualification', v === 'all' ? '' : v)}
             >
-              <SelectTrigger className="h-11 bg-slate-50/50 border-slate-200 hover:border-slate-300 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 rounded-xl transition-all text-slate-600 font-medium">
+              <SelectTrigger className="h-11 border-slate-200 rounded-xl focus:ring-[#A05AFF] dark:bg-slate-800 dark:border-slate-700 text-sm font-medium">
                 <SelectValue placeholder="All Qualifications" />
               </SelectTrigger>
-              <SelectContent className="rounded-xl border-slate-200 max-h-64">
-                <SelectItem value="all" className="font-medium text-slate-500">All Qualifications</SelectItem>
+              <SelectContent className="rounded-xl dark:bg-slate-800 max-h-64">
+                <SelectItem value="all" className="font-medium text-slate-400">All Qualifications</SelectItem>
                 {settings?.qualifications?.map((q) => (
-                  <SelectItem key={q} value={q} className="focus:bg-indigo-50/70 focus:text-indigo-600 font-medium rounded-lg">
+                  <SelectItem key={q} value={q} className="font-medium rounded-lg">
                     {q}
                   </SelectItem>
                 ))}
@@ -230,7 +222,7 @@ export function CandidateList({
               <Input
                 type="number"
                 placeholder="Experience (years)"
-                className="h-11 bg-slate-50/50 border-slate-200 hover:border-slate-300 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 rounded-xl transition-all placeholder:text-slate-400 font-medium"
+                className="h-11 border-slate-200 rounded-xl focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 dark:bg-slate-800 dark:border-slate-700 text-sm font-medium"
                 value={filters.experience}
                 onChange={(e) => updateFilter('experience', e.target.value)}
               />
@@ -272,13 +264,12 @@ export function CandidateList({
               placeholder={filterCityId ? "All Localities" : "Select City First"}
               disabled={!filterCityId}
             />
-            
 
             <div className="relative">
               <Input
                 type="number"
                 placeholder="Min Monthly Salary"
-                className="h-11 bg-slate-50/50 border-slate-200 hover:border-slate-300 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 rounded-xl transition-all placeholder:text-slate-400 font-medium"
+                className="h-11 border-slate-200 rounded-xl focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 dark:bg-slate-800 dark:border-slate-700 text-sm font-medium"
                 value={filters.expectedSalaryMin}
                 onChange={(e) => updateFilter('expectedSalaryMin', e.target.value)}
               />
@@ -288,7 +279,7 @@ export function CandidateList({
               <Input
                 type="number"
                 placeholder="Max Monthly Salary"
-                className="h-11 bg-slate-50/50 border-slate-200 hover:border-slate-300 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 rounded-xl transition-all placeholder:text-slate-400 font-medium"
+                className="h-11 border-slate-200 rounded-xl focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 dark:bg-slate-800 dark:border-slate-700 text-sm font-medium"
                 value={filters.expectedSalaryMax}
                 onChange={(e) => updateFilter('expectedSalaryMax', e.target.value)}
               />
@@ -297,115 +288,110 @@ export function CandidateList({
         </CardContent>
       </Card>
 
-      {/* Main Listing View Wrapper */}
-      <Card className="border-slate-200/70 shadow-md shadow-slate-100/50 rounded-2xl bg-white overflow-hidden">
+      {/* Main Listing View Table Interface */}
+      <Card className="rounded-xl border-none bg-white shadow-sm dark:bg-slate-900 overflow-hidden">
         <CardContent className="p-0">
           {isLoading ? (
-            /* Premium Loading Skeleton / State Component Wrap */
-            <div className="py-24 flex flex-col items-center justify-center space-y-4">
-              <div className="relative flex items-center justify-center">
-                <Loader2 className="h-10 w-10 text-indigo-600 animate-spin relative z-10" />
-                <div className="absolute inset-0 bg-indigo-500/10 rounded-full blur-xl animate-pulse scale-150" />
-              </div>
-              <p className="text-slate-500 font-semibold tracking-wide text-sm animate-pulse">
+            <div className="py-24 flex flex-col items-center justify-center space-y-3">
+              <Loader2 className="h-5 w-5 text-[#A05AFF] animate-spin" />
+              <p className="text-sm font-semibold text-slate-500 dark:text-slate-400 tracking-wide animate-pulse">
                 Fetching candidate universe...
               </p>
             </div>
           ) : (
             <>
-              {/* Responsive Container for Professional Table Grid */}
-              <div className="w-full overflow-x-auto scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent">
+              <div className="w-full overflow-x-auto">
                 <Table className="min-w-[1000px]">
-                  <TableHeader className="bg-slate-50/70 border-b border-slate-100">
-                    <TableRow className="hover:bg-transparent">
-                      <TableHead className="w-[80px] text-slate-500 font-bold text-xs uppercase tracking-wider pl-6">Photo</TableHead>
+                  <TableHeader className="bg-slate-50/70 dark:bg-slate-900/20 text-slate-400 font-semibold text-[11px] uppercase tracking-wider border-b border-slate-100 dark:border-slate-800">
+                    <TableRow className="hover:bg-transparent border-none">
+                      <TableHead className="w-[80px] text-slate-400 dark:text-slate-500 font-bold text-[11px] uppercase tracking-wider pl-6 py-4">Photo</TableHead>
                       
                       <TableHead 
-                        className="text-slate-500 font-bold text-xs uppercase tracking-wider cursor-pointer hover:text-indigo-600 transition-colors group select-none" 
+                        className="text-slate-400 dark:text-slate-500 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-[#A05AFF] transition-colors select-none py-4" 
                         onClick={() => handleSort('fullName')}
                       >
                         <div className="flex items-center gap-1.5">
                           Name
-                          <ArrowUpDown className="h-3 w-3 opacity-60 group-hover:opacity-100 transition-opacity" />
+                          <ArrowUpDown className="h-3 w-3 opacity-60" />
                         </div>
                       </TableHead>
                       
                       <TableHead 
-                        className="text-slate-500 font-bold text-xs uppercase tracking-wider cursor-pointer hover:text-indigo-600 transition-colors group select-none" 
+                        className="text-slate-400 dark:text-slate-500 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-[#A05AFF] transition-colors select-none py-4" 
                         onClick={() => handleSort('position')}
                       >
                         <div className="flex items-center gap-1.5">
                           Position
-                          <ArrowUpDown className="h-3 w-3 opacity-60 group-hover:opacity-100 transition-opacity" />
+                          <ArrowUpDown className="h-3 w-3 opacity-60" />
                         </div>
                       </TableHead>
                       
-                      <TableHead className="text-slate-500 font-bold text-xs uppercase tracking-wider">
-                        <div className="flex items-center gap-1.5"><MapPin className="h-3 w-3 text-slate-400" /> Location</div>
+                      <TableHead className="text-slate-400 dark:text-slate-500 font-bold text-[11px] uppercase tracking-wider py-4">
+                        <div className="flex items-center gap-1.5"><MapPin className="h-3 w-3" /> Location</div>
                       </TableHead>
 
-                      <TableHead className="text-slate-500 font-bold text-xs uppercase tracking-wider">
-                        <div className="flex items-center gap-1.5"><GraduationCap className="h-3 w-3 text-slate-400" /> Qualification</div>
+                      <TableHead className="text-slate-400 dark:text-slate-500 font-bold text-[11px] uppercase tracking-wider py-4">
+                        <div className="flex items-center gap-1.5"><GraduationCap className="h-3 w-3" /> Qualification</div>
                       </TableHead>
                       
                       <TableHead 
-                        className="text-slate-500 font-bold text-xs uppercase tracking-wider cursor-pointer hover:text-indigo-600 transition-colors group select-none" 
+                        className="text-slate-400 dark:text-slate-500 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-[#A05AFF] transition-colors select-none py-4" 
                         onClick={() => handleSort('experienceYears')}
                       >
                         <div className="flex items-center gap-1.5">
-                          <Briefcase className="h-3 w-3 text-slate-400" /> Experience
-                          <ArrowUpDown className="h-3 w-3 opacity-60 group-hover:opacity-100 transition-opacity" />
+                          <Briefcase className="h-3 w-3" /> Experience
+                          <ArrowUpDown className="h-3 w-3 opacity-60" />
                         </div>
                       </TableHead>
                       
                       <TableHead
-                        className="text-slate-500 font-bold text-xs uppercase tracking-wider cursor-pointer hover:text-indigo-600 transition-colors group select-none"
+                        className="text-slate-400 dark:text-slate-500 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-[#A05AFF] transition-colors select-none py-4"
                         onClick={() => handleSort('expectedSalary')}
                       >
                         <div className="flex items-center gap-1.5">
-                          <IndianRupee className="h-3 w-3 text-slate-400" /> Monthly Salary
-                          <ArrowUpDown className="h-3 w-3 opacity-60 group-hover:opacity-100 transition-opacity" />
+                          <IndianRupee className="h-3 w-3" /> Monthly Salary
+                          <ArrowUpDown className="h-3 w-3 opacity-60" />
                         </div>
                       </TableHead>
                       
                       <TableHead 
-                        className="text-slate-500 font-bold text-xs uppercase tracking-wider cursor-pointer hover:text-indigo-600 transition-colors group select-none" 
+                        className="text-slate-400 dark:text-slate-500 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-[#A05AFF] transition-colors select-none py-4" 
                         onClick={() => handleSort('createdAt')}
                       >
                         <div className="flex items-center gap-1.5">
-                          <Calendar className="h-3 w-3 text-slate-400" /> Date Added
-                          <ArrowUpDown className="h-3 w-3 opacity-60 group-hover:opacity-100 transition-opacity" />
+                          <Calendar className="h-3 w-3" /> Date Added
+                          <ArrowUpDown className="h-3 w-3 opacity-60" />
                         </div>
                       </TableHead>
                       
-                      <TableHead className="text-right text-slate-500 font-bold text-xs uppercase tracking-wider pr-6">Actions</TableHead>
+                      <TableHead className="text-right text-slate-400 dark:text-slate-500 font-bold text-[11px] uppercase tracking-wider pr-6 py-4">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   
-                  <TableBody className="divide-y divide-slate-100/70">
+                  <TableBody>
                     {data?.data?.length === 0 ? (
-                      /* Enhanced Premium Empty State Component inside Table */
-                      <TableRow className="hover:bg-transparent">
+                      <TableRow className="hover:bg-transparent border-none">
                         <TableCell colSpan={9} className="py-20 text-center">
-                          <div className="max-w-md mx-auto flex flex-col items-center justify-center space-y-4">
-                            <div className="p-4 bg-gradient-to-br from-slate-50 to-slate-100/80 border border-slate-200/50 rounded-2xl shadow-inner text-slate-400 group-hover:scale-105 transition-transform">
-                              <Users className="h-10 w-10 text-indigo-400" />
+                          <div className="max-w-md mx-auto flex flex-col items-center justify-center space-y-3">
+                            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-950 border border-dashed border-slate-200 dark:border-slate-800 text-slate-400">
+                              <Users className="h-5 w-5" />
                             </div>
-                            <div className="space-y-1">
-                              <h3 className="text-base font-bold text-slate-700">No candidates detected</h3>
-                              <p className="text-sm text-slate-400 font-medium">
-                                We couldn't find matches for your active parameters. Try expanding your filters or add a new record.
-                              </p>
-                            </div>
+                            <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200">No candidates detected</h4>
+                            <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 max-w-sm mx-auto leading-relaxed">
+                              We couldn't find matches for your active parameters. Try expanding your filters or add a new record.
+                            </p>
                           </div>
                         </TableCell>
                       </TableRow>
                     ) : (
                       data?.data?.map((c) => (
-                        <TableRow key={c._id} className="hover:bg-slate-50/60 transition-colors group/row">
-                          <TableCell className="pl-6">
+                        <TableRow 
+                          key={c._id} 
+                          className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 border-b border-slate-100 dark:border-slate-800/60 last:border-none transition-all group"
+                        >
+                          <TableCell className="pl-6 py-4">
                             {c.profilePhoto ? (
-                              <div className="relative h-11 w-11 rounded-full p-0.5 border-2 border-slate-100 shadow-inner overflow-hidden group-hover/row:border-indigo-400 transition-colors">
+                              <div className="h-11 w-11 rounded-full p-0.5 border border-slate-100 dark:border-slate-800 overflow-hidden">
                                 <img
                                   src={c.profilePhoto}
                                   alt={c.fullName}
@@ -413,58 +399,56 @@ export function CandidateList({
                                 />
                               </div>
                             ) : (
-                              <div className="h-11 w-11 rounded-full bg-gradient-to-br from-indigo-50 to-slate-100 text-indigo-600 font-bold text-sm flex items-center justify-center border border-slate-200/40 shadow-inner group-hover/row:from-indigo-100 group-hover/row:text-indigo-700 transition-colors">
+                              <div className="h-11 w-11 rounded-full bg-slate-100 dark:bg-slate-950 text-slate-500 dark:text-slate-400 font-bold text-sm flex items-center justify-center border border-slate-200/40">
                                 {c.fullName?.charAt(0)?.toUpperCase() || '?'}
                               </div>
                             )}
                           </TableCell>
                           
-                          <TableCell className="font-semibold text-slate-700 tracking-tight text-sm">
+                          <TableCell className="font-bold text-slate-800 dark:text-slate-200 text-sm py-4">
                             <div className="flex items-center gap-2">
-                              <span className="group-hover/row:text-indigo-600 transition-colors">{c.fullName}</span>
+                              <span className="group-hover:text-[#A05AFF] transition-colors">{c.fullName}</span>
                               {c.isLocked && (
-                                <Badge variant="outline" className="text-[10px] uppercase font-bold tracking-wider bg-rose-50/50 text-rose-600 border-rose-200/60 rounded px-1.5 py-0">
+                                <Badge className="text-[10px] uppercase font-bold tracking-wider border-[#FE9496]/30 bg-[#FE9496]/5 text-[#FE9496] rounded-md px-1.5 py-0 shadow-none variant-outline">
                                   Locked
                                 </Badge>
                               )}
                             </div>
                           </TableCell>
                           
-                          <TableCell className="text-slate-600 font-medium text-sm">{c.position}</TableCell>
+                          <TableCell className="text-slate-600 dark:text-slate-300 font-semibold text-sm py-4">{c.position}</TableCell>
                           
-                          <TableCell className="text-slate-500 font-medium text-xs max-w-[180px] truncate">
+                          <TableCell className="text-slate-500 dark:text-slate-400 font-semibold text-xs max-w-[180px] truncate py-4">
                             {[c.city, c.locality].filter(Boolean).join(', ') || '—'}
                           </TableCell>
 
-                          <TableCell className="text-slate-600 font-medium text-xs max-w-[200px] truncate">
+                          <TableCell className="text-slate-500 dark:text-slate-400 font-semibold text-xs max-w-[200px] truncate py-4">
                             {c.qualifications?.join(', ') || '—'}
                           </TableCell>
                           
-                          <TableCell className="text-slate-700 font-semibold text-sm">
-                            <Badge variant="secondary" className="bg-slate-100/80 hover:bg-slate-200/60 text-slate-700 border border-slate-200/40 rounded-lg text-xs font-semibold px-2 py-0.5">
+                          <TableCell className="py-4">
+                            <Badge className="border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl text-xs font-bold px-2 py-0.5 variant-outline shadow-none">
                               {c.experienceYears} yrs
                             </Badge>
                           </TableCell>
                           
-                          <TableCell className="font-bold text-slate-800 text-sm">
+                          <TableCell className="font-bold text-slate-800 dark:text-slate-200 text-sm py-4">
                             {c.expectedSalary ? (
-                              <span className="text-emerald-600 bg-emerald-500/5 px-2 py-1 rounded-lg border border-emerald-500/10">
+                              <Badge className="border-[#1BCFB4]/30 bg-[#1BCFB4]/5 text-[#1BCFB4] text-xs font-bold px-2.5 py-1 rounded-xl variant-outline shadow-none">
                                 ₹{c.expectedSalary.toLocaleString('en-IN')}
-                              </span>
-                            ) : c.isLocked ? (
-                              <span className="text-slate-300 font-normal">—</span>
+                              </Badge>
                             ) : (
-                              <span className="text-slate-400 font-normal">-</span>
+                              <span className="text-slate-400 dark:text-slate-600 font-normal">—</span>
                             )}
                           </TableCell>
                           
-                          <TableCell className="text-slate-500 font-medium text-xs">
+                          <TableCell className="text-slate-500 dark:text-slate-400 font-semibold text-xs py-4">
                             {formatDate(c.createdAt)}
                           </TableCell>
                           
-                          <TableCell className="text-right pr-6">
-                            <div className="flex justify-end items-center gap-1.5 opacity-80 group-hover/row:opacity-100 transition-opacity">
-                              <Button variant="ghost" size="icon" asChild className="h-8 w-8 rounded-lg text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 border border-transparent hover:border-indigo-100 transition-all">
+                          <TableCell className="text-right pr-6 py-4">
+                            <div className="flex justify-end items-center gap-1">
+                              <Button variant="ghost" size="icon" asChild className="h-8 w-8 rounded-xl text-slate-400 hover:text-[#A05AFF] hover:bg-[#A05AFF]/10 transition-colors">
                                 <Link to={`/candidates/${c._id}`}>
                                   <Eye className="h-4 w-4" />
                                 </Link>
@@ -472,13 +456,13 @@ export function CandidateList({
                               
                               {c.canEdit && (
                                 <>
-                                  <Button variant="ghost" size="icon" asChild className="h-8 w-8 rounded-lg text-slate-500 hover:text-amber-600 hover:bg-amber-50 border border-transparent hover:border-amber-100 transition-all">
+                                  <Button variant="ghost" size="icon" asChild className="h-8 w-8 rounded-xl text-slate-400 hover:text-[#A05AFF] hover:bg-[#A05AFF]/10 transition-colors">
                                     <Link to={`/candidates/${c._id}/edit`}>
                                       <Pencil className="h-4 w-4" />
                                     </Link>
                                   </Button>
                                   
-                                  <Button variant="ghost" size="icon" onClick={() => setDeleteId(c._id)} className="h-8 w-8 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 border border-transparent hover:border-rose-100 transition-all">
+                                  <Button variant="ghost" size="icon" onClick={() => setDeleteId(c._id)} className="h-8 w-8 rounded-xl text-slate-400 hover:text-[#FE9496] hover:bg-[#FE9496]/10 transition-colors">
                                     <Trash2 className="h-4 w-4" />
                                   </Button>
                                 </>
@@ -494,9 +478,9 @@ export function CandidateList({
 
               {/* Redesigned Premium Pagination Controls */}
               {data?.pagination && (
-                <div className="p-5 border-t border-slate-100 bg-slate-50/40 flex flex-col sm:flex-row items-center justify-between gap-4">
-                  <p className="text-xs md:text-sm font-semibold text-slate-500 tracking-wide text-center sm:text-left">
-                    Displaying <span className="text-indigo-600 font-bold">Page {data.pagination.page}</span> of <span className="text-slate-700 font-bold">{data.pagination.totalPages}</span> <span className="text-slate-400">({data.pagination.total} entries total)</span>
+                <div className="p-5 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/20 flex flex-col sm:flex-row items-center justify-between gap-4">
+                  <p className="text-xs md:text-sm font-semibold text-slate-400 dark:text-slate-500 tracking-wide text-center sm:text-left">
+                    Displaying <span className="text-[#A05AFF] font-bold">Page {data.pagination.page}</span> of <span className="text-slate-700 dark:text-slate-300 font-bold">{data.pagination.totalPages}</span> <span className="text-slate-400 dark:text-slate-600">({data.pagination.total} entries total)</span>
                   </p>
                   <div className="flex items-center gap-2">
                     <Button 
@@ -504,7 +488,7 @@ export function CandidateList({
                       size="sm" 
                       disabled={page <= 1} 
                       onClick={() => setPage((p) => p - 1)}
-                      className="h-9 rounded-xl border-slate-200 bg-white hover:bg-slate-50 text-slate-600 hover:text-indigo-600 font-bold transition-all disabled:opacity-40 shadow-sm"
+                      className="h-9 rounded-xl border-slate-200 text-slate-700 dark:border-slate-700 dark:text-slate-300 font-bold transition-all disabled:opacity-40"
                     >
                       <ChevronLeft className="h-4 w-4 mr-1" /> Prev
                     </Button>
@@ -513,7 +497,7 @@ export function CandidateList({
                       size="sm"
                       disabled={page >= data.pagination.totalPages}
                       onClick={() => setPage((p) => p + 1)}
-                      className="h-9 rounded-xl border-slate-200 bg-white hover:bg-slate-50 text-slate-600 hover:text-indigo-600 font-bold transition-all disabled:opacity-40 shadow-sm"
+                      className="h-9 rounded-xl border-slate-200 text-slate-700 dark:border-slate-700 dark:text-slate-300 font-bold transition-all disabled:opacity-40"
                     >
                       Next <ChevronRight className="h-4 w-4 ml-1" />
                     </Button>
@@ -525,35 +509,32 @@ export function CandidateList({
         </CardContent>
       </Card>
 
-      {/* Premium Confirm Modal Overhaul */}
+      {/* Soft Deletion Modal Frame */}
       <Dialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="text-lg font-bold text-slate-800">Confirm Deletion</DialogTitle>
-            <DialogDescription className="text-sm text-slate-500 font-medium leading-relaxed">
-              This action will safely soft-delete this candidate from your secure school ecosystem database workspace.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogBody>
-            <div className="flex flex-col items-center text-center space-y-4 py-4">
-              <div className="p-3 bg-rose-50 border border-rose-100 rounded-2xl text-rose-600">
-                <ShieldAlert className="h-7 w-7" />
-              </div>
+        <DialogContent className="max-w-md rounded-xl border-none bg-white p-6 dark:bg-slate-900 shadow-sm">
+          <DialogHeader className="space-y-3">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-[#FE9496]/30 bg-[#FE9496]/5 text-[#FE9496]">
+              <ShieldAlert className="h-5 w-5 stroke-[2.2]" />
             </div>
-          </DialogBody>
-          <DialogFooter className="flex flex-col sm:flex-row gap-2 w-full sm:justify-end">
+            <div className="space-y-1">
+              <DialogTitle className="text-sm font-bold tracking-wide text-slate-800 dark:text-slate-200">Confirm Deletion</DialogTitle>
+              <DialogDescription className="text-xs text-slate-400 dark:text-slate-500 font-medium mt-1 leading-relaxed">
+                This action will safely soft-delete this candidate from your secure school ecosystem database workspace.
+              </DialogDescription>
+            </div>
+          </DialogHeader>
+          <DialogFooter className="mt-6 flex flex-col sm:flex-row gap-2 sm:justify-end">
             <Button
               variant="outline"
               onClick={() => setDeleteId(null)}
-              className="w-full sm:w-auto h-11 border-slate-200 text-slate-600 font-semibold rounded-xl hover:bg-slate-50 transition-colors"
+              className="rounded-xl h-11 font-medium border-slate-200 text-slate-700 dark:border-slate-700 dark:text-slate-300 w-full sm:w-auto"
             >
               Keep Candidate
             </Button>
             <Button
-              variant="destructive"
               onClick={() => deleteMutation.mutate(deleteId)}
               disabled={deleteMutation.isPending}
-              className="w-full sm:w-auto h-11 bg-rose-600 hover:bg-rose-500 text-white font-semibold rounded-xl shadow-lg shadow-rose-600/10 hover:shadow-rose-600/20 transition-all flex items-center justify-center gap-2"
+              className="bg-[#FE9496] hover:bg-[#FE9496]/90 text-white font-bold rounded-xl h-11 transition-all duration-200 active:scale-95 flex items-center justify-center gap-2 w-full sm:w-auto"
             >
               {deleteMutation.isPending ? (
                 <>

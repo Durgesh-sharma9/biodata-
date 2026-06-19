@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Search, Power, Pencil, School, Mail, Phone, ShieldCheck, Calendar, Filter, Sparkles, AlertCircle } from 'lucide-react';
+import { Search, Power, Pencil, School, Mail, Phone, ShieldCheck, Calendar, Filter, Sparkles, AlertCircle, Loader2 } from 'lucide-react';
 import { getSchools, toggleSchoolStatus, updateSchool } from '@/lib/api';
 import { PageHeader } from '@/components/common/PageHeader';
 import { Button } from '@/components/ui/button';
@@ -16,6 +16,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogFooter,
 } from '@/components/ui/dialog';
 import { formatDate } from '@/lib/utils';
 
@@ -86,25 +87,25 @@ export default function Schools() {
   };
 
   return (
-    <div className="space-y-8 p-4 md:p-8 max-w-7xl mx-auto antialiased text-foreground bg-background">
+    <div className="space-y-6 p-5 max-w-7xl mx-auto bg-[#f3f3f4] dark:bg-slate-950 text-slate-800 dark:text-white antialiased min-h-screen">
       
-      {/* Premium Header Layout */}
-      <div className="relative overflow-hidden rounded-3xl border border-slate-200/60 bg-gradient-to-r from-slate-50 via-white to-slate-50/50 p-6 dark:from-slate-950 dark:via-background dark:to-slate-950/50 shadow-xs">
-        <div className="absolute right-0 top-0 -mr-12 -mt-12 w-40 h-40 bg-gradient-to-br from-blue-500/10 via-indigo-500/5 to-transparent rounded-full blur-3xl pointer-events-none" />
+      {/* Page Header Panel */}
+      <div className="border-b border-slate-100 dark:border-slate-800 pb-5">
         <PageHeader
           title="Schools Management"
           description="Oversee partner institutions, audit infrastructure profiles, and tweak systematic licensing hierarchies."
+          className="text-slate-800 dark:text-white font-bold tracking-tight text-xl"
         />
       </div>
 
-      {/* Filter Toolbar Section */}
-      <Card className="border border-slate-200/60 bg-background/60 shadow-xs backdrop-blur-md rounded-2xl overflow-hidden">
-        <CardContent className="flex flex-col sm:flex-row gap-4 p-4 md:p-5">
+      {/* Filter Toolbar Section - Flat Container Layout */}
+      <Card className="rounded-xl border-none bg-white shadow-sm dark:bg-slate-900 overflow-hidden">
+        <CardContent className="flex flex-col sm:flex-row gap-6 p-5">
           <div className="relative flex-1">
-            <Search className="absolute left-3.5 top-3.5 h-4 w-4 text-muted-foreground/70" />
+            <Search className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400" />
             <Input
               placeholder="Filter institutions by key title metadata..."
-              className="pl-10 h-11 rounded-xl focus-visible:ring-indigo-500 transition-all bg-background border-slate-200"
+              className="pl-10 h-11 border-slate-200 rounded-xl focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 dark:bg-slate-800 dark:border-slate-700 text-sm"
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);
@@ -114,66 +115,66 @@ export default function Schools() {
           </div>
           <div className="flex items-center gap-2">
             <Select value={status || 'all'} onValueChange={(v) => { setStatus(v === 'all' ? '' : v); setPage(1); }}>
-              <SelectTrigger className="w-full sm:w-44 h-11 rounded-xl focus:ring-indigo-500 border-slate-200 bg-background font-medium text-slate-700 dark:text-slate-300">
+              <SelectTrigger className="w-full sm:w-44 h-11 border-slate-200 rounded-xl focus:ring-[#A05AFF] dark:bg-slate-800 dark:border-slate-700 text-sm font-medium">
                 <div className="flex items-center gap-2">
-                  <Filter className="h-3.5 w-3.5 text-muted-foreground/70" />
+                  <Filter className="h-3.5 w-3.5 text-slate-400" />
                   <SelectValue placeholder="Filter Status" />
                 </div>
               </SelectTrigger>
-              <SelectContent className="rounded-xl">
+              <SelectContent className="rounded-xl dark:bg-slate-800">
                 <SelectItem value="all" className="font-medium rounded-lg">All Statuses</SelectItem>
-                <SelectItem value="active" className="font-medium rounded-lg text-emerald-600 dark:text-emerald-400">Active Only</SelectItem>
-                <SelectItem value="inactive" className="font-medium rounded-lg text-rose-600 dark:text-rose-400">Inactive Only</SelectItem>
+                <SelectItem value="active" className="font-medium rounded-lg text-[#1BCFB4]">Active Only</SelectItem>
+                <SelectItem value="inactive" className="font-medium rounded-lg text-[#FE9496]">Inactive Only</SelectItem>
               </SelectContent>
             </Select>
           </div>
         </CardContent>
       </Card>
 
-      {/* Core Operational Matrix Presentation Grid Card */}
-      <Card className="border border-slate-200/60 bg-background shadow-xs rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-sm">
+      {/* Core Operational Matrix Presentation Grid Card Layer Constraint */}
+      <Card className="rounded-xl border-none bg-white shadow-sm dark:bg-slate-900 overflow-hidden">
         <CardContent className="p-0">
           {isLoading ? (
             <div className="py-24 text-center">
-              <div className="flex flex-col items-center justify-center space-y-4 animate-pulse">
-                <div className="h-10 w-10 rounded-xl border-4 border-indigo-500 border-t-transparent animate-spin shadow-sm" />
-                <span className="text-xs font-bold text-muted-foreground/80 tracking-wider uppercase">Syncing Workspace Nodes...</span>
+              <div className="flex flex-col items-center justify-center space-y-3">
+                <Loader2 className="h-5 w-5 text-[#A05AFF] animate-spin" />
+                <span className="text-sm font-semibold text-slate-500 dark:text-slate-400 tracking-wide animate-pulse">Syncing Workspace Nodes...</span>
               </div>
             </div>
           ) : !data?.data || data.data.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 px-4 text-center max-w-md mx-auto">
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-50 dark:bg-slate-900 border border-dashed border-slate-200 dark:border-slate-800 text-muted-foreground/50 mb-4 shadow-3xs">
-                <AlertCircle className="h-6 w-6 stroke-[1.5]" />
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-950 border border-dashed border-slate-200 dark:border-slate-800 text-slate-400 mb-4">
+                <AlertCircle className="h-5 w-5 stroke-[1.5]" />
               </div>
-              <h4 className="text-base font-black text-foreground tracking-tight">No Matching Records</h4>
-              <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
+              <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200 tracking-wide">No Matching Records</h4>
+              <p className="text-xs text-slate-400 dark:text-slate-500 mt-1.5 leading-relaxed">
                 We couldn't track down school parameters matching your search tags. Tweak parameters or check connectivity state feeds.
               </p>
             </div>
           ) : (
             <div className="overflow-x-auto w-full">
               <Table>
-                <TableHeader className="bg-slate-50/60 dark:bg-slate-900/40 border-b border-slate-200/60 dark:border-slate-800">
+                <TableHeader className="bg-slate-50/70 dark:bg-slate-900/20 text-slate-400 font-semibold text-[11px] uppercase tracking-wider border-b border-slate-100 dark:border-slate-800">
                   <TableRow>
-                    <TableHead className="pl-6 sm:pl-8 font-bold text-xs tracking-wider uppercase text-muted-foreground/90 py-4">School Name</TableHead>
-                    <TableHead className="font-bold text-xs tracking-wider uppercase text-muted-foreground/90 py-4">Email Contact</TableHead>
-                    <TableHead className="font-bold text-xs tracking-wider uppercase text-muted-foreground/90 py-4">Plan Tier</TableHead>
-                    <TableHead className="font-bold text-xs tracking-wider uppercase text-muted-foreground/90 py-4">Billing Status</TableHead>
-                    <TableHead className="font-bold text-xs tracking-wider uppercase text-muted-foreground/90 py-4">State</TableHead>
-                    <TableHead className="font-bold text-xs tracking-wider uppercase text-muted-foreground/90 py-4">Expiry Cycle</TableHead>
-                    <TableHead className="pr-6 sm:pr-8 text-right font-bold text-xs tracking-wider uppercase text-muted-foreground/90 py-4">Actions</TableHead>
+                    <TableHead className="pl-6 font-bold text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-500 py-4">School Name</TableHead>
+                    <TableHead className="font-bold text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-500 py-4">Email Contact</TableHead>
+                    <TableHead className="font-bold text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-500 py-4">Plan Tier</TableHead>
+                    <TableHead className="font-bold text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-500 py-4">Billing Status</TableHead>
+                    <TableHead className="font-bold text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-500 py-4">State</TableHead>
+                    <TableHead className="font-bold text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-500 py-4">Expiry Cycle</TableHead>
+                    <TableHead className="pr-6 text-right font-bold text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-500 py-4">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {data.data.map((school) => (
                     <TableRow 
                       key={school._id} 
-                      className="group hover:bg-slate-50/40 dark:hover:bg-slate-900/20 border-b border-slate-100 dark:border-slate-800/60 transition-colors last:border-none"
+                      className="group hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-all border-b border-slate-100 dark:border-slate-800/60 last:border-none"
                     >
-                      {/* Name Meta Field */}
-                      <TableCell className="pl-6 sm:pl-8 py-4.5 font-bold text-slate-900 dark:text-slate-100 text-sm tracking-tight">
+                      {/* Name Meta Field with Secondary Brand Accent Tint Avatar */}
+                      <TableCell className="pl-6 py-4 font-bold text-slate-800 dark:text-slate-200 text-sm tracking-tight">
                         <div className="flex items-center gap-3">
-                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400 text-xs font-black border border-indigo-100/40 dark:border-indigo-900/30 group-hover:bg-gradient-to-br group-hover:from-blue-600 group-hover:to-indigo-600 group-hover:text-white group-hover:scale-105 transition-all duration-200">
+                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#9E58FF]/10 text-[#9E58FF] text-xs transition-colors">
                             <School className="h-4 w-4" />
                           </div>
                           <span className="truncate max-w-[180px] sm:max-w-[240px] tracking-tight">{school.schoolName}</span>
@@ -181,66 +182,67 @@ export default function Schools() {
                       </TableCell>
 
                       {/* Email Param */}
-                      <TableCell className="py-4.5 text-xs font-medium text-muted-foreground/90">
+                      <TableCell className="py-4 text-xs font-semibold text-slate-500 dark:text-slate-400">
                         <div className="flex items-center gap-1.5">
-                          <Mail className="h-3.5 w-3.5 text-muted-foreground/50" />
+                          <Mail className="h-3.5 w-3.5 text-slate-400" />
                           <span>{school.email}</span>
                         </div>
                       </TableCell>
 
-                      {/* Plan Configuration Badge */}
-                      <TableCell className="py-4.5">
+                      {/* Modern Soft-Tint Default Brand Badge */}
+                      <TableCell className="py-4">
                         <Badge 
                           variant="outline" 
-                          className="text-[11px] font-bold px-2.5 py-0.5 rounded-md border-indigo-100 bg-indigo-50/30 text-indigo-600 dark:border-indigo-950 dark:bg-indigo-950/20 dark:text-indigo-400 capitalize shadow-2xs"
+                          className="text-[11px] font-bold px-2.5 py-0.5 rounded-xl border-[#A05AFF]/30 bg-[#A05AFF]/5 text-[#A05AFF] shadow-none"
                         >
                           {school.subscriptionPlan}
                         </Badge>
                       </TableCell>
 
-                      {/* Subscription Processing State Badge */}
-                      <TableCell className="py-4.5">
+                      {/* Modern Soft-Tint Info State Badge */}
+                      <TableCell className="py-4">
                         <Badge 
-                          className={`text-xs font-bold px-2.5 py-0.5 rounded-md border tracking-wide uppercase text-[10px] shadow-3xs ${
+                          className={`text-xs font-bold px-2.5 py-0.5 rounded-xl border shadow-none text-[11px] tracking-wide uppercase ${
                             school.subscriptionStatus === 'active' 
-                              ? 'bg-blue-500/10 text-blue-600 border-blue-500/10 dark:bg-blue-500/20 dark:text-blue-400' 
-                              : 'bg-orange-500/10 text-orange-600 border-orange-500/10 dark:bg-orange-500/20 dark:text-orange-400'
+                              ? 'border-[#4BCBEB]/30 bg-[#4BCBEB]/5 text-[#4BCBEB]' 
+                              : 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-500'
                           }`}
                         >
                           {school.subscriptionStatus}
                         </Badge>
                       </TableCell>
 
-                      {/* System Infrastructure Activity State Flag */}
-                      <TableCell className="py-4.5">
-                        <Badge 
-                          className={`text-xs font-bold px-2.5 py-0.5 rounded-full border tracking-wide ${
-                            school.isActive 
-                              ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20 dark:bg-emerald-500/20 dark:text-emerald-400' 
-                              : 'bg-rose-500/10 text-rose-600 border-rose-500/20 dark:bg-rose-500/20 dark:text-rose-400'
-                          }`}
-                        >
-                          <span className={`h-1.5 w-1.5 rounded-full mr-1.5 inline-block ${school.isActive ? 'bg-emerald-500' : 'bg-rose-500'}`} />
-                          {school.isActive ? 'Active' : 'Inactive'}
-                        </Badge>
+                      {/* System Infrastructure Activity Success/Danger Soft-Tint Badge */}
+                      <TableCell className="py-4">
+                        {school.isActive ? (
+                          <Badge className="border-[#1BCFB4]/30 bg-[#1BCFB4]/5 text-[#1BCFB4] text-xs font-semibold px-2.5 py-0.5 rounded-xl shadow-none variant-outline tracking-wide">
+                            <span className="h-1.5 w-1.5 rounded-full mr-1.5 inline-block bg-[#1BCFB4]" />
+                            Active
+                          </Badge>
+                        ) : (
+                          <Badge className="border-[#FE9496]/30 bg-[#FE9496]/5 text-[#FE9496] text-xs font-semibold px-2.5 py-0.5 rounded-xl shadow-none variant-outline tracking-wide">
+                            <span className="h-1.5 w-1.5 rounded-full mr-1.5 inline-block bg-[#FE9496]" />
+                            Inactive
+                          </Badge>
+                        )}
                       </TableCell>
 
-                      {/* Date Format Parser String */}
-                      <TableCell className="py-4.5 text-xs text-slate-500 font-semibold whitespace-nowrap">
-                        <div className="inline-flex items-center gap-1.5 bg-slate-50/80 dark:bg-slate-900/40 px-2.5 py-1 rounded-lg border border-slate-100 dark:border-slate-800/40">
-                          <Calendar className="h-3.5 w-3.5 text-muted-foreground/60" />
+                      {/* Date Field Tracker */}
+                      <TableCell className="py-4 text-xs text-slate-500 dark:text-slate-400 font-semibold whitespace-nowrap">
+                        <div className="inline-flex items-center gap-1.5 border border-slate-200 dark:border-slate-700 px-2.5 py-1 rounded-xl bg-slate-50/50 dark:bg-slate-950/20">
+                          <Calendar className="h-3.5 w-3.5 text-slate-400" />
                           <span>{formatDate(school.expiryDate)}</span>
                         </div>
                       </TableCell>
 
-                      {/* Core Trigger Call Action Matrix Controls */}
-                      <TableCell className="pr-6 sm:pr-8 py-4.5 text-right">
+                      {/* Action Matrix Controls */}
+                      <TableCell className="pr-6 py-4 text-right">
                         <div className="inline-flex items-center justify-end gap-1">
                           <Button 
                             variant="ghost" 
                             size="icon" 
                             onClick={() => openEdit(school)}
-                            className="h-9 w-9 rounded-xl text-muted-foreground hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-950/50 transition-colors"
+                            className="h-8 w-8 rounded-xl text-slate-400 hover:text-[#A05AFF] hover:bg-[#A05AFF]/10 transition-colors"
                             title="Edit Parameters"
                           >
                             <Pencil className="h-3.5 w-3.5" />
@@ -250,10 +252,10 @@ export default function Schools() {
                             size="icon"
                             onClick={() => toggleMutation.mutate(school._id)}
                             disabled={toggleMutation.isPending}
-                            className={`h-9 w-9 rounded-xl transition-colors ${
+                            className={`h-8 w-8 rounded-xl transition-colors ${
                               school.isActive 
-                                ? 'text-muted-foreground hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40' 
-                                : 'text-muted-foreground hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/40'
+                                ? 'text-slate-400 hover:text-[#FE9496] hover:bg-[#FE9496]/10' 
+                                : 'text-slate-400 hover:text-[#1BCFB4] hover:bg-[#1BCFB4]/10'
                             }`}
                             title={school.isActive ? "Deactivate Node" : "Activate Node"}
                           >
@@ -272,67 +274,70 @@ export default function Schools() {
 
       {/* Polish Premium Configuration Form Dialog Overlay Node */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="sm:max-w-[600px]">
-          <div className="h-1.5 w-full bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-500" />
+        <DialogContent className="max-w-2xl rounded-xl border-none bg-white p-6 dark:bg-slate-900 shadow-sm">
           <DialogHeader>
-            <DialogTitle className="text-xl font-bold tracking-tight bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-transparent flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-indigo-500" />
+            <DialogTitle className="text-sm font-bold tracking-wide text-slate-800 dark:text-slate-200 flex items-center gap-2">
+              <Sparkles className="h-4 w-4 text-[#A05AFF]" />
               <span>Override Partner Configuration</span>
             </DialogTitle>
           </DialogHeader>
-          <DialogBody>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid gap-5 sm:grid-cols-2">
+          <DialogBody className="pt-4">
+            <form id="school-mgmt-form" onSubmit={handleSubmit} className="space-y-5">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 
+                {/* School Title Form Node */}
                 <div className="space-y-1.5">
-                  <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">School Title Corporate Name *</Label>
+                  <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">School Title Corporate Name *</Label>
                   <Input
                     value={form.schoolName}
                     onChange={(e) => setForm({ ...form, schoolName: e.target.value })}
                     placeholder="Enter official institutional title..."
-                    className="rounded-xl focus-visible:ring-indigo-500 h-11 pl-4 transition-all"
+                    className="h-11 border-slate-200 rounded-xl focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 dark:bg-slate-800 dark:border-slate-700 text-sm"
                     required
                   />
                 </div>
                 
+                {/* Disabled Email Form Node */}
                 <div className="space-y-1.5">
-                  <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Protected Routing Email Address *</Label>
-                  <div className="relative">
+                  <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Protected Routing Email Address *</Label>
+                  <div className="relative group">
                     <Input
                       type="email"
                       value={form.email}
                       onChange={(e) => setForm({ ...form, email: e.target.value })}
-                      className="rounded-xl focus-visible:ring-indigo-500 h-11 pl-9 transition-all bg-slate-50 dark:bg-slate-900 cursor-not-allowed opacity-80"
+                      className="pl-10 h-11 border-slate-200 rounded-xl dark:bg-slate-950 dark:border-slate-800 cursor-not-allowed opacity-60 text-sm"
                       required
                       disabled
                     />
-                    <Mail className="absolute left-3 top-3.5 h-4 w-4 text-muted-foreground/50" />
+                    <Mail className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400" />
                   </div>
                 </div>
                 
+                {/* Phone Form Node */}
                 <div className="space-y-1.5">
-                  <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Mobile Telecom Dial Line</Label>
-                  <div className="relative">
+                  <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Mobile Telecom Dial Line</Label>
+                  <div className="relative group">
                     <Input 
                       value={form.phone} 
                       onChange={(e) => setForm({ ...form, phone: e.target.value })} 
                       placeholder="+1 (555) 000-0000"
-                      className="rounded-xl focus-visible:ring-indigo-500 h-11 pl-9 transition-all"
+                      className="pl-10 h-11 border-slate-200 rounded-xl focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 dark:bg-slate-800 dark:border-slate-700 text-sm"
                     />
-                    <Phone className="absolute left-3 top-3.5 h-4 w-4 text-muted-foreground/50" />
+                    <Phone className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400 group-focus-within:text-[#A05AFF] transition-colors" />
                   </div>
                 </div>
                 
+                {/* Subscription Selector Form Node */}
                 <div className="space-y-1.5">
-                  <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Assigned Licensing Plan Bundle</Label>
+                  <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Assigned Licensing Plan Bundle</Label>
                   <Select value={form.subscriptionPlan} onValueChange={(v) => setForm({ ...form, subscriptionPlan: v })}>
-                    <SelectTrigger className="rounded-xl h-11 focus:ring-indigo-500 border-slate-200">
+                    <SelectTrigger className="h-11 border-slate-200 rounded-xl focus:ring-[#A05AFF] dark:bg-slate-800 dark:border-slate-700 text-sm">
                       <div className="flex items-center gap-2">
-                        <ShieldCheck className="h-4 w-4 text-indigo-500" />
+                        <ShieldCheck className="h-4 w-4 text-[#A05AFF]" />
                         <SelectValue />
                       </div>
                     </SelectTrigger>
-                    <SelectContent className="rounded-xl">
+                    <SelectContent className="rounded-xl dark:bg-slate-800">
                       <SelectItem value="basic" className="rounded-lg">Basic Tier</SelectItem>
                       <SelectItem value="standard" className="rounded-lg">Standard Tier</SelectItem>
                       <SelectItem value="premium" className="rounded-lg">Premium Suite</SelectItem>
@@ -340,53 +345,55 @@ export default function Schools() {
                   </Select>
                 </div>
                 
+                {/* Subscription Status Form Node */}
                 <div className="space-y-1.5">
-                  <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Current Billing Status Track</Label>
+                  <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Current Billing Status Track</Label>
                   <Select value={form.subscriptionStatus} onValueChange={(v) => setForm({ ...form, subscriptionStatus: v })}>
-                    <SelectTrigger className="rounded-xl h-11 focus:ring-indigo-500 border-slate-200">
+                    <SelectTrigger className="h-11 border-slate-200 rounded-xl focus:ring-[#A05AFF] dark:bg-slate-800 dark:border-slate-700 text-sm">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="rounded-xl">
+                    <SelectContent className="rounded-xl dark:bg-slate-800">
                       <SelectItem value="trial" className="rounded-lg text-orange-600">Evaluation Trial</SelectItem>
-                      <SelectItem value="active" className="rounded-lg text-emerald-600">Active Pipeline</SelectItem>
-                      <SelectItem value="expired" className="rounded-lg text-rose-600">Expired Cycle</SelectItem>
-                      <SelectItem value="cancelled" className="rounded-lg text-slate-500">Terminated / Cancelled</SelectItem>
+                      <SelectItem value="active" className="rounded-lg text-[#1BCFB4]">Active Pipeline</SelectItem>
+                      <SelectItem value="expired" className="rounded-lg text-[#FE9496]">Expired Cycle</SelectItem>
+                      <SelectItem value="cancelled" className="rounded-lg text-slate-400">Terminated / Cancelled</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 
+                {/* Start Date Form Node */}
                 <div className="space-y-1.5">
-                  <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Lifecycle Activation Start Date</Label>
-                  <Input type="date" value={form.startDate} onChange={(e) => setForm({ ...form, startDate: e.target.value })} className="rounded-xl h-11 focus-visible:ring-indigo-500" />
+                  <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Lifecycle Activation Start Date</Label>
+                  <Input type="date" value={form.startDate} onChange={(e) => setForm({ ...form, startDate: e.target.value })} className="h-11 border-slate-200 rounded-xl focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 dark:bg-slate-800 dark:border-slate-700 text-sm" />
                 </div>
                 
-                <div className="space-y-1.5 sm:col-span-2">
-                  <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">License Termination Expiry Date</Label>
-                  <Input type="date" value={form.expiryDate} onChange={(e) => setForm({ ...form, expiryDate: e.target.value })} className="rounded-xl h-11 focus-visible:ring-indigo-500" />
+                {/* Expiry Date Form Node */}
+                <div className="space-y-1.5 md:col-span-2">
+                  <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">License Termination Expiry Date</Label>
+                  <Input type="date" value={form.expiryDate} onChange={(e) => setForm({ ...form, expiryDate: e.target.value })} className="h-11 border-slate-200 rounded-xl focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 dark:bg-slate-800 dark:border-slate-700 text-sm" />
                 </div>
                 
-              </div>
-
-              {/* Action Sheet Row */}
-              <div className="flex justify-end gap-3.5 pt-4 border-t border-slate-100 dark:border-slate-800">
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  onClick={() => setDialogOpen(false)}
-                  className="rounded-xl h-11 px-5 font-semibold transition-all"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  disabled={updateMutation.isPending}
-                  className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-xl h-11 px-6 shadow-sm hover:shadow-md transition-all duration-200"
-                >
-                  {updateMutation.isPending ? 'Committing Modifications...' : 'Apply Modifications'}
-                </Button>
               </div>
             </form>
           </DialogBody>
+          <DialogFooter className="mt-6 flex gap-2">
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={() => setDialogOpen(false)}
+              className="rounded-xl h-11 px-5 font-medium border-slate-200 text-slate-700 dark:border-slate-700 dark:text-slate-300"
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              form="school-mgmt-form"
+              disabled={updateMutation.isPending}
+              className="bg-[#A05AFF] hover:bg-[#A05AFF]/90 text-white font-bold rounded-xl h-11 px-6 transition-all duration-200"
+            >
+              {updateMutation.isPending ? 'Committing Modifications...' : 'Apply Modifications'}
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
