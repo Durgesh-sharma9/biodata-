@@ -64,7 +64,7 @@ export default function Admins() {
       </div>
 
       {/* Modern Filter Panel */}
-      <Card className="border border-none bg-white shadow-sm rounded-xl overflow-hidden dark:bg-slate-900">
+      <Card className="filter">
         <CardContent className="p-4">
           <div className="relative max-w-md group">
             <Search className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400 group-focus-within:text-[#A05AFF] transition-colors" />
@@ -82,19 +82,19 @@ export default function Admins() {
       </Card>
 
       {/* Main Administrative Table Matrix */}
-      <Card className="border border-none bg-white shadow-sm rounded-xl overflow-hidden mt-2 dark:bg-slate-900">
+      <Card className="table">
         <CardContent className="p-0">
           <div className="overflow-x-auto w-full">
             <Table>
-              <TableHeader className="bg-slate-50/70 border-b border-slate-100 dark:bg-slate-900/20 dark:border-slate-800">
+              <TableHeader>
                 <TableRow>
-                  <TableHead className="pl-6 font-semibold text-[11px] tracking-wider uppercase text-slate-400 dark:text-slate-500 py-3">School Profile</TableHead>
-                  <TableHead className="font-semibold text-[11px] tracking-wider uppercase text-slate-400 dark:text-slate-500 py-3">Administrator</TableHead>
-                  <TableHead className="font-semibold text-[11px] tracking-wider uppercase text-slate-400 dark:text-slate-500 py-3">Contact Identity</TableHead>
-                  <TableHead className="font-semibold text-[11px] tracking-wider uppercase text-slate-400 dark:text-slate-500 py-3">System Status</TableHead>
-                  <TableHead className="font-semibold text-[11px] tracking-wider uppercase text-slate-400 dark:text-slate-500 py-3">Balance</TableHead>
-                  <TableHead className="font-semibold text-[11px] tracking-wider uppercase text-slate-400 dark:text-slate-500 py-3">Active License Tier</TableHead>
-                  <TableHead className="pr-6 text-right font-semibold text-[11px] tracking-wider uppercase text-slate-400 dark:text-slate-500 py-3">Operations</TableHead>
+                  <TableHead className="pl-6 font-bold text-[11px] tracking-wider uppercase text-slate-700 dark:text-slate-300 py-4">School Profile</TableHead>
+                  <TableHead className="font-bold text-[11px] tracking-wider uppercase text-slate-700 dark:text-slate-300 py-4">Administrator</TableHead>
+                  <TableHead className="font-bold text-[11px] tracking-wider uppercase text-slate-700 dark:text-slate-300 py-4">Contact Identity</TableHead>
+                  <TableHead className="font-bold text-[11px] tracking-wider uppercase text-slate-700 dark:text-slate-300 py-4">System Status</TableHead>
+                  <TableHead className="font-bold text-[11px] tracking-wider uppercase text-slate-700 dark:text-slate-300 py-4">Balance</TableHead>
+                  <TableHead className="font-bold text-[11px] tracking-wider uppercase text-slate-700 dark:text-slate-300 py-4">Active License Tier</TableHead>
+                  <TableHead className="pr-6 text-right font-bold text-[11px] tracking-wider uppercase text-slate-700 dark:text-slate-300 py-4">Operations</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>

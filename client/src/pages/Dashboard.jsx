@@ -133,7 +133,7 @@ export default function Dashboard() {
       </div>
 
       {/* Main Recent Activity Datagrid Card (Flat Canvas styling) */}
-      <Card className="rounded-xl border-none bg-white shadow-sm overflow-hidden">
+      <Card className="table">
         <CardHeader className="flex flex-row items-center justify-between p-5 border-b border-slate-100 space-y-0 bg-white">
           <div className="space-y-0.5">
             <CardTitle className="text-sm font-bold tracking-wide text-slate-800">
@@ -150,18 +150,18 @@ export default function Dashboard() {
         <CardContent className="p-0">
           <div className="w-full overflow-x-auto">
             <Table>
-              <TableHeader className="bg-slate-50/70">
+              <TableHeader>
                 <TableRow className="hover:bg-transparent border-b border-slate-100">
-                  <TableHead className="text-slate-400 font-semibold text-[11px] uppercase tracking-wider pl-6 h-11">
+                  <TableHead className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider pl-6 h-12">
                     <span className="flex items-center gap-1.5"><Users className="h-3 w-3" /> Candidate Name</span>
                   </TableHead>
-                  <TableHead className="text-slate-400 font-semibold text-[11px] uppercase tracking-wider h-11">
+                  <TableHead className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider h-12">
                     <span className="flex items-center gap-1.5"><Briefcase className="h-3 w-3" /> Position</span>
                   </TableHead>
-                  <TableHead className="text-slate-400 font-semibold text-[11px] uppercase tracking-wider h-11">
+                  <TableHead className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider h-12">
                     <span className="flex items-center gap-1.5"><Layers className="h-3 w-3" /> Sourcing Channel</span>
                   </TableHead>
-                  <TableHead className="text-slate-400 font-semibold text-[11px] uppercase tracking-wider pr-6 h-11">
+                  <TableHead className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider pr-6 h-12">
                     <span className="flex items-center gap-1.5"><Calendar className="h-3 w-3" /> Date Added</span>
                   </TableHead>
                 </TableRow>

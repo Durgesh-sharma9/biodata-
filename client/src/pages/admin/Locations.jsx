@@ -115,7 +115,7 @@ export default function Locations() {
 
         {/* States Tab Section */}
         <TabsContent value="states" className="outline-none focus:outline-none focus:ring-0 animate-in fade-in-30 slide-in-from-bottom-2 duration-300">
-          <Card className="border border-slate-200/60 bg-white shadow-2xs dark:bg-slate-900">
+          <Card className="table">
             <CardHeader className="p-5 border-b border-slate-200/60 dark:border-slate-800">
               <CardTitle className="text-sm font-bold tracking-wide text-slate-800 dark:text-slate-200 flex items-center gap-2">
                 <Globe className="h-4 w-4 text-purple-600" />
@@ -181,7 +181,7 @@ export default function Locations() {
 
         {/* Cities Tab Section */}
         <TabsContent value="cities" className="outline-none focus:outline-none focus:ring-0 animate-in fade-in-30 slide-in-from-bottom-2 duration-300">
-          <Card className="border border-slate-200/60 bg-white shadow-2xs dark:bg-slate-900">
+          <Card className="table">
             <CardHeader className="p-5 border-b border-slate-200/60 dark:border-slate-800">
               <CardTitle className="text-sm font-bold tracking-wide text-slate-800 dark:text-slate-200 flex items-center gap-2">
                 <Building2 className="h-4 w-4 text-purple-600" />
@@ -260,9 +260,9 @@ export default function Locations() {
                         </button>
                         <Button 
                           size="sm" 
-                          variant="ghost" 
+                          variant="delete"
                           onClick={() => deleteCity(c._id).then(invalidate)}
-                          className="h-8 w-8 rounded-lg p-0 text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors ml-2"
+                          className="h-8 w-8 ml-2"
                         >
                           <Trash2 className="h-3.5 w-3.5" />
                         </Button>
@@ -321,7 +321,7 @@ export default function Locations() {
 
         {/* Localities Insertion Tab Section */}
         <TabsContent value="localities" className="outline-none focus:outline-none focus:ring-0 animate-in fade-in-30 slide-in-from-bottom-2 duration-300">
-          <Card className="border border-slate-200/60 bg-white shadow-2xs dark:bg-slate-900">
+          <Card className="table">
             <CardHeader className="p-5 border-b border-slate-200/60 dark:border-slate-800">
               <CardTitle className="text-sm font-bold tracking-wide text-slate-800 dark:text-slate-200 flex items-center gap-2">
                 <Navigation className="h-4 w-4 text-purple-600" />

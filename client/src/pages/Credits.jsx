@@ -159,7 +159,7 @@ export default function Credits() {
       </div>
 
       {/* Profile Unlock Audit Trail Section */}
-      <Card className="border border-slate-200/60 bg-white shadow-2xs dark:bg-slate-900 overflow-hidden">
+      <Card className="table">
         <CardHeader className="p-5 border-b border-slate-200/60 dark:border-slate-800 flex flex-row items-center justify-between space-y-0">
           <div className="space-y-0.5">
             <CardTitle className="text-sm font-bold tracking-wide text-slate-800 dark:text-slate-200 flex items-center gap-2">
@@ -174,18 +174,18 @@ export default function Credits() {
         <CardContent className="p-0">
           <div className="w-full overflow-x-auto">
             <Table>
-              <TableHeader className="bg-slate-50/70 dark:bg-slate-900/20">
+              <TableHeader>
                 <TableRow className="hover:bg-transparent border-b border-slate-200/60 dark:border-slate-800">
-                  <TableHead className="text-slate-400 font-semibold text-[11px] uppercase tracking-wider pl-6 h-10">
+                  <TableHead className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider pl-6 h-12">
                     <span className="flex items-center gap-1.5"><User className="h-3 w-3" /> Candidate</span>
                   </TableHead>
-                  <TableHead className="text-slate-400 font-semibold text-[11px] uppercase tracking-wider h-10">
+                  <TableHead className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider h-12">
                     <span className="flex items-center gap-1.5"><Briefcase className="h-3 w-3" /> Target Position</span>
                   </TableHead>
-                  <TableHead className="text-slate-400 font-semibold text-[11px] uppercase tracking-wider h-10">
+                  <TableHead className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider h-12">
                     <span className="flex items-center gap-1.5"><Layers className="h-3 w-3" /> Sourcing Matrix</span>
                   </TableHead>
-                  <TableHead className="text-slate-400 font-semibold text-[11px] uppercase tracking-wider pr-6 h-10">
+                  <TableHead className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider pr-6 h-12">
                     <span className="flex items-center gap-1.5"><Calendar className="h-3 w-3" /> Timestamp</span>
                   </TableHead>
                 </TableRow>

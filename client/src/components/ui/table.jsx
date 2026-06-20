@@ -9,25 +9,25 @@ const Table = React.forwardRef(({ className, ...props }, ref) => (
 Table.displayName = 'Table';
 
 const TableHeader = React.forwardRef(({ className, headerColor = 'slate', ...props }, ref) => {
-  // Enhanced to match professional SaaS tools with elegant gradients and high-contrast dark mode filters
+  // Premium gradient header backgrounds for modern SaaS aesthetic
   const headerColors = {
-    slate: 'bg-gradient-to-b from-slate-50/80 to-slate-100/60 dark:from-slate-900 dark:to-slate-900/40',
-    purple: 'bg-gradient-to-r from-purple-50/80 via-purple-50/30 to-transparent dark:from-purple-950/20 dark:to-transparent',
-    blue: 'bg-gradient-to-r from-blue-50/80 via-blue-50/30 to-transparent dark:from-blue-950/20 dark:to-transparent',
-    emerald: 'bg-gradient-to-r from-emerald-50/80 via-emerald-50/30 to-transparent dark:from-emerald-950/20 dark:to-transparent',
-    amber: 'bg-gradient-to-r from-amber-50/80 via-amber-50/30 to-transparent dark:from-amber-950/20 dark:to-transparent',
-    cyan: 'bg-gradient-to-r from-cyan-50/80 via-cyan-50/30 to-transparent dark:from-cyan-950/20 dark:to-transparent',
-    indigo: 'bg-gradient-to-r from-indigo-50/80 via-indigo-50/30 to-transparent dark:from-indigo-950/20 dark:to-transparent',
-    pink: 'bg-gradient-to-r from-pink-50/80 via-pink-50/30 to-transparent dark:from-pink-950/20 dark:to-transparent',
-    orange: 'bg-gradient-to-r from-orange-50/80 via-orange-50/30 to-transparent dark:from-orange-950/20 dark:to-transparent',
-    rose: 'bg-gradient-to-r from-rose-50/80 via-rose-50/30 to-transparent dark:from-rose-950/20 dark:to-transparent',
-    violet: 'bg-gradient-to-r from-violet-50/80 via-violet-50/30 to-transparent dark:from-violet-950/20 dark:to-transparent',
+    slate: 'bg-gradient-to-r from-violet-50 via-blue-50 to-cyan-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900',
+    purple: 'bg-gradient-to-r from-violet-50 via-purple-50 to-blue-50 dark:from-violet-950/20 dark:via-purple-900/10 dark:to-blue-950/20',
+    blue: 'bg-gradient-to-r from-blue-50 via-cyan-50 to-sky-50 dark:from-blue-950/20 dark:via-cyan-900/10 dark:to-sky-950/20',
+    emerald: 'bg-gradient-to-r from-emerald-50 via-teal-50 to-cyan-50 dark:from-emerald-950/20 dark:via-teal-900/10 dark:to-cyan-950/20',
+    amber: 'bg-gradient-to-r from-amber-50 via-orange-50 to-yellow-50 dark:from-amber-950/20 dark:via-orange-900/10 dark:to-yellow-950/20',
+    cyan: 'bg-gradient-to-r from-cyan-50 via-sky-50 to-blue-50 dark:from-cyan-950/20 dark:via-sky-900/10 dark:to-blue-950/20',
+    indigo: 'bg-gradient-to-r from-indigo-50 via-violet-50 to-purple-50 dark:from-indigo-950/20 dark:via-violet-900/10 dark:to-purple-950/20',
+    pink: 'bg-gradient-to-r from-pink-50 via-rose-50 to-red-50 dark:from-pink-950/20 dark:via-rose-900/10 dark:to-red-950/20',
+    orange: 'bg-gradient-to-r from-orange-50 via-amber-50 to-yellow-50 dark:from-orange-950/20 dark:via-amber-900/10 dark:to-yellow-950/20',
+    rose: 'bg-gradient-to-r from-rose-50 via-pink-50 to-red-50 dark:from-rose-950/20 dark:via-pink-900/10 dark:to-red-950/20',
+    violet: 'bg-gradient-to-r from-violet-50 via-purple-50 to-indigo-50 dark:from-violet-950/20 dark:via-purple-900/10 dark:to-indigo-950/20',
   };
   
   const selectedColor = headerColors[headerColor] || headerColors.slate;
   
   return (
-    <thead ref={ref} className={cn(`${selectedColor} border-b border-slate-200/80 dark:border-slate-800/80 [&_tr]:border-b-0`, className)} {...props} />
+    <thead ref={ref} className={cn(`${selectedColor} border-b border-slate-200/80 dark:border-slate-700/80 [&_tr]:border-b-0`, className)} {...props} />
   );
 });
 TableHeader.displayName = 'TableHeader';
@@ -36,7 +36,7 @@ const TableBody = React.forwardRef(({ className, ...props }, ref) => (
   <tbody 
     ref={ref} 
     className={cn(
-      '[&_tr:last-child]:border-0 [&_tr:nth-child(even)]:bg-slate-50/40 dark:[&_tr:nth-child(even)]:bg-slate-800/10', 
+      '[&_tr:last-child]:border-0 [&_tr:nth-child(even)]:bg-gradient-to-r [&_tr:nth-child(even)]:from-slate-50/50 [&_tr:nth-child(even)]:to-blue-50/30 dark:[&_tr:nth-child(even)]:from-slate-800/30 dark:[&_tr:nth-child(even)]:to-slate-900/20 [&_tr:hover]:bg-gradient-to-r [&_tr:hover]:from-violet-50/40 [&_tr:hover]:to-blue-50/30 dark:[&_tr:hover]:from-violet-950/20 dark:[&_tr:hover]:to-blue-950/10 transition-all duration-200', 
       className
     )} 
     {...props} 
@@ -48,7 +48,7 @@ const TableRow = React.forwardRef(({ className, ...props }, ref) => (
   <tr 
     ref={ref} 
     className={cn(
-      'border-b border-slate-200/50 last:border-none dark:border-slate-800/50 transition-all duration-200 hover:bg-slate-50 dark:hover:bg-slate-800/30 data-[state=selected]:bg-purple-50/60 dark:data-[state=selected]:bg-purple-900/30', 
+      'border-b border-slate-200/50 last:border-none dark:border-slate-800/50 transition-all duration-200 hover:bg-gradient-to-r hover:from-violet-50/40 hover:to-blue-50/30 dark:hover:from-violet-950/20 dark:hover:to-blue-950/10 data-[state=selected]:bg-violet-50/60 dark:data-[state=selected]:bg-violet-900/30', 
       className
     )} 
     {...props} 
@@ -60,7 +60,7 @@ const TableHead = React.forwardRef(({ className, ...props }, ref) => (
   <th
     ref={ref}
     className={cn(
-      'h-11 px-6 text-left align-middle font-semibold text-slate-600 dark:text-slate-400 tracking-wider text-[11px] uppercase select-none transition-colors duration-150',
+      'h-12 px-6 text-left align-middle font-bold text-slate-700 dark:text-slate-300 tracking-wider text-[11px] uppercase select-none transition-colors duration-150',
       className
     )}
     {...props}

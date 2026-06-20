@@ -98,7 +98,7 @@ export default function Schools() {
       </div>
 
       {/* Filter Toolbar Section - Flat Container Layout */}
-      <Card className="border border-slate-200/60 bg-white shadow-2xs dark:bg-slate-900 overflow-hidden">
+      <Card className="filter">
         <CardContent className="flex flex-col sm:flex-row gap-6 p-4">
           <div className="relative flex-1">
             <Search className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400" />
@@ -131,7 +131,7 @@ export default function Schools() {
       </Card>
 
       {/* Core Operational Matrix Presentation Grid Card Layer Constraint */}
-      <Card className="border border-slate-200/60 bg-white shadow-2xs dark:bg-slate-900 overflow-hidden">
+      <Card className="table">
         <CardContent className="p-0">
           {isLoading ? (
             <div className="py-24 text-center">
@@ -153,15 +153,15 @@ export default function Schools() {
           ) : (
             <div className="overflow-x-auto w-full">
               <Table>
-                <TableHeader className="bg-slate-50/70 dark:bg-slate-900/20 border-b border-slate-200/60 dark:border-slate-800">
+                <TableHeader>
                   <TableRow>
-                    <TableHead className="pl-6 font-bold text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-500 py-4">School Name</TableHead>
-                    <TableHead className="font-bold text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-500 py-4">Email Contact</TableHead>
-                    <TableHead className="font-bold text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-500 py-4">Plan Tier</TableHead>
-                    <TableHead className="font-bold text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-500 py-4">Billing Status</TableHead>
-                    <TableHead className="font-bold text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-500 py-4">State</TableHead>
-                    <TableHead className="font-bold text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-500 py-4">Expiry Cycle</TableHead>
-                    <TableHead className="pr-6 text-right font-bold text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-500 py-4">Actions</TableHead>
+                    <TableHead className="pl-6 font-bold text-[11px] uppercase tracking-wider text-slate-700 dark:text-slate-300 py-4">School Name</TableHead>
+                    <TableHead className="font-bold text-[11px] uppercase tracking-wider text-slate-700 dark:text-slate-300 py-4">Email Contact</TableHead>
+                    <TableHead className="font-bold text-[11px] uppercase tracking-wider text-slate-700 dark:text-slate-300 py-4">Plan Tier</TableHead>
+                    <TableHead className="font-bold text-[11px] uppercase tracking-wider text-slate-700 dark:text-slate-300 py-4">Billing Status</TableHead>
+                    <TableHead className="font-bold text-[11px] uppercase tracking-wider text-slate-700 dark:text-slate-300 py-4">State</TableHead>
+                    <TableHead className="font-bold text-[11px] uppercase tracking-wider text-slate-700 dark:text-slate-300 py-4">Expiry Cycle</TableHead>
+                    <TableHead className="pr-6 text-right font-bold text-[11px] uppercase tracking-wider text-slate-700 dark:text-slate-300 py-4">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -238,24 +238,20 @@ export default function Schools() {
                       <TableCell className="pr-6 py-4 text-right">
                         <div className="inline-flex items-center justify-end gap-1">
                           <Button 
-                            variant="ghost" 
+                            variant="edit" 
                             size="icon" 
                             onClick={() => openEdit(school)}
-                            className="h-8 w-8 rounded-lg text-slate-400 hover:text-purple-600 hover:bg-purple-50 transition-colors"
+                            className="h-8 w-8"
                             title="Edit Parameters"
                           >
                             <Pencil className="h-3.5 w-3.5" />
                           </Button>
                           <Button
-                            variant="ghost"
+                            variant="delete"
                             size="icon"
                             onClick={() => toggleMutation.mutate(school._id)}
                             disabled={toggleMutation.isPending}
-                            className={`h-8 w-8 rounded-lg transition-colors ${
-                              school.isActive 
-                                ? 'text-slate-400 hover:text-rose-600 hover:bg-rose-50' 
-                                : 'text-slate-400 hover:text-emerald-600 hover:bg-emerald-50'
-                            }`}
+                            className="h-8 w-8"
                             title={school.isActive ? "Deactivate Node" : "Activate Node"}
                           >
                             <Power className="h-3.5 w-3.5" />

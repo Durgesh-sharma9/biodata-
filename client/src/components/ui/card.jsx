@@ -13,17 +13,35 @@ const CARD_THEME_MAP = {
   'filter-header': 'bg-amber-50 text-amber-900 border-b border-amber-100 dark:bg-amber-950/30 dark:text-amber-200 dark:border-amber-900/50',
 };
 
-const Card = React.forwardRef(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn(
-      // SaaS modern aesthetic: soft shadow, micro-border, active scale transitions
-      'rounded-2xl border border-slate-200/60 bg-white text-slate-800 shadow-sm transition-all duration-300 hover:shadow-md hover:-translate-y-[2px] dark:border-slate-800/80 dark:bg-slate-900 dark:text-slate-100 relative overflow-hidden',
-      className
-    )}
-    {...props}
-  />
-));
+// Card background gradients for different contexts
+const CARD_BACKGROUND_MAP = {
+  'dashboard': 'bg-gradient-to-br from-white to-violet-50 dark:from-slate-900 dark:to-violet-950/20',
+  'table': 'bg-gradient-to-br from-white to-blue-50/30 dark:from-slate-900 dark:to-blue-950/20',
+  'filter': 'bg-gradient-to-br from-white to-purple-50/30 dark:from-slate-900 dark:to-purple-950/20',
+  'default': 'bg-white dark:bg-slate-900',
+};
+
+const Card = React.forwardRef(({ className, ...props }, ref) => {
+  // Detect card type from className to apply appropriate background
+  let cardBackground = CARD_BACKGROUND_MAP['default'];
+  
+  if (className?.includes('dashboard')) cardBackground = CARD_BACKGROUND_MAP['dashboard'];
+  else if (className?.includes('table')) cardBackground = CARD_BACKGROUND_MAP['table'];
+  else if (className?.includes('filter')) cardBackground = CARD_BACKGROUND_MAP['filter'];
+
+  return (
+    <div
+      ref={ref}
+      className={cn(
+        // SaaS modern aesthetic: soft shadow, micro-border, active scale transitions
+        'rounded-2xl border border-slate-200/60 text-slate-800 shadow-sm transition-all duration-300 hover:shadow-md hover:-translate-y-[2px] dark:border-slate-800/80 dark:text-slate-100 relative overflow-hidden',
+        cardBackground,
+        className
+      )}
+      {...props}
+    />
+  );
+});
 Card.displayName = 'Card';
 
 const CardHeader = React.forwardRef(({ className, ...props }, ref) => {

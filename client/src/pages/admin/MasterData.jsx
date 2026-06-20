@@ -120,7 +120,7 @@ function MasterDataTable({ tab }) {
   return (
     <div className="space-y-6">
       {/* Input Entry Card Configuration */}
-      <Card className="border border-slate-200/60 bg-white shadow-2xs dark:bg-slate-900 overflow-hidden">
+      <Card className="table">
         <CardHeader className="p-5 pb-3">
           <CardTitle className="text-sm font-bold tracking-wide text-slate-800 dark:text-slate-200 flex items-center gap-2">
             Create New {tab.label.slice(0, -1)}
@@ -159,7 +159,7 @@ function MasterDataTable({ tab }) {
       </Card>
 
       {/* Main Records Control Core Section */}
-      <Card className="border border-slate-200/60 bg-white shadow-2xs dark:bg-slate-900 overflow-hidden">
+      <Card className="table">
         <CardHeader className="p-5 border-b border-slate-200/60 dark:border-slate-800/60 bg-slate-50/70 dark:bg-slate-900/20">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex items-center gap-3">
@@ -208,19 +208,19 @@ function MasterDataTable({ tab }) {
                   
                   <div className="flex items-center gap-1 shrink-0 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                     <Button 
-                      variant="ghost" 
+                      variant="edit" 
                       size="icon" 
                       onClick={() => handleEdit(item)}
-                      className="h-8 w-8 rounded-lg text-slate-400 hover:text-purple-600 hover:bg-purple-50 transition-colors"
+                      className="h-8 w-8"
                       title="Edit Item"
                     >
                       <Edit2 className="h-3.5 w-3.5" />
                     </Button>
                     <Button 
-                      variant="ghost" 
+                      variant="delete"
                       size="icon" 
                       onClick={() => handleDelete(item._id)}
-                      className="h-8 w-8 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
+                      className="h-8 w-8"
                       title="Delete Item"
                     >
                       <Trash2 className="h-3.5 w-3.5" />

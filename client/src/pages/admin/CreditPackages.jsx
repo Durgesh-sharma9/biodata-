@@ -53,18 +53,18 @@ export default function CreditPackages() {
       </div>
 
       {/* Main Container Layer Constraint */}
-      <Card className="border border-slate-200/60 bg-white shadow-2xs dark:bg-slate-900 overflow-hidden">
+      <Card className="table">
         <CardContent className="p-0">
           <Table>
-            <TableHeader className="bg-slate-50/70 dark:bg-slate-900/20 border-b border-slate-200/60 dark:border-slate-800">
+            <TableHeader>
               <TableRow>
-                <TableHead className="pl-6 py-4 text-slate-500 dark:text-slate-500 font-bold text-[11px] uppercase tracking-wider">
+                <TableHead className="pl-6 py-4 text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider">
                   Package Identity Name
                 </TableHead>
-                <TableHead className="text-slate-500 dark:text-slate-500 font-bold text-[11px] uppercase tracking-wider">
+                <TableHead className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider">
                   Distributed Credit Balance
                 </TableHead>
-                <TableHead className="pr-6 text-right text-slate-500 dark:text-slate-500 font-bold text-[11px] uppercase tracking-wider">
+                <TableHead className="pr-6 text-right text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider">
                   Operations
                 </TableHead>
               </TableRow>
@@ -112,10 +112,10 @@ export default function CreditPackages() {
                     {/* Operational Actions with Soft-Tint Destructive Trigger */}
                     <TableCell className="pr-6 py-4 text-right">
                       <Button
-                        size="sm"
-                        variant="destructive"
+                        variant="delete"
+                        size="icon"
                         onClick={() => deleteMutation.mutate(pkg._id)}
-                        className="h-8 w-8 rounded-lg p-0 border border-rose-200/60 bg-rose-50/80 text-rose-600 hover:bg-rose-600 hover:text-white transition-all duration-200 active:scale-95"
+                        className="h-8 w-8"
                       >
                         <Trash2 className="h-3.5 w-3.5" />
                       </Button>

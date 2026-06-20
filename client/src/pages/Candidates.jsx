@@ -148,7 +148,7 @@ export function CandidateList({
           className="text-slate-800 dark:text-white font-bold tracking-tight text-xl"
         />
         {showAddButton && (
-          <Button asChild className="bg-[#A05AFF] hover:bg-[#A05AFF]/90 text-white font-bold rounded-xl transition-all duration-200 active:scale-95 shrink-0">
+          <Button asChild className="bg-gradient-to-r from-[#A05AFF] via-[#9E58FF] to-[#4BCBEB] hover:opacity-95 text-white font-bold rounded-xl transition-all duration-200 active:scale-95 shrink-0 shadow-md shadow-[#A05AFF]/20">
             <Link to="/candidates/new">
               <Plus className="mr-2 h-4 w-4 stroke-[3]" />
               Add Candidate
@@ -158,10 +158,12 @@ export function CandidateList({
       </div>
 
       {/* Advanced Filtering Control Center */}
-      <Card className="rounded-xl border-none bg-white shadow-sm dark:bg-slate-900 overflow-hidden">
+      <Card className="filter">
         <CardContent className="p-5">
           <div className="flex items-center gap-2 mb-4 border-b border-slate-100 dark:border-slate-800 pb-3">
-            <SlidersHorizontal className="h-4 w-4 text-[#A05AFF]" />
+            <div className="p-1.5 rounded-lg bg-gradient-to-br from-violet-500/10 to-purple-500/10">
+              <SlidersHorizontal className="h-4 w-4 text-violet-600 dark:text-violet-400" />
+            </div>
             <h2 className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Filter Engine</h2>
           </div>
           
@@ -289,7 +291,7 @@ export function CandidateList({
       </Card>
 
       {/* Main Listing View Table Interface */}
-      <Card className="rounded-xl border-none bg-white shadow-sm dark:bg-slate-900 overflow-hidden">
+      <Card className="table">
         <CardContent className="p-0">
           {isLoading ? (
             <div className="py-24 flex flex-col items-center justify-center space-y-3">
@@ -302,12 +304,12 @@ export function CandidateList({
             <>
               <div className="w-full overflow-x-auto">
                 <Table className="min-w-[1000px]">
-                  <TableHeader className="bg-slate-50/70 dark:bg-slate-900/20 text-slate-400 font-semibold text-[11px] uppercase tracking-wider border-b border-slate-100 dark:border-slate-800">
+                  <TableHeader className="text-slate-400 font-semibold text-[11px] uppercase tracking-wider">
                     <TableRow className="hover:bg-transparent border-none">
-                      <TableHead className="w-[80px] text-slate-400 dark:text-slate-500 font-bold text-[11px] uppercase tracking-wider pl-6 py-4">Photo</TableHead>
+                      <TableHead className="w-[80px] text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider pl-6 py-4">Photo</TableHead>
                       
                       <TableHead 
-                        className="text-slate-400 dark:text-slate-500 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-[#A05AFF] transition-colors select-none py-4" 
+                        className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-violet-600 dark:hover:text-violet-400 transition-colors select-none py-4" 
                         onClick={() => handleSort('fullName')}
                       >
                         <div className="flex items-center gap-1.5">
@@ -317,7 +319,7 @@ export function CandidateList({
                       </TableHead>
                       
                       <TableHead 
-                        className="text-slate-400 dark:text-slate-500 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-[#A05AFF] transition-colors select-none py-4" 
+                        className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-violet-600 dark:hover:text-violet-400 transition-colors select-none py-4" 
                         onClick={() => handleSort('position')}
                       >
                         <div className="flex items-center gap-1.5">
@@ -326,16 +328,16 @@ export function CandidateList({
                         </div>
                       </TableHead>
                       
-                      <TableHead className="text-slate-400 dark:text-slate-500 font-bold text-[11px] uppercase tracking-wider py-4">
+                      <TableHead className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider py-4">
                         <div className="flex items-center gap-1.5"><MapPin className="h-3 w-3" /> Location</div>
                       </TableHead>
 
-                      <TableHead className="text-slate-400 dark:text-slate-500 font-bold text-[11px] uppercase tracking-wider py-4">
+                      <TableHead className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider py-4">
                         <div className="flex items-center gap-1.5"><GraduationCap className="h-3 w-3" /> Qualification</div>
                       </TableHead>
                       
                       <TableHead 
-                        className="text-slate-400 dark:text-slate-500 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-[#A05AFF] transition-colors select-none py-4" 
+                        className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-violet-600 dark:hover:text-violet-400 transition-colors select-none py-4" 
                         onClick={() => handleSort('experienceYears')}
                       >
                         <div className="flex items-center gap-1.5">
@@ -345,7 +347,7 @@ export function CandidateList({
                       </TableHead>
                       
                       <TableHead
-                        className="text-slate-400 dark:text-slate-500 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-[#A05AFF] transition-colors select-none py-4"
+                        className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-violet-600 dark:hover:text-violet-400 transition-colors select-none py-4"
                         onClick={() => handleSort('expectedSalary')}
                       >
                         <div className="flex items-center gap-1.5">
@@ -355,7 +357,7 @@ export function CandidateList({
                       </TableHead>
                       
                       <TableHead 
-                        className="text-slate-400 dark:text-slate-500 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-[#A05AFF] transition-colors select-none py-4" 
+                        className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-violet-600 dark:hover:text-violet-400 transition-colors select-none py-4" 
                         onClick={() => handleSort('createdAt')}
                       >
                         <div className="flex items-center gap-1.5">
@@ -364,7 +366,7 @@ export function CandidateList({
                         </div>
                       </TableHead>
                       
-                      <TableHead className="text-right text-slate-400 dark:text-slate-500 font-bold text-[11px] uppercase tracking-wider pr-6 py-4">Actions</TableHead>
+                      <TableHead className="text-right text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider pr-6 py-4">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   
@@ -448,7 +450,7 @@ export function CandidateList({
                           
                           <TableCell className="text-right pr-6 py-4">
                             <div className="flex justify-end items-center gap-1">
-                              <Button variant="ghost" size="icon" asChild className="h-8 w-8 rounded-xl text-slate-400 hover:text-[#A05AFF] hover:bg-[#A05AFF]/10 transition-colors">
+                              <Button variant="view" size="icon" asChild className="h-8 w-8">
                                 <Link to={`/candidates/${c._id}`}>
                                   <Eye className="h-4 w-4" />
                                 </Link>
@@ -456,13 +458,13 @@ export function CandidateList({
                               
                               {c.canEdit && (
                                 <>
-                                  <Button variant="ghost" size="icon" asChild className="h-8 w-8 rounded-xl text-slate-400 hover:text-[#A05AFF] hover:bg-[#A05AFF]/10 transition-colors">
+                                  <Button variant="edit" size="icon" asChild className="h-8 w-8">
                                     <Link to={`/candidates/${c._id}/edit`}>
                                       <Pencil className="h-4 w-4" />
                                     </Link>
                                   </Button>
                                   
-                                  <Button variant="ghost" size="icon" onClick={() => setDeleteId(c._id)} className="h-8 w-8 rounded-xl text-slate-400 hover:text-[#FE9496] hover:bg-[#FE9496]/10 transition-colors">
+                                  <Button variant="delete" size="icon" onClick={() => setDeleteId(c._id)} className="h-8 w-8">
                                     <Trash2 className="h-4 w-4" />
                                   </Button>
                                 </>
@@ -480,7 +482,7 @@ export function CandidateList({
               {data?.pagination && (
                 <div className="p-5 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/20 flex flex-col sm:flex-row items-center justify-between gap-4">
                   <p className="text-xs md:text-sm font-semibold text-slate-400 dark:text-slate-500 tracking-wide text-center sm:text-left">
-                    Displaying <span className="text-[#A05AFF] font-bold">Page {data.pagination.page}</span> of <span className="text-slate-700 dark:text-slate-300 font-bold">{data.pagination.totalPages}</span> <span className="text-slate-400 dark:text-slate-600">({data.pagination.total} entries total)</span>
+                    Displaying <span className="text-slate-700 dark:text-slate-300 font-bold">Page {data.pagination.page}</span> of <span className="text-slate-700 dark:text-slate-300 font-bold">{data.pagination.totalPages}</span> <span className="text-slate-400 dark:text-slate-600">({data.pagination.total} entries total)</span>
                   </p>
                   <div className="flex items-center gap-2">
                     <Button 
@@ -513,7 +515,7 @@ export function CandidateList({
       <Dialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
         <DialogContent className="max-w-md rounded-xl border-none bg-white p-6 dark:bg-slate-900 shadow-sm">
           <DialogHeader className="space-y-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-[#FE9496]/30 bg-[#FE9496]/5 text-[#FE9496]">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-slate-200/60 bg-slate-50 text-slate-400">
               <ShieldAlert className="h-5 w-5 stroke-[2.2]" />
             </div>
             <div className="space-y-1">
@@ -534,7 +536,7 @@ export function CandidateList({
             <Button
               onClick={() => deleteMutation.mutate(deleteId)}
               disabled={deleteMutation.isPending}
-              className="bg-[#FE9496] hover:bg-[#FE9496]/90 text-white font-bold rounded-xl h-11 transition-all duration-200 active:scale-95 flex items-center justify-center gap-2 w-full sm:w-auto"
+              className="bg-gradient-to-r from-rose-500 to-rose-600 hover:opacity-95 text-white font-bold rounded-xl h-11 transition-all duration-200 active:scale-95 flex items-center justify-center gap-2 w-full sm:w-auto shadow-md shadow-rose-500/20"
             >
               {deleteMutation.isPending ? (
                 <>

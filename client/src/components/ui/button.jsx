@@ -14,6 +14,10 @@ const buttonVariants = cva(
         secondary: 'border border-[#1BCFB4]/20 bg-[#1BCFB4]/5 text-[#1BCFB4] shadow-xs hover:bg-[#1BCFB4]/10 hover:border-[#1BCFB4]/40',
         ghost: 'text-slate-500 hover:bg-slate-50 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800/50',
         link: 'text-[#A05AFF] decoration-[#A05AFF]/30 underline-offset-4 hover:underline hover:text-[#9E58FF]',
+        // Action button variants with specific colors and hover effects
+        view: 'text-blue-600 hover:bg-blue-50 hover:scale-110 dark:text-blue-400 dark:hover:bg-blue-950/30 rounded-xl transition-all duration-200',
+        edit: 'text-emerald-600 hover:bg-emerald-50 hover:scale-110 dark:text-emerald-400 dark:hover:bg-emerald-950/30 rounded-xl transition-all duration-200',
+        delete: 'text-rose-600 hover:bg-rose-50 hover:scale-110 dark:text-rose-400 dark:hover:bg-rose-950/30 rounded-xl transition-all duration-200',
       },
       size: {
         default: 'h-11 px-5 py-2.5',
