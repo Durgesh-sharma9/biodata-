@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Trash2, MapPin, Plus, Eye, Navigation, Globe, Building2, Layers, Compass, Loader2 } from 'lucide-react';
+import { Trash2, MapPin, Plus, Eye, Navigation, Globe, Building2, Layers, Compass, Loader2, Download } from 'lucide-react';
 import {
   getStates,
   getCities,
@@ -11,6 +11,7 @@ import {
   deleteState,
   deleteCity,
   deleteLocality,
+  importIndiaLocations,
 } from '@/lib/api';
 import { PageHeader } from '@/components/common/PageHeader';
 import { Button } from '@/components/ui/button';
@@ -20,6 +21,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
+import { Dialog, DialogBody, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
 
 export default function Locations() {
@@ -30,6 +32,7 @@ export default function Locations() {
   const [localityName, setLocalityName] = useState('');
   const [localityCityId, setLocalityCityId] = useState('');
   const [viewCityId, setViewCityId] = useState('');
+  const [importDialogOpen, setImportDialogOpen] = useState(false);
 
   const { data: states = [], isLoading: statesLoading } = useQuery({
     queryKey: ['states'],
@@ -77,6 +80,19 @@ export default function Locations() {
     },
   });
 
+  const importMutation = useMutation({
+    mutationFn: importIndiaLocations,
+    onSuccess: (data) => {
+      invalidate();
+      setImportDialogOpen(false);
+      // Show success message with counts
+      alert(`Import successful!\nStates imported: ${data.data.data.statesImported}\nCities imported: ${data.data.data.citiesImported}`);
+    },
+    onError: (error) => {
+      alert(`Import failed: ${error.response?.data?.message || error.message}`);
+    },
+  });
+
   return (
     <div className="space-y-6 p-6 max-w-7xl mx-auto bg-slate-50/50 dark:bg-slate-950 text-slate-800 dark:text-white antialiased min-h-screen animate-in fade-in duration-500">
       {/* Page Header Panel */}
@@ -117,10 +133,19 @@ export default function Locations() {
         <TabsContent value="states" className="outline-none focus:outline-none focus:ring-0 animate-in fade-in-30 slide-in-from-bottom-2 duration-300">
           <Card className="table">
             <CardHeader className="p-5 border-b border-slate-200/60 dark:border-slate-800">
-              <CardTitle className="text-sm font-bold tracking-wide text-slate-800 dark:text-slate-200 flex items-center gap-2">
-                <Globe className="h-4 w-4 text-purple-600" />
-                Regional States Network
-              </CardTitle>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-sm font-bold tracking-wide text-slate-800 dark:text-slate-200 flex items-center gap-2">
+                  <Globe className="h-4 w-4 text-purple-600" />
+                  Regional States Network
+                </CardTitle>
+                <Button
+                  onClick={() => setImportDialogOpen(true)}
+                  className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold h-9 px-4 rounded-xl transition-all duration-200 active:scale-95 flex items-center gap-2 text-xs"
+                >
+                  <Download className="h-3.5 w-3.5" />
+                  Import India States & Cities
+                </Button>
+              </div>
             </CardHeader>
             <CardContent className="p-5 space-y-6">
               <div className="flex gap-3 max-w-xl group">
@@ -367,6 +392,46 @@ export default function Locations() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Import India Locations Confirmation Dialog */}
+      <Dialog open={importDialogOpen} onOpenChange={setImportDialogOpen}>
+        <DialogContent className="max-w-md rounded-xl border border-slate-200/60 bg-white p-6 dark:bg-slate-900 shadow-lg">
+          <DialogHeader>
+            <DialogTitle className="text-sm font-bold tracking-wide text-slate-800 dark:text-slate-200 flex items-center gap-2">
+              <Download className="h-4 w-4 text-blue-600" />
+              Import India States & Cities
+            </DialogTitle>
+          </DialogHeader>
+          <DialogBody className="pt-4">
+            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+              Import all Indian States and Cities? This action only imports missing records and will not create duplicates.
+            </p>
+          </DialogBody>
+          <DialogFooter className="mt-6 flex gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setImportDialogOpen(false)}
+              className="rounded-xl h-11 font-medium transition-all border-slate-200 text-slate-700 dark:border-slate-700 dark:text-slate-300"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => importMutation.mutate()}
+              disabled={importMutation.isPending}
+              className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold rounded-xl h-11 px-5 transition-all duration-200 active:scale-95"
+            >
+              {importMutation.isPending ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                  Importing...
+                </>
+              ) : (
+                'Import Now'
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

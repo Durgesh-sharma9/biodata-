@@ -12,6 +12,7 @@ import {
   createLocality,
   updateLocality,
   deleteLocality,
+  importIndiaLocations,
 } from '../controllers/locationController.js';
 import { protect, authorize } from '../middleware/auth.js';
 
@@ -32,5 +33,7 @@ router.delete('/cities/:id', protect, authorize('super_admin'), deleteCity);
 router.post('/localities', protect, authorize('super_admin'), createLocality);
 router.put('/localities/:id', protect, authorize('super_admin'), updateLocality);
 router.delete('/localities/:id', protect, authorize('super_admin'), deleteLocality);
+
+router.post('/import-india', protect, authorize('super_admin'), importIndiaLocations);
 
 export default router;

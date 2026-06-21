@@ -72,6 +72,7 @@ export const updateLocality = (id, data) => api.put(`/locations/localities/${id}
 export const deleteState = (id) => api.delete(`/locations/states/${id}`);
 export const deleteCity = (id) => api.delete(`/locations/cities/${id}`);
 export const deleteLocality = (id) => api.delete(`/locations/localities/${id}`);
+export const importIndiaLocations = () => api.post('/locations/import-india');
 
 // Credits
 export const getSchoolCredits = () => api.get('/credits');

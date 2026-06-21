@@ -3,6 +3,7 @@ import City from '../models/City.js';
 import Locality from '../models/Locality.js';
 import { ApiError } from '../utils/ApiError.js';
 import { catchAsync } from '../utils/catchAsync.js';
+import { State as CSCState, City as CSCCity } from 'country-state-city';
 
 export const getStates = catchAsync(async (req, res) => {
   const states = await State.find().sort({ name: 1 });
@@ -106,4 +107,52 @@ export const deleteLocality = catchAsync(async (req, res) => {
   const locality = await Locality.findByIdAndDelete(req.params.id);
   if (!locality) throw new ApiError(404, 'Locality not found');
   res.json({ success: true, message: 'Locality deleted' });
+});
+
+export const importIndiaLocations = catchAsync(async (req, res) => {
+  const indianStates = CSCState.getStatesOfCountry('IN');
+  let statesImported = 0;
+  let citiesImported = 0;
+
+  for (const stateData of indianStates) {
+    const existingState = await State.findOne({ name: stateData.name });
+    let stateId;
+
+    if (!existingState) {
+      const newState = await State.create({
+        name: stateData.name,
+        code: stateData.isoCode,
+      });
+      stateId = newState._id;
+      statesImported++;
+    } else {
+      stateId = existingState._id;
+    }
+
+    const cities = CSCCity.getCitiesOfState('IN', stateData.isoCode);
+    
+    for (const cityData of cities) {
+      const existingCity = await City.findOne({
+        name: cityData.name,
+        stateId: stateId,
+      });
+
+      if (!existingCity) {
+        await City.create({
+          name: cityData.name,
+          stateId: stateId,
+        });
+        citiesImported++;
+      }
+    }
+  }
+
+  res.json({
+    success: true,
+    message: 'India locations imported successfully',
+    data: {
+      statesImported,
+      citiesImported,
+    },
+  });
 });
