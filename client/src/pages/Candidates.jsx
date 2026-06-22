@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { 
@@ -59,16 +59,38 @@ export function CandidateList({
   });
 
   const { data: filterCities = [] } = useQuery({
-    queryKey: ['cities', filterStateId],
-    queryFn: () => getCities(filterStateId).then((r) => r.data.data),
-    enabled: !!filterStateId,
+    queryKey: ['cities'],
+    queryFn: () => getCities().then((r) => r.data.data),
   });
 
   const { data: filterLocalities = [] } = useQuery({
-    queryKey: ['localities', filterCityId],
-    queryFn: () => getLocalities({ cityId: filterCityId }).then((r) => r.data.data),
-    enabled: !!filterCityId,
+    queryKey: ['localities'],
+    queryFn: () => getLocalities().then((r) => r.data.data),
   });
+
+  // Popular suggestions for better UX
+  const popularStates = ['Rajasthan', 'Delhi', 'Maharashtra', 'Gujarat', 'Punjab'];
+  const popularCities = ['Jaipur', 'Delhi', 'Mumbai', 'Ahmedabad'];
+  
+  // Memoize options to prevent unnecessary recreations
+  const stateOptions = useMemo(() => [
+    { value: '', label: 'All States' },
+    ...states.filter(s => popularStates.includes(s.name)).map(s => ({ value: s._id, label: s.name })),
+    { value: 'separator', label: '──────────', disabled: true },
+    ...states.filter(s => !popularStates.includes(s.name)).map(s => ({ value: s._id, label: s.name }))
+  ], [states]);
+
+  const cityOptions = useMemo(() => [
+    { value: '', label: 'All Cities' },
+    ...filterCities.filter(c => popularCities.includes(c.name)).map(c => ({ value: c._id, label: c.name })),
+    { value: 'separator', label: '──────────', disabled: true },
+    ...filterCities.filter(c => !popularCities.includes(c.name)).map(c => ({ value: c._id, label: c.name }))
+  ], [filterCities]);
+
+  const localityOptions = useMemo(() => [
+    { value: '', label: 'All Localities' },
+    ...filterLocalities.map(l => ({ value: l.name, label: l.name }))
+  ], [filterLocalities]);
 
   const { data, isLoading } = useQuery({
     queryKey: ['candidates', section, page, filters],
@@ -97,16 +119,12 @@ export function CandidateList({
 
   const handleStateFilterChange = (stateId, stateName) => {
     setFilterStateId(stateId);
-    setFilterCityId('');
     updateFilter('state', stateName);
-    updateFilter('city', '');
-    updateFilter('locality', '');
   };
 
   const handleCityFilterChange = (cityId, cityName) => {
     setFilterCityId(cityId);
     updateFilter('city', cityName);
-    updateFilter('locality', '');
   };
 
   const handleLocalityFilterChange = (localityName) => {
@@ -231,40 +249,32 @@ export function CandidateList({
             </div>
 
             <SearchableSelect
-              options={[{ value: '', label: 'All States' }, ...states.map(s => ({ value: s._id, label: s.name }))]}
+              options={stateOptions}
               value={filterStateId}
               onChange={(v) => {
-                if (v === '') {
-                  handleStateFilterChange('', '');
-                } else {
-                  const state = states.find(s => s._id === v);
-                  handleStateFilterChange(v, state?.name || '');
-                }
+                const state = states.find(s => s._id === v);
+                setFilterStateId(v);
+                updateFilter('state', state?.name || '');
               }}
               placeholder="All States"
             />
 
             <SearchableSelect
-              options={[{ value: '', label: 'All Cities' }, ...filterCities.map(c => ({ value: c._id, label: c.name }))]}
+              options={cityOptions}
               value={filterCityId}
               onChange={(v) => {
-                if (v === '') {
-                  handleCityFilterChange('', '');
-                } else {
-                  const city = filterCities.find(c => c._id === v);
-                  handleCityFilterChange(v, city?.name || '');
-                }
+                const city = filterCities.find(c => c._id === v);
+                setFilterCityId(v);
+                updateFilter('city', city?.name || '');
               }}
-              placeholder={filterStateId ? "All Cities" : "Select State First"}
-              disabled={!filterStateId}
+              placeholder="All Cities"
             />
 
             <SearchableSelect
-              options={[{ value: '', label: 'All Localities' }, ...filterLocalities.map(l => ({ value: l.name, label: l.name }))]}
+              options={localityOptions}
               value={filters.locality}
               onChange={(v) => handleLocalityFilterChange(v)}
-              placeholder={filterCityId ? "All Localities" : "Select City First"}
-              disabled={!filterCityId}
+              placeholder="All Localities"
             />
 
             <div className="relative">
@@ -303,13 +313,13 @@ export function CandidateList({
           ) : (
             <>
               <div className="w-full overflow-x-auto">
-                <Table className="min-w-[1000px]">
+                <Table>
                   <TableHeader className="text-slate-400 font-semibold text-[11px] uppercase tracking-wider">
                     <TableRow className="hover:bg-transparent border-none">
-                      <TableHead className="w-[80px] text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider pl-6 py-4">Photo</TableHead>
+                      <TableHead className="w-[50px] md:w-[60px] text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider pl-4 md:pl-6 py-4">Photo</TableHead>
                       
                       <TableHead 
-                        className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-violet-600 dark:hover:text-violet-400 transition-colors select-none py-4" 
+                        className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-violet-600 dark:hover:text-violet-400 transition-colors select-none py-4 min-w-[100px] md:min-w-[140px]" 
                         onClick={() => handleSort('fullName')}
                       >
                         <div className="flex items-center gap-1.5">
@@ -319,7 +329,7 @@ export function CandidateList({
                       </TableHead>
                       
                       <TableHead 
-                        className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-violet-600 dark:hover:text-violet-400 transition-colors select-none py-4" 
+                        className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-violet-600 dark:hover:text-violet-400 transition-colors select-none py-4 min-w-[80px] md:min-w-[120px]" 
                         onClick={() => handleSort('position')}
                       >
                         <div className="flex items-center gap-1.5">
@@ -328,16 +338,16 @@ export function CandidateList({
                         </div>
                       </TableHead>
                       
-                      <TableHead className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider py-4">
+                      <TableHead className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider py-4 min-w-[100px] md:min-w-[140px] hidden sm:table-cell">
                         <div className="flex items-center gap-1.5"><MapPin className="h-3 w-3" /> Location</div>
                       </TableHead>
 
-                      <TableHead className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider py-4">
+                      <TableHead className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider py-4 min-w-[140px] hidden lg:table-cell">
                         <div className="flex items-center gap-1.5"><GraduationCap className="h-3 w-3" /> Qualification</div>
                       </TableHead>
                       
                       <TableHead 
-                        className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-violet-600 dark:hover:text-violet-400 transition-colors select-none py-4" 
+                        className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-violet-600 dark:hover:text-violet-400 transition-colors select-none py-4 min-w-[80px] md:min-w-[100px] hidden sm:table-cell" 
                         onClick={() => handleSort('experienceYears')}
                       >
                         <div className="flex items-center gap-1.5">
@@ -347,26 +357,26 @@ export function CandidateList({
                       </TableHead>
                       
                       <TableHead
-                        className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-violet-600 dark:hover:text-violet-400 transition-colors select-none py-4"
+                        className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-violet-600 dark:hover:text-violet-400 transition-colors select-none py-4 min-w-[80px] md:min-w-[120px] hidden sm:table-cell"
                         onClick={() => handleSort('expectedSalary')}
                       >
                         <div className="flex items-center gap-1.5">
-                          <IndianRupee className="h-3 w-3" /> Monthly Salary
+                          <IndianRupee className="h-3 w-3" /> Salary
                           <ArrowUpDown className="h-3 w-3 opacity-60" />
                         </div>
                       </TableHead>
                       
                       <TableHead 
-                        className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-violet-600 dark:hover:text-violet-400 transition-colors select-none py-4" 
+                        className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-violet-600 dark:hover:text-violet-400 transition-colors select-none py-4 min-w-[100px] hidden md:table-cell" 
                         onClick={() => handleSort('createdAt')}
                       >
                         <div className="flex items-center gap-1.5">
-                          <Calendar className="h-3 w-3" /> Date Added
+                          <Calendar className="h-3 w-3" /> Date
                           <ArrowUpDown className="h-3 w-3 opacity-60" />
                         </div>
                       </TableHead>
                       
-                      <TableHead className="text-right text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider pr-6 py-4">Actions</TableHead>
+                      <TableHead className="text-right text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider pr-4 md:pr-6 py-4 w-[60px] md:w-[100px]">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   
@@ -409,22 +419,22 @@ export function CandidateList({
                           
                           <TableCell className="font-bold text-slate-800 dark:text-slate-200 text-sm py-4">
                             <div className="flex items-center gap-2">
-                              <span className="group-hover:text-[#A05AFF] transition-colors">{c.fullName}</span>
+                              <span className="group-hover:text-[#A05AFF] transition-colors truncate">{c.fullName}</span>
                               {c.isLocked && (
-                                <Badge className="text-[10px] uppercase font-bold tracking-wider border-[#FE9496]/30 bg-[#FE9496]/5 text-[#FE9496] rounded-md px-1.5 py-0 shadow-none variant-outline">
+                                <Badge className="text-[10px] uppercase font-bold tracking-wider border-[#FE9496]/30 bg-[#FE9496]/5 text-[#FE9496] rounded-md px-1.5 py-0 shadow-none variant-outline shrink-0">
                                   Locked
                                 </Badge>
                               )}
                             </div>
                           </TableCell>
                           
-                          <TableCell className="text-slate-600 dark:text-slate-300 font-semibold text-sm py-4">{c.position}</TableCell>
+                          <TableCell className="text-slate-600 dark:text-slate-300 font-semibold text-sm py-4 truncate">{c.position}</TableCell>
                           
-                          <TableCell className="text-slate-500 dark:text-slate-400 font-semibold text-xs max-w-[180px] truncate py-4">
+                          <TableCell className="text-slate-500 dark:text-slate-400 font-semibold text-xs py-4 truncate">
                             {[c.city, c.locality].filter(Boolean).join(', ') || '—'}
                           </TableCell>
 
-                          <TableCell className="text-slate-500 dark:text-slate-400 font-semibold text-xs max-w-[200px] truncate py-4">
+                          <TableCell className="text-slate-500 dark:text-slate-400 font-semibold text-xs py-4 truncate hidden lg:table-cell">
                             {c.qualifications?.join(', ') || '—'}
                           </TableCell>
                           
@@ -444,7 +454,7 @@ export function CandidateList({
                             )}
                           </TableCell>
                           
-                          <TableCell className="text-slate-500 dark:text-slate-400 font-semibold text-xs py-4">
+                          <TableCell className="text-slate-500 dark:text-slate-400 font-semibold text-xs py-4 hidden md:table-cell">
                             {formatDate(c.createdAt)}
                           </TableCell>
                           

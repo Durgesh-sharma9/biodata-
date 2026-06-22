@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import { ChevronDown, Search, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Input } from './input';
@@ -13,11 +14,15 @@ export function SearchableSelect({
 }) {
   const [open, setOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 0 });
+  const triggerRef = useRef(null);
+  const searchInputRef = useRef(null);
 
   const selectedOption = options.find(o => o.value === value);
-  const filteredOptions = options.filter(option =>
-    option.label.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredOptions = useMemo(() =>
+    options.filter(option =>
+      !option.disabled && option.label.toLowerCase().includes(searchTerm.toLowerCase())
+    ).slice(0, 50), [options, searchTerm]);
 
   const handleSelect = (option) => {
     onChange(option.value);
@@ -30,11 +35,49 @@ export function SearchableSelect({
     onChange('');
   };
 
+  const handleToggle = () => {
+    if (!disabled) {
+      if (!open && triggerRef.current) {
+        const rect = triggerRef.current.getBoundingClientRect();
+        setDropdownPosition({
+          top: rect.bottom + window.scrollY + 4,
+          left: rect.left + window.scrollX,
+          width: rect.width,
+        });
+      }
+      setOpen(!open);
+    }
+  };
+
+  // Focus search input when dropdown opens
+  useEffect(() => {
+    if (open && searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, [open]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (triggerRef.current && !triggerRef.current.contains(event.target)) {
+        setOpen(false);
+      }
+    };
+
+    if (open) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [open]);
+
   return (
     <div className={cn('relative', className)}>
       <button
+        ref={triggerRef}
         type="button"
-        onClick={() => !disabled && setOpen(!open)}
+        onClick={handleToggle}
         disabled={disabled}
         className={cn(
           'flex min-h-11 w-full items-center justify-between rounded-xl border px-4 py-2 text-sm font-medium transition-all duration-200 outline-none',
@@ -63,14 +106,21 @@ export function SearchableSelect({
         </div>
       </button>
 
-      {open && !disabled && (
-        <>
-          <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-          <div className="absolute z-[100] mt-2 w-full rounded-xl border border-none bg-white p-1.5 shadow-md animate-in fade-in-0 zoom-in-95 duration-200 origin-top dark:bg-slate-900">
+      {open && !disabled &&
+        createPortal(
+          <div
+            className="fixed z-[9999] rounded-xl border border-none bg-white p-1.5 shadow-lg animate-in fade-in-0 zoom-in-95 duration-200 origin-top dark:bg-slate-900"
+            style={{
+              top: `${dropdownPosition.top}px`,
+              left: `${dropdownPosition.left}px`,
+              width: `${dropdownPosition.width}px`,
+            }}
+          >
             <div className="border-b border-slate-50 dark:border-slate-800 pb-1.5 mb-1 px-1">
               <div className="relative">
                 <Search className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
                 <Input
+                  ref={searchInputRef}
                   placeholder="Search..."
                   className="pl-9 h-10 rounded-lg bg-slate-50 dark:bg-slate-950 border-slate-200/60 focus:border-[#A05AFF]/60 focus:bg-white"
                   value={searchTerm}
@@ -87,6 +137,16 @@ export function SearchableSelect({
               ) : (
                 filteredOptions.map((option) => {
                   const isSelected = value === option.value;
+                  if (option.disabled) {
+                    return (
+                      <div
+                        key={option.value}
+                        className="px-3 py-1 text-xs font-bold uppercase tracking-wider text-slate-300 dark:text-slate-600"
+                      >
+                        {option.label}
+                      </div>
+                    );
+                  }
                   return (
                     <button
                       key={option.value}
@@ -105,9 +165,10 @@ export function SearchableSelect({
                 })
               )}
             </div>
-          </div>
-        </>
-      )}
+          </div>,
+          document.body
+        )
+      }
     </div>
   );
 }

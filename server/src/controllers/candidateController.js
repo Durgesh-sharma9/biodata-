@@ -38,9 +38,9 @@ const buildCandidateFilter = (query) => {
       filter.experienceYears = exp;
     }
   }
-  if (query.state) filter.state = query.state;
-  if (query.city) filter.city = query.city;
-  if (query.locality) filter.locality = query.locality;
+  if (query.state) filter.state = { $regex: query.state, $options: 'i' };
+  if (query.city) filter.city = { $regex: query.city, $options: 'i' };
+  if (query.locality) filter.locality = { $regex: query.locality, $options: 'i' };
   if (query.source) filter.source = query.source;
   if (query.expectedSalaryMin) {
     filter.expectedSalary = { ...filter.expectedSalary, $gte: Number(query.expectedSalaryMin) };
