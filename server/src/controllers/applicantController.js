@@ -20,6 +20,8 @@ const buildCandidatePayload = async (body) => {
     expectedSalary,
     documents,
     localityId,
+    stateId,
+    cityId,
     profileSharingConsent,
     contactConsent,
     profilePhoto,
@@ -33,9 +35,25 @@ const buildCandidatePayload = async (body) => {
     throw new ApiError(400, 'Consent is required to submit your application');
   }
 
-  let locationFields = {};
+  let locationFields = { state: '', city: '', locality: '', stateId: null, cityId: null, localityId: null };
   if (localityId) {
     locationFields = await resolveLocationFromLocalityId(localityId);
+  } else if (cityId) {
+    const City = await import('../models/City.js').then(m => m.default);
+    const city = await City.findById(cityId).populate('stateId');
+    if (city) {
+      locationFields.city = city.name;
+      locationFields.state = city.stateId?.name || '';
+      locationFields.cityId = city._id;
+      locationFields.stateId = city.stateId?._id;
+    }
+  } else if (stateId) {
+    const State = await import('../models/State.js').then(m => m.default);
+    const state = await State.findById(stateId);
+    if (state) {
+      locationFields.state = state.name;
+      locationFields.stateId = state._id;
+    }
   }
 
   return {
@@ -57,6 +75,9 @@ const buildCandidatePayload = async (body) => {
     state: locationFields.state,
     city: locationFields.city,
     locality: locationFields.locality,
+    stateId: locationFields.stateId,
+    cityId: locationFields.cityId,
+    localityId: locationFields.localityId,
   };
 };
 
@@ -177,10 +198,15 @@ export const updateApplicantProfile = catchAsync(async (req, res) => {
     expectedSalary,
     documents,
     localityId,
+    stateId,
+    cityId,
     profileSharingConsent,
     contactConsent,
     profilePhoto,
   } = req.body;
+
+  console.log("REQ BODY", { localityId, stateId, cityId });
+  console.log("LOCATION RECEIVED", { stateId, cityId, localityId });
 
   if (!profileSharingConsent || !contactConsent) {
     throw new ApiError(400, 'Both consent checkboxes must be accepted to complete profile');
@@ -195,7 +221,32 @@ export const updateApplicantProfile = catchAsync(async (req, res) => {
     candidate.state = locationFields.state;
     candidate.city = locationFields.city;
     candidate.locality = locationFields.locality;
+    candidate.stateId = locationFields.stateId;
+    candidate.cityId = locationFields.cityId;
+    candidate.localityId = locationFields.localityId;
+  } else if (cityId) {
+    const City = await import('../models/City.js').then(m => m.default);
+    const city = await City.findById(cityId).populate('stateId');
+    if (city) {
+      candidate.city = city.name;
+      candidate.state = city.stateId?.name || '';
+      candidate.cityId = city._id;
+      candidate.stateId = city.stateId?._id;
+    }
+  } else if (stateId) {
+    const State = await import('../models/State.js').then(m => m.default);
+    const state = await State.findById(stateId);
+    if (state) {
+      candidate.state = state.name;
+      candidate.stateId = state._id;
+    }
   }
+
+  console.log("LOCATION SAVED", {
+    state: candidate.state,
+    city: candidate.city,
+    locality: candidate.locality
+  });
 
   Object.assign(candidate, {
     fullName,

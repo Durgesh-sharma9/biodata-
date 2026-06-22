@@ -38,13 +38,8 @@ export function SearchableSelect({
 
   const handleToggle = () => {
     if (!disabled) {
-      if (!open && triggerRef.current) {
-        const rect = triggerRef.current.getBoundingClientRect();
-        setDropdownPosition({
-          top: rect.bottom + window.scrollY + 4,
-          left: rect.left + window.scrollX,
-          width: rect.width,
-        });
+      if (!open) {
+        updateDropdownPosition();
       }
       setOpen(!open);
     }
@@ -59,6 +54,17 @@ export function SearchableSelect({
 
   const dropdownRef = useRef(null);
 
+  const updateDropdownPosition = () => {
+    if (triggerRef.current) {
+      const rect = triggerRef.current.getBoundingClientRect();
+      setDropdownPosition({
+        top: rect.bottom + window.scrollY + 4,
+        left: rect.left + window.scrollX,
+        width: rect.width,
+      });
+    }
+  };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (triggerRef.current && !triggerRef.current.contains(event.target) && 
@@ -67,12 +73,28 @@ export function SearchableSelect({
       }
     };
 
+    const handleScroll = () => {
+      if (open) {
+        updateDropdownPosition();
+      }
+    };
+
+    const handleResize = () => {
+      if (open) {
+        updateDropdownPosition();
+      }
+    };
+
     if (open) {
       document.addEventListener('mousedown', handleClickOutside);
+      window.addEventListener('scroll', handleScroll);
+      window.addEventListener('resize', handleResize);
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleResize);
     };
   }, [open]);
 

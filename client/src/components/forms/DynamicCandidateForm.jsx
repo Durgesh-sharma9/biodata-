@@ -180,6 +180,12 @@ export function DynamicCandidateForm({
   };
 
   const onFormSubmit = (data) => {
+    console.log("PROFILE SUBMIT", data);
+    console.log("LOCATION SUBMIT", {
+      stateId: location.stateId,
+      cityId: location.cityId,
+      localityId: location.localityId
+    });
     onSubmit({
       ...data,
       expectedSalary: data.expectedSalary ? Number(data.expectedSalary) : undefined,
