@@ -87,7 +87,7 @@ export default function CandidateImport() {
   };
 
   return (
-    <div className="space-y-6 bg-slate-50/50 dark:bg-slate-950 min-h-screen p-6 max-w-7xl mx-auto antialiased animate-in fade-in duration-500">
+    <div className="space-y-6 bg-slate-50/50 dark:bg-slate-950 min-h-screen p-6 max-w-[1400px] mx-auto w-full antialiased animate-in fade-in duration-500">
       {/* Page Header Panel */}
       <div className="pb-5">
         <PageHeader 

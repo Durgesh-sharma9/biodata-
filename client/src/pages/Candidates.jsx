@@ -36,7 +36,9 @@ export function CandidateList({
     qualification: '',
     experience: '',
     state: '',
+    stateId: '',
     city: '',
+    cityId: '',
     locality: '',
     source: '',
     expectedSalaryMin: '',
@@ -44,8 +46,6 @@ export function CandidateList({
     sortBy: 'createdAt',
     sortOrder: 'desc',
   });
-  const [filterStateId, setFilterStateId] = useState('');
-  const [filterCityId, setFilterCityId] = useState('');
   const [deleteId, setDeleteId] = useState(null);
 
   const { data: settings } = useQuery({
@@ -68,23 +68,14 @@ export function CandidateList({
     queryFn: () => getLocalities().then((r) => r.data.data),
   });
 
-  // Popular suggestions for better UX
-  const popularStates = ['Rajasthan', 'Delhi', 'Maharashtra', 'Gujarat', 'Punjab'];
-  const popularCities = ['Jaipur', 'Delhi', 'Mumbai', 'Ahmedabad'];
-  
-  // Memoize options to prevent unnecessary recreations
   const stateOptions = useMemo(() => [
     { value: '', label: 'All States' },
-    ...states.filter(s => popularStates.includes(s.name)).map(s => ({ value: s._id, label: s.name })),
-    { value: 'separator', label: '──────────', disabled: true },
-    ...states.filter(s => !popularStates.includes(s.name)).map(s => ({ value: s._id, label: s.name }))
+    ...states.map(s => ({ value: s._id, label: s.name }))
   ], [states]);
 
   const cityOptions = useMemo(() => [
     { value: '', label: 'All Cities' },
-    ...filterCities.filter(c => popularCities.includes(c.name)).map(c => ({ value: c._id, label: c.name })),
-    { value: 'separator', label: '──────────', disabled: true },
-    ...filterCities.filter(c => !popularCities.includes(c.name)).map(c => ({ value: c._id, label: c.name }))
+    ...filterCities.map(c => ({ value: c._id, label: c.name }))
   ], [filterCities]);
 
   const localityOptions = useMemo(() => [
@@ -117,20 +108,6 @@ export function CandidateList({
     setFilters((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleStateFilterChange = (stateId, stateName) => {
-    setFilterStateId(stateId);
-    updateFilter('state', stateName);
-  };
-
-  const handleCityFilterChange = (cityId, cityName) => {
-    setFilterCityId(cityId);
-    updateFilter('city', cityName);
-  };
-
-  const handleLocalityFilterChange = (localityName) => {
-    updateFilter('locality', localityName);
-  };
-
   const handleSort = (field) => {
     setFilters((prev) => ({
       ...prev,
@@ -157,7 +134,7 @@ export function CandidateList({
   };
 
   return (
-    <div className="space-y-6 p-5 max-w-[1600px] mx-auto bg-[#f3f3f4] dark:bg-slate-950 text-slate-800 dark:text-white antialiased min-h-screen">
+    <div className="space-y-6 p-5 max-w-[1400px] mx-auto w-full bg-[#f3f3f4] dark:bg-slate-950 text-slate-800 dark:text-white antialiased min-h-screen">
       {/* Minimalist Page Header Panel Layout */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-5">
         <PageHeader
@@ -250,31 +227,37 @@ export function CandidateList({
 
             <SearchableSelect
               options={stateOptions}
-              value={filterStateId}
+              value={filters.stateId || ''}
               onChange={(v) => {
                 const state = states.find(s => s._id === v);
-                setFilterStateId(v);
-                updateFilter('state', state?.name || '');
+                setFilters(prev => ({ ...prev, stateId: v, state: state?.name || '' }));
+                setPage(1);
               }}
               placeholder="All States"
+              limit={Infinity}
             />
 
             <SearchableSelect
               options={cityOptions}
-              value={filterCityId}
+              value={filters.cityId || ''}
               onChange={(v) => {
                 const city = filterCities.find(c => c._id === v);
-                setFilterCityId(v);
-                updateFilter('city', city?.name || '');
+                setFilters(prev => ({ ...prev, cityId: v, city: city?.name || '' }));
+                setPage(1);
               }}
               placeholder="All Cities"
+              limit={100}
             />
 
             <SearchableSelect
               options={localityOptions}
-              value={filters.locality}
-              onChange={(v) => handleLocalityFilterChange(v)}
+              value={filters.locality || ''}
+              onChange={(v) => {
+                setFilters(prev => ({ ...prev, locality: v }));
+                setPage(1);
+              }}
               placeholder="All Localities"
+              limit={100}
             />
 
             <div className="relative">
@@ -312,14 +295,93 @@ export function CandidateList({
             </div>
           ) : (
             <>
-              <div className="w-full overflow-x-auto">
+              {/* Mobile Card Layout - Below md */}
+              <div className="md:hidden space-y-4">
+                {data?.data?.length === 0 ? (
+                  <div className="py-20 text-center">
+                    <div className="max-w-md mx-auto flex flex-col items-center justify-center space-y-3">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-950 border border-dashed border-slate-200 dark:border-slate-800 text-slate-400">
+                        <Users className="h-5 w-5" />
+                      </div>
+                      <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200">No candidates detected</h4>
+                      <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 max-w-sm mx-auto leading-relaxed">
+                        We couldn't find matches for your active parameters. Try expanding your filters or add a new record.
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  data?.data?.map((c) => (
+                    <Card key={c._id} className="border border-slate-200/60 bg-white shadow-sm dark:bg-slate-900 dark:border-slate-800">
+                      <CardContent className="p-4">
+                        <div className="flex items-center gap-4">
+                          {/* Photo */}
+                          <div className="shrink-0">
+                            {c.profilePhoto ? (
+                              <div className="h-12 w-12 rounded-full p-0.5 border border-slate-100 dark:border-slate-800 overflow-hidden">
+                                <img
+                                  src={c.profilePhoto}
+                                  alt={c.fullName}
+                                  className="h-full w-full rounded-full object-cover"
+                                />
+                              </div>
+                            ) : (
+                              <div className="h-12 w-12 rounded-full bg-slate-100 dark:bg-slate-950 text-slate-500 dark:text-slate-400 font-bold text-sm flex items-center justify-center border border-slate-200/40">
+                                {c.fullName?.charAt(0)?.toUpperCase() || '?'}
+                              </div>
+                            )}
+                          </div>
+                          
+                          {/* Name and Position */}
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="font-bold text-slate-800 dark:text-slate-200 text-sm truncate">{c.fullName}</span>
+                              {c.isLocked && (
+                                <Badge className="text-[10px] uppercase font-bold tracking-wider border-[#FE9496]/30 bg-[#FE9496]/5 text-[#FE9496] rounded-md px-1.5 py-0 shadow-none variant-outline shrink-0">
+                                  Locked
+                                </Badge>
+                              )}
+                            </div>
+                            <p className="text-slate-600 dark:text-slate-300 font-semibold text-xs truncate">{c.position}</p>
+                          </div>
+                          
+                          {/* Actions */}
+                          <div className="flex items-center gap-1 shrink-0">
+                            <Button variant="view" size="icon" asChild className="h-8 w-8">
+                              <Link to={`/candidates/${c._id}`}>
+                                <Eye className="h-4 w-4" />
+                              </Link>
+                            </Button>
+                            
+                            {c.canEdit && (
+                              <>
+                                <Button variant="edit" size="icon" asChild className="h-8 w-8">
+                                  <Link to={`/candidates/${c._id}/edit`}>
+                                    <Pencil className="h-4 w-4" />
+                                  </Link>
+                                </Button>
+                                
+                                <Button variant="delete" size="icon" onClick={() => setDeleteId(c._id)} className="h-8 w-8">
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))
+                )}
+              </div>
+
+              {/* Desktop Table Layout - md and above */}
+              <div className="hidden md:block w-full overflow-x-auto">
                 <Table>
                   <TableHeader className="text-slate-400 font-semibold text-[11px] uppercase tracking-wider">
                     <TableRow className="hover:bg-transparent border-none">
                       <TableHead className="w-[50px] md:w-[60px] text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider pl-4 md:pl-6 py-4">Photo</TableHead>
                       
                       <TableHead 
-                        className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-violet-600 dark:hover:text-violet-400 transition-colors select-none py-4 min-w-[100px] md:min-w-[140px]" 
+                        className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-violet-600 dark:hover:text-violet-400 transition-colors select-none py-4" 
                         onClick={() => handleSort('fullName')}
                       >
                         <div className="flex items-center gap-1.5">
@@ -329,7 +391,7 @@ export function CandidateList({
                       </TableHead>
                       
                       <TableHead 
-                        className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-violet-600 dark:hover:text-violet-400 transition-colors select-none py-4 min-w-[80px] md:min-w-[120px]" 
+                        className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-violet-600 dark:hover:text-violet-400 transition-colors select-none py-4" 
                         onClick={() => handleSort('position')}
                       >
                         <div className="flex items-center gap-1.5">
@@ -338,16 +400,16 @@ export function CandidateList({
                         </div>
                       </TableHead>
                       
-                      <TableHead className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider py-4 min-w-[100px] md:min-w-[140px] hidden sm:table-cell">
+                      <TableHead className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider py-4 hidden md:table-cell">
                         <div className="flex items-center gap-1.5"><MapPin className="h-3 w-3" /> Location</div>
                       </TableHead>
 
-                      <TableHead className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider py-4 min-w-[140px] hidden lg:table-cell">
+                      <TableHead className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider py-4 hidden lg:table-cell">
                         <div className="flex items-center gap-1.5"><GraduationCap className="h-3 w-3" /> Qualification</div>
                       </TableHead>
                       
                       <TableHead 
-                        className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-violet-600 dark:hover:text-violet-400 transition-colors select-none py-4 min-w-[80px] md:min-w-[100px] hidden sm:table-cell" 
+                        className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-violet-600 dark:hover:text-violet-400 transition-colors select-none py-4 hidden md:table-cell" 
                         onClick={() => handleSort('experienceYears')}
                       >
                         <div className="flex items-center gap-1.5">
@@ -357,7 +419,7 @@ export function CandidateList({
                       </TableHead>
                       
                       <TableHead
-                        className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-violet-600 dark:hover:text-violet-400 transition-colors select-none py-4 min-w-[80px] md:min-w-[120px] hidden sm:table-cell"
+                        className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-violet-600 dark:hover:text-violet-400 transition-colors select-none py-4 hidden md:table-cell"
                         onClick={() => handleSort('expectedSalary')}
                       >
                         <div className="flex items-center gap-1.5">
@@ -367,7 +429,7 @@ export function CandidateList({
                       </TableHead>
                       
                       <TableHead 
-                        className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-violet-600 dark:hover:text-violet-400 transition-colors select-none py-4 min-w-[100px] hidden md:table-cell" 
+                        className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-violet-600 dark:hover:text-violet-400 transition-colors select-none py-4 hidden lg:table-cell" 
                         onClick={() => handleSort('createdAt')}
                       >
                         <div className="flex items-center gap-1.5">
@@ -430,7 +492,7 @@ export function CandidateList({
                           
                           <TableCell className="text-slate-600 dark:text-slate-300 font-semibold text-sm py-4 truncate">{c.position}</TableCell>
                           
-                          <TableCell className="text-slate-500 dark:text-slate-400 font-semibold text-xs py-4 truncate">
+                          <TableCell className="text-slate-500 dark:text-slate-400 font-semibold text-xs py-4 truncate hidden md:table-cell">
                             {[c.city, c.locality].filter(Boolean).join(', ') || '—'}
                           </TableCell>
 
@@ -438,13 +500,13 @@ export function CandidateList({
                             {c.qualifications?.join(', ') || '—'}
                           </TableCell>
                           
-                          <TableCell className="py-4">
+                          <TableCell className="py-4 hidden md:table-cell">
                             <Badge className="border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl text-xs font-bold px-2 py-0.5 variant-outline shadow-none">
                               {c.experienceYears} yrs
                             </Badge>
                           </TableCell>
                           
-                          <TableCell className="font-bold text-slate-800 dark:text-slate-200 text-sm py-4">
+                          <TableCell className="font-bold text-slate-800 dark:text-slate-200 text-sm py-4 hidden md:table-cell">
                             {c.expectedSalary ? (
                               <Badge className="border-[#1BCFB4]/30 bg-[#1BCFB4]/5 text-[#1BCFB4] text-xs font-bold px-2.5 py-1 rounded-xl variant-outline shadow-none">
                                 ₹{c.expectedSalary.toLocaleString('en-IN')}
@@ -454,7 +516,7 @@ export function CandidateList({
                             )}
                           </TableCell>
                           
-                          <TableCell className="text-slate-500 dark:text-slate-400 font-semibold text-xs py-4 hidden md:table-cell">
+                          <TableCell className="text-slate-500 dark:text-slate-400 font-semibold text-xs py-4 hidden lg:table-cell">
                             {formatDate(c.createdAt)}
                           </TableCell>
                           

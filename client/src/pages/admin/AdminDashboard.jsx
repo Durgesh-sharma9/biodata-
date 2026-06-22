@@ -17,7 +17,7 @@ export default function AdminDashboard() {
 
   if (isLoading) {
     return (
-      <div className="space-y-6 p-6 md:p-8 max-w-7xl mx-auto animate-pulse">
+      <div className="space-y-6 p-6 md:p-8 max-w-[1400px] mx-auto w-full animate-pulse">
         <div className="h-9 bg-slate-200 dark:bg-slate-800 rounded-xl w-48" />
         <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
           {[1, 2, 3, 4].map((n) => (
@@ -29,7 +29,7 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="space-y-8 p-6 md:p-8 max-w-7xl mx-auto antialiased bg-[#f3f3f4] dark:bg-slate-950 min-h-screen animate-in fade-in duration-500">
+    <div className="space-y-8 p-6 md:p-8 max-w-[1400px] mx-auto w-full antialiased bg-[#f3f3f4] dark:bg-slate-950 min-h-screen animate-in fade-in duration-500">
       
       {/* Upper Header Frame */}
       <div className="flex items-center justify-between border-b border-slate-200/50 pb-5 dark:border-slate-900">

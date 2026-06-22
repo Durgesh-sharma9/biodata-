@@ -31,7 +31,7 @@ export default function ApplicantDashboard() {
   ];
 
   return (
-    <div className="space-y-6 p-6 max-w-7xl mx-auto bg-slate-50/50 dark:bg-slate-950 min-h-screen animate-in fade-in duration-500">
+    <div className="space-y-6 p-6 max-w-[1400px] mx-auto w-full bg-slate-50/50 dark:bg-slate-950 min-h-screen animate-in fade-in duration-500">
       <PageHeader
         title="Applicant Dashboard"
         description="Manage your profile, requests, and subscription"

@@ -33,7 +33,7 @@ export default function PlatformStats() {
   // Flat Minimal Loading Skeleton Shimmer State
   if (isLoading) {
     return (
-      <div className="space-y-6 p-5 animate-pulse max-w-7xl mx-auto">
+      <div className="space-y-6 p-5 animate-pulse max-w-[1400px] mx-auto w-full">
         <div className="space-y-2">
           <div className="h-7 bg-slate-200 dark:bg-slate-800 rounded-xl w-64" />
           <div className="h-4 bg-slate-200/60 dark:bg-slate-800/60 rounded-xl w-96" />
@@ -54,7 +54,7 @@ export default function PlatformStats() {
   const totalSchoolsCount = data?.totalSchools || 1;
 
   return (
-    <div className="space-y-6 p-6 max-w-7xl mx-auto antialiased text-slate-800 dark:text-white bg-slate-50/50 dark:bg-slate-950 min-h-screen animate-in fade-in duration-500">
+    <div className="space-y-6 p-6 max-w-[1400px] mx-auto w-full antialiased text-slate-800 dark:text-white bg-slate-50/50 dark:bg-slate-950 min-h-screen animate-in fade-in duration-500">
       
       {/* Minimalist Page Header Panel */}
       <div className="border-b border-slate-200/60 dark:border-slate-800 pb-5">

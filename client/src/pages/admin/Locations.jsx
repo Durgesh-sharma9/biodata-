@@ -94,7 +94,7 @@ export default function Locations() {
   });
 
   return (
-    <div className="space-y-6 p-6 max-w-7xl mx-auto bg-slate-50/50 dark:bg-slate-950 text-slate-800 dark:text-white antialiased min-h-screen animate-in fade-in duration-500">
+    <div className="space-y-6 p-6 max-w-[1400px] mx-auto w-full bg-slate-50/50 dark:bg-slate-950 text-slate-800 dark:text-white antialiased min-h-screen animate-in fade-in duration-500">
       {/* Page Header Panel */}
       <div className="border-b border-slate-200/60 dark:border-slate-800 pb-5">
         <PageHeader 

@@ -65,7 +65,7 @@ export default function Plans() {
   };
 
   return (
-    <div className="space-y-6 p-4 md:p-6 max-w-7xl mx-auto bg-[#f3f3f4] dark:bg-slate-950 text-slate-800 dark:text-white antialiased min-h-screen">
+    <div className="space-y-6 p-4 md:p-6 max-w-[1400px] mx-auto w-full bg-[#f3f3f4] dark:bg-slate-950 text-slate-800 dark:text-white antialiased min-h-screen">
       
       {/* Page Header Panel Wrapper */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-5">

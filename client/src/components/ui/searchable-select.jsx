@@ -10,7 +10,8 @@ export function SearchableSelect({
   onChange, 
   placeholder = 'Select...', 
   disabled = false,
-  className 
+  className,
+  limit = 50
 }) {
   const [open, setOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -22,7 +23,7 @@ export function SearchableSelect({
   const filteredOptions = useMemo(() =>
     options.filter(option =>
       !option.disabled && option.label.toLowerCase().includes(searchTerm.toLowerCase())
-    ).slice(0, 50), [options, searchTerm]);
+    ).slice(0, limit), [options, searchTerm, limit]);
 
   const handleSelect = (option) => {
     onChange(option.value);
@@ -56,9 +57,12 @@ export function SearchableSelect({
     }
   }, [open]);
 
+  const dropdownRef = useRef(null);
+
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (triggerRef.current && !triggerRef.current.contains(event.target)) {
+      if (triggerRef.current && !triggerRef.current.contains(event.target) && 
+          dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setOpen(false);
       }
     };
@@ -109,6 +113,7 @@ export function SearchableSelect({
       {open && !disabled &&
         createPortal(
           <div
+            ref={dropdownRef}
             className="fixed z-[9999] rounded-xl border border-none bg-white p-1.5 shadow-lg animate-in fade-in-0 zoom-in-95 duration-200 origin-top dark:bg-slate-900"
             style={{
               top: `${dropdownPosition.top}px`,

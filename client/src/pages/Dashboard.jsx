@@ -31,7 +31,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="space-y-7 max-w-[1600px] mx-auto p-6 antialiased text-[#343a40] bg-[#f3f3f4] min-h-screen">
+    <div className="space-y-7 max-w-[1400px] mx-auto w-full p-6 antialiased text-[#343a40] bg-[#f3f3f4] min-h-screen">
       
       {/* Top Breadcrumb & Page Info Row */}
       <div className="flex items-center justify-between bg-white px-5 py-4 rounded-xl shadow-sm border-none">

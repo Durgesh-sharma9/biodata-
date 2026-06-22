@@ -14,7 +14,7 @@ export function ApplicantLayout() {
         {/* Main Application Inner Canvas Shell */}
         <main className="flex-1 overflow-y-auto p-5 sm:p-6 lg:p-6">
           {/* Inner Content Safe-Frame Guard */}
-          <div className="mx-auto max-w-7xl w-full h-full">
+          <div className="mx-auto max-w-[1400px] w-full h-full">
             <Outlet />
           </div>
         </main>

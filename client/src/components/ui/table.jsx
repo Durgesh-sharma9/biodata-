@@ -2,7 +2,7 @@ import * as React from 'react';
 import { cn } from '@/lib/utils';
 
 const Table = React.forwardRef(({ className, ...props }, ref) => (
-  <div className="relative w-full rounded-2xl border border-slate-200/60 bg-white shadow-sm custom-scrollbar dark:bg-slate-900 dark:border-slate-800/80">
+  <div className="relative w-full overflow-x-auto rounded-2xl border border-slate-200/60 bg-white shadow-sm custom-scrollbar dark:bg-slate-900 dark:border-slate-800/80">
     <table ref={ref} className={cn('w-full caption-bottom text-sm border-collapse text-slate-700 dark:text-slate-300 antialiased', className)} {...props} />
   </div>
 ));

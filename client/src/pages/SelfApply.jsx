@@ -52,7 +52,7 @@ export default function SelfApply() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f3f3f4] p-5 antialiased text-slate-800 flex flex-col justify-center relative dark:bg-slate-950 max-w-[1600px] mx-auto">
+    <div className="min-h-screen bg-[#f3f3f4] p-5 antialiased text-slate-800 flex flex-col justify-center relative dark:bg-slate-950 max-w-[1400px] mx-auto w-full">
       <div className="mx-auto max-w-2xl w-full relative space-y-6">
         
         {/* Page Header Panels Layout Layout */}
