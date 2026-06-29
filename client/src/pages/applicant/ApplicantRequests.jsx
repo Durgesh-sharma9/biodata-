@@ -190,6 +190,7 @@ export default function ApplicantRequests() {
               <div>
                 <h3 className="font-bold text-slate-800 dark:text-slate-200 mb-2">Request-Based Plans</h3>
                 <div className="space-y-2">
+                  {console.log("PURCHASE PLAN DIALOG - showPayment:", showPayment, "plans:", plans, "requestBasedPlans:", requestBasedPlans)}
                   {requestBasedPlans.map((plan) => (
                     <Card key={plan._id} className="border border-slate-200/60 bg-slate-50/50 dark:bg-slate-900/30">
                       <CardHeader className="pb-2">

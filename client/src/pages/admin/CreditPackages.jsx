@@ -155,6 +155,7 @@ export default function CreditPackages() {
             </DialogDescription>
           </DialogHeader>
           <DialogBody className="pt-4">
+            {console.log("CREDIT PACKAGES DIALOG - dialogOpen:", dialogOpen, "form:", form)}
             <form
               onSubmit={(e) => {
                 e.preventDefault();
