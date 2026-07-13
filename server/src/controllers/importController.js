@@ -1,7 +1,7 @@
 import XLSX from 'xlsx';
 import { parse } from 'csv-parse/sync';
 import Candidate from '../models/Candidate.js';
-import Locality from '../models/Locality.js';
+// Locality master removed
 import Position from '../models/Position.js';
 import Subject from '../models/Subject.js';
 import Qualification from '../models/Qualification.js';
@@ -10,6 +10,7 @@ import State from '../models/State.js';
 import City from '../models/City.js';
 import { ApiError } from '../utils/ApiError.js';
 import { catchAsync } from '../utils/catchAsync.js';
+import { buildLocationPayload } from '../utils/location.js';
 
 const mapRowToCandidate = async (row, masterData) => {
   const fullName = row.fullName || row.name || row['Full Name'] || row['Name'];
@@ -28,7 +29,7 @@ const mapRowToCandidate = async (row, masterData) => {
 
   let state = row.state || row.State || '';
   let city = row.city || row.City || '';
-  let locality = row.locality || row.Locality || '';
+  let area = row.area || row.Area || row.locality || row.Locality || '';
 
   // Validate state if provided
   if (state) {
@@ -46,13 +47,7 @@ const mapRowToCandidate = async (row, masterData) => {
     }
   }
 
-  // Validate locality if provided
-  if (locality) {
-    const localityExists = await Locality.findOne({ name: new RegExp(`^${locality.trim()}$`, 'i') });
-    if (!localityExists) {
-      throw new Error(`Locality "${locality}" not found in master data`);
-    }
-  }
+  // Area is free-text in new model; no master validation
 
   // Validate subjects if provided
   let qualifications = [];
@@ -105,15 +100,7 @@ const mapRowToCandidate = async (row, masterData) => {
     }
   }
 
-  if (locality && !city) {
-    const loc = await Locality.findOne({ name: new RegExp(`^${locality.trim()}$`, 'i') });
-    if (loc) {
-      const cityDoc = await City.findById(loc.cityId);
-      const stateDoc = await State.findById(loc.stateId);
-      city = cityDoc?.name || '';
-      state = stateDoc?.name || '';
-    }
-  }
+  // If area provided but no city, we cannot infer city from master data (area is free-text)
 
   const candidateData = {
     fullName: String(fullName).trim(),
@@ -128,11 +115,20 @@ const mapRowToCandidate = async (row, masterData) => {
     expectedSalary: row.expectedSalary || row['ExpectedSalary'] ? Number(row.expectedSalary || row['ExpectedSalary']) : undefined,
     state,
     city,
-    locality,
+    area,
     source: 'SUPER_ADMIN_IMPORT',
     ownerSchoolId: null,
     schoolId: null,
   };
+
+  const locationPayload = await buildLocationPayload({
+    area,
+    address: candidateData.address,
+    state: state || '',
+    city: city || '',
+  });
+
+  Object.assign(candidateData, locationPayload);
 
   // Add position-specific fields based on position
   if (position === 'Teacher') {
@@ -211,7 +207,7 @@ const mapRowToCandidate = async (row, masterData) => {
 };
 
 export const importSingleCandidate = catchAsync(async (req, res) => {
-  const { localityId, ...body } = req.body;
+  const body = req.body;
 
   if (!body.fullName || !body.mobile || !body.position) {
     throw new ApiError(400, 'Full name, mobile, and position are required');
@@ -223,14 +219,7 @@ export const importSingleCandidate = catchAsync(async (req, res) => {
     throw new ApiError(400, `Position "${body.position}" not found in master data`);
   }
 
-  if (localityId) {
-    const { resolveLocationFromLocalityId } = await import('../utils/locationHelper.js');
-    const loc = await resolveLocationFromLocalityId(localityId);
-    body.state = loc.state;
-    body.city = loc.city;
-    body.locality = loc.locality;
-  }
-
+  // area is accepted as free-text in import payload
   const candidate = await Candidate.create({
     ...body,
     mobile: body.mobile.trim(),

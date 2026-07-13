@@ -3,8 +3,9 @@ import School from '../models/School.js';
 import Candidate from '../models/Candidate.js';
 import { ApiError } from '../utils/ApiError.js';
 import { catchAsync } from '../utils/catchAsync.js';
-import { resolveLocationFromLocalityId } from '../utils/locationHelper.js';
+// Locality master removed; area is free-text
 import { generateSchoolSlug } from '../utils/slugify.js';
+import { buildLocationPayload } from '../utils/location.js';
 
 const getClientUrl = () => process.env.CLIENT_URL || 'http://localhost:5173';
 
@@ -59,8 +60,28 @@ export const submitApplication = catchAsync(async (req, res) => {
   const school = await School.findOne({ slug: req.params.slug, isActive: true });
   if (!school) throw new ApiError(404, 'Application link not found');
 
-  const { fullName, mobile, email, address, position, qualifications, subjects, classesCanTeach, vehicleTypes, experienceYears, expectedSalary, localityId, documents, profileSharingConsent, contactConsent } =
-    req.body;
+  const {
+    fullName,
+    mobile,
+    email,
+    address,
+    position,
+    qualifications,
+    subjects,
+    classesCanTeach,
+    vehicleTypes,
+    experienceYears,
+    expectedSalary,
+    area,
+    stateId,
+    cityId,
+    latitude,
+    longitude,
+    workingRadius,
+    documents,
+    profileSharingConsent,
+    contactConsent,
+  } = req.body;
 
   if (!fullName || !mobile || !position) {
     throw new ApiError(400, 'Full name, mobile, and position are required');
@@ -70,10 +91,15 @@ export const submitApplication = catchAsync(async (req, res) => {
     throw new ApiError(400, 'Consent is required to submit your application');
   }
 
-  let locationFields = {};
-  if (localityId) {
-    locationFields = await resolveLocationFromLocalityId(localityId);
-  }
+  const locationFields = await buildLocationPayload({
+    stateId,
+    cityId,
+    area,
+    address,
+    latitude,
+    longitude,
+    workingRadius,
+  });
 
   const candidate = await Candidate.create({
     fullName,
@@ -95,7 +121,7 @@ export const submitApplication = catchAsync(async (req, res) => {
     schoolId: school._id,
     state: locationFields.state,
     city: locationFields.city,
-    locality: locationFields.locality,
+    area: locationFields.area,
   });
 
   res.status(201).json({

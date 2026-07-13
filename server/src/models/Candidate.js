@@ -42,6 +42,9 @@ const candidateSchema = new mongoose.Schema(
     gender: { type: String, trim: true },
     dob: { type: Date },
     address: { type: String, trim: true },
+    latitude: { type: Number },
+    longitude: { type: Number },
+    workingRadius: { type: Number, min: 0 },
     position: { type: String, required: true, trim: true },
     profilePhoto: { type: String, trim: true },
     qualifications: [{ type: String, trim: true }],
@@ -52,11 +55,10 @@ const candidateSchema = new mongoose.Schema(
     expectedSalary: { type: Number, min: 0 },
     state: { type: String, trim: true, index: true },
     city: { type: String, trim: true, index: true },
-    locality: { type: String, trim: true, index: true },
+    area: { type: String, trim: true, index: true },
+    // `address` field already exists above as the full address textarea
     stateId: { type: mongoose.Schema.Types.ObjectId, ref: 'State', default: null },
     cityId: { type: mongoose.Schema.Types.ObjectId, ref: 'City', default: null },
-    localityId: { type: mongoose.Schema.Types.ObjectId, ref: 'Locality', default: null },
-    localityCluster: { type: String, trim: true, index: true },
     profileSharingConsent: { type: Boolean, default: false },
     contactConsent: { type: Boolean, default: false },
     notes: { type: String, trim: true },
@@ -109,7 +111,7 @@ const candidateSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-candidateSchema.index({ ownerSchoolId: 1, mobile: 1 });
+  candidateSchema.index({ ownerSchoolId: 1, mobile: 1 });
 candidateSchema.index({ fullName: 1 });
 candidateSchema.index({ position: 1 });
 candidateSchema.index({ createdAt: -1 });

@@ -100,7 +100,13 @@ export const createSchool = catchAsync(async (req, res) => {
 });
 
 export const updateSchool = catchAsync(async (req, res) => {
-  const school = await School.findByIdAndUpdate(req.params.id, req.body, {
+  const payload = {
+    ...req.body,
+    latitude: req.body.latitude === '' ? undefined : req.body.latitude,
+    longitude: req.body.longitude === '' ? undefined : req.body.longitude,
+  };
+
+  const school = await School.findByIdAndUpdate(req.params.id, payload, {
     new: true,
     runValidators: true,
   });

@@ -62,16 +62,12 @@ export const deleteCreditPackage = (id) => api.delete(`/credit-packages/${id}`);
 export const getStates = () => api.get('/locations/states');
 export const getCities = (stateId) =>
   api.get('/locations/cities', { params: stateId ? { stateId } : {} });
-export const getLocalities = (params) => api.get('/locations/localities', { params });
 export const createState = (data) => api.post('/locations/states', data);
 export const createCity = (data) => api.post('/locations/cities', data);
-export const createLocality = (data) => api.post('/locations/localities', data);
 export const updateState = (id, data) => api.put(`/locations/states/${id}`, data);
 export const updateCity = (id, data) => api.put(`/locations/cities/${id}`, data);
-export const updateLocality = (id, data) => api.put(`/locations/localities/${id}`, data);
 export const deleteState = (id) => api.delete(`/locations/states/${id}`);
 export const deleteCity = (id) => api.delete(`/locations/cities/${id}`);
-export const deleteLocality = (id) => api.delete(`/locations/localities/${id}`);
 export const importIndiaLocations = () => api.post('/locations/import-india');
 
 // Credits

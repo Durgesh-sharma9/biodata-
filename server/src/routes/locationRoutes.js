@@ -8,10 +8,6 @@ import {
   createCity,
   updateCity,
   deleteCity,
-  getLocalities,
-  createLocality,
-  updateLocality,
-  deleteLocality,
   importIndiaLocations,
 } from '../controllers/locationController.js';
 import { protect, authorize } from '../middleware/auth.js';
@@ -20,7 +16,6 @@ const router = Router();
 
 router.get('/states', getStates);
 router.get('/cities', getCities);
-router.get('/localities', getLocalities);
 
 router.post('/states', protect, authorize('super_admin'), createState);
 router.put('/states/:id', protect, authorize('super_admin'), updateState);
@@ -30,9 +25,7 @@ router.post('/cities', protect, authorize('super_admin'), createCity);
 router.put('/cities/:id', protect, authorize('super_admin'), updateCity);
 router.delete('/cities/:id', protect, authorize('super_admin'), deleteCity);
 
-router.post('/localities', protect, authorize('super_admin'), createLocality);
-router.put('/localities/:id', protect, authorize('super_admin'), updateLocality);
-router.delete('/localities/:id', protect, authorize('super_admin'), deleteLocality);
+// Locality routes removed — area is now free-text
 
 router.post('/import-india', protect, authorize('super_admin'), importIndiaLocations);
 

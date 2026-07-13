@@ -13,21 +13,21 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 
-const POSITION_TEMPLATES = {
-  Teacher: ['Name', 'Mobile', 'Email', 'State', 'City', 'Locality', 'Subjects', 'Classes', 'Qualification', 'Experience', 'ExpectedSalary'],
-  Driver: ['Name', 'Mobile', 'Email', 'State', 'City', 'Locality', 'VehicleTypes', 'Experience', 'ExpectedSalary'],
-  Accountant: ['Name', 'Mobile', 'Email', 'State', 'City', 'Locality', 'TallyKnowledge', 'GSTKnowledge', 'Experience', 'ExpectedSalary'],
-  Receptionist: ['Name', 'Mobile', 'Email', 'State', 'City', 'Locality', 'LanguagesKnown', 'Experience', 'ExpectedSalary'],
-  Clerk: ['Name', 'Mobile', 'Email', 'State', 'City', 'Locality', 'TypingSpeed', 'Experience', 'ExpectedSalary'],
-  Librarian: ['Name', 'Mobile', 'Email', 'State', 'City', 'Locality', 'LibraryManagementExperience', 'Experience', 'ExpectedSalary'],
-  'Lab Assistant': ['Name', 'Mobile', 'Email', 'State', 'City', 'Locality', 'LabType', 'LabExperience', 'Experience', 'ExpectedSalary'],
-  'Sports Coach': ['Name', 'Mobile', 'Email', 'State', 'City', 'Locality', 'SportsSpecialization', 'CoachingCertificates', 'CoachingExperience', 'Experience', 'ExpectedSalary'],
-  'Security Guard': ['Name', 'Mobile', 'Email', 'State', 'City', 'Locality', 'SecurityExperience', 'ExArmy', 'NightShiftAvailable', 'Experience', 'ExpectedSalary'],
-  Cleaner: ['Name', 'Mobile', 'Email', 'State', 'City', 'Locality', 'CleaningExperience', 'SchoolExperience', 'Experience', 'ExpectedSalary'],
+  const POSITION_TEMPLATES = {
+  Teacher: ['Name', 'Mobile', 'Email', 'State', 'City', 'Area', 'Subjects', 'Classes', 'Qualification', 'Experience', 'ExpectedSalary'],
+  Driver: ['Name', 'Mobile', 'Email', 'State', 'City', 'Area', 'VehicleTypes', 'Experience', 'ExpectedSalary'],
+  Accountant: ['Name', 'Mobile', 'Email', 'State', 'City', 'Area', 'TallyKnowledge', 'GSTKnowledge', 'Experience', 'ExpectedSalary'],
+  Receptionist: ['Name', 'Mobile', 'Email', 'State', 'City', 'Area', 'LanguagesKnown', 'Experience', 'ExpectedSalary'],
+  Clerk: ['Name', 'Mobile', 'Email', 'State', 'City', 'Area', 'TypingSpeed', 'Experience', 'ExpectedSalary'],
+  Librarian: ['Name', 'Mobile', 'Email', 'State', 'City', 'Area', 'LibraryManagementExperience', 'Experience', 'ExpectedSalary'],
+  'Lab Assistant': ['Name', 'Mobile', 'Email', 'State', 'City', 'Area', 'LabType', 'LabExperience', 'Experience', 'ExpectedSalary'],
+  'Sports Coach': ['Name', 'Mobile', 'Email', 'State', 'City', 'Area', 'SportsSpecialization', 'CoachingCertificates', 'CoachingExperience', 'Experience', 'ExpectedSalary'],
+  'Security Guard': ['Name', 'Mobile', 'Email', 'State', 'City', 'Area', 'SecurityExperience', 'ExArmy', 'NightShiftAvailable', 'Experience', 'ExpectedSalary'],
+  Cleaner: ['Name', 'Mobile', 'Email', 'State', 'City', 'Area', 'CleaningExperience', 'SchoolExperience', 'Experience', 'ExpectedSalary'],
 };
 
-function downloadTemplate(position) {
-  const columns = POSITION_TEMPLATES[position] || ['Name', 'Mobile', 'Email', 'State', 'City', 'Locality', 'Position', 'Experience', 'ExpectedSalary'];
+  function downloadTemplate(position) {
+  const columns = POSITION_TEMPLATES[position] || ['Name', 'Mobile', 'Email', 'State', 'City', 'Area', 'Position', 'Experience', 'ExpectedSalary'];
   const csvContent = columns.join(',') + '\n';
   const blob = new Blob([csvContent], { type: 'text/csv' });
   const url = window.URL.createObjectURL(blob);
@@ -125,7 +125,10 @@ export default function CandidateImport() {
                     ...form,
                     experienceYears: Number(form.experienceYears),
                     expectedSalary: form.expectedSalary ? Number(form.expectedSalary) : undefined,
-                    localityId: location.localityId,
+                    stateId: location.stateId,
+                    cityId: location.cityId,
+                    area: location.area,
+                    address: location.address,
                   });
                 }}
                 className="space-y-6"

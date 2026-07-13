@@ -2,7 +2,6 @@ import Position from '../models/Position.js';
 import Subject from '../models/Subject.js';
 import Qualification from '../models/Qualification.js';
 import Class from '../models/Class.js';
-import Locality from '../models/Locality.js';
 import { ApiError } from '../utils/ApiError.js';
 
 // Position CRUD

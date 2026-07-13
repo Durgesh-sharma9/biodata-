@@ -211,10 +211,11 @@ export default function CandidateProfile() {
               {candidate.dob && <DetailRow label="Date of Birth" value={new Date(candidate.dob).toLocaleDateString()} />}
               {!isContactHidden && <DetailRow label="Mobile" value={candidate.mobile} />}
               {!isContactHidden && <DetailRow label="Email" value={candidate.email} />}
-              {!isContactHidden && <DetailRow label="Address" value={candidate.address} />}
-              <DetailRow label="State" value={candidate.state} />
-              <DetailRow label="City" value={candidate.city} />
-              <DetailRow label="Locality" value={candidate.locality} />
+              {[{ label: 'State', value: candidate.state }, { label: 'City', value: candidate.city }, { label: 'Area', value: candidate.area }, { label: 'Address', value: candidate.address }]
+                .filter((item) => item.value)
+                .map((item) => (
+                  <DetailRow key={item.label} label={item.label} value={item.value} />
+                ))}
             </dl>
           </CardContent>
         </Card>

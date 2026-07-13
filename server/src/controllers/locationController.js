@@ -1,6 +1,5 @@
 import State from '../models/State.js';
 import City from '../models/City.js';
-import Locality from '../models/Locality.js';
 import { ApiError } from '../utils/ApiError.js';
 import { catchAsync } from '../utils/catchAsync.js';
 import { State as CSCState, City as CSCCity } from 'country-state-city';
@@ -32,7 +31,6 @@ export const deleteState = catchAsync(async (req, res) => {
   if (!state) throw new ApiError(404, 'State not found');
   await Promise.all([
     City.deleteMany({ stateId: state._id }),
-    Locality.deleteMany({ stateId: state._id }),
   ]);
   res.json({ success: true, message: 'State deleted' });
 });
@@ -62,52 +60,10 @@ export const updateCity = catchAsync(async (req, res) => {
 export const deleteCity = catchAsync(async (req, res) => {
   const city = await City.findByIdAndDelete(req.params.id);
   if (!city) throw new ApiError(404, 'City not found');
-  await Locality.deleteMany({ cityId: city._id });
   res.json({ success: true, message: 'City deleted' });
 });
 
-export const getLocalities = catchAsync(async (req, res) => {
-  const filter = {};
-  if (req.query.cityId) filter.cityId = req.query.cityId;
-  if (req.query.stateId) filter.stateId = req.query.stateId;
-
-  const localities = await Locality.find(filter)
-    .populate('cityId', 'name')
-    .populate('stateId', 'name')
-    .sort({ name: 1 });
-
-  res.json({ success: true, data: localities });
-});
-
-export const createLocality = catchAsync(async (req, res) => {
-  const { name, cityId } = req.body;
-  if (!name || !cityId) throw new ApiError(400, 'Locality name and city are required');
-
-  const city = await City.findById(cityId);
-  if (!city) throw new ApiError(400, 'Invalid city');
-
-  const locality = await Locality.create({
-    name: name.trim(),
-    cityId,
-    stateId: city.stateId,
-  });
-  res.status(201).json({ success: true, data: locality });
-});
-
-export const updateLocality = catchAsync(async (req, res) => {
-  const locality = await Locality.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
-  });
-  if (!locality) throw new ApiError(404, 'Locality not found');
-  res.json({ success: true, data: locality });
-});
-
-export const deleteLocality = catchAsync(async (req, res) => {
-  const locality = await Locality.findByIdAndDelete(req.params.id);
-  if (!locality) throw new ApiError(404, 'Locality not found');
-  res.json({ success: true, message: 'Locality deleted' });
-});
+// Locality master removed — operations for states and cities remain.
 
 export const importIndiaLocations = catchAsync(async (req, res) => {
   const indianStates = CSCState.getStatesOfCountry('IN');

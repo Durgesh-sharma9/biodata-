@@ -19,6 +19,7 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import { formatDate } from '@/lib/utils';
+import { LocationSelect } from '@/components/common/LocationSelect';
 
 const emptyForm = {
   schoolName: '',
@@ -38,6 +39,7 @@ export default function Schools() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editSchool, setEditSchool] = useState(null);
   const [form, setForm] = useState(emptyForm);
+  const [location, setLocation] = useState({});
 
   const { data, isLoading } = useQuery({
     queryKey: ['schools', page, search, status],
@@ -76,13 +78,22 @@ export default function Schools() {
       startDate: school.startDate ? school.startDate.split('T')[0] : '',
       expiryDate: school.expiryDate ? school.expiryDate.split('T')[0] : '',
     });
+    setLocation({
+      stateId: school.stateId || '',
+      cityId: school.cityId || '',
+      area: school.area || '',
+      address: school.address || '',
+      latitude: school.latitude ?? '',
+      longitude: school.longitude ?? '',
+      workingRadius: school.workingRadius ?? '',
+    });
     setDialogOpen(true);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (editSchool) {
-      updateMutation.mutate({ id: editSchool._id, data: form });
+      updateMutation.mutate({ id: editSchool._id, data: { ...form, ...location } });
     }
   };
 
@@ -366,6 +377,10 @@ export default function Schools() {
                 <div className="space-y-1.5 md:col-span-2">
                   <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">License Termination Expiry Date</Label>
                   <Input type="date" value={form.expiryDate} onChange={(e) => setForm({ ...form, expiryDate: e.target.value })} className="h-11 border-slate-200 rounded-xl dark:bg-slate-800 dark:border-slate-700 text-sm" />
+                </div>
+
+                <div className="md:col-span-2">
+                  <LocationSelect value={location} onChange={setLocation} />
                 </div>
                 
               </div>

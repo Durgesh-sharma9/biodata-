@@ -4,13 +4,10 @@ import { Trash2, MapPin, Plus, Eye, Navigation, Globe, Building2, Layers, Compas
 import {
   getStates,
   getCities,
-  getLocalities,
   createState,
   createCity,
-  createLocality,
   deleteState,
   deleteCity,
-  deleteLocality,
   importIndiaLocations,
 } from '@/lib/api';
 import { PageHeader } from '@/components/common/PageHeader';
@@ -29,8 +26,6 @@ export default function Locations() {
   const [stateName, setStateName] = useState('');
   const [cityName, setCityName] = useState('');
   const [cityStateId, setCityStateId] = useState('');
-  const [localityName, setLocalityName] = useState('');
-  const [localityCityId, setLocalityCityId] = useState('');
   const [viewCityId, setViewCityId] = useState('');
   const [importDialogOpen, setImportDialogOpen] = useState(false);
 
@@ -44,16 +39,11 @@ export default function Locations() {
     queryFn: () => getCities().then((r) => r.data.data),
   });
 
-  const { data: cityLocalities = [], isFetching: localitiesFetching } = useQuery({
-    queryKey: ['localities', viewCityId],
-    queryFn: () => getLocalities({ cityId: viewCityId }).then((r) => r.data.data),
-    enabled: !!viewCityId,
-  });
+  
 
   const invalidate = () => {
     queryClient.invalidateQueries({ queryKey: ['states'] });
     queryClient.invalidateQueries({ queryKey: ['cities-all'] });
-    queryClient.invalidateQueries({ queryKey: ['localities'] });
   };
 
   const stateMutation = useMutation({
@@ -73,11 +63,8 @@ export default function Locations() {
   });
 
   const localityMutation = useMutation({
-    mutationFn: createLocality,
-    onSuccess: () => {
-      invalidate();
-      setLocalityName('');
-    },
+    mutationFn: async () => {},
+    onSuccess: () => {},
   });
 
   const importMutation = useMutation({
@@ -99,7 +86,7 @@ export default function Locations() {
       <div className="border-b border-slate-200/60 dark:border-slate-800 pb-5">
         <PageHeader 
           title="Location Management" 
-          description="Configure and audit the structural region parameters spanning State → City → Locality networks." 
+          description="Configure and audit the structural region parameters spanning State → City networks." 
         />
       </div>
 
@@ -120,13 +107,7 @@ export default function Locations() {
             <Building2 className="h-4 w-4" />
             Cities ({cities.length})
           </TabsTrigger>
-          <TabsTrigger 
-            value="localities" 
-            className="inline-flex items-center gap-2 rounded-lg px-5 py-2 text-sm font-semibold tracking-wide transition-all data-[state=active]:bg-purple-50 data-[state=active]:text-purple-600 active:scale-[0.97]"
-          >
-            <Navigation className="h-4 w-4" />
-            Localities Add
-          </TabsTrigger>
+        
         </TabsList>
 
         {/* States Tab Section */}
@@ -249,7 +230,7 @@ export default function Locations() {
               {/* Layout Content Distribution */}
               <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-start">
                 {/* Cities Column */}
-                <div className="lg:col-span-3 space-y-2 max-h-[500px] overflow-y-auto pr-2 border border-slate-100 dark:border-slate-800 rounded-xl p-4 bg-slate-50/10">
+                <div className="lg:col-span-5 space-y-2 max-h-[500px] overflow-y-auto pr-2 border border-slate-100 dark:border-slate-800 rounded-xl p-4 bg-slate-50/10">
                   <Label className="mb-2 inline-block text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 px-1">Registered Urban Hubs</Label>
                   {citiesLoading ? (
                     <div className="flex items-center gap-2 py-4 text-slate-400 dark:text-slate-500 font-medium text-sm pl-1 animate-pulse">
@@ -296,101 +277,13 @@ export default function Locations() {
                   )}
                 </div>
 
-                {/* Localities Drawer View */}
-                <div className="lg:col-span-2">
-                  {viewCityId ? (
-                    <Card className="rounded-xl border border-purple-200/60 bg-white dark:bg-slate-900 shadow-sm overflow-hidden animate-in fade-in slide-in-from-right-3 duration-300">
-                      <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/20 flex flex-row items-center justify-between">
-                        <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200 tracking-wide flex items-center gap-1.5">
-                          <Layers className="h-4 w-4 text-purple-600" />
-                          Localities Inspection View
-                        </h4>
-                        {localitiesFetching && <Loader2 className="h-3.5 w-3.5 text-purple-600 animate-spin" />}
-                      </div>
-                      <CardContent className="p-5">
-                        {cityLocalities.length === 0 ? (
-                          <div className="text-center py-8 bg-slate-50/30 dark:bg-slate-950/10 rounded-xl border border-dashed border-slate-200 dark:border-slate-800">
-                            <MapPin className="h-6 w-6 text-slate-300 dark:text-slate-700 mx-auto mb-2" />
-                            <p className="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wide">No zones assigned</p>
-                            <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5 px-4">Locality sectors haven't been mapped to this city branch node yet.</p>
-                          </div>
-                        ) : (
-                          <ul className="space-y-1.5 max-h-[380px] overflow-y-auto pr-1">
-                            {cityLocalities.map((l) => (
-                              <li 
-                                key={l._id} 
-                                className="flex items-center gap-2 text-xs font-semibold text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-950/40 border border-slate-100 dark:border-slate-800/60 rounded-xl px-3 py-2 animate-in fade-in duration-200"
-                              >
-                                <div className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                                <span className="truncate">{l.name}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        )}
-                      </CardContent>
-                    </Card>
-                  ) : (
-                    <div className="h-full flex flex-col items-center justify-center text-center p-8 border border-dashed border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50/30 dark:bg-slate-950/10 text-slate-400 min-h-[220px]">
-                      <Eye className="h-6 w-6 text-slate-300 dark:text-slate-700 mb-2" />
-                      <h4 className="text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">Inspection Node Idle</h4>
-                      <p className="text-[11px] text-slate-400 dark:text-slate-500 max-w-xs mt-1">
-                        Select any registered urban city item row component within the directory catalog matrix to deploy the locality tree view.
-                      </p>
-                    </div>
-                  )}
-                </div>
+                
               </div>
             </CardContent>
           </Card>
         </TabsContent>
 
-        {/* Localities Insertion Tab Section */}
-        <TabsContent value="localities" className="outline-none focus:outline-none focus:ring-0 animate-in fade-in-30 slide-in-from-bottom-2 duration-300">
-          <Card className="table">
-            <CardHeader className="p-5 border-b border-slate-200/60 dark:border-slate-800">
-              <CardTitle className="text-sm font-bold tracking-wide text-slate-800 dark:text-slate-200 flex items-center gap-2">
-                <Navigation className="h-4 w-4 text-purple-600" />
-                Sectors & Localities Ledger Ingest
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-5">
-              <div className="grid grid-cols-1 md:grid-cols-3 items-end rounded-xl p-5 bg-slate-50/70 dark:bg-slate-950/40 gap-6 max-w-4xl">
-                <div className="space-y-1.5">
-                  <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Parent City Mapping</Label>
-                  <Select value={localityCityId} onValueChange={setLocalityCityId}>
-                    <SelectTrigger className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-xl">
-                      <SelectValue placeholder="Choose target city matrix" />
-                    </SelectTrigger>
-                    <SelectContent className="dark:bg-slate-800 rounded-xl">
-                      {cities.map((c) => (
-                        <SelectItem key={c._id} value={c._id}>
-                          {c.name} <span className="text-[11px] text-slate-400 dark:text-slate-500 font-normal">({c.stateId?.name || 'Global'})</span>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-1.5">
-                  <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Locality Sector Title</Label>
-                  <Input 
-                    placeholder="e.g. Vaishali Nagar"
-                    value={localityName} 
-                    onChange={(e) => setLocalityName(e.target.value)} 
-                    className="h-11 border-slate-200 rounded-xl dark:bg-slate-800 dark:border-slate-700"
-                  />
-                </div>
-                <Button 
-                  onClick={() => localityMutation.mutate({ name: localityName, cityId: localityCityId })}
-                  disabled={localityMutation.isPending || !localityName.trim() || !localityCityId}
-                  className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold h-11 rounded-xl transition-all active:scale-95 flex items-center justify-center gap-2"
-                >
-                  {localityMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4 stroke-[3]" />}
-                  Add Locality Block
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
+        
       </Tabs>
 
       {/* Import India Locations Confirmation Dialog */}

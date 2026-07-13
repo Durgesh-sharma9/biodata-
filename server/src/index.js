@@ -57,6 +57,14 @@ app.use('/api/applicant-plans', applicantPlanRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/master-data', masterDataRoutes);
 
+app.get('/api/v1/admin/announcements/unread-count', (req, res) => {
+  res.json({ success: true, data: { count: 0 } });
+});
+
+app.get('/api/v1/coach/announcements/unread-count', (req, res) => {
+  res.json({ success: true, data: { count: 0 } });
+});
+
 app.use(notFound);
 app.use(errorHandler);
 

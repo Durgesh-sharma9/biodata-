@@ -6,7 +6,7 @@ import {
   MapPin, Briefcase, GraduationCap, Calendar, IndianRupee, 
   Users, ShieldAlert, SlidersHorizontal, ArrowUpDown, Loader2
 } from 'lucide-react';
-import { getCandidates, deleteCandidate, getSettings, getStates, getCities, getLocalities } from '@/lib/api';
+import { getCandidates, deleteCandidate, getSettings, getStates, getCities } from '@/lib/api';
 import { Badge } from '@/components/ui/badge';
 import { PageHeader } from '@/components/common/PageHeader';
 import { Button } from '@/components/ui/button';
@@ -17,6 +17,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { SearchableSelect } from '@/components/ui/searchable-select';
 import { Dialog, DialogBody, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { formatDate } from '@/lib/utils';
+import { formatCandidateLocation, buildLocationSearchText } from '@/lib/location';
 
 const SOURCE_OPTIONS = ['ADMIN', 'SCHOOL_LINK', 'SELF_APPLICANT', 'SUPER_ADMIN_IMPORT'];
 
@@ -39,14 +40,18 @@ export function CandidateList({
     stateId: '',
     city: '',
     cityId: '',
-    locality: '',
+    area: '',
     source: '',
     expectedSalaryMin: '',
     expectedSalaryMax: '',
+    nearby: false,
+    radiusKm: '',
     sortBy: 'createdAt',
     sortOrder: 'desc',
   });
   const [deleteId, setDeleteId] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
 
   const { data: settings } = useQuery({
     queryKey: ['settings'],
@@ -63,11 +68,6 @@ export function CandidateList({
     queryFn: () => getCities().then((r) => r.data.data),
   });
 
-  const { data: filterLocalities = [] } = useQuery({
-    queryKey: ['localities'],
-    queryFn: () => getLocalities().then((r) => r.data.data),
-  });
-
   const stateOptions = useMemo(() => [
     { value: '', label: 'All States' },
     ...states.map(s => ({ value: s._id, label: s.name }))
@@ -78,10 +78,21 @@ export function CandidateList({
     ...filterCities.map(c => ({ value: c._id, label: c.name }))
   ], [filterCities]);
 
-  const localityOptions = useMemo(() => [
-    { value: '', label: 'All Localities' },
-    ...filterLocalities.map(l => ({ value: l.name, label: l.name }))
-  ], [filterLocalities]);
+  const locationOptions = useMemo(() => [
+    { value: '', label: 'All Areas' },
+  ], []);
+
+  useEffect(() => {
+    const updateViewport = () => {
+      const width = window.innerWidth;
+      setIsMobile(width < 768);
+      setIsTablet(width >= 768 && width < 1024);
+    };
+
+    updateViewport();
+    window.addEventListener('resize', updateViewport);
+    return () => window.removeEventListener('resize', updateViewport);
+  }, []);
 
   const { data, isLoading } = useQuery({
     queryKey: ['candidates', section, page, filters],
@@ -90,9 +101,25 @@ export function CandidateList({
         section,
         page,
         limit: 10,
-        ...Object.fromEntries(Object.entries(filters).filter(([, v]) => v !== '')),
+        ...Object.fromEntries(
+          Object.entries(filters).filter(([, v]) => v !== '' && v !== false)
+        ),
       }).then((r) => r.data),
   });
+
+  const filteredCandidates = useMemo(() => {
+    if (!data?.data) return [];
+
+    return data.data.filter((candidate) => {
+      const searchText = buildLocationSearchText(candidate);
+      const query = (filters.name || '').trim().toLowerCase();
+      const matchesSearch = !query || searchText.includes(query);
+      const matchesState = !filters.state || (candidate.state || '').toLowerCase().includes(filters.state.toLowerCase());
+      const matchesCity = !filters.city || (candidate.city || '').toLowerCase().includes(filters.city.toLowerCase());
+      const matchesArea = !filters.area || (candidate.area || '').toLowerCase().includes(filters.area.toLowerCase());
+      return matchesSearch && matchesState && matchesCity && matchesArea;
+    });
+  }, [data?.data, filters]);
 
   const deleteMutation = useMutation({
     mutationFn: deleteCandidate,
@@ -166,7 +193,7 @@ export function CandidateList({
             <div className="relative group">
               <Search className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400 group-focus-within:text-[#A05AFF] transition-colors" />
               <Input
-                placeholder="Search by name..."
+                placeholder="Search by name, area, city, state..."
                 className="pl-10 h-11 border-slate-200 rounded-xl focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 dark:bg-slate-800 dark:border-slate-700 text-sm font-medium"
                 value={filters.name}
                 onChange={(e) => updateFilter('name', e.target.value)}
@@ -249,16 +276,14 @@ export function CandidateList({
               limit={100}
             />
 
-            <SearchableSelect
-              options={localityOptions}
-              value={filters.locality || ''}
-              onChange={(v) => {
-                setFilters(prev => ({ ...prev, locality: v }));
-                setPage(1);
-              }}
-              placeholder="All Localities"
-              limit={100}
-            />
+            <div className="relative">
+              <Input
+                placeholder="All Areas"
+                className="h-11 border-slate-200 rounded-xl focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 dark:bg-slate-800 dark:border-slate-700 text-sm font-medium"
+                value={filters.area}
+                onChange={(e) => updateFilter('area', e.target.value)}
+              />
+            </div>
 
             <div className="relative">
               <Input
@@ -279,6 +304,27 @@ export function CandidateList({
                 onChange={(e) => updateFilter('expectedSalaryMax', e.target.value)}
               />
             </div>
+
+            <label className="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
+              <input
+                type="checkbox"
+                checked={!!filters.nearby}
+                onChange={(e) => updateFilter('nearby', e.target.checked)}
+                className="h-4 w-4 rounded border-slate-300 text-[#A05AFF]"
+              />
+              Nearby only
+            </label>
+
+            <div className="relative">
+              <Input
+                type="number"
+                placeholder="Radius (km)"
+                className="h-11 border-slate-200 rounded-xl focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 dark:bg-slate-800 dark:border-slate-700 text-sm font-medium"
+                value={filters.radiusKm}
+                onChange={(e) => updateFilter('radiusKm', e.target.value)}
+                disabled={!filters.nearby}
+              />
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -297,7 +343,7 @@ export function CandidateList({
             <>
               {/* Mobile Card Layout - Below md */}
               <div className="md:hidden space-y-4">
-                {data?.data?.length === 0 ? (
+                {filteredCandidates.length === 0 ? (
                   <div className="py-20 text-center">
                     <div className="max-w-md mx-auto flex flex-col items-center justify-center space-y-3">
                       <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-950 border border-dashed border-slate-200 dark:border-slate-800 text-slate-400">
@@ -310,7 +356,7 @@ export function CandidateList({
                     </div>
                   </div>
                 ) : (
-                  data?.data?.map((c) => (
+                  filteredCandidates.map((c) => (
                     <Card key={c._id} className="border border-slate-200/60 bg-white shadow-sm dark:bg-slate-900 dark:border-slate-800">
                       <CardContent className="p-4">
                         <div className="flex items-center gap-4">
@@ -342,6 +388,9 @@ export function CandidateList({
                               )}
                             </div>
                             <p className="text-slate-600 dark:text-slate-300 font-semibold text-xs truncate">{c.position}</p>
+                            <p className="text-slate-500 dark:text-slate-400 font-semibold text-[11px] truncate mt-1">
+                              {formatCandidateLocation(c)}{Number.isFinite(c.distanceKm) ? ` • ${c.distanceKm.toFixed(1)} km` : ''}
+                            </p>
                           </div>
                           
                           {/* Actions */}
@@ -374,7 +423,7 @@ export function CandidateList({
               </div>
 
               {/* Desktop Table Layout - md and above */}
-              <div className="hidden md:block w-full overflow-x-auto">
+              <div className="hidden md:block w-full min-w-0 overflow-x-auto">
                 <Table>
                   <TableHeader className="text-slate-400 font-semibold text-[11px] uppercase tracking-wider">
                     <TableRow className="hover:bg-transparent border-none">
@@ -404,12 +453,12 @@ export function CandidateList({
                         <div className="flex items-center gap-1.5"><MapPin className="h-3 w-3" /> Location</div>
                       </TableHead>
 
-                      <TableHead className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider py-4 hidden lg:table-cell">
+                      <TableHead className={isTablet ? 'hidden' : 'text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider py-4 hidden lg:table-cell'}>
                         <div className="flex items-center gap-1.5"><GraduationCap className="h-3 w-3" /> Qualification</div>
                       </TableHead>
                       
                       <TableHead 
-                        className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-violet-600 dark:hover:text-violet-400 transition-colors select-none py-4 hidden md:table-cell" 
+                        className={isTablet ? 'hidden' : 'text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-violet-600 dark:hover:text-violet-400 transition-colors select-none py-4 hidden md:table-cell'}
                         onClick={() => handleSort('experienceYears')}
                       >
                         <div className="flex items-center gap-1.5">
@@ -419,7 +468,7 @@ export function CandidateList({
                       </TableHead>
                       
                       <TableHead
-                        className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-violet-600 dark:hover:text-violet-400 transition-colors select-none py-4 hidden md:table-cell"
+                        className={isTablet ? 'hidden' : 'text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-violet-600 dark:hover:text-violet-400 transition-colors select-none py-4 hidden md:table-cell'}
                         onClick={() => handleSort('expectedSalary')}
                       >
                         <div className="flex items-center gap-1.5">
@@ -429,7 +478,7 @@ export function CandidateList({
                       </TableHead>
                       
                       <TableHead 
-                        className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-violet-600 dark:hover:text-violet-400 transition-colors select-none py-4 hidden lg:table-cell" 
+                        className={isTablet ? 'hidden' : 'text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-violet-600 dark:hover:text-violet-400 transition-colors select-none py-4 hidden lg:table-cell'} 
                         onClick={() => handleSort('createdAt')}
                       >
                         <div className="flex items-center gap-1.5">
@@ -443,7 +492,7 @@ export function CandidateList({
                   </TableHeader>
                   
                   <TableBody>
-                    {data?.data?.length === 0 ? (
+                    {filteredCandidates.length === 0 ? (
                       <TableRow className="hover:bg-transparent border-none">
                         <TableCell colSpan={9} className="py-20 text-center">
                           <div className="max-w-md mx-auto flex flex-col items-center justify-center space-y-3">
@@ -458,7 +507,7 @@ export function CandidateList({
                         </TableCell>
                       </TableRow>
                     ) : (
-                      data?.data?.map((c) => (
+                      filteredCandidates.map((c) => (
                         <TableRow 
                           key={c._id} 
                           className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 border-b border-slate-100 dark:border-slate-800/60 last:border-none transition-all group"
@@ -493,7 +542,7 @@ export function CandidateList({
                           <TableCell className="text-slate-600 dark:text-slate-300 font-semibold text-sm py-4 truncate">{c.position}</TableCell>
                           
                           <TableCell className="text-slate-500 dark:text-slate-400 font-semibold text-xs py-4 truncate hidden md:table-cell">
-                            {[c.city, c.locality].filter(Boolean).join(', ') || '—'}
+                            {formatCandidateLocation(c)}{Number.isFinite(c.distanceKm) ? ` • ${c.distanceKm.toFixed(1)} km` : ''}
                           </TableCell>
 
                           <TableCell className="text-slate-500 dark:text-slate-400 font-semibold text-xs py-4 truncate hidden lg:table-cell">

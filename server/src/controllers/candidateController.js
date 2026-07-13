@@ -9,56 +9,90 @@ import {
   isOwnedBySchool,
   hasFullAccess,
 } from '../utils/candidateAccess.js';
-import { resolveLocationFromLocalityId } from '../utils/locationHelper.js';
+import { buildLocationPayload, syncCandidateLocation } from '../utils/location.js';
+
+const calculateDistanceKm = (lat1, lon1, lat2, lon2) => {
+  if ([lat1, lon1, lat2, lon2].some((value) => value === undefined || value === null || value === '')) {
+    return null;
+  }
+
+  const toRad = (value) => (Number(value) * Math.PI) / 180;
+  const earthRadiusKm = 6371;
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return earthRadiusKm * c;
+};
 
 const buildCandidateFilter = (query) => {
-  const filter = { isDeleted: false };
+  const conditions = [{ isDeleted: false }];
 
   if (query.name) {
-    filter.fullName = { $regex: query.name, $options: 'i' };
+    conditions.push({
+      $or: [
+        { fullName: { $regex: query.name, $options: 'i' } },
+        { mobile: { $regex: query.name, $options: 'i' } },
+        { position: { $regex: query.name, $options: 'i' } },
+        { state: { $regex: query.name, $options: 'i' } },
+        { city: { $regex: query.name, $options: 'i' } },
+        { area: { $regex: query.name, $options: 'i' } },
+        { address: { $regex: query.name, $options: 'i' } },
+      ],
+    });
   }
   if (query.mobile) {
-    filter.mobile = { $regex: query.mobile, $options: 'i' };
+    conditions.push({ mobile: { $regex: query.mobile, $options: 'i' } });
   }
   if (query.position) {
-    filter.position = query.position;
+    conditions.push({ position: query.position });
   }
   if (query.subject) {
-    filter.subjects = query.subject;
+    conditions.push({ subjects: query.subject });
   }
   if (query.qualification) {
-    filter.qualifications = query.qualification;
+    conditions.push({ qualifications: query.qualification });
   }
   if (query.class) {
-    filter.classesCanTeach = query.class;
+    conditions.push({ classesCanTeach: query.class });
   }
   if (query.experience) {
     const exp = Number(query.experience);
     if (!Number.isNaN(exp)) {
-      filter.experienceYears = exp;
+      conditions.push({ experienceYears: exp });
     }
   }
-  if (query.state) filter.state = { $regex: query.state, $options: 'i' };
-  if (query.city) filter.city = { $regex: query.city, $options: 'i' };
-  if (query.locality) filter.locality = { $regex: query.locality, $options: 'i' };
-  if (query.source) filter.source = query.source;
-  if (query.expectedSalaryMin) {
-    filter.expectedSalary = { ...filter.expectedSalary, $gte: Number(query.expectedSalaryMin) };
+  if (query.state) conditions.push({ state: { $regex: query.state, $options: 'i' } });
+  if (query.city) conditions.push({ city: { $regex: query.city, $options: 'i' } });
+  if (query.area) {
+    conditions.push({
+      $or: [
+        { area: { $regex: query.area, $options: 'i' } },
+        { address: { $regex: query.area, $options: 'i' } },
+      ],
+    });
   }
-  if (query.expectedSalaryMax) {
-    filter.expectedSalary = { ...filter.expectedSalary, $lte: Number(query.expectedSalaryMax) };
+  if (query.source) conditions.push({ source: query.source });
+  if (query.expectedSalaryMin || query.expectedSalaryMax) {
+    const expectedSalary = {};
+    if (query.expectedSalaryMin) expectedSalary.$gte = Number(query.expectedSalaryMin);
+    if (query.expectedSalaryMax) expectedSalary.$lte = Number(query.expectedSalaryMax);
+    conditions.push({ expectedSalary });
   }
   if (query.dateFrom || query.dateTo) {
-    filter.createdAt = {};
-    if (query.dateFrom) filter.createdAt.$gte = new Date(query.dateFrom);
+    const createdAt = {};
+    if (query.dateFrom) createdAt.$gte = new Date(query.dateFrom);
     if (query.dateTo) {
       const end = new Date(query.dateTo);
       end.setHours(23, 59, 59, 999);
-      filter.createdAt.$lte = end;
+      createdAt.$lte = end;
     }
+    conditions.push({ createdAt });
   }
 
-  return filter;
+  return conditions.length > 1 ? { $and: conditions } : { isDeleted: false };
 };
 
 const getSortOption = (sortBy, sortOrder) => {
@@ -71,22 +105,32 @@ const getSortOption = (sortBy, sortOrder) => {
 const applySectionFilter = (filter, section, schoolId) => {
   if (!section || !schoolId) return filter;
 
+  const sectionConditions = [];
+
   if (section === 'my_candidates') {
-    filter.ownerSchoolId = schoolId;
-    filter.source = { $in: ['ADMIN', 'SCHOOL_LINK'] };
+    sectionConditions.push({ ownerSchoolId: schoolId });
+    sectionConditions.push({ source: { $in: ['ADMIN', 'SCHOOL_LINK'] } });
   } else if (section === 'talent_pool') {
-    filter.$or = [
-      { source: { $in: ['SELF_APPLICANT', 'SUPER_ADMIN_IMPORT'] } },
-      {
-        $and: [
-          { ownerSchoolId: { $exists: true, $ne: null } },
-          { ownerSchoolId: { $ne: schoolId } },
-        ],
-      },
-    ];
+    sectionConditions.push({
+      $or: [
+        { source: { $in: ['SELF_APPLICANT', 'SUPER_ADMIN_IMPORT'] } },
+        {
+          $and: [
+            { ownerSchoolId: { $exists: true, $ne: null } },
+            { ownerSchoolId: { $ne: schoolId } },
+          ],
+        },
+      ],
+    });
   }
 
-  return filter;
+  if (!sectionConditions.length) return filter;
+
+  if (filter.$and) {
+    return { ...filter, $and: [...filter.$and, ...sectionConditions] };
+  }
+
+  return { $and: [{ isDeleted: false }, ...sectionConditions] };
 };
 
 export const getCandidates = catchAsync(async (req, res) => {
@@ -96,20 +140,66 @@ export const getCandidates = catchAsync(async (req, res) => {
     sortBy = 'createdAt',
     sortOrder = 'desc',
     section,
+    nearby,
+    radiusKm,
     ...filters
   } = req.query;
 
   const filter = applySectionFilter(buildCandidateFilter(filters), section, req.schoolId);
-  const skip = (Number(page) - 1) * Number(limit);
   const sort = getSortOption(sortBy, sortOrder);
+  const pageNumber = Number(page);
+  const limitNumber = Number(limit);
+  const skip = (pageNumber - 1) * limitNumber;
+  const nearbyEnabled = nearby === 'true' || nearby === true;
+  const radiusLimit = Number(radiusKm) || 50;
 
-  const [candidates, total] = await Promise.all([
-    Candidate.find(filter).sort(sort).skip(skip).limit(Number(limit)),
-    Candidate.countDocuments(filter),
-  ]);
+  const school = req.schoolId ? await School.findById(req.schoolId) : null;
+  const referenceLocation = nearbyEnabled && school?.latitude && school?.longitude
+    ? { latitude: Number(school.latitude), longitude: Number(school.longitude) }
+    : null;
+
+  const allCandidates = await Candidate.find(filter).sort(sort);
+  let candidates = allCandidates;
+  let total = allCandidates.length;
+
+  if (referenceLocation) {
+    candidates = allCandidates
+      .map((candidate) => {
+        const distanceKm = calculateDistanceKm(
+          referenceLocation.latitude,
+          referenceLocation.longitude,
+          candidate.latitude,
+          candidate.longitude
+        );
+        return { candidate, distanceKm };
+      })
+      .filter(({ distanceKm }) => distanceKm === null || distanceKm <= radiusLimit)
+      .sort((a, b) => {
+        if (a.distanceKm === null) return 1;
+        if (b.distanceKm === null) return -1;
+        return a.distanceKm - b.distanceKm;
+      });
+
+    total = candidates.length;
+    candidates = candidates.slice(skip, skip + limitNumber).map(({ candidate }) => candidate);
+  } else {
+    candidates = allCandidates.slice(skip, skip + limitNumber);
+  }
 
   const formatted = await Promise.all(
-    candidates.map((c) => formatCandidateForSchool(c, req.schoolId))
+    candidates.map(async (c) => {
+      const candidateObject = c.toObject ? c.toObject() : { ...c };
+      if (referenceLocation) {
+        const distanceKm = calculateDistanceKm(
+          referenceLocation.latitude,
+          referenceLocation.longitude,
+          candidateObject.latitude,
+          candidateObject.longitude
+        );
+        candidateObject.distanceKm = distanceKm;
+      }
+      return formatCandidateForSchool(candidateObject, req.schoolId);
+    })
   );
 
   res.json({
@@ -208,7 +298,7 @@ export const checkDuplicate = catchAsync(async (req, res) => {
 });
 
 export const createCandidate = catchAsync(async (req, res) => {
-  const { fullName, mobile, forceCreate, localityId } = req.body;
+  const { fullName, mobile, forceCreate } = req.body;
 
   if (!fullName || !mobile) {
     throw new ApiError(400, 'Full name and mobile are required');
@@ -231,14 +321,11 @@ export const createCandidate = catchAsync(async (req, res) => {
     }
   }
 
-  let locationFields = {};
-  if (localityId) {
-    locationFields = await resolveLocationFromLocalityId(localityId);
-  }
+  const locationPayload = await buildLocationPayload(req.body);
 
   const candidate = await Candidate.create({
     ...req.body,
-    ...locationFields,
+    ...locationPayload,
     schoolId: req.schoolId,
     ownerSchoolId: req.schoolId,
     source: 'ADMIN',
@@ -273,15 +360,9 @@ export const updateCandidate = catchAsync(async (req, res) => {
     }
   }
 
-  if (req.body.localityId) {
-    const locationFields = await resolveLocationFromLocalityId(req.body.localityId);
-    candidate.state = locationFields.state;
-    candidate.city = locationFields.city;
-    candidate.locality = locationFields.locality;
-  }
-
-  const { localityId, ...updateData } = req.body;
+  const { ...updateData } = req.body;
   Object.assign(candidate, updateData);
+  await syncCandidateLocation(candidate, req.body);
   if (req.body.mobile) candidate.mobile = req.body.mobile.trim();
   await candidate.save();
 

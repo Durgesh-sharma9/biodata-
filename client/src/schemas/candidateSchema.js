@@ -15,7 +15,7 @@ export const candidateSchema = z.object({
   vehicleTypes: z.array(z.string()).default([]),
   experienceYears: z.coerce.number().min(0, 'Experience cannot be negative').default(0),
   expectedSalary: z.coerce.number().min(0, 'Salary cannot be negative').optional(),
-  localityId: z.string().optional(),
+  area: z.string().optional(),
   notes: z.string().optional(),
   profileSharingConsent: z.boolean().optional(),
   contactConsent: z.boolean().optional(),

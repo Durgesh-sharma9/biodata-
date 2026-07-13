@@ -121,11 +121,12 @@ export function DynamicCandidateForm({
     if (initialValues) {
       reset(initialValues);
       setProfilePhoto(initialValues.profilePhoto || null);
-      if (initialValues.stateId || initialValues.cityId || initialValues.localityId) {
+      if (initialValues.stateId || initialValues.cityId || initialValues.area || initialValues.address) {
         setLocation({
           stateId: initialValues.stateId,
           cityId: initialValues.cityId,
-          localityId: initialValues.localityId,
+          area: initialValues.area || '',
+          address: initialValues.address || '',
         });
       }
     }
@@ -180,18 +181,16 @@ export function DynamicCandidateForm({
   };
 
   const onFormSubmit = (data) => {
-    console.log("PROFILE SUBMIT", data);
-    console.log("LOCATION SUBMIT", {
-      stateId: location.stateId,
-      cityId: location.cityId,
-      localityId: location.localityId
-    });
     onSubmit({
       ...data,
       expectedSalary: data.expectedSalary ? Number(data.expectedSalary) : undefined,
       stateId: location.stateId,
       cityId: location.cityId,
-      localityId: location.localityId,
+      area: location.area,
+      address: location.address,
+      latitude: location.latitude,
+      longitude: location.longitude,
+      workingRadius: location.workingRadius,
     });
   };
 
@@ -438,7 +437,7 @@ export function DynamicCandidateForm({
             <div className="relative">
               <Textarea 
                 id="address" 
-                placeholder="Apartment, building numbers, locality blocks..."
+                placeholder="Apartment, building numbers, area/local landmark..."
                 {...register('address')} 
                 disabled={isFieldDisabled('address')} 
                 className="rounded-xl border-slate-200 focus-visible:ring-[#A05AFF] shadow-xs pl-10 pt-3 transition-all min-h-[90px] bg-white"

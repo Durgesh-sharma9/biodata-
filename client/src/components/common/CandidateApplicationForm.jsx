@@ -82,7 +82,10 @@ export function CandidateApplicationForm({
       experienceYears: Number(form.experienceYears) || 0,
       expectedSalary: form.expectedSalary ? Number(form.expectedSalary) : undefined,
       documents,
-      localityId: location.localityId,
+      stateId: location.stateId,
+      cityId: location.cityId,
+      area: location.area,
+      address: location.address,
     });
   };
 
