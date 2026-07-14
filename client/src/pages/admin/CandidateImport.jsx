@@ -129,6 +129,9 @@ export default function CandidateImport() {
                     cityId: location.cityId,
                     area: location.area,
                     address: location.address,
+                    latitude: location.latitude,
+                    longitude: location.longitude,
+                    workingRadius: location.workingRadius,
                   });
                 }}
                 className="space-y-6"

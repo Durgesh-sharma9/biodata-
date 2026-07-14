@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { 
   Plus, Search, Eye, Pencil, Trash2, ChevronLeft, ChevronRight, 
   MapPin, Briefcase, GraduationCap, Calendar, IndianRupee, 
-  Users, ShieldAlert, SlidersHorizontal, ArrowUpDown, Loader2
+  Users, ShieldAlert, SlidersHorizontal, ArrowUpDown, Loader2, List, Map as MapIcon, AlertCircle
 } from 'lucide-react';
 import { getCandidates, deleteCandidate, getSettings, getStates, getCities } from '@/lib/api';
 import { Badge } from '@/components/ui/badge';
@@ -15,9 +15,10 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { SearchableSelect } from '@/components/ui/searchable-select';
-import { Dialog, DialogBody, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { formatDate } from '@/lib/utils';
-import { formatCandidateLocation, buildLocationSearchText } from '@/lib/location';
+import { formatCandidateLocation, buildLocationSearchText, calculateDistanceKm } from '@/lib/location';
+import { MapView } from '@/components/common/MapView';
 
 const SOURCE_OPTIONS = ['ADMIN', 'SCHOOL_LINK', 'SELF_APPLICANT', 'SUPER_ADMIN_IMPORT'];
 
@@ -52,6 +53,7 @@ export function CandidateList({
   const [deleteId, setDeleteId] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
   const [isTablet, setIsTablet] = useState(false);
+  const [viewMode, setViewMode] = useState('list');
 
   const { data: settings } = useQuery({
     queryKey: ['settings'],
@@ -110,14 +112,29 @@ export function CandidateList({
   const filteredCandidates = useMemo(() => {
     if (!data?.data) return [];
 
+    const query = (filters.name || '').trim().toLowerCase();
+    const nearbyEnabled = !!filters.nearby;
+    const radiusLimit = Number(filters.radiusKm) || 50;
+
     return data.data.filter((candidate) => {
       const searchText = buildLocationSearchText(candidate);
-      const query = (filters.name || '').trim().toLowerCase();
       const matchesSearch = !query || searchText.includes(query);
       const matchesState = !filters.state || (candidate.state || '').toLowerCase().includes(filters.state.toLowerCase());
       const matchesCity = !filters.city || (candidate.city || '').toLowerCase().includes(filters.city.toLowerCase());
       const matchesArea = !filters.area || (candidate.area || '').toLowerCase().includes(filters.area.toLowerCase());
-      return matchesSearch && matchesState && matchesCity && matchesArea;
+
+      let matchesNearby = true;
+      if (nearbyEnabled) {
+        const distanceKm = candidate.distanceKm ?? calculateDistanceKm(
+          candidate.schoolLatitude,
+          candidate.schoolLongitude,
+          candidate.latitude,
+          candidate.longitude
+        );
+        matchesNearby = distanceKm === null || distanceKm <= radiusLimit;
+      }
+
+      return matchesSearch && matchesState && matchesCity && matchesArea && matchesNearby;
     });
   }, [data?.data, filters]);
 
@@ -143,7 +160,6 @@ export function CandidateList({
     }));
   };
 
-  // Modern Soft-Tint Badges customized cleanly for the Purple Theme specifications
   const getSourceBadge = (source) => {
     const formatStr = (str) => str?.replace(/_/g, ' ') || '';
     switch(source) {
@@ -305,12 +321,13 @@ export function CandidateList({
               />
             </div>
 
-            <label className="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
+            <label className={`flex items-center gap-2 rounded-xl border px-3 py-2 text-sm font-semibold ${!data?.schoolLocation ? 'border-slate-200 bg-slate-50 text-slate-400 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-500 cursor-not-allowed' : 'border-slate-200 bg-slate-50 text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300'}`}>
               <input
                 type="checkbox"
                 checked={!!filters.nearby}
                 onChange={(e) => updateFilter('nearby', e.target.checked)}
-                className="h-4 w-4 rounded border-slate-300 text-[#A05AFF]"
+                disabled={!data?.schoolLocation}
+                className="h-4 w-4 rounded border-slate-300 text-[#A05AFF] disabled:opacity-50"
               />
               Nearby only
             </label>
@@ -319,19 +336,58 @@ export function CandidateList({
               <Input
                 type="number"
                 placeholder="Radius (km)"
-                className="h-11 border-slate-200 rounded-xl focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 dark:bg-slate-800 dark:border-slate-700 text-sm font-medium"
+                className={`h-11 border-slate-200 rounded-xl focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 dark:bg-slate-800 dark:border-slate-700 text-sm font-medium ${!data?.schoolLocation ? 'opacity-50 cursor-not-allowed' : ''}`}
                 value={filters.radiusKm}
                 onChange={(e) => updateFilter('radiusKm', e.target.value)}
-                disabled={!filters.nearby}
+                disabled={!filters.nearby || !data?.schoolLocation}
               />
             </div>
           </div>
         </CardContent>
       </Card>
 
+      {/* School Location Warning */}
+      {!data?.schoolLocation && (
+        <Card className="border-amber-200 bg-amber-50 dark:border-amber-900/30 dark:bg-amber-950/20">
+          <CardContent className="p-4 flex items-start gap-3">
+            <AlertCircle className="h-5 w-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+            <div className="flex-1">
+              <p className="text-sm font-semibold text-amber-800 dark:text-amber-200">
+                School location not configured
+              </p>
+              <p className="text-xs text-amber-700 dark:text-amber-300 mt-1">
+                Complete your School Location in <Link to="/school-profile" className="font-bold underline hover:text-amber-900 dark:hover:text-amber-100">School Profile</Link> to enable Nearby Search and Map View.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Main Listing View Table Interface */}
       <Card className="table">
         <CardContent className="p-0">
+          <div className="flex items-center justify-end gap-2 border-b border-slate-100 px-4 py-3 dark:border-slate-800">
+            <Button
+              type="button"
+              variant={viewMode === 'list' ? 'default' : 'outline'}
+              className={viewMode === 'list' ? 'bg-[#A05AFF] text-white' : 'border-slate-200 bg-white text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300'}
+              onClick={() => setViewMode('list')}
+            >
+              <List className="mr-2 h-4 w-4" />
+              List View
+            </Button>
+            <Button
+              type="button"
+              variant={viewMode === 'map' ? 'default' : 'outline'}
+              className={viewMode === 'map' ? 'bg-[#A05AFF] text-white' : 'border-slate-200 bg-white text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300'}
+              onClick={() => setViewMode('map')}
+              disabled={!data?.schoolLocation}
+            >
+              <MapIcon className="mr-2 h-4 w-4" />
+              Map View
+            </Button>
+          </div>
+
           {isLoading ? (
             <div className="py-24 flex flex-col items-center justify-center space-y-3">
               <Loader2 className="h-5 w-5 text-[#A05AFF] animate-spin" />
@@ -340,264 +396,303 @@ export function CandidateList({
               </p>
             </div>
           ) : (
-            <>
-              {/* Mobile Card Layout - Below md */}
-              <div className="md:hidden space-y-4">
-                {filteredCandidates.length === 0 ? (
-                  <div className="py-20 text-center">
-                    <div className="max-w-md mx-auto flex flex-col items-center justify-center space-y-3">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-950 border border-dashed border-slate-200 dark:border-slate-800 text-slate-400">
-                        <Users className="h-5 w-5" />
-                      </div>
-                      <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200">No candidates detected</h4>
-                      <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 max-w-sm mx-auto leading-relaxed">
-                        We couldn't find matches for your active parameters. Try expanding your filters or add a new record.
-                      </p>
+            <div className="w-full">
+              {viewMode === 'map' ? (
+                <div className="space-y-4 p-4">
+                  <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                    <div className="border-b border-slate-100 p-4 dark:border-slate-800">
+                      <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200">Nearby talent map</h3>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">School marker, candidate pins, distance, position, and area are surfaced here.</p>
+                    </div>
+                    <div className="p-4">
+                      <MapView 
+                        candidates={filteredCandidates} 
+                        schoolLocation={data?.schoolLocation}
+                        workingRadius={filters.nearby ? Number(filters.radiusKm) || 50 : undefined}
+                      />
                     </div>
                   </div>
-                ) : (
-                  filteredCandidates.map((c) => (
-                    <Card key={c._id} className="border border-slate-200/60 bg-white shadow-sm dark:bg-slate-900 dark:border-slate-800">
-                      <CardContent className="p-4">
-                        <div className="flex items-center gap-4">
-                          {/* Photo */}
-                          <div className="shrink-0">
-                            {c.profilePhoto ? (
-                              <div className="h-12 w-12 rounded-full p-0.5 border border-slate-100 dark:border-slate-800 overflow-hidden">
-                                <img
-                                  src={c.profilePhoto}
-                                  alt={c.fullName}
-                                  className="h-full w-full rounded-full object-cover"
-                                />
-                              </div>
-                            ) : (
-                              <div className="h-12 w-12 rounded-full bg-slate-100 dark:bg-slate-950 text-slate-500 dark:text-slate-400 font-bold text-sm flex items-center justify-center border border-slate-200/40">
-                                {c.fullName?.charAt(0)?.toUpperCase() || '?'}
-                              </div>
-                            )}
+                  <div className="grid gap-3 md:grid-cols-2">
+                    {filteredCandidates.map((c) => (
+                      <div key={c._id} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                        <div className="flex items-start justify-between gap-3">
+                          <div>
+                            <p className="text-sm font-bold text-slate-800 dark:text-slate-200">{c.fullName}</p>
+                            <p className="text-xs text-slate-500 dark:text-slate-400">{c.position}</p>
                           </div>
-                          
-                          {/* Name and Position */}
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 mb-1">
-                              <span className="font-bold text-slate-800 dark:text-slate-200 text-sm truncate">{c.fullName}</span>
-                              {c.isLocked && (
-                                <Badge className="text-[10px] uppercase font-bold tracking-wider border-[#FE9496]/30 bg-[#FE9496]/5 text-[#FE9496] rounded-md px-1.5 py-0 shadow-none variant-outline shrink-0">
-                                  Locked
-                                </Badge>
-                              )}
-                            </div>
-                            <p className="text-slate-600 dark:text-slate-300 font-semibold text-xs truncate">{c.position}</p>
-                            <p className="text-slate-500 dark:text-slate-400 font-semibold text-[11px] truncate mt-1">
-                              {formatCandidateLocation(c)}{Number.isFinite(c.distanceKm) ? ` • ${c.distanceKm.toFixed(1)} km` : ''}
-                            </p>
+                          {Number.isFinite(c.distanceKm) ? (
+                            <Badge className="rounded-full border-[#A05AFF]/20 bg-[#A05AFF]/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-[#A05AFF]">
+                              {c.distanceKm.toFixed(1)} km
+                            </Badge>
+                          ) : null}
+                        </div>
+                        <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">{formatCandidateLocation(c)}</p>
+                        <p className="mt-1 text-[11px] text-slate-400 dark:text-slate-500">{c.area || 'Area not provided'}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div className="w-full">
+                  {/* Mobile Card Layout - Below md */}
+                  <div className="md:hidden space-y-4">
+                    {filteredCandidates.length === 0 ? (
+                      <div className="py-20 text-center">
+                        <div className="max-w-md mx-auto flex flex-col items-center justify-center space-y-3">
+                          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-950 border border-dashed border-slate-200 dark:border-slate-800 text-slate-400">
+                            <Users className="h-5 w-5" />
                           </div>
-                          
-                          {/* Actions */}
-                          <div className="flex items-center gap-1 shrink-0">
-                            <Button variant="view" size="icon" asChild className="h-8 w-8">
-                              <Link to={`/candidates/${c._id}`}>
-                                <Eye className="h-4 w-4" />
-                              </Link>
-                            </Button>
-                            
-                            {c.canEdit && (
-                              <>
-                                <Button variant="edit" size="icon" asChild className="h-8 w-8">
-                                  <Link to={`/candidates/${c._id}/edit`}>
-                                    <Pencil className="h-4 w-4" />
+                          <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200">No candidates detected</h4>
+                          <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 max-w-sm mx-auto leading-relaxed">
+                            We couldn't find matches for your active parameters. Try expanding your filters or add a new record.
+                          </p>
+                        </div>
+                      </div>
+                    ) : (
+                      filteredCandidates.map((c) => (
+                        <Card key={c._id} className="border border-slate-200/60 bg-white shadow-sm dark:bg-slate-900 dark:border-slate-800">
+                          <CardContent className="p-4">
+                            <div className="flex items-center gap-4">
+                              {/* Photo */}
+                              <div className="shrink-0">
+                                {c.profilePhoto ? (
+                                  <div className="h-12 w-12 rounded-full p-0.5 border border-slate-100 dark:border-slate-800 overflow-hidden">
+                                    <img
+                                      src={c.profilePhoto}
+                                      alt={c.fullName}
+                                      className="h-full w-full rounded-full object-cover"
+                                    />
+                                  </div>
+                                ) : (
+                                  <div className="h-12 w-12 rounded-full bg-slate-100 dark:bg-slate-950 text-slate-500 dark:text-slate-400 font-bold text-sm flex items-center justify-center border border-slate-200/40">
+                                    {c.fullName?.charAt(0)?.toUpperCase() || '?'}
+                                  </div>
+                                )}
+                              </div>
+                              
+                              {/* Name and Position */}
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <span className="font-bold text-slate-800 dark:text-slate-200 text-sm truncate">{c.fullName}</span>
+                                  {c.isLocked && (
+                                    <Badge className="text-[10px] uppercase font-bold tracking-wider border-[#FE9496]/30 bg-[#FE9496]/5 text-[#FE9496] rounded-md px-1.5 py-0 shadow-none variant-outline shrink-0">
+                                      Locked
+                                    </Badge>
+                                  )}
+                                </div>
+                                <p className="text-slate-600 dark:text-slate-300 font-semibold text-xs truncate">{c.position}</p>
+                                <p className="text-slate-500 dark:text-slate-400 font-semibold text-[11px] truncate mt-1">
+                                  {formatCandidateLocation(c)}{Number.isFinite(c.distanceKm) ? ` • ${c.distanceKm.toFixed(1)} km` : ''}
+                                </p>
+                              </div>
+                              
+                              {/* Actions */}
+                              <div className="flex items-center gap-1 shrink-0">
+                                <Button variant="view" size="icon" asChild className="h-8 w-8">
+                                  <Link to={`/candidates/${c._id}`}>
+                                    <Eye className="h-4 w-4" />
                                   </Link>
                                 </Button>
                                 
-                                <Button variant="delete" size="icon" onClick={() => setDeleteId(c._id)} className="h-8 w-8">
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
-                              </>
-                            )}
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))
-                )}
-              </div>
-
-              {/* Desktop Table Layout - md and above */}
-              <div className="hidden md:block w-full min-w-0 overflow-x-auto">
-                <Table>
-                  <TableHeader className="text-slate-400 font-semibold text-[11px] uppercase tracking-wider">
-                    <TableRow className="hover:bg-transparent border-none">
-                      <TableHead className="w-[50px] md:w-[60px] text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider pl-4 md:pl-6 py-4">Photo</TableHead>
-                      
-                      <TableHead 
-                        className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-violet-600 dark:hover:text-violet-400 transition-colors select-none py-4" 
-                        onClick={() => handleSort('fullName')}
-                      >
-                        <div className="flex items-center gap-1.5">
-                          Name
-                          <ArrowUpDown className="h-3 w-3 opacity-60" />
-                        </div>
-                      </TableHead>
-                      
-                      <TableHead 
-                        className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-violet-600 dark:hover:text-violet-400 transition-colors select-none py-4" 
-                        onClick={() => handleSort('position')}
-                      >
-                        <div className="flex items-center gap-1.5">
-                          Position
-                          <ArrowUpDown className="h-3 w-3 opacity-60" />
-                        </div>
-                      </TableHead>
-                      
-                      <TableHead className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider py-4 hidden md:table-cell">
-                        <div className="flex items-center gap-1.5"><MapPin className="h-3 w-3" /> Location</div>
-                      </TableHead>
-
-                      <TableHead className={isTablet ? 'hidden' : 'text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider py-4 hidden lg:table-cell'}>
-                        <div className="flex items-center gap-1.5"><GraduationCap className="h-3 w-3" /> Qualification</div>
-                      </TableHead>
-                      
-                      <TableHead 
-                        className={isTablet ? 'hidden' : 'text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-violet-600 dark:hover:text-violet-400 transition-colors select-none py-4 hidden md:table-cell'}
-                        onClick={() => handleSort('experienceYears')}
-                      >
-                        <div className="flex items-center gap-1.5">
-                          <Briefcase className="h-3 w-3" /> Experience
-                          <ArrowUpDown className="h-3 w-3 opacity-60" />
-                        </div>
-                      </TableHead>
-                      
-                      <TableHead
-                        className={isTablet ? 'hidden' : 'text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-violet-600 dark:hover:text-violet-400 transition-colors select-none py-4 hidden md:table-cell'}
-                        onClick={() => handleSort('expectedSalary')}
-                      >
-                        <div className="flex items-center gap-1.5">
-                          <IndianRupee className="h-3 w-3" /> Salary
-                          <ArrowUpDown className="h-3 w-3 opacity-60" />
-                        </div>
-                      </TableHead>
-                      
-                      <TableHead 
-                        className={isTablet ? 'hidden' : 'text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-violet-600 dark:hover:text-violet-400 transition-colors select-none py-4 hidden lg:table-cell'} 
-                        onClick={() => handleSort('createdAt')}
-                      >
-                        <div className="flex items-center gap-1.5">
-                          <Calendar className="h-3 w-3" /> Date
-                          <ArrowUpDown className="h-3 w-3 opacity-60" />
-                        </div>
-                      </TableHead>
-                      
-                      <TableHead className="text-right text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider pr-4 md:pr-6 py-4 w-[60px] md:w-[100px]">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  
-                  <TableBody>
-                    {filteredCandidates.length === 0 ? (
-                      <TableRow className="hover:bg-transparent border-none">
-                        <TableCell colSpan={9} className="py-20 text-center">
-                          <div className="max-w-md mx-auto flex flex-col items-center justify-center space-y-3">
-                            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-950 border border-dashed border-slate-200 dark:border-slate-800 text-slate-400">
-                              <Users className="h-5 w-5" />
-                            </div>
-                            <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200">No candidates detected</h4>
-                            <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 max-w-sm mx-auto leading-relaxed">
-                              We couldn't find matches for your active parameters. Try expanding your filters or add a new record.
-                            </p>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ) : (
-                      filteredCandidates.map((c) => (
-                        <TableRow 
-                          key={c._id} 
-                          className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 border-b border-slate-100 dark:border-slate-800/60 last:border-none transition-all group"
-                        >
-                          <TableCell className="pl-6 py-4">
-                            {c.profilePhoto ? (
-                              <div className="h-11 w-11 rounded-full p-0.5 border border-slate-100 dark:border-slate-800 overflow-hidden">
-                                <img
-                                  src={c.profilePhoto}
-                                  alt={c.fullName}
-                                  className="h-full w-full rounded-full object-cover"
-                                />
+                                {c.canEdit && (
+                                  <>
+                                    <Button variant="edit" size="icon" asChild className="h-8 w-8">
+                                      <Link to={`/candidates/${c._id}/edit`}>
+                                        <Pencil className="h-4 w-4" />
+                                      </Link>
+                                    </Button>
+                                    
+                                    <Button variant="delete" size="icon" onClick={() => setDeleteId(c._id)} className="h-8 w-8">
+                                      <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                  </>
+                                )}
                               </div>
-                            ) : (
-                              <div className="h-11 w-11 rounded-full bg-slate-100 dark:bg-slate-950 text-slate-500 dark:text-slate-400 font-bold text-sm flex items-center justify-center border border-slate-200/40">
-                                {c.fullName?.charAt(0)?.toUpperCase() || '?'}
-                              </div>
-                            )}
-                          </TableCell>
-                          
-                          <TableCell className="font-bold text-slate-800 dark:text-slate-200 text-sm py-4">
-                            <div className="flex items-center gap-2">
-                              <span className="group-hover:text-[#A05AFF] transition-colors truncate">{c.fullName}</span>
-                              {c.isLocked && (
-                                <Badge className="text-[10px] uppercase font-bold tracking-wider border-[#FE9496]/30 bg-[#FE9496]/5 text-[#FE9496] rounded-md px-1.5 py-0 shadow-none variant-outline shrink-0">
-                                  Locked
-                                </Badge>
-                              )}
                             </div>
-                          </TableCell>
-                          
-                          <TableCell className="text-slate-600 dark:text-slate-300 font-semibold text-sm py-4 truncate">{c.position}</TableCell>
-                          
-                          <TableCell className="text-slate-500 dark:text-slate-400 font-semibold text-xs py-4 truncate hidden md:table-cell">
-                            {formatCandidateLocation(c)}{Number.isFinite(c.distanceKm) ? ` • ${c.distanceKm.toFixed(1)} km` : ''}
-                          </TableCell>
+                          </CardContent>
+                        </Card>
+                      ))
+                    )}
+                  </div>
 
-                          <TableCell className="text-slate-500 dark:text-slate-400 font-semibold text-xs py-4 truncate hidden lg:table-cell">
-                            {c.qualifications?.join(', ') || '—'}
-                          </TableCell>
+                  {/* Desktop Table Layout - md and above */}
+                  <div className="hidden md:block w-full min-w-0 overflow-x-auto">
+                    <Table>
+                      <TableHeader className="text-slate-400 font-semibold text-[11px] uppercase tracking-wider">
+                        <TableRow className="hover:bg-transparent border-none">
+                          <TableHead className="w-[50px] md:w-[60px] text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider pl-4 md:pl-6 py-4">Photo</TableHead>
                           
-                          <TableCell className="py-4 hidden md:table-cell">
-                            <Badge className="border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl text-xs font-bold px-2 py-0.5 variant-outline shadow-none">
-                              {c.experienceYears} yrs
-                            </Badge>
-                          </TableCell>
+                          <TableHead 
+                            className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-violet-600 dark:hover:text-violet-400 transition-colors select-none py-4" 
+                            onClick={() => handleSort('fullName')}
+                          >
+                            <div className="flex items-center gap-1.5">
+                              Name
+                              <ArrowUpDown className="h-3 w-3 opacity-60" />
+                            </div>
+                          </TableHead>
                           
-                          <TableCell className="font-bold text-slate-800 dark:text-slate-200 text-sm py-4 hidden md:table-cell">
-                            {c.expectedSalary ? (
-                              <Badge className="border-[#1BCFB4]/30 bg-[#1BCFB4]/5 text-[#1BCFB4] text-xs font-bold px-2.5 py-1 rounded-xl variant-outline shadow-none">
-                                ₹{c.expectedSalary.toLocaleString('en-IN')}
-                              </Badge>
-                            ) : (
-                              <span className="text-slate-400 dark:text-slate-600 font-normal">—</span>
-                            )}
-                          </TableCell>
+                          <TableHead 
+                            className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-violet-600 dark:hover:text-violet-400 transition-colors select-none py-4" 
+                            onClick={() => handleSort('position')}
+                          >
+                            <div className="flex items-center gap-1.5">
+                              Position
+                              <ArrowUpDown className="h-3 w-3 opacity-60" />
+                            </div>
+                          </TableHead>
                           
-                          <TableCell className="text-slate-500 dark:text-slate-400 font-semibold text-xs py-4 hidden lg:table-cell">
-                            {formatDate(c.createdAt)}
-                          </TableCell>
+                          <TableHead className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider py-4 hidden md:table-cell">
+                            <div className="flex items-center gap-1.5"><MapPin className="h-3 w-3" /> Location</div>
+                          </TableHead>
+
+                          <TableHead className={isTablet ? 'hidden' : 'text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider py-4 hidden lg:table-cell'}>
+                            <div className="flex items-center gap-1.5"><GraduationCap className="h-3 w-3" /> Qualification</div>
+                          </TableHead>
                           
-                          <TableCell className="text-right pr-6 py-4">
-                            <div className="flex justify-end items-center gap-1">
-                              <Button variant="view" size="icon" asChild className="h-8 w-8">
-                                <Link to={`/candidates/${c._id}`}>
-                                  <Eye className="h-4 w-4" />
-                                </Link>
-                              </Button>
+                          <TableHead 
+                            className={isTablet ? 'hidden' : 'text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-violet-600 dark:hover:text-violet-400 transition-colors select-none py-4 hidden md:table-cell'}
+                            onClick={() => handleSort('experienceYears')}
+                          >
+                            <div className="flex items-center gap-1.5">
+                              <Briefcase className="h-3 w-3" /> Experience
+                              <ArrowUpDown className="h-3 w-3 opacity-60" />
+                            </div>
+                          </TableHead>
+                          
+                          <TableHead
+                            className={isTablet ? 'hidden' : 'text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-violet-600 dark:hover:text-violet-400 transition-colors select-none py-4 hidden md:table-cell'}
+                            onClick={() => handleSort('expectedSalary')}
+                          >
+                            <div className="flex items-center gap-1.5">
+                              <IndianRupee className="h-3 w-3" /> Salary
+                              <ArrowUpDown className="h-3 w-3 opacity-60" />
+                            </div>
+                          </TableHead>
+                          
+                          <TableHead 
+                            className={isTablet ? 'hidden' : 'text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-violet-600 dark:hover:text-violet-400 transition-colors select-none py-4 hidden lg:table-cell'} 
+                            onClick={() => handleSort('createdAt')}
+                          >
+                            <div className="flex items-center gap-1.5">
+                              <Calendar className="h-3 w-3" /> Date
+                              <ArrowUpDown className="h-3 w-3 opacity-60" />
+                            </div>
+                          </TableHead>
+                          
+                          <TableHead className="text-right text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider pr-4 md:pr-6 py-4 w-[60px] md:w-[100px]">Actions</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      
+                      <TableBody>
+                        {filteredCandidates.length === 0 ? (
+                          <TableRow className="hover:bg-transparent border-none">
+                            <TableCell colSpan={9} className="py-20 text-center">
+                              <div className="max-w-md mx-auto flex flex-col items-center justify-center space-y-3">
+                                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-950 border border-dashed border-slate-200 dark:border-slate-800 text-slate-400">
+                                  <Users className="h-5 w-5" />
+                                </div>
+                                <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200">No candidates detected</h4>
+                                <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 max-w-sm mx-auto leading-relaxed">
+                                  We couldn't find matches for your active parameters. Try expanding your filters or add a new record.
+                                </p>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ) : (
+                          filteredCandidates.map((c) => (
+                            <TableRow 
+                              key={c._id} 
+                              className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 border-b border-slate-100 dark:border-slate-800/60 last:border-none transition-all group"
+                            >
+                              <TableCell className="pl-6 py-4">
+                                {c.profilePhoto ? (
+                                  <div className="h-11 w-11 rounded-full p-0.5 border border-slate-100 dark:border-slate-800 overflow-hidden">
+                                    <img
+                                      src={c.profilePhoto}
+                                      alt={c.fullName}
+                                      className="h-full w-full rounded-full object-cover"
+                                    />
+                                  </div>
+                                ) : (
+                                  <div className="h-11 w-11 rounded-full bg-slate-100 dark:bg-slate-950 text-slate-500 dark:text-slate-400 font-bold text-sm flex items-center justify-center border border-slate-200/40">
+                                    {c.fullName?.charAt(0)?.toUpperCase() || '?'}
+                                  </div>
+                                )}
+                              </TableCell>
                               
-                              {c.canEdit && (
-                                <>
-                                  <Button variant="edit" size="icon" asChild className="h-8 w-8">
-                                    <Link to={`/candidates/${c._id}/edit`}>
-                                      <Pencil className="h-4 w-4" />
+                              <TableCell className="font-bold text-slate-800 dark:text-slate-200 text-sm py-4">
+                                <div className="flex items-center gap-2">
+                                  <span className="group-hover:text-[#A05AFF] transition-colors truncate">{c.fullName}</span>
+                                  {c.isLocked && (
+                                    <Badge className="text-[10px] uppercase font-bold tracking-wider border-[#FE9496]/30 bg-[#FE9496]/5 text-[#FE9496] rounded-md px-1.5 py-0 shadow-none variant-outline shrink-0">
+                                      Locked
+                                    </Badge>
+                                  )}
+                                </div>
+                              </TableCell>
+                              
+                              <TableCell className="text-slate-600 dark:text-slate-300 font-semibold text-sm py-4 truncate">{c.position}</TableCell>
+                              
+                              <TableCell className="text-slate-500 dark:text-slate-400 font-semibold text-xs py-4 truncate hidden md:table-cell">
+                                {formatCandidateLocation(c)}{Number.isFinite(c.distanceKm) ? ` • ${c.distanceKm.toFixed(1)} km` : ''}
+                              </TableCell>
+
+                              <TableCell className="text-slate-500 dark:text-slate-400 font-semibold text-xs py-4 truncate hidden lg:table-cell">
+                                {c.qualifications?.join(', ') || '—'}
+                              </TableCell>
+                              
+                              <TableCell className="py-4 hidden md:table-cell">
+                                <Badge className="border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl text-xs font-bold px-2 py-0.5 variant-outline shadow-none">
+                                  {c.experienceYears} yrs
+                                </Badge>
+                              </TableCell>
+                              
+                              <TableCell className="font-bold text-slate-800 dark:text-slate-200 text-sm py-4 hidden md:table-cell">
+                                {c.expectedSalary ? (
+                                  <Badge className="border-[#1BCFB4]/30 bg-[#1BCFB4]/5 text-[#1BCFB4] text-xs font-bold px-2.5 py-1 rounded-xl variant-outline shadow-none">
+                                    ₹{c.expectedSalary.toLocaleString('en-IN')}
+                                  </Badge>
+                                ) : (
+                                  <span className="text-slate-400 dark:text-slate-600 font-normal">—</span>
+                                )}
+                              </TableCell>
+                              
+                              <TableCell className="text-slate-500 dark:text-slate-400 font-semibold text-xs py-4 hidden lg:table-cell">
+                                {formatDate(c.createdAt)}
+                              </TableCell>
+                              
+                              <TableCell className="text-right pr-6 py-4">
+                                <div className="flex justify-end items-center gap-1">
+                                  <Button variant="view" size="icon" asChild className="h-8 w-8">
+                                    <Link to={`/candidates/${c._id}`}>
+                                      <Eye className="h-4 w-4" />
                                     </Link>
                                   </Button>
                                   
-                                  <Button variant="delete" size="icon" onClick={() => setDeleteId(c._id)} className="h-8 w-8">
-                                    <Trash2 className="h-4 w-4" />
-                                  </Button>
-                                </>
-                              )}
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      ))
-                    )}
-                  </TableBody>
-                </Table>
-              </div>
+                                  {c.canEdit && (
+                                    <>
+                                      <Button variant="edit" size="icon" asChild className="h-8 w-8">
+                                        <Link to={`/candidates/${c._id}/edit`}>
+                                          <Pencil className="h-4 w-4" />
+                                        </Link>
+                                      </Button>
+                                      
+                                      <Button variant="delete" size="icon" onClick={() => setDeleteId(c._id)} className="h-8 w-8">
+                                        <Trash2 className="h-4 w-4" />
+                                      </Button>
+                                    </>
+                                  )}
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))
+                        )}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </div>
+              )} {/* <-- This closing brace and parenthesis was missing in your original code */}
 
               {/* Redesigned Premium Pagination Controls */}
               {data?.pagination && (
@@ -627,7 +722,7 @@ export function CandidateList({
                   </div>
                 </div>
               )}
-            </>
+            </div>
           )}
         </CardContent>
       </Card>

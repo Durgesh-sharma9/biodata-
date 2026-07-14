@@ -16,6 +16,7 @@ import SelfApply from '@/pages/SelfApply';
 import CandidateForm from '@/pages/CandidateForm';
 import CandidateProfile from '@/pages/CandidateProfile';
 import Settings from '@/pages/Settings';
+import SchoolProfile from '@/pages/SchoolProfile';
 import Credits from '@/pages/Credits';
 import ApplicationLinks from '@/pages/ApplicationLinks';
 import Apply from '@/pages/Apply';
@@ -87,6 +88,8 @@ export default function App() {
               <Route path="/candidates/new" element={<CandidateForm />} />
               <Route path="/candidates/:id" element={<CandidateProfile />} />
               <Route path="/candidates/:id/edit" element={<CandidateForm />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="/school-profile" element={<SchoolProfile />} />
               <Route path="/credits" element={<Credits />} />
               <Route path="/application-links" element={<ApplicationLinks />} />
             </Route>

@@ -14,6 +14,8 @@ export function LocationSelect({ value = {}, onChange, errors = {} }) {
   const [latitude, setLatitude] = useState(value.latitude ?? '');
   const [longitude, setLongitude] = useState(value.longitude ?? '');
   const [workingRadius, setWorkingRadius] = useState(value.workingRadius ?? '');
+  const [locationQuery, setLocationQuery] = useState(value.address || '');
+  const [isSearchingLocation, setIsSearchingLocation] = useState(false);
 
   const { data: states = [] } = useQuery({
     queryKey: ['states'],
@@ -33,7 +35,18 @@ export function LocationSelect({ value = {}, onChange, errors = {} }) {
   });
 
   useEffect(() => {
-    onChange?.({ stateId, cityId, area, address, latitude: latitude === '' ? undefined : Number(latitude), longitude: longitude === '' ? undefined : Number(longitude), workingRadius: workingRadius === '' ? undefined : Number(workingRadius) });
+    const normalizedLatitude = latitude === '' ? undefined : Number(latitude);
+    const normalizedLongitude = longitude === '' ? undefined : Number(longitude);
+    const normalizedWorkingRadius = workingRadius === '' ? undefined : Number(workingRadius);
+    onChange?.({
+      stateId,
+      cityId,
+      area,
+      address,
+      latitude: Number.isNaN(normalizedLatitude) ? undefined : normalizedLatitude,
+      longitude: Number.isNaN(normalizedLongitude) ? undefined : normalizedLongitude,
+      workingRadius: Number.isNaN(normalizedWorkingRadius) ? undefined : normalizedWorkingRadius,
+    });
   }, [stateId, cityId, area, address, latitude, longitude, workingRadius, onChange]);
 
   const handleUseCurrentLocation = () => {
@@ -42,9 +55,32 @@ export function LocationSelect({ value = {}, onChange, errors = {} }) {
       (position) => {
         setLatitude(String(position.coords.latitude));
         setLongitude(String(position.coords.longitude));
+        setAddress((prev) => prev || 'Current location');
+        setLocationQuery((prev) => prev || 'Current location');
       },
       () => {}
     );
+  };
+
+  const handleSearchLocation = async () => {
+    const query = locationQuery.trim();
+    if (!query) return;
+
+    setIsSearchingLocation(true);
+    try {
+      const response = await fetch(`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=${encodeURIComponent(query)}`);
+      const data = await response.json();
+      const result = data?.[0];
+      if (!result) return;
+      setAddress(result.display_name || query);
+      setLatitude(String(result.lat));
+      setLongitude(String(result.lon));
+      setLocationQuery(result.display_name || query);
+    } catch (error) {
+      console.error('Location search failed', error);
+    } finally {
+      setIsSearchingLocation(false);
+    }
   };
 
   return (
@@ -145,12 +181,25 @@ export function LocationSelect({ value = {}, onChange, errors = {} }) {
 
         <div className="space-y-2 md:col-span-3">
           <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Full Address</Label>
-          <Input
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            placeholder="Search or enter a precise address"
-            className="rounded-xl h-11 border-slate-200 bg-white shadow-xs"
-          />
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <Input
+              value={address}
+              onChange={(e) => {
+                setAddress(e.target.value);
+                setLocationQuery(e.target.value);
+              }}
+              placeholder="Search or enter a precise address"
+              className="rounded-xl h-11 border-slate-200 bg-white shadow-xs"
+            />
+            <button
+              type="button"
+              onClick={handleSearchLocation}
+              disabled={isSearchingLocation}
+              className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-600"
+            >
+              {isSearchingLocation ? 'Searching...' : 'Search location'}
+            </button>
+          </div>
         </div>
 
         <div className="space-y-2 md:col-span-3 rounded-xl border border-slate-200 bg-white p-3">
@@ -172,14 +221,22 @@ export function LocationSelect({ value = {}, onChange, errors = {} }) {
               <Input value={workingRadius} onChange={(e) => setWorkingRadius(e.target.value)} placeholder="e.g. 10" />
             </div>
           </div>
-          <button
-            type="button"
-            onClick={handleUseCurrentLocation}
-            className="mt-2 inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-600"
-          >
-            <Navigation className="h-3.5 w-3.5" />
-            Use current location
-          </button>
+          <div className="mt-2 flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={handleUseCurrentLocation}
+              className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-600"
+            >
+              <Navigation className="h-3.5 w-3.5" />
+              Use current location
+            </button>
+            {(latitude || longitude) && (
+              <div className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-[11px] font-semibold text-slate-500">
+                <MapPin className="h-3.5 w-3.5 text-[#A05AFF]" />
+                Pin ready • {Number(latitude).toFixed(4)}, {Number(longitude).toFixed(4)}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

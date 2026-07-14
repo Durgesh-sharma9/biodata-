@@ -105,7 +105,7 @@ export const submitApplication = catchAsync(async (req, res) => {
     fullName,
     mobile: mobile.trim(),
     email,
-    address,
+    address: locationFields.address,
     position,
     qualifications: qualifications || [],
     subjects: subjects || [],
@@ -122,6 +122,9 @@ export const submitApplication = catchAsync(async (req, res) => {
     state: locationFields.state,
     city: locationFields.city,
     area: locationFields.area,
+    latitude: locationFields.latitude,
+    longitude: locationFields.longitude,
+    workingRadius: locationFields.workingRadius,
   });
 
   res.status(201).json({

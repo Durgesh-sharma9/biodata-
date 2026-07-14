@@ -121,12 +121,15 @@ export function DynamicCandidateForm({
     if (initialValues) {
       reset(initialValues);
       setProfilePhoto(initialValues.profilePhoto || null);
-      if (initialValues.stateId || initialValues.cityId || initialValues.area || initialValues.address) {
+      if (initialValues.stateId || initialValues.cityId || initialValues.area || initialValues.address || initialValues.latitude || initialValues.longitude || initialValues.workingRadius) {
         setLocation({
           stateId: initialValues.stateId,
           cityId: initialValues.cityId,
           area: initialValues.area || '',
           address: initialValues.address || '',
+          latitude: initialValues.latitude ?? '',
+          longitude: initialValues.longitude ?? '',
+          workingRadius: initialValues.workingRadius ?? '',
         });
       }
     }

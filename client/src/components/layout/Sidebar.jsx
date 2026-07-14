@@ -18,6 +18,7 @@ import {
   CreditCard,
   Bell,
   LogOut,
+  Building2,
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { cn } from '@/lib/utils';
@@ -25,6 +26,7 @@ import { cn } from '@/lib/utils';
 // हर एक लिंक के लिए एकदम सॉलिड और ब्राइट कलर (Hex Code) सेट किया है
 const schoolLinks = [
   { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, color: '#A05AFF' }, // Purple
+  { to: '/school-profile', label: 'School Profile', icon: Building2, color: '#9E58FF' }, // Violet
   { to: '/my-candidates', label: 'My Candidates', icon: Users2, color: '#FF9F1C' }, // Orange
   { to: '/talent-pool', label: 'Talent Pool', icon: UserSquare2, color: '#3A86FF' }, // Blue
   { to: '/credits', label: 'Credits', icon: PiggyBank, color: '#1BCFB4' }, // Mint Teal

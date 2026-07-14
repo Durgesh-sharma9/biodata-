@@ -72,8 +72,19 @@ const start = async () => {
   await connectDB();
   await migrateApplicantPlans();
   await seedMasterData();
-  app.listen(PORT, () => {
+
+  const server = app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
+  });
+
+  server.on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+      console.error(`Port ${PORT} is already in use. Please stop the other process or set a different PORT.`);
+      process.exit(1);
+    }
+
+    console.error('Failed to start server:', err);
+    process.exit(1);
   });
 };
 

@@ -30,6 +30,9 @@ const mapRowToCandidate = async (row, masterData) => {
   let state = row.state || row.State || '';
   let city = row.city || row.City || '';
   let area = row.area || row.Area || row.locality || row.Locality || '';
+  const latitude = row.latitude || row.Latitude || '';
+  const longitude = row.longitude || row.Longitude || '';
+  const workingRadius = row.workingRadius || row.working_radius || row['Working Radius'] || '';
 
   // Validate state if provided
   if (state) {
@@ -126,6 +129,9 @@ const mapRowToCandidate = async (row, masterData) => {
     address: candidateData.address,
     state: state || '',
     city: city || '',
+    latitude,
+    longitude,
+    workingRadius,
   });
 
   Object.assign(candidateData, locationPayload);

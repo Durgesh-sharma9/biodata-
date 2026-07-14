@@ -4,6 +4,7 @@ import Candidate from '../models/Candidate.js';
 import SchoolSettings from '../models/SchoolSettings.js';
 import { ApiError } from '../utils/ApiError.js';
 import { catchAsync } from '../utils/catchAsync.js';
+import { buildLocationPayload } from '../utils/location.js';
 
 export const getSchools = catchAsync(async (req, res) => {
   const { page = 1, limit = 10, search = '', status } = req.query;
@@ -51,6 +52,37 @@ export const getSchool = catchAsync(async (req, res) => {
   });
 });
 
+export const getMySchool = catchAsync(async (req, res) => {
+  const school = await School.findById(req.schoolId);
+  if (!school) throw new ApiError(404, 'School not found');
+
+  res.json({
+    success: true,
+    data: school,
+  });
+});
+
+export const updateMySchool = catchAsync(async (req, res) => {
+  const school = await School.findById(req.schoolId);
+  if (!school) throw new ApiError(404, 'School not found');
+
+  const locationPayload = await buildLocationPayload(req.body);
+  const hasLocationUpdate = locationPayload.latitude !== undefined || locationPayload.longitude !== undefined;
+  
+  Object.assign(school, {
+    ...req.body,
+    ...locationPayload,
+  });
+  
+  if (hasLocationUpdate) {
+    school.locationUpdatedAt = new Date();
+  }
+  
+  await school.save();
+
+  res.json({ success: true, data: school });
+});
+
 export const createSchool = catchAsync(async (req, res) => {
   const {
     schoolName,
@@ -75,6 +107,8 @@ export const createSchool = catchAsync(async (req, res) => {
   const existingUser = await User.findOne({ email: adminEmail.toLowerCase() });
   if (existingUser) throw new ApiError(400, 'Admin email already exists');
 
+  const locationPayload = await buildLocationPayload(req.body);
+
   const school = await School.create({
     schoolName,
     email,
@@ -84,6 +118,7 @@ export const createSchool = catchAsync(async (req, res) => {
     startDate,
     expiryDate,
     isActive: true,
+    ...locationPayload,
   });
 
   await User.create({
@@ -100,18 +135,22 @@ export const createSchool = catchAsync(async (req, res) => {
 });
 
 export const updateSchool = catchAsync(async (req, res) => {
-  const payload = {
-    ...req.body,
-    latitude: req.body.latitude === '' ? undefined : req.body.latitude,
-    longitude: req.body.longitude === '' ? undefined : req.body.longitude,
-  };
-
-  const school = await School.findByIdAndUpdate(req.params.id, payload, {
-    new: true,
-    runValidators: true,
-  });
-
+  const school = await School.findById(req.params.id);
   if (!school) throw new ApiError(404, 'School not found');
+
+  const locationPayload = await buildLocationPayload(req.body);
+  const hasLocationUpdate = locationPayload.latitude !== undefined || locationPayload.longitude !== undefined;
+  
+  Object.assign(school, {
+    ...req.body,
+    ...locationPayload,
+  });
+  
+  if (hasLocationUpdate) {
+    school.locationUpdatedAt = new Date();
+  }
+  
+  await school.save();
 
   res.json({ success: true, data: school });
 });

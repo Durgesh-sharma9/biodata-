@@ -9,23 +9,7 @@ import {
   isOwnedBySchool,
   hasFullAccess,
 } from '../utils/candidateAccess.js';
-import { buildLocationPayload, syncCandidateLocation } from '../utils/location.js';
-
-const calculateDistanceKm = (lat1, lon1, lat2, lon2) => {
-  if ([lat1, lon1, lat2, lon2].some((value) => value === undefined || value === null || value === '')) {
-    return null;
-  }
-
-  const toRad = (value) => (Number(value) * Math.PI) / 180;
-  const earthRadiusKm = 6371;
-  const dLat = toRad(lat2 - lat1);
-  const dLon = toRad(lon2 - lon1);
-  const a =
-    Math.sin(dLat / 2) ** 2 +
-    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return earthRadiusKm * c;
-};
+import { buildLocationPayload, syncCandidateLocation, calculateDistanceKm } from '../utils/location.js';
 
 const buildCandidateFilter = (query) => {
   const conditions = [{ isDeleted: false }];
@@ -197,6 +181,8 @@ export const getCandidates = catchAsync(async (req, res) => {
           candidateObject.longitude
         );
         candidateObject.distanceKm = distanceKm;
+        candidateObject.schoolLatitude = referenceLocation.latitude;
+        candidateObject.schoolLongitude = referenceLocation.longitude;
       }
       return formatCandidateForSchool(candidateObject, req.schoolId);
     })
@@ -205,6 +191,11 @@ export const getCandidates = catchAsync(async (req, res) => {
   res.json({
     success: true,
     data: formatted,
+    schoolLocation: school?.latitude && school?.longitude ? {
+      latitude: school.latitude,
+      longitude: school.longitude,
+      workingRadius: school.workingRadius,
+    } : null,
     pagination: {
       page: Number(page),
       limit: Number(limit),

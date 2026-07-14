@@ -42,6 +42,10 @@ export const updateSchool = (id, data) => api.put(`/schools/${id}`, data);
 export const toggleSchoolStatus = (id) => api.patch(`/schools/${id}/toggle-status`);
 export const getPlatformStats = () => api.get('/schools/stats');
 
+// School (School Admin)
+export const getMySchool = () => api.get('/schools/my-school');
+export const updateMySchool = (data) => api.put('/schools/my-school', data);
+
 // Super Admin
 export const getSuperAdminDashboard = () => api.get('/admin/dashboard');
 export const getAdmins = (params) => api.get('/admin/admins', { params });

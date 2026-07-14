@@ -41,7 +41,7 @@ const buildCandidatePayload = async (body) => {
     fullName,
     mobile: mobile.trim(),
     email,
-    address,
+    address: locationFields.address,
     position,
     qualifications: qualifications || [],
     subjects: subjects || [],
@@ -58,6 +58,10 @@ const buildCandidatePayload = async (body) => {
       area: locationFields.area,
       stateId: locationFields.stateId,
       cityId: locationFields.cityId,
+      address: locationFields.address,
+      latitude: locationFields.latitude,
+      longitude: locationFields.longitude,
+      workingRadius: locationFields.workingRadius,
   };
 };
 
@@ -198,7 +202,7 @@ export const updateApplicantProfile = catchAsync(async (req, res) => {
     throw new ApiError(400, 'Full name, mobile, and position are required');
   }
 
-  await buildLocationPayload({
+  const locationPayload = await buildLocationPayload({
     state,
     city,
     stateId,
@@ -208,9 +212,8 @@ export const updateApplicantProfile = catchAsync(async (req, res) => {
     latitude,
     longitude,
     workingRadius,
-  }).then((locationPayload) => {
-    Object.assign(candidate, locationPayload);
   });
+  Object.assign(candidate, locationPayload);
 
   Object.assign(candidate, {
     fullName,
