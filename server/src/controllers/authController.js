@@ -1,6 +1,7 @@
 import User from '../models/User.js';
 import School from '../models/School.js';
 import SchoolSettings from '../models/SchoolSettings.js';
+import Plan from '../models/Plan.js';
 import { ApiError } from '../utils/ApiError.js';
 import { generateToken } from '../utils/generateToken.js';
 import { catchAsync } from '../utils/catchAsync.js';
@@ -52,8 +53,12 @@ export const getMe = catchAsync(async (req, res) => {
     school = await School.findById(req.user.schoolId).select(
       'schoolName email isActive subscriptionPlan subscriptionStatus credits slug planId'
     );
-    if (school) {
-      await school.populate('planId', 'name credits durationDays');
+    if (school && school.planId) {
+      try {
+        await school.populate('planId', 'name credits durationDays');
+      } catch (err) {
+        console.error('Failed to populate planId:', err.message);
+      }
     }
   }
 

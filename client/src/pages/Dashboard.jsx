@@ -255,7 +255,7 @@ export default function Dashboard() {
       </div>
 
       {/* EXPANDED & RICH Recent My Candidates Datagrid */}
-      <Card className="table border border-slate-200/80 shadow-sm rounded-xl overflow-hidden bg-white">
+      <Card className="w-full border border-slate-200/80 shadow-sm rounded-xl overflow-hidden bg-white">
         <CardHeader className="flex flex-row items-center justify-between p-5 border-b border-slate-100 bg-white space-y-0">
           <div className="space-y-0.5">
             <CardTitle className="text-base font-bold tracking-wide text-slate-800 flex items-center gap-2">
@@ -427,7 +427,7 @@ export default function Dashboard() {
 
       {/* SECONDARY RICH WIDGET: Recent Talent Pool Additions */}
       {recentTalentPool.length > 0 && (
-        <Card className="table border border-slate-200/80 shadow-sm rounded-xl overflow-hidden bg-white">
+        <Card className="w-full border border-slate-200/80 shadow-sm rounded-xl overflow-hidden bg-white">
           <CardHeader className="flex flex-row items-center justify-between p-5 border-b border-slate-100 bg-white space-y-0">
             <div className="space-y-0.5">
               <CardTitle className="text-base font-bold tracking-wide text-slate-800 flex items-center gap-2">

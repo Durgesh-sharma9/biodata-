@@ -92,25 +92,20 @@ export default function CandidateForm() {
     <div className="space-y-6 w-full antialiased text-slate-800 dark:text-white">
       
       {/* Page Header Minimalist Panel */}
-      <div className="border-b border-slate-200/60 dark:border-slate-800 pb-5">
-        <PageHeader
-          title={isEdit ? 'Edit Candidate Profile' : 'Onboard New Candidate'}
-          description={isEdit ? 'Modify background records, profile configurations, and dynamic meta indicators.' : 'Register and index a fresh talent entry profile directly into HireHub.'}
-        />
-      </div>
+      <PageHeader
+        title={isEdit ? 'Edit Candidate Profile' : 'Add New Candidate'}
+        description={isEdit ? 'Modify candidate profile information, documents, and role qualifications.' : 'Fill in candidate details to add them to your recruitment database.'}
+      />
 
-      {/* Main Container Flat Layer Constraint Padding */}
-      <div className="rounded-xl border border-slate-200/60 bg-white p-5 shadow-2xs dark:bg-slate-900">
-        <DynamicCandidateForm
-          initialValues={candidate}
-          onSubmit={onSubmit}
-          settings={settings}
-          positions={positions}
-          isLoading={saveMutation.isPending}
-          submitButtonText={isEdit ? 'Update Candidate' : 'Add Candidate'}
-          disabledFields={[]}
-        />
-      </div>
+      <DynamicCandidateForm
+        initialValues={candidate}
+        onSubmit={onSubmit}
+        settings={settings}
+        positions={positions}
+        isLoading={saveMutation.isPending}
+        submitButtonText={isEdit ? 'Save Changes' : 'Add Candidate'}
+        disabledFields={[]}
+      />
 
       {/* Polish Premium Collision Detection / Conflict Resolution Modal */}
       <Dialog open={!!duplicate} onOpenChange={() => setDuplicate(null)}>

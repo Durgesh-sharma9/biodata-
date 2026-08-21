@@ -142,7 +142,7 @@ export default function Schools() {
       </Card>
 
       {/* Core Operational Matrix Presentation Grid Card Layer Constraint */}
-      <Card className="table">
+      <Card className="w-full border border-slate-200/80 shadow-sm rounded-xl overflow-hidden bg-white">
         <CardContent className="p-0">
           {isLoading ? (
             <div className="py-24 text-center">

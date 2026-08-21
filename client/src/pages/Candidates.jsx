@@ -408,27 +408,29 @@ export function CandidateList({
                 />
               </div>
 
-              <div className="flex items-center gap-2">
-                <label className={`flex items-center gap-2 rounded-lg border px-3 h-9 text-xs font-semibold flex-1 ${!data?.schoolLocation ? 'border-slate-200 bg-slate-50 text-slate-400 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-500 cursor-not-allowed' : 'border-slate-200 bg-slate-50 text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300'}`}>
-                  <input
-                    type="checkbox"
-                    checked={!!filters.nearby}
-                    onChange={(e) => updateFilter('nearby', e.target.checked)}
-                    disabled={!data?.schoolLocation}
-                    className="h-3.5 w-3.5 rounded border-slate-300 text-[#A05AFF] disabled:opacity-50"
-                  />
-                  Nearby only
-                </label>
+              {section !== 'talent_pool' && (
+                <div className="flex items-center gap-2">
+                  <label className={`flex items-center gap-2 rounded-lg border px-3 h-9 text-xs font-semibold flex-1 ${!data?.schoolLocation ? 'border-slate-200 bg-slate-50 text-slate-400 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-500 cursor-not-allowed' : 'border-slate-200 bg-slate-50 text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300'}`}>
+                    <input
+                      type="checkbox"
+                      checked={!!filters.nearby}
+                      onChange={(e) => updateFilter('nearby', e.target.checked)}
+                      disabled={!data?.schoolLocation}
+                      className="h-3.5 w-3.5 rounded border-slate-300 text-[#A05AFF] disabled:opacity-50"
+                    />
+                    Nearby only
+                  </label>
 
-                <Input
-                  type="number"
-                  placeholder="Radius (km)"
-                  className={`h-9 w-24 border-slate-200 rounded-lg focus-visible:ring-[#A05AFF] dark:bg-slate-800 dark:border-slate-700 text-xs font-medium ${!data?.schoolLocation ? 'opacity-50 cursor-not-allowed' : ''}`}
-                  value={filters.radiusKm}
-                  onChange={(e) => updateFilter('radiusKm', e.target.value)}
-                  disabled={!filters.nearby || !data?.schoolLocation}
-                />
-              </div>
+                  <Input
+                    type="number"
+                    placeholder="Radius (km)"
+                    className={`h-9 w-24 border-slate-200 rounded-lg focus-visible:ring-[#A05AFF] dark:bg-slate-800 dark:border-slate-700 text-xs font-medium ${!data?.schoolLocation ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    value={filters.radiusKm}
+                    onChange={(e) => updateFilter('radiusKm', e.target.value)}
+                    disabled={!filters.nearby || !data?.schoolLocation}
+                  />
+                </div>
+              )}
 
             </div>
           )}
@@ -437,7 +439,7 @@ export function CandidateList({
       </Card>
 
       {/* School Location Warning */}
-      {!data?.schoolLocation && (
+      {section !== 'talent_pool' && !data?.schoolLocation && (
         <Card className="border-amber-200 bg-amber-50 dark:border-amber-900/30 dark:bg-amber-950/20">
           <CardContent className="p-4 flex items-start gap-3">
             <AlertCircle className="h-5 w-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
@@ -456,27 +458,29 @@ export function CandidateList({
       {/* Main Listing View Table Interface */}
       <Card>
         <CardContent className="p-0">
-          <div className="flex items-center justify-end gap-2 border-b border-slate-100 px-4 py-3 dark:border-slate-800">
-            <Button
-              type="button"
-              variant={viewMode === 'list' ? 'default' : 'outline'}
-              className={viewMode === 'list' ? 'bg-[#A05AFF] text-white' : 'border-slate-200 bg-white text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300'}
-              onClick={() => setViewMode('list')}
-            >
-              <List className="mr-2 h-4 w-4" />
-              List View
-            </Button>
-            <Button
-              type="button"
-              variant={viewMode === 'map' ? 'default' : 'outline'}
-              className={viewMode === 'map' ? 'bg-[#A05AFF] text-white' : 'border-slate-200 bg-white text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300'}
-              onClick={() => setViewMode('map')}
-              disabled={!data?.schoolLocation}
-            >
-              <MapIcon className="mr-2 h-4 w-4" />
-              Map View
-            </Button>
-          </div>
+          {section !== 'talent_pool' && (
+            <div className="flex items-center justify-end gap-2 border-b border-slate-100 px-4 py-3 dark:border-slate-800">
+              <Button
+                type="button"
+                variant={viewMode === 'list' ? 'default' : 'outline'}
+                className={viewMode === 'list' ? 'bg-[#A05AFF] text-white' : 'border-slate-200 bg-white text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300'}
+                onClick={() => setViewMode('list')}
+              >
+                <List className="mr-2 h-4 w-4" />
+                List View
+              </Button>
+              <Button
+                type="button"
+                variant={viewMode === 'map' ? 'default' : 'outline'}
+                className={viewMode === 'map' ? 'bg-[#A05AFF] text-white' : 'border-slate-200 bg-white text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300'}
+                onClick={() => setViewMode('map')}
+                disabled={!data?.schoolLocation}
+              >
+                <MapIcon className="mr-2 h-4 w-4" />
+                Map View
+              </Button>
+            </div>
+          )}
 
           {isLoading ? (
             <div className="py-24 flex flex-col items-center justify-center space-y-3">
@@ -487,7 +491,7 @@ export function CandidateList({
             </div>
           ) : (
             <div className="w-full">
-              {viewMode === 'map' ? (
+              {section !== 'talent_pool' && viewMode === 'map' ? (
                 <div className="space-y-4 p-4">
                   <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <div className="border-b border-slate-100 p-4 dark:border-slate-800">

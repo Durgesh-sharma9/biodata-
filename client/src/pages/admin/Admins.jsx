@@ -82,7 +82,7 @@ export default function Admins() {
       </Card>
 
       {/* Main Administrative Table Matrix */}
-      <Card className="table">
+      <Card className="w-full border border-slate-200/80 shadow-sm rounded-xl overflow-hidden bg-white">
         <CardContent className="p-0">
           <div className="overflow-x-auto w-full">
             <Table>

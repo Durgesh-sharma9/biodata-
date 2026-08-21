@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link, useParams } from 'react-router-dom';
-import { Pencil, FileText, ExternalLink, Lock, Send, Unlock, User, Briefcase, FileCheck, ShieldAlert, BadgeInfo, CheckCircle2, Loader2 } from 'lucide-react';
+import { Pencil, FileText, ExternalLink, Lock, Send, Unlock, User, Briefcase, FileCheck, ShieldAlert, BadgeInfo, CheckCircle2, Loader2, Sparkles } from 'lucide-react';
 import {
   getCandidate,
   unlockCandidate,
@@ -279,6 +279,68 @@ export default function CandidateProfile() {
             </dl>
           </CardContent>
         </Card>
+
+        {/* Role-Specific Custom Parameters Container */}
+        {canViewProfileDetails && (() => {
+          const roleRows = [];
+          if (candidate.subjects?.length) roleRows.push({ label: 'Subjects', value: candidate.subjects.join(', ') });
+          if (candidate.classesCanTeach?.length) roleRows.push({ label: 'Classes Can Teach', value: candidate.classesCanTeach.join(', ') });
+          if (candidate.medium) roleRows.push({ label: 'Medium', value: candidate.medium });
+          if (candidate.boardExperience?.length) roleRows.push({ label: 'Board Experience', value: candidate.boardExperience.join(', ') });
+          if (candidate.bEd != null) roleRows.push({ label: 'B.Ed Qualification', value: candidate.bEd ? 'Yes' : 'No' });
+          if (candidate.mEd != null) roleRows.push({ label: 'M.Ed Qualification', value: candidate.mEd ? 'Yes' : 'No' });
+
+          if (candidate.vehicleTypes?.length) roleRows.push({ label: 'Vehicle Types', value: candidate.vehicleTypes.join(', ') });
+          if (candidate.drivingExperience != null && candidate.position === 'Driver') roleRows.push({ label: 'Driving Experience', value: `${candidate.drivingExperience} Years` });
+          if (candidate.heavyVehicle != null) roleRows.push({ label: 'Heavy Vehicle License', value: candidate.heavyVehicle ? 'Yes' : 'No' });
+          if (candidate.schoolBusExperience != null) roleRows.push({ label: 'School Bus Experience', value: candidate.schoolBusExperience ? 'Yes' : 'No' });
+
+          if (candidate.tallyKnowledge != null) roleRows.push({ label: 'Tally Knowledge', value: candidate.tallyKnowledge ? 'Yes' : 'No' });
+          if (candidate.gstKnowledge != null) roleRows.push({ label: 'GST Knowledge', value: candidate.gstKnowledge ? 'Yes' : 'No' });
+          if (candidate.payrollExperience != null) roleRows.push({ label: 'Payroll Experience', value: candidate.payrollExperience ? 'Yes' : 'No' });
+          if (candidate.schoolAccountingExperience != null) roleRows.push({ label: 'School Accounting', value: candidate.schoolAccountingExperience ? 'Yes' : 'No' });
+
+          if (candidate.languagesKnown?.length) roleRows.push({ label: 'Languages Known', value: candidate.languagesKnown.join(', ') });
+          if (candidate.computerSkills != null) roleRows.push({ label: 'Computer Skills', value: candidate.computerSkills ? 'Yes' : 'No' });
+          if (candidate.frontDeskExperience != null) roleRows.push({ label: 'Front Desk Experience', value: candidate.frontDeskExperience ? 'Yes' : 'No' });
+
+          if (candidate.typingSpeed) roleRows.push({ label: 'Typing Speed', value: candidate.typingSpeed });
+          if (candidate.msOfficeKnowledge != null) roleRows.push({ label: 'MS Office Knowledge', value: candidate.msOfficeKnowledge ? 'Yes' : 'No' });
+          if (candidate.excelKnowledge != null) roleRows.push({ label: 'Excel Knowledge', value: candidate.excelKnowledge ? 'Yes' : 'No' });
+
+          if (candidate.libraryManagementExperience != null) roleRows.push({ label: 'Library Management', value: candidate.libraryManagementExperience ? 'Yes' : 'No' });
+          if (candidate.librarySoftwareKnowledge != null) roleRows.push({ label: 'Library Software', value: candidate.librarySoftwareKnowledge ? 'Yes' : 'No' });
+
+          if (candidate.labType) roleRows.push({ label: 'Lab Type', value: candidate.labType });
+          if (candidate.labExperience != null) roleRows.push({ label: 'Lab Experience', value: candidate.labExperience ? 'Yes' : 'No' });
+
+          if (candidate.sportsSpecialization) roleRows.push({ label: 'Sports Specialization', value: candidate.sportsSpecialization });
+          if (candidate.coachingCertificates?.length) roleRows.push({ label: 'Coaching Certificates', value: candidate.coachingCertificates.join(', ') });
+
+          if (candidate.exArmy != null) roleRows.push({ label: 'Ex-Army Background', value: candidate.exArmy ? 'Yes' : 'No' });
+          if (candidate.securityExperience != null) roleRows.push({ label: 'Security Experience', value: candidate.securityExperience ? 'Yes' : 'No' });
+          if (candidate.nightShiftAvailable != null) roleRows.push({ label: 'Night Shift Available', value: candidate.nightShiftAvailable ? 'Yes' : 'No' });
+
+          if (roleRows.length === 0) return null;
+
+          return (
+            <Card className="border border-slate-200/60 bg-white shadow-2xs dark:bg-slate-900 lg:col-span-2 overflow-hidden">
+              <CardHeader className="p-5 border-b border-slate-200/60 dark:border-slate-800/60 bg-slate-50/70 dark:bg-slate-900/20">
+                <CardTitle className="text-sm font-bold tracking-wide text-slate-800 dark:text-slate-200 flex items-center gap-2">
+                  <Sparkles className="h-4 w-4 text-[#A05AFF]" />
+                  {candidate.position} Specific Details
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-5">
+                <dl className="grid grid-cols-1 md:grid-cols-2 gap-x-8 divide-y md:divide-y-0 divide-slate-100 dark:divide-slate-800">
+                  {roleRows.map((r, i) => (
+                    <DetailRow key={i} label={r.label} value={r.value} />
+                  ))}
+                </dl>
+              </CardContent>
+            </Card>
+          );
+        })()}
 
         {/* Notes Segment Block Container */}
         {canViewProfileDetails && !isContactHidden && candidate.notes && (

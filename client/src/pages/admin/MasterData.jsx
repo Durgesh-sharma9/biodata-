@@ -120,7 +120,7 @@ function MasterDataTable({ tab }) {
   return (
     <div className="space-y-6">
       {/* Input Entry Card Configuration */}
-      <Card className="table">
+      <Card className="w-full border border-slate-200/80 shadow-sm rounded-xl overflow-hidden bg-white">
         <CardHeader className="p-5 pb-3">
           <CardTitle className="text-sm font-bold tracking-wide text-slate-800 dark:text-slate-200 flex items-center gap-2">
             Create New {tab.label.slice(0, -1)}
@@ -159,7 +159,7 @@ function MasterDataTable({ tab }) {
       </Card>
 
       {/* Main Records Control Core Section */}
-      <Card className="table">
+      <Card className="w-full border border-slate-200/80 shadow-sm rounded-xl overflow-hidden bg-white">
         <CardHeader className="p-5 border-b border-slate-200/60 dark:border-slate-800/60 bg-slate-50/70 dark:bg-slate-900/20">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex items-center gap-3">

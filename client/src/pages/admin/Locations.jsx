@@ -112,7 +112,7 @@ export default function Locations() {
 
         {/* States Tab Section */}
         <TabsContent value="states" className="outline-none focus:outline-none focus:ring-0 animate-in fade-in-30 slide-in-from-bottom-2 duration-300">
-          <Card className="table">
+          <Card className="w-full border border-slate-200/80 shadow-sm rounded-xl overflow-hidden bg-white">
             <CardHeader className="p-5 border-b border-slate-200/60 dark:border-slate-800">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-sm font-bold tracking-wide text-slate-800 dark:text-slate-200 flex items-center gap-2">
@@ -187,7 +187,7 @@ export default function Locations() {
 
         {/* Cities Tab Section */}
         <TabsContent value="cities" className="outline-none focus:outline-none focus:ring-0 animate-in fade-in-30 slide-in-from-bottom-2 duration-300">
-          <Card className="table">
+          <Card className="w-full border border-slate-200/80 shadow-sm rounded-xl overflow-hidden bg-white">
             <CardHeader className="p-5 border-b border-slate-200/60 dark:border-slate-800">
               <CardTitle className="text-sm font-bold tracking-wide text-slate-800 dark:text-slate-200 flex items-center gap-2">
                 <Building2 className="h-4 w-4 text-purple-600" />
