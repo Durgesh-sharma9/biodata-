@@ -59,7 +59,7 @@ export function Sidebar() {
   const roleLabel = isSuperAdmin ? 'Super Admin' : isApplicant ? 'Applicant' : 'Recruiter';
 
   return (
-    <aside className="flex h-screen w-64 flex-col bg-white dark:bg-slate-900 border-r border-slate-100 dark:border-slate-800/80 sticky top-0 left-0 z-30 shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
+    <aside className="flex h-full w-full flex-col bg-white dark:bg-slate-900 border-r border-slate-100 dark:border-slate-800/80 z-30 shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
       {/* Brand & Identity Segment */}
       <div className="p-6 border-b border-slate-50 dark:border-slate-800/50 flex flex-col gap-3">
         <div className="flex items-center gap-3">

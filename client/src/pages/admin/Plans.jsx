@@ -52,7 +52,7 @@ export default function Plans() {
   };
 
   return (
-    <div className="space-y-6 p-4 md:p-6 max-w-[1400px] mx-auto w-full bg-[#f3f3f4] dark:bg-slate-950 min-h-screen">
+    <div className="space-y-6 w-full antialiased text-slate-800 dark:text-white">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-100 pb-5">
         <PageHeader title="Subscription Plans" description="Manage system token bundles and plan nodes." />
         <Button onClick={openCreate} className="bg-[#A05AFF] hover:bg-[#A05AFF]/90 text-white font-bold rounded-xl gap-2">

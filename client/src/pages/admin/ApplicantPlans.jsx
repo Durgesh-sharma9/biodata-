@@ -84,7 +84,7 @@ export default function ApplicantPlans() {
   };
 
   return (
-    <div className="p-6 max-w-[1400px] mx-auto w-full antialiased bg-slate-50/50 dark:bg-slate-950 min-h-screen space-y-6 animate-in fade-in duration-500">
+    <div className="space-y-6 w-full antialiased text-slate-800 dark:text-white">
       
       {/* Page Header Panel */}
       <div className="flex items-center justify-between pb-5">

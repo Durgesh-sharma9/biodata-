@@ -25,7 +25,7 @@ function SettingsSection({ field, label, items, onAdd, onRemove, isPending, icon
   };
 
   return (
-    <Card className="border border-slate-200/60 bg-white shadow-2xs dark:bg-slate-900">
+    <Card>
       <CardHeader className="p-5 pb-2 flex flex-row items-center justify-between space-y-0">
         <div className="flex items-center gap-3">
           <div className="p-2.5 border border-purple-200/60 bg-purple-50/80 text-purple-700 rounded-xl">
@@ -122,7 +122,7 @@ export default function Settings() {
   const isPending = addMutation.isPending || removeMutation.isPending;
 
   return (
-    <div className="space-y-6 max-w-[1400px] mx-auto w-full p-6 antialiased text-slate-800 dark:text-slate-200 bg-slate-50/50 dark:bg-slate-950 min-h-screen animate-in fade-in duration-500">
+    <div className="space-y-6 w-full antialiased text-slate-800 dark:text-slate-200">
       
       {/* Page Header Panel Layout */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200/60 shadow-2xs">

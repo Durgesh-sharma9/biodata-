@@ -48,7 +48,7 @@ export default function Credits() {
   });
 
   return (
-    <div className="space-y-6 max-w-[1400px] mx-auto w-full p-6 antialiased text-slate-800 dark:text-slate-200 bg-slate-50/50 dark:bg-slate-950 min-h-screen animate-in fade-in duration-500">
+    <div className="space-y-6 w-full antialiased text-slate-800 dark:text-slate-200">
       
       {/* Page Header Panel Layout */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -69,7 +69,7 @@ export default function Credits() {
       <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
         
         {/* Available Balance Card Component */}
-        <Card className="border border-slate-200/60 bg-white shadow-2xs dark:bg-slate-900">
+        <Card>
           <CardHeader className="p-5 pb-2 flex flex-row items-center justify-between space-y-0">
             <CardTitle className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 flex items-center gap-2">
               Available Credits
@@ -109,7 +109,7 @@ export default function Credits() {
         </Card>
 
         {/* Storefront Card Component */}
-        <Card className="border border-slate-200/60 bg-white shadow-2xs dark:bg-slate-900">
+        <Card>
           <CardHeader className="p-5 pb-2 flex flex-row items-center justify-between space-y-0">
             <CardTitle className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
               Available Storefront Extensions
@@ -159,7 +159,7 @@ export default function Credits() {
       </div>
 
       {/* Profile Unlock Audit Trail Section */}
-      <Card className="table">
+      <Card>
         <CardHeader className="p-5 border-b border-slate-200/60 dark:border-slate-800 flex flex-row items-center justify-between space-y-0">
           <div className="space-y-0.5">
             <CardTitle className="text-sm font-bold tracking-wide text-slate-800 dark:text-slate-200 flex items-center gap-2">

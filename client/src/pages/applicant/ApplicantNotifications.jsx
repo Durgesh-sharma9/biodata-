@@ -44,7 +44,7 @@ export default function ApplicantNotifications() {
   };
 
   return (
-    <div className="space-y-6 p-6 max-w-[1400px] mx-auto w-full bg-slate-50/50 dark:bg-slate-950 min-h-screen animate-in fade-in duration-500">
+    <div className="space-y-6 w-full antialiased text-slate-800 dark:text-white">
       <PageHeader
         title="Notifications"
         description="Stay updated with your account activity"

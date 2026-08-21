@@ -110,7 +110,7 @@ export default function CandidateProfile() {
   };
 
   return (
-    <div className="space-y-6 p-6 max-w-7xl mx-auto bg-slate-50/50 dark:bg-slate-950 text-slate-800 dark:text-white antialiased min-h-screen animate-in fade-in duration-500">
+    <div className="space-y-6 w-full antialiased text-slate-800 dark:text-white">
       
       {/* Page Header Panel Minimalist Scaffolding */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5 border-b border-slate-200/60 dark:border-slate-800 pb-5">

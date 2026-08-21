@@ -26,7 +26,7 @@ export function ApplicantSidebar() {
   const { user, logout } = useAuth();
 
   return (
-    <aside className="flex h-screen w-64 flex-col bg-white dark:bg-slate-900 border-r border-slate-100 dark:border-slate-800/50 sticky top-0 left-0 z-30">
+    <aside className="flex h-full w-full flex-col bg-white dark:bg-slate-900 border-r border-slate-100 dark:border-slate-800/50 z-30">
       {/* Premium Branding Header Segment */}
       <div className="p-5 border-b border-slate-100 dark:border-slate-800/50">
         <div className="flex items-center gap-2.5">

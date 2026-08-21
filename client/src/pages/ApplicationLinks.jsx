@@ -30,7 +30,7 @@ export default function ApplicationLinks() {
   };
 
   return (
-    <div className="space-y-6 p-5 max-w-7xl mx-auto bg-[#f3f3f4] dark:bg-slate-950 text-slate-800 dark:text-white antialiased min-h-screen">
+    <div className="space-y-6 w-full antialiased text-slate-800 dark:text-white">
       
       {/* Minimalist Page Header Panel */}
       <div className="border-b border-slate-100 dark:border-slate-800 pb-5">
@@ -45,7 +45,7 @@ export default function ApplicationLinks() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         
         {/* Public Application Link Card Module */}
-        <Card className="rounded-xl border-none bg-white shadow-sm dark:bg-slate-900 flex flex-col justify-between overflow-hidden">
+        <Card className="flex flex-col justify-between overflow-hidden">
           <div>
             <CardHeader className="p-5 border-b border-slate-100 dark:border-slate-800/60 bg-slate-50/70 dark:bg-slate-900/20">
               <div className="flex items-center gap-3">
@@ -111,7 +111,7 @@ export default function ApplicationLinks() {
         </Card>
 
         {/* QR Code Presentation Module */}
-        <Card className="rounded-xl border-none bg-white shadow-sm dark:bg-slate-900 overflow-hidden">
+        <Card className="overflow-hidden">
           <CardHeader className="p-5 border-b border-slate-100 dark:border-slate-800/60 bg-slate-50/70 dark:bg-slate-900/20">
             <div className="flex items-center gap-3">
               <div className="p-2.5 bg-[#9E58FF]/10 text-[#9E58FF] rounded-xl">

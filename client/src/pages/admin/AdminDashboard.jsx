@@ -29,7 +29,7 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="space-y-8 p-6 md:p-8 max-w-[1400px] mx-auto w-full antialiased bg-[#f3f3f4] dark:bg-slate-950 min-h-screen animate-in fade-in duration-500">
+    <div className="space-y-6 w-full antialiased">
       
       {/* Upper Header Frame */}
       <div className="flex items-center justify-between border-b border-slate-200/50 pb-5 dark:border-slate-900">

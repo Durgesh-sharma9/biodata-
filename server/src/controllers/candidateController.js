@@ -403,16 +403,33 @@ export const getDashboardStats = catchAsync(async (req, res) => {
     ],
   };
 
-  const [myCandidates, talentPoolCount, ownedCandidates, recentCandidates] = await Promise.all([
+  const [
+    myCandidates,
+    talentPoolCount,
+    ownedCandidates,
+    recentCandidates,
+    recentTalentPool,
+    positionBreakdown,
+    unlockedCount,
+  ] = await Promise.all([
     Candidate.countDocuments(myCandidatesFilter),
     Candidate.countDocuments(talentPoolFilter),
     Candidate.countDocuments(ownedFilter),
-    Candidate.find(myCandidatesFilter).sort({ createdAt: -1 }).limit(5),
+    Candidate.find(myCandidatesFilter).sort({ createdAt: -1 }).limit(10),
+    Candidate.find(talentPoolFilter).sort({ createdAt: -1 }).limit(6),
+    Candidate.aggregate([
+      { $match: { isDeleted: false } },
+      { $group: { _id: '$position', count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+      { $limit: 6 },
+    ]),
+    UnlockHistory.countDocuments({ schoolId }),
   ]);
 
-  const formattedRecent = await Promise.all(
-    recentCandidates.map((c) => formatCandidateForSchool(c, schoolId))
-  );
+  const [formattedRecent, formattedTalentPool] = await Promise.all([
+    Promise.all(recentCandidates.map((c) => formatCandidateForSchool(c, schoolId))),
+    Promise.all(recentTalentPool.map((c) => formatCandidateForSchool(c, schoolId))),
+  ]);
 
   res.json({
     success: true,
@@ -421,8 +438,11 @@ export const getDashboardStats = catchAsync(async (req, res) => {
       talentPoolCount,
       totalCandidates: myCandidates + talentPoolCount,
       ownedCandidates,
+      unlockedCount,
       availableCredits: school?.credits || 0,
       recentCandidates: formattedRecent,
+      recentTalentPool: formattedTalentPool,
+      positionBreakdown: positionBreakdown.map((p) => ({ position: p._id || 'Other', count: p.count })),
     },
   });
 });

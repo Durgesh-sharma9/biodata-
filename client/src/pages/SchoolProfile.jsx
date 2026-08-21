@@ -88,7 +88,7 @@ export default function SchoolProfile() {
   }
 
   return (
-    <div className="space-y-6 max-w-[1400px] mx-auto w-full p-6 antialiased text-slate-800 dark:text-slate-200 bg-slate-50/50 dark:bg-slate-950 min-h-screen">
+    <div className="space-y-6 w-full antialiased text-slate-800 dark:text-slate-200">
       
       {/* Page Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200/60 shadow-2xs">
@@ -122,7 +122,7 @@ export default function SchoolProfile() {
       <div className="grid gap-6 grid-cols-1 lg:grid-cols-2">
         
         {/* Basic Information */}
-        <Card className="border border-slate-200/60 bg-white shadow-2xs dark:bg-slate-900">
+        <Card>
           <CardHeader className="p-5 pb-3">
             <CardTitle className="text-sm font-bold tracking-wide text-slate-800 dark:text-slate-200 flex items-center gap-2">
               <Building2 className="h-4 w-4 text-purple-600" />
@@ -159,7 +159,7 @@ export default function SchoolProfile() {
         </Card>
 
         {/* Location Information */}
-        <Card className="border border-slate-200/60 bg-white shadow-2xs dark:bg-slate-900">
+        <Card>
           <CardHeader className="p-5 pb-3">
             <CardTitle className="text-sm font-bold tracking-wide text-slate-800 dark:text-slate-200 flex items-center gap-2">
               <MapPin className="h-4 w-4 text-purple-600" />
@@ -241,7 +241,7 @@ export default function SchoolProfile() {
         </Card>
 
         {/* Map Picker */}
-        <Card className="border border-slate-200/60 bg-white shadow-2xs dark:bg-slate-900 lg:col-span-2">
+        <Card className="lg:col-span-2">
           <CardHeader className="p-5 pb-3">
             <CardTitle className="text-sm font-bold tracking-wide text-slate-800 dark:text-slate-200 flex items-center gap-2">
               <Navigation className="h-4 w-4 text-purple-600" />

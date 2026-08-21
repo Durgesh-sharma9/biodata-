@@ -2,10 +2,7 @@ import { Sparkles } from 'lucide-react';
 
 export function PageHeader({ title, description, action }) {
   return (
-    <div className="relative w-full flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between pb-6 mb-2 border-b border-slate-100 dark:border-slate-800/80">
-      {/* Decorative ambient background blur matching modern SaaS layouts */}
-      <div className="absolute top-0 left-0 -translate-x-12 -translate-y-12 w-48 h-48 bg-gradient-to-tr from-violet-500/10 to-blue-500/0 rounded-full blur-2xl pointer-events-none dark:from-violet-500/5" />
-      
+    <div className="relative w-full flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between pb-4 mb-2 border-b border-slate-200/80 dark:border-slate-800">
       {/* Premium Content Left Section */}
       <div className="space-y-2 max-w-2xl relative z-10">
         <div className="flex items-center gap-2.5">
