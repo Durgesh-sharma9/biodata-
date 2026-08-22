@@ -57,7 +57,12 @@ export default function ApplicantDocuments() {
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-bold text-slate-800 dark:text-slate-200">{doc.name}</p>
-                    <p className="flex items-center gap-1 text-xs text-slate-400 dark:text-slate-500">
+                    {doc.note && (
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-2 italic">
+                        "{doc.note}"
+                      </p>
+                    )}
+                    <p className="flex items-center gap-1 text-xs text-slate-400 dark:text-slate-500 mt-1">
                       View <ExternalLink className="h-3 w-3" />
                     </p>
                   </div>

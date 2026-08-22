@@ -39,6 +39,12 @@ export default function SchoolProfile() {
         address: school.address || '',
         workingRadius: school.workingRadius || '',
       });
+      if (school.latitude && school.longitude) {
+        setLocationData({
+          latitude: Number(school.latitude),
+          longitude: Number(school.longitude),
+        });
+      }
     }
   }, [school]);
 
@@ -59,16 +65,19 @@ export default function SchoolProfile() {
     if (details) {
       setFormData((prev) => ({
         ...prev,
-        state: prev.state || details.state || '',
-        city: prev.city || details.city || '',
-        area: prev.area || details.area || '',
-        address: prev.address || details.address || '',
+        state: details.state || prev.state || '',
+        city: details.city || prev.city || '',
+        area: details.area || prev.area || '',
+        address: details.address || prev.address || '',
       }));
     }
   };
 
   const handleSave = () => {
     if (!school) return;
+
+    const currentLat = locationData?.latitude ?? school?.latitude;
+    const currentLng = locationData?.longitude ?? school?.longitude;
 
     const formDataToSubmit = {
       schoolName: formData.schoolName,
@@ -79,7 +88,8 @@ export default function SchoolProfile() {
       area: formData.area,
       address: formData.address,
       workingRadius: formData.workingRadius ? Number(formData.workingRadius) : undefined,
-      ...locationData,
+      ...(currentLat !== undefined && currentLat !== null ? { latitude: Number(currentLat) } : {}),
+      ...(currentLng !== undefined && currentLng !== null ? { longitude: Number(currentLng) } : {}),
     };
 
     updateMutation.mutate(formDataToSubmit);

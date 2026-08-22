@@ -283,43 +283,55 @@ export default function CandidateProfile() {
         {/* Role-Specific Custom Parameters Container */}
         {canViewProfileDetails && (() => {
           const roleRows = [];
-          if (candidate.subjects?.length) roleRows.push({ label: 'Subjects', value: candidate.subjects.join(', ') });
-          if (candidate.classesCanTeach?.length) roleRows.push({ label: 'Classes Can Teach', value: candidate.classesCanTeach.join(', ') });
-          if (candidate.medium) roleRows.push({ label: 'Medium', value: candidate.medium });
-          if (candidate.boardExperience?.length) roleRows.push({ label: 'Board Experience', value: candidate.boardExperience.join(', ') });
-          if (candidate.bEd != null) roleRows.push({ label: 'B.Ed Qualification', value: candidate.bEd ? 'Yes' : 'No' });
-          if (candidate.mEd != null) roleRows.push({ label: 'M.Ed Qualification', value: candidate.mEd ? 'Yes' : 'No' });
+          const pos = candidate.position;
 
-          if (candidate.vehicleTypes?.length) roleRows.push({ label: 'Vehicle Types', value: candidate.vehicleTypes.join(', ') });
-          if (candidate.drivingExperience != null && candidate.position === 'Driver') roleRows.push({ label: 'Driving Experience', value: `${candidate.drivingExperience} Years` });
-          if (candidate.heavyVehicle != null) roleRows.push({ label: 'Heavy Vehicle License', value: candidate.heavyVehicle ? 'Yes' : 'No' });
-          if (candidate.schoolBusExperience != null) roleRows.push({ label: 'School Bus Experience', value: candidate.schoolBusExperience ? 'Yes' : 'No' });
-
-          if (candidate.tallyKnowledge != null) roleRows.push({ label: 'Tally Knowledge', value: candidate.tallyKnowledge ? 'Yes' : 'No' });
-          if (candidate.gstKnowledge != null) roleRows.push({ label: 'GST Knowledge', value: candidate.gstKnowledge ? 'Yes' : 'No' });
-          if (candidate.payrollExperience != null) roleRows.push({ label: 'Payroll Experience', value: candidate.payrollExperience ? 'Yes' : 'No' });
-          if (candidate.schoolAccountingExperience != null) roleRows.push({ label: 'School Accounting', value: candidate.schoolAccountingExperience ? 'Yes' : 'No' });
-
-          if (candidate.languagesKnown?.length) roleRows.push({ label: 'Languages Known', value: candidate.languagesKnown.join(', ') });
-          if (candidate.computerSkills != null) roleRows.push({ label: 'Computer Skills', value: candidate.computerSkills ? 'Yes' : 'No' });
-          if (candidate.frontDeskExperience != null) roleRows.push({ label: 'Front Desk Experience', value: candidate.frontDeskExperience ? 'Yes' : 'No' });
-
-          if (candidate.typingSpeed) roleRows.push({ label: 'Typing Speed', value: candidate.typingSpeed });
-          if (candidate.msOfficeKnowledge != null) roleRows.push({ label: 'MS Office Knowledge', value: candidate.msOfficeKnowledge ? 'Yes' : 'No' });
-          if (candidate.excelKnowledge != null) roleRows.push({ label: 'Excel Knowledge', value: candidate.excelKnowledge ? 'Yes' : 'No' });
-
-          if (candidate.libraryManagementExperience != null) roleRows.push({ label: 'Library Management', value: candidate.libraryManagementExperience ? 'Yes' : 'No' });
-          if (candidate.librarySoftwareKnowledge != null) roleRows.push({ label: 'Library Software', value: candidate.librarySoftwareKnowledge ? 'Yes' : 'No' });
-
-          if (candidate.labType) roleRows.push({ label: 'Lab Type', value: candidate.labType });
-          if (candidate.labExperience != null) roleRows.push({ label: 'Lab Experience', value: candidate.labExperience ? 'Yes' : 'No' });
-
-          if (candidate.sportsSpecialization) roleRows.push({ label: 'Sports Specialization', value: candidate.sportsSpecialization });
-          if (candidate.coachingCertificates?.length) roleRows.push({ label: 'Coaching Certificates', value: candidate.coachingCertificates.join(', ') });
-
-          if (candidate.exArmy != null) roleRows.push({ label: 'Ex-Army Background', value: candidate.exArmy ? 'Yes' : 'No' });
-          if (candidate.securityExperience != null) roleRows.push({ label: 'Security Experience', value: candidate.securityExperience ? 'Yes' : 'No' });
-          if (candidate.nightShiftAvailable != null) roleRows.push({ label: 'Night Shift Available', value: candidate.nightShiftAvailable ? 'Yes' : 'No' });
+          if (pos === 'Teacher') {
+            if (candidate.subjects?.length) roleRows.push({ label: 'Subjects', value: candidate.subjects.join(', ') });
+            if (candidate.classesCanTeach?.length) roleRows.push({ label: 'Classes Can Teach', value: candidate.classesCanTeach.join(', ') });
+            if (candidate.medium) roleRows.push({ label: 'Medium', value: candidate.medium });
+            if (candidate.boardExperience?.length) roleRows.push({ label: 'Board Experience', value: candidate.boardExperience.join(', ') });
+            if (candidate.bEd != null) roleRows.push({ label: 'B.Ed Qualification', value: candidate.bEd ? 'Yes' : 'No' });
+            if (candidate.mEd != null) roleRows.push({ label: 'M.Ed Qualification', value: candidate.mEd ? 'Yes' : 'No' });
+          } else if (pos === 'Driver') {
+            if (candidate.vehicleTypes?.length) roleRows.push({ label: 'Vehicle Types', value: candidate.vehicleTypes.join(', ') });
+            if (candidate.drivingExperience != null) roleRows.push({ label: 'Driving Experience', value: `${candidate.drivingExperience} Years` });
+            if (candidate.lightVehicle != null) roleRows.push({ label: 'Light Vehicle License', value: candidate.lightVehicle ? 'Yes' : 'No' });
+            if (candidate.heavyVehicle != null) roleRows.push({ label: 'Heavy Vehicle License', value: candidate.heavyVehicle ? 'Yes' : 'No' });
+            if (candidate.schoolBusExperience != null) roleRows.push({ label: 'School Bus Experience', value: candidate.schoolBusExperience ? 'Yes' : 'No' });
+          } else if (pos === 'Accountant') {
+            if (candidate.tallyKnowledge != null) roleRows.push({ label: 'Tally Knowledge', value: candidate.tallyKnowledge ? 'Yes' : 'No' });
+            if (candidate.gstKnowledge != null) roleRows.push({ label: 'GST Knowledge', value: candidate.gstKnowledge ? 'Yes' : 'No' });
+            if (candidate.payrollExperience != null) roleRows.push({ label: 'Payroll Experience', value: candidate.payrollExperience ? 'Yes' : 'No' });
+            if (candidate.schoolAccountingExperience != null) roleRows.push({ label: 'School Accounting', value: candidate.schoolAccountingExperience ? 'Yes' : 'No' });
+            if (candidate.erpExperience != null) roleRows.push({ label: 'ERP Experience', value: candidate.erpExperience ? 'Yes' : 'No' });
+          } else if (pos === 'Receptionist') {
+            if (candidate.languagesKnown?.length) roleRows.push({ label: 'Languages Known', value: candidate.languagesKnown.join(', ') });
+            if (candidate.computerSkills != null) roleRows.push({ label: 'Computer Skills', value: candidate.computerSkills ? 'Yes' : 'No' });
+            if (candidate.frontDeskExperience != null) roleRows.push({ label: 'Front Desk Experience', value: candidate.frontDeskExperience ? 'Yes' : 'No' });
+            if (candidate.communicationSkills != null) roleRows.push({ label: 'Communication Skills', value: candidate.communicationSkills ? 'Yes' : 'No' });
+          } else if (pos === 'Clerk') {
+            if (candidate.typingSpeed) roleRows.push({ label: 'Typing Speed', value: candidate.typingSpeed });
+            if (candidate.msOfficeKnowledge != null) roleRows.push({ label: 'MS Office Knowledge', value: candidate.msOfficeKnowledge ? 'Yes' : 'No' });
+            if (candidate.excelKnowledge != null) roleRows.push({ label: 'Excel Knowledge', value: candidate.excelKnowledge ? 'Yes' : 'No' });
+            if (candidate.schoolOfficeExperience != null) roleRows.push({ label: 'School Office Experience', value: candidate.schoolOfficeExperience ? 'Yes' : 'No' });
+          } else if (pos === 'Librarian') {
+            if (candidate.libraryManagementExperience != null) roleRows.push({ label: 'Library Management', value: candidate.libraryManagementExperience ? 'Yes' : 'No' });
+            if (candidate.librarySoftwareKnowledge != null) roleRows.push({ label: 'Library Software', value: candidate.librarySoftwareKnowledge ? 'Yes' : 'No' });
+          } else if (pos === 'Lab Assistant') {
+            if (candidate.labType) roleRows.push({ label: 'Lab Type', value: candidate.labType });
+            if (candidate.labExperience != null) roleRows.push({ label: 'Lab Experience', value: candidate.labExperience ? 'Yes' : 'No' });
+          } else if (pos === 'Sports Coach') {
+            if (candidate.sportsSpecialization) roleRows.push({ label: 'Sports Specialization', value: candidate.sportsSpecialization });
+            if (candidate.coachingCertificates?.length) roleRows.push({ label: 'Coaching Certificates', value: candidate.coachingCertificates.join(', ') });
+            if (candidate.coachingExperience != null) roleRows.push({ label: 'Coaching Experience', value: `${candidate.coachingExperience} Years` });
+          } else if (pos === 'Security Guard') {
+            if (candidate.exArmy != null) roleRows.push({ label: 'Ex-Army Background', value: candidate.exArmy ? 'Yes' : 'No' });
+            if (candidate.securityExperience != null) roleRows.push({ label: 'Security Experience', value: candidate.securityExperience ? 'Yes' : 'No' });
+            if (candidate.nightShiftAvailable != null) roleRows.push({ label: 'Night Shift Available', value: candidate.nightShiftAvailable ? 'Yes' : 'No' });
+          } else if (pos === 'Cleaner') {
+            if (candidate.cleaningExperience != null) roleRows.push({ label: 'Cleaning Experience', value: candidate.cleaningExperience ? 'Yes' : 'No' });
+            if (candidate.schoolExperience != null) roleRows.push({ label: 'School Experience', value: candidate.schoolExperience ? 'Yes' : 'No' });
+          }
 
           if (roleRows.length === 0) return null;
 
@@ -387,7 +399,12 @@ export default function CandidateProfile() {
                       </div>
                       <div className="min-w-0 flex-1">
                         <p className="truncate text-xs font-bold text-slate-800 dark:text-slate-200 tracking-tight group-hover/doc:text-purple-600 transition-colors">{doc.name}</p>
-                        <p className="flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mt-0.5">
+                        {doc.note && (
+                          <p className="text-[11px] font-medium text-slate-600 dark:text-slate-400 mt-0.5 line-clamp-2 italic">
+                            "{doc.note}"
+                          </p>
+                        )}
+                        <p className="flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mt-1">
                           <span>View Link</span> 
                           <ExternalLink className="h-2.5 w-2.5 transition-transform group-hover/doc:translate-x-0.5" />
                         </p>

@@ -16,8 +16,8 @@ export const getAllPositions = async (req, res, next) => {
 
 export const createPosition = async (req, res, next) => {
   try {
-    const { name } = req.body;
-    const position = await Position.create({ name });
+    const { name, fields } = req.body;
+    const position = await Position.create({ name: name.trim(), fields: fields || [] });
     res.status(201).json({ success: true, data: position });
   } catch (error) {
     next(error);
@@ -27,8 +27,13 @@ export const createPosition = async (req, res, next) => {
 export const updatePosition = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { name, isActive } = req.body;
-    const position = await Position.findByIdAndUpdate(id, { name, isActive }, { new: true, runValidators: true });
+    const { name, isActive, fields } = req.body;
+    const updateData = {};
+    if (name) updateData.name = name.trim();
+    if (isActive !== undefined) updateData.isActive = isActive;
+    if (fields !== undefined) updateData.fields = fields;
+
+    const position = await Position.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
     if (!position) throw new ApiError('Position not found', 404);
     res.json({ success: true, data: position });
   } catch (error) {
@@ -190,6 +195,7 @@ export const getAllMasterData = async (req, res, next) => {
       success: true,
       data: {
         positions: positions.map((p) => p.name),
+        positionsList: positions,
         subjects: subjects.map((s) => s.name),
         qualifications: qualifications.map((q) => q.name),
         classes: classes.map((c) => c.name),

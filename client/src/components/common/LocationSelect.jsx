@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Compass, Map, MapPin, AlertCircle, Navigation, Crosshair, Ruler } from 'lucide-react';
+import { MapPin, Crosshair, ChevronDown, Check } from 'lucide-react';
 import { getStates, getCities } from '@/lib/api';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { SchoolLocationPicker } from '@/components/common/SchoolLocationPicker';
 
 export function LocationSelect({ value = {}, onChange, errors = {} }) {
   const [stateId, setStateId] = useState(value.stateId || '');
@@ -14,8 +14,12 @@ export function LocationSelect({ value = {}, onChange, errors = {} }) {
   const [latitude, setLatitude] = useState(value.latitude ?? '');
   const [longitude, setLongitude] = useState(value.longitude ?? '');
   const [workingRadius, setWorkingRadius] = useState(value.workingRadius ?? '');
-  const [locationQuery, setLocationQuery] = useState(value.address || '');
-  const [isSearchingLocation, setIsSearchingLocation] = useState(false);
+
+  // Searchable combobox states
+  const [stateSearch, setStateSearch] = useState('');
+  const [isStateOpen, setIsStateOpen] = useState(false);
+  const [citySearch, setCitySearch] = useState('');
+  const [isCityOpen, setIsCityOpen] = useState(false);
 
   const { data: states = [] } = useQuery({
     queryKey: ['states'],
@@ -28,11 +32,34 @@ export function LocationSelect({ value = {}, onChange, errors = {} }) {
     enabled: !!stateId,
   });
 
-  const { data: localities = [] } = useQuery({
-    queryKey: ['noop-localities'],
-    queryFn: () => Promise.resolve([]),
-    enabled: false,
-  });
+  // Sync state & city search text with selected props / IDs
+  useEffect(() => {
+    if (stateId && states.length > 0) {
+      const matched = states.find((s) => s._id === stateId);
+      if (matched) setStateSearch(matched.name);
+    } else if (!stateId) {
+      setStateSearch('');
+    }
+  }, [stateId, states]);
+
+  useEffect(() => {
+    if (cityId && cities.length > 0) {
+      const matched = cities.find((c) => c._id === cityId);
+      if (matched) setCitySearch(matched.name);
+    } else if (!cityId) {
+      setCitySearch('');
+    }
+  }, [cityId, cities]);
+
+  useEffect(() => {
+    if (value.latitude !== undefined && value.latitude !== null && value.latitude !== '') setLatitude(value.latitude);
+    if (value.longitude !== undefined && value.longitude !== null && value.longitude !== '') setLongitude(value.longitude);
+    if (value.stateId) setStateId(value.stateId);
+    if (value.cityId) setCityId(value.cityId);
+    if (value.area) setArea(value.area);
+    if (value.address) setAddress(value.address);
+    if (value.workingRadius) setWorkingRadius(value.workingRadius);
+  }, [value.latitude, value.longitude, value.stateId, value.cityId, value.area, value.address, value.workingRadius]);
 
   useEffect(() => {
     const normalizedLatitude = latitude === '' ? undefined : Number(latitude);
@@ -49,193 +76,214 @@ export function LocationSelect({ value = {}, onChange, errors = {} }) {
     });
   }, [stateId, cityId, area, address, latitude, longitude, workingRadius, onChange]);
 
-  const handleUseCurrentLocation = () => {
-    if (!navigator.geolocation) return;
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setLatitude(String(position.coords.latitude));
-        setLongitude(String(position.coords.longitude));
-        setAddress((prev) => prev || 'Current location');
-        setLocationQuery((prev) => prev || 'Current location');
-      },
-      () => {}
-    );
+  const handleMapLocationChange = ({ latitude: lat, longitude: lng }) => {
+    setLatitude(String(lat));
+    setLongitude(String(lng));
   };
 
-  const handleSearchLocation = async () => {
-    const query = locationQuery.trim();
-    if (!query) return;
-
-    setIsSearchingLocation(true);
-    try {
-      const response = await fetch(`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=${encodeURIComponent(query)}`);
-      const data = await response.json();
-      const result = data?.[0];
-      if (!result) return;
-      setAddress(result.display_name || query);
-      setLatitude(String(result.lat));
-      setLongitude(String(result.lon));
-      setLocationQuery(result.display_name || query);
-    } catch (error) {
-      console.error('Location search failed', error);
-    } finally {
-      setIsSearchingLocation(false);
+  const handleMapAddressResolved = (details) => {
+    if (details) {
+      if (details.state) {
+        const matchedState = states.find((s) => s.name.toLowerCase().includes(details.state.toLowerCase()));
+        if (matchedState) {
+          setStateId(matchedState._id);
+          setStateSearch(matchedState.name);
+        }
+      }
+      if (details.area && !area) setArea(details.area);
+      if (details.address && !address) setAddress(details.address);
     }
   };
 
+  const filteredStates = states.filter((s) =>
+    s.name.toLowerCase().includes(stateSearch.toLowerCase().trim())
+  );
+
+  const filteredCities = cities.filter((c) =>
+    c.name.toLowerCase().includes(citySearch.toLowerCase().trim())
+  );
+
   return (
-    <div className="w-full space-y-2">
-      {/* Sub-label group header formatted to exact metadata specifications */}
-      <div className="flex items-center gap-1.5 mb-1 text-slate-400 dark:text-slate-500">
-        <MapPin className="h-3.5 w-3.5 text-[#A05AFF]" />
-        <span className="text-[11px] font-bold uppercase tracking-wider">Geographic Alignment Matrix</span>
+    <div className="w-full space-y-4 antialiased">
+      {/* Header */}
+      <div className="flex items-center gap-1.5 text-slate-700 dark:text-slate-300">
+        <MapPin className="h-4 w-4 text-[#A05AFF]" />
+        <span className="text-xs font-bold uppercase tracking-wider">Candidate Location & Map Pin</span>
       </div>
 
-      <div className="grid gap-6 grid-cols-1 md:grid-cols-3">
-        {/* State Selection Dropdown Wrapper */}
-        <div className="space-y-1.5 group">
-          <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 group-focus-within:text-[#A05AFF] transition-colors">
-            State / Region
-          </Label>
-          <Select
-            value={stateId}
-            onValueChange={(v) => {
-              setStateId(v);
-              setCityId('');
-              setArea('');
-            }}
-          >
-            <SelectTrigger className="rounded-xl h-11 border-slate-200 bg-white dark:bg-slate-900 font-medium focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 transition-all shadow-sm">
-              <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
-                <Compass className="h-4 w-4 text-slate-400 dark:text-slate-500 group-hover:text-[#A05AFF] transition-colors shrink-0" />
-                <SelectValue placeholder="Select region" />
+      <div className="grid gap-3.5 grid-cols-1 sm:grid-cols-2">
+        {/* Searchable State Selection Combobox */}
+        <div className="space-y-1 relative">
+          <Label className="text-xs font-semibold text-slate-700 dark:text-slate-300">State / Region</Label>
+          <div className="relative">
+            <Input
+              type="text"
+              placeholder="Type to search state (e.g. Rajasthan, Delhi)..."
+              value={stateSearch}
+              onChange={(e) => {
+                setStateSearch(e.target.value);
+                setIsStateOpen(true);
+                if (!e.target.value) {
+                  setStateId('');
+                  setCityId('');
+                  setCitySearch('');
+                }
+              }}
+              onFocus={() => setIsStateOpen(true)}
+              className="rounded-lg h-9 border-slate-200 bg-white font-medium text-xs focus-visible:ring-[#A05AFF] pr-8"
+            />
+            <ChevronDown className="absolute right-2.5 top-2.5 h-4 w-4 text-slate-400 pointer-events-none" />
+          </div>
+
+          {isStateOpen && (
+            <>
+              <div className="fixed inset-0 z-[9990]" onClick={() => setIsStateOpen(false)} />
+              <div className="absolute left-0 right-0 top-16 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg shadow-xl overflow-hidden max-h-56 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800 text-xs z-[9999]">
+                {filteredStates.length === 0 ? (
+                  <div className="p-3 text-slate-400 text-center font-medium">No matching states found</div>
+                ) : (
+                  filteredStates.map((s) => (
+                    <button
+                      key={s._id}
+                      type="button"
+                      onClick={() => {
+                        setStateId(s._id);
+                        setStateSearch(s.name);
+                        setCityId('');
+                        setCitySearch('');
+                        setIsStateOpen(false);
+                      }}
+                      className={`w-full text-left px-3 py-2 hover:bg-purple-50 dark:hover:bg-slate-800 font-medium transition-colors flex items-center justify-between ${s._id === stateId ? 'bg-purple-50 text-[#A05AFF] font-bold' : 'text-slate-700 dark:text-slate-300'}`}
+                    >
+                      <span>{s.name}</span>
+                      {s._id === stateId && <Check className="h-3.5 w-3.5 text-[#A05AFF]" />}
+                    </button>
+                  ))
+                )}
               </div>
-            </SelectTrigger>
-            <SelectContent className="rounded-xl max-h-[300px] shadow-sm border-none bg-white dark:bg-slate-900">
-              {states.map((s) => (
-                <SelectItem key={s._id} value={s._id} className="rounded-lg font-medium py-2.5 cursor-pointer">
-                  {s.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          {errors.state && (
-            <div className="flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-[#FE9496] mt-1">
-              <AlertCircle className="h-3.5 w-3.5 shrink-0" />
-              <p>{errors.state}</p>
-            </div>
+            </>
           )}
+          {errors.state && <p className="text-[11px] font-semibold text-rose-500 mt-0.5">{errors.state}</p>}
         </div>
 
-        {/* City Selection Dropdown Wrapper */}
-        <div className="space-y-1.5 group">
-          <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 group-focus-within:text-[#A05AFF] transition-colors">
-            City / Territory
-          </Label>
-          <Select
-            value={cityId}
-            onValueChange={(v) => {
-              setCityId(v);
-              setArea('');
-            }}
-            disabled={!stateId}
-          >
-            <SelectTrigger className="rounded-xl h-11 border-slate-200 bg-white dark:bg-slate-900 font-medium focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 disabled:bg-slate-50/50 disabled:text-slate-400/40 disabled:cursor-not-allowed dark:disabled:bg-slate-900/40 transition-all shadow-sm">
-              <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
-                <Map className="h-4 w-4 text-slate-400 dark:text-slate-500 group-hover:text-[#A05AFF] transition-colors shrink-0" />
-                <SelectValue placeholder="Select city" />
+        {/* Searchable City Selection Combobox */}
+        <div className="space-y-1 relative">
+          <Label className="text-xs font-semibold text-slate-700 dark:text-slate-300">City / District</Label>
+          <div className="relative">
+            <Input
+              type="text"
+              placeholder={stateId ? 'Type to search city (e.g. Jaipur, Kota)...' : 'Select a state first'}
+              value={citySearch}
+              disabled={!stateId}
+              onChange={(e) => {
+                setCitySearch(e.target.value);
+                setIsCityOpen(true);
+                if (!e.target.value) setCityId('');
+              }}
+              onFocus={() => {
+                if (stateId) setIsCityOpen(true);
+              }}
+              className="rounded-lg h-9 border-slate-200 bg-white font-medium text-xs focus-visible:ring-[#A05AFF] pr-8 disabled:bg-slate-100"
+            />
+            <ChevronDown className="absolute right-2.5 top-2.5 h-4 w-4 text-slate-400 pointer-events-none" />
+          </div>
+
+          {isCityOpen && stateId && (
+            <>
+              <div className="fixed inset-0 z-[9990]" onClick={() => setIsCityOpen(false)} />
+              <div className="absolute left-0 right-0 top-16 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg shadow-xl overflow-hidden max-h-56 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800 text-xs z-[9999]">
+                {filteredCities.length === 0 ? (
+                  <div className="p-3 text-slate-400 text-center font-medium">No matching cities found</div>
+                ) : (
+                  filteredCities.map((c) => (
+                    <button
+                      key={c._id}
+                      type="button"
+                      onClick={() => {
+                        setCityId(c._id);
+                        setCitySearch(c.name);
+                        setIsCityOpen(false);
+                      }}
+                      className={`w-full text-left px-3 py-2 hover:bg-purple-50 dark:hover:bg-slate-800 font-medium transition-colors flex items-center justify-between ${c._id === cityId ? 'bg-purple-50 text-[#A05AFF] font-bold' : 'text-slate-700 dark:text-slate-300'}`}
+                    >
+                      <span>{c.name}</span>
+                      {c._id === cityId && <Check className="h-3.5 w-3.5 text-[#A05AFF]" />}
+                    </button>
+                  ))
+                )}
               </div>
-            </SelectTrigger>
-            <SelectContent className="rounded-xl max-h-[300px] shadow-sm border-none bg-white dark:bg-slate-900">
-              {cities.map((c) => (
-                <SelectItem key={c._id} value={c._id} className="rounded-lg font-medium py-2.5 cursor-pointer">
-                  {c.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          {errors.city && (
-            <div className="flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-[#FE9496] mt-1">
-              <AlertCircle className="h-3.5 w-3.5 shrink-0" />
-              <p>{errors.city}</p>
-            </div>
+            </>
           )}
+          {errors.city && <p className="text-[11px] font-semibold text-rose-500 mt-0.5">{errors.city}</p>}
         </div>
 
-        {/* Area (free-text) and Address fields */}
-        <div className="space-y-2 md:col-span-3">
-          <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Area</Label>
-          <input
+        {/* Area */}
+        <div className="space-y-1">
+          <Label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Area / Locality</Label>
+          <Input
             value={area}
             onChange={(e) => setArea(e.target.value)}
-            placeholder="Area, landmark (e.g., Mahapura, Vaishali Nagar)"
-            className="w-full rounded-xl h-11 border-slate-200 bg-white px-3 font-medium shadow-xs"
+            placeholder="e.g., Connaught Place, Lajpat Nagar"
+            className="rounded-lg h-9 border-slate-200 text-xs font-medium focus-visible:ring-[#A05AFF]"
           />
-          {errors.area && (
-            <div className="flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-[#FE9496] mt-1">
-              <AlertCircle className="h-3.5 w-3.5 shrink-0" />
-              <p>{errors.area}</p>
-            </div>
-          )}
         </div>
 
-        <div className="space-y-2 md:col-span-3">
-          <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Full Address</Label>
-          <div className="flex flex-col gap-2 sm:flex-row">
-            <Input
-              value={address}
-              onChange={(e) => {
-                setAddress(e.target.value);
-                setLocationQuery(e.target.value);
-              }}
-              placeholder="Search or enter a precise address"
-              className="rounded-xl h-11 border-slate-200 bg-white shadow-xs"
+        {/* Full Address */}
+        <div className="space-y-1">
+          <Label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Full Address</Label>
+          <Input
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            placeholder="House/Apartment no, street, landmark..."
+            className="rounded-lg h-9 border-slate-200 text-xs font-medium focus-visible:ring-[#A05AFF]"
+          />
+        </div>
+      </div>
+
+      {/* Interactive Map Picker Component */}
+      <div className="rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-3.5 space-y-3 shadow-xs">
+        <div className="flex items-center justify-between">
+          <Label className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+            <Crosshair className="h-4 w-4 text-[#A05AFF]" />
+            Pin Candidate Location on Map
+          </Label>
+          <span className="text-[11px] text-slate-400 font-medium hidden sm:inline-block">Search address or drag pin to adjust coordinates</span>
+        </div>
+
+        <SchoolLocationPicker
+          initialLocation={{ latitude, longitude, address }}
+          onLocationChange={handleMapLocationChange}
+          onAddressResolved={handleMapAddressResolved}
+        />
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+          <div className="space-y-1">
+            <Label className="text-[11px] font-semibold text-slate-500">Latitude</Label>
+            <Input 
+              value={latitude} 
+              onChange={(e) => setLatitude(e.target.value)} 
+              placeholder="e.g. 28.6139" 
+              className="rounded-lg h-8 text-xs font-mono bg-slate-50 dark:bg-slate-950 border-slate-200" 
             />
-            <button
-              type="button"
-              onClick={handleSearchLocation}
-              disabled={isSearchingLocation}
-              className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-600"
-            >
-              {isSearchingLocation ? 'Searching...' : 'Search location'}
-            </button>
           </div>
-        </div>
-
-        <div className="space-y-2 md:col-span-3 rounded-xl border border-slate-200 bg-white p-3">
-          <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">
-            <Crosshair className="h-3.5 w-3.5 text-[#A05AFF]" />
-            Map location details
+          <div className="space-y-1">
+            <Label className="text-[11px] font-semibold text-slate-500">Longitude</Label>
+            <Input 
+              value={longitude} 
+              onChange={(e) => setLongitude(e.target.value)} 
+              placeholder="e.g. 77.2090" 
+              className="rounded-lg h-8 text-xs font-mono bg-slate-50 dark:bg-slate-950 border-slate-200" 
+            />
           </div>
-          <div className="grid gap-3 md:grid-cols-3">
-            <div className="space-y-1.5">
-              <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Latitude</Label>
-              <Input value={latitude} onChange={(e) => setLatitude(e.target.value)} placeholder="e.g. 26.9124" />
-            </div>
-            <div className="space-y-1.5">
-              <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Longitude</Label>
-              <Input value={longitude} onChange={(e) => setLongitude(e.target.value)} placeholder="e.g. 75.7873" />
-            </div>
-            <div className="space-y-1.5">
-              <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Working Radius (km)</Label>
-              <Input value={workingRadius} onChange={(e) => setWorkingRadius(e.target.value)} placeholder="e.g. 10" />
-            </div>
-          </div>
-          <div className="mt-2 flex flex-wrap items-center gap-2">
-            <button
-              type="button"
-              onClick={handleUseCurrentLocation}
-              className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-600"
-            >
-              <Navigation className="h-3.5 w-3.5" />
-              Use current location
-            </button>
-            {(latitude || longitude) && (
-              <div className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-[11px] font-semibold text-slate-500">
-                <MapPin className="h-3.5 w-3.5 text-[#A05AFF]" />
-                Pin ready • {Number(latitude).toFixed(4)}, {Number(longitude).toFixed(4)}
-              </div>
-            )}
+          <div className="space-y-1">
+            <Label className="text-[11px] font-semibold text-slate-500">Working Radius (km)</Label>
+            <Input 
+              type="number" 
+              value={workingRadius} 
+              onChange={(e) => setWorkingRadius(e.target.value)} 
+              placeholder="e.g. 10" 
+              className="rounded-lg h-8 text-xs font-medium border-slate-200 focus-visible:ring-[#A05AFF]" 
+            />
           </div>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from 'react-leaflet';
-import { MapPin, Navigation, Loader2, Search, Sparkles, Check, RotateCcw, Map as MapIcon, X } from 'lucide-react';
+import { MapPin, Navigation, Loader2, Search, X, Sparkles } from 'lucide-react';
+import { searchLocation, reverseGeocode } from '@/lib/api';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
@@ -47,6 +48,7 @@ export function SchoolLocationPicker({ initialLocation, onLocationChange, onAddr
     lng: Number(initialLocation?.longitude) || 77.2090,
   });
   
+  const [mapType, setMapType] = useState('google_roadmap');
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -54,41 +56,35 @@ export function SchoolLocationPicker({ initialLocation, onLocationChange, onAddr
   const [resolvedAddress, setResolvedAddress] = useState('');
   const [isGeocoding, setIsGeocoding] = useState(false);
   const [error, setError] = useState(null);
+  const lastGeocodedRef = useRef({ lat: null, lng: null });
   const markerRef = useRef(null);
 
-  // Sync initial location when props arrive asynchronously
-  useEffect(() => {
-    if (initialLocation?.latitude && initialLocation?.longitude) {
-      const lat = Number(initialLocation.latitude);
-      const lng = Number(initialLocation.longitude);
-      if (!isNaN(lat) && !isNaN(lng)) {
-        setLocation({ lat, lng });
-      }
-    }
-  }, [initialLocation?.latitude, initialLocation?.longitude]);
-
-  // Reverse geocoding helper (OSM Nominatim)
+  // Reverse geocoding helper via backend proxy
   const fetchAddressDetails = useCallback(async (lat, lng) => {
-    setIsGeocoding(true);
-    try {
-      const res = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`,
-        { headers: { 'Accept-Language': 'en' } }
-      );
-      if (!res.ok) throw new Error('Geocoding request failed');
-      const data = await res.json();
-      if (data && data.address) {
-        const addr = data.address;
-        const state = addr.state || addr.province || '';
-        const city = addr.city || addr.town || addr.village || addr.county || addr.suburb || '';
-        const area = addr.suburb || addr.neighbourhood || addr.residential || addr.road || '';
-        const fullAddr = data.display_name || '';
+    if (
+      lastGeocodedRef.current.lat !== null &&
+      Math.abs(lastGeocodedRef.current.lat - lat) < 0.0001 &&
+      Math.abs(lastGeocodedRef.current.lng - lng) < 0.0001
+    ) {
+      return;
+    }
 
-        const details = { state, city, area, address: fullAddr };
+    lastGeocodedRef.current = { lat, lng };
+    setIsGeocoding(true);
+
+    try {
+      const res = await reverseGeocode(lat, lng);
+      const data = res.data?.data;
+      if (data) {
+        const fullAddr = data.display_name || `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+        const addr = data.address || {};
+        const state = addr.state || '';
+        const city = addr.city || addr.town || addr.village || '';
+        const area = addr.area || addr.suburb || addr.road || '';
+
         setResolvedAddress(fullAddr);
-        
         if (onAddressResolved) {
-          onAddressResolved(details);
+          onAddressResolved({ state, city, area, address: fullAddr });
         }
       }
     } catch (err) {
@@ -97,6 +93,46 @@ export function SchoolLocationPicker({ initialLocation, onLocationChange, onAddr
       setIsGeocoding(false);
     }
   }, [onAddressResolved]);
+
+  // Sync initial location when props arrive asynchronously
+  useEffect(() => {
+    if (initialLocation?.latitude && initialLocation?.longitude) {
+      const lat = Number(initialLocation.latitude);
+      const lng = Number(initialLocation.longitude);
+      if (!isNaN(lat) && !isNaN(lng)) {
+        setLocation({ lat, lng });
+        if (initialLocation.address) {
+          setResolvedAddress(initialLocation.address);
+          lastGeocodedRef.current = { lat, lng };
+        }
+      }
+    }
+  }, [initialLocation?.latitude, initialLocation?.longitude, initialLocation?.address]);
+
+  // Real-time live autocomplete search as user types (300ms debounce)
+  useEffect(() => {
+    const q = searchQuery.trim();
+    if (!q || q.length < 2) {
+      setSearchResults([]);
+      setIsSearching(false);
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      setIsSearching(true);
+      try {
+        const res = await searchLocation(q, location.lat, location.lng);
+        const data = res.data?.data || [];
+        setSearchResults(data);
+      } catch (err) {
+        console.error('Live search error:', err);
+      } finally {
+        setIsSearching(false);
+      }
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery, location.lat, location.lng]);
 
   // Handle location update
   const handleLocationSelect = useCallback((lat, lng) => {
@@ -117,45 +153,22 @@ export function SchoolLocationPicker({ initialLocation, onLocationChange, onAddr
     }
   }, [handleLocationSelect]);
 
-  // Location search handler (Forward Geocoding)
-  const handleSearch = async (e) => {
-    e?.preventDefault();
-    if (!searchQuery.trim() || isSearching) return;
-
-    setIsSearching(true);
-    setError(null);
-    setSearchResults([]);
-
-    try {
-      const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchQuery.trim())}&limit=5`,
-        { headers: { 'Accept-Language': 'en' } }
-      );
-      if (!res.ok) throw new Error('Search failed');
-      const data = await res.json();
-      
-      if (data && data.length > 0) {
-        setSearchResults(data);
-        if (data.length === 1) {
-          selectSearchResult(data[0]);
-        }
-      } else {
-        setError('No location matches found. Try searching with city or landmark name.');
-      }
-    } catch (err) {
-      setError('Search service unavailable. Please click directly on the map to pin your location.');
-    } finally {
-      setIsSearching(false);
-    }
-  };
-
   const selectSearchResult = (item) => {
     const lat = parseFloat(item.lat);
-    const lng = parseFloat(item.lon);
+    const lng = parseFloat(item.lon ?? item.lng);
     if (!isNaN(lat) && !isNaN(lng)) {
       handleLocationSelect(lat, lng);
       setSearchResults([]);
-      setSearchQuery(item.display_name.split(',')[0]);
+      setSearchQuery(item.display_name ? item.display_name.split(',')[0] : searchQuery);
+      
+      if (onAddressResolved) {
+        onAddressResolved({
+          state: item.state || '',
+          city: item.city || '',
+          area: item.area || '',
+          address: item.display_name || '',
+        });
+      }
     }
   };
 
@@ -187,73 +200,102 @@ export function SchoolLocationPicker({ initialLocation, onLocationChange, onAddr
   return (
     <div className="space-y-3.5 antialiased">
       {/* Top Search & Actions Control Bar */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-        {/* Search Input Box */}
-        <form onSubmit={handleSearch} className="relative flex-1">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2">
+        {/* Search Input Box with Live Autocomplete */}
+        <div className="relative flex-1">
           <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
           <input
             type="text"
-            placeholder="Search address, landmark or city (e.g. Connaught Place, New Delhi)..."
+            placeholder="Type city, area or landmark (e.g. Vaishali Nagar, Jaipur)..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             disabled={disabled}
-            className="w-full pl-9 pr-20 h-9 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#A05AFF]/50 text-slate-800 dark:text-slate-100"
+            className="w-full pl-9 pr-8 h-9 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#A05AFF]/50 text-slate-800 dark:text-slate-100"
           />
-          {searchQuery && (
+          {isSearching ? (
+            <Loader2 className="absolute right-3 top-2.5 h-4 w-4 text-[#A05AFF] animate-spin" />
+          ) : searchQuery ? (
             <button
               type="button"
               onClick={() => { setSearchQuery(''); setSearchResults([]); }}
-              className="absolute right-12 top-2.5 text-slate-400 hover:text-slate-600"
+              className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600"
             >
               <X className="h-4 w-4" />
             </button>
-          )}
-          <button
-            type="submit"
-            disabled={disabled || isSearching || !searchQuery.trim()}
-            className="absolute right-1 top-1 h-7 px-2.5 bg-[#A05AFF] hover:bg-[#9045EE] disabled:opacity-50 text-white rounded-md text-[11px] font-bold transition-all flex items-center gap-1"
-          >
-            {isSearching ? <Loader2 className="h-3 w-3 animate-spin" /> : 'Search'}
-          </button>
-        </form>
+          ) : null}
 
-        {/* GPS Button */}
-        <button
-          type="button"
-          onClick={handleGetCurrentLocation}
-          disabled={disabled || isLocating}
-          className="h-9 px-3.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg text-xs font-semibold transition-all flex items-center justify-center gap-1.5 border border-slate-200/80 dark:border-slate-700 shrink-0"
-        >
-          {isLocating ? (
-            <>
-              <Loader2 className="h-3.5 w-3.5 text-[#A05AFF] animate-spin" />
-              <span>Locating...</span>
-            </>
-          ) : (
-            <>
-              <Navigation className="h-3.5 w-3.5 text-[#A05AFF]" />
-              <span>Use My GPS</span>
-            </>
+          {/* Real-time Suggestions Dropdown Menu */}
+          {searchResults.length > 0 && (
+            <div className="absolute left-0 right-0 top-10 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-xl overflow-hidden max-h-60 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800 text-xs z-[2000]">
+              <div className="p-1.5 bg-slate-50 dark:bg-slate-950 text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center justify-between px-3">
+                <span className="flex items-center gap-1"><Sparkles className="h-3 w-3 text-[#A05AFF]" /> Live Location Matches</span>
+                <span>Select to pin</span>
+              </div>
+              {searchResults.map((item, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => selectSearchResult(item)}
+                  className="w-full text-left px-3 py-2.5 hover:bg-purple-50 dark:hover:bg-slate-800/80 flex items-start gap-2.5 transition-colors group"
+                >
+                  <MapPin className="h-4 w-4 text-[#A05AFF] shrink-0 mt-0.5 group-hover:scale-110 transition-transform" />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-slate-800 dark:text-slate-100 font-semibold truncate leading-tight">{item.name || item.display_name.split(',')[0]}</p>
+                    <p className="text-[11px] text-slate-500 truncate leading-normal mt-0.5">{item.display_name}</p>
+                  </div>
+                </button>
+              ))}
+            </div>
           )}
-        </button>
-      </div>
-
-      {/* Search Results Dropdown List */}
-      {searchResults.length > 0 && (
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg shadow-md overflow-hidden max-h-48 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800 text-xs">
-          {searchResults.map((item, idx) => (
-            <button
-              key={idx}
-              type="button"
-              onClick={() => selectSearchResult(item)}
-              className="w-full text-left p-2.5 hover:bg-purple-50 dark:hover:bg-slate-800 flex items-start gap-2 transition-colors"
-            >
-              <MapPin className="h-3.5 w-3.5 text-[#A05AFF] shrink-0 mt-0.5" />
-              <span className="text-slate-700 dark:text-slate-300 font-medium leading-tight truncate">{item.display_name}</span>
-            </button>
-          ))}
         </div>
-      )}
+
+        <div className="flex items-center gap-2 shrink-0">
+          {/* Map Layer Type Selector Toggle */}
+          <div className="flex items-center gap-0.5 bg-slate-100 dark:bg-slate-800 p-0.5 rounded-lg border border-slate-200 dark:border-slate-700">
+            <button
+              type="button"
+              onClick={() => setMapType('google_roadmap')}
+              className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition-all ${mapType === 'google_roadmap' ? 'bg-white dark:bg-slate-900 text-[#A05AFF] shadow-xs' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}`}
+            >
+              Google Maps
+            </button>
+            <button
+              type="button"
+              onClick={() => setMapType('google_satellite')}
+              className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition-all ${mapType === 'google_satellite' ? 'bg-white dark:bg-slate-900 text-[#A05AFF] shadow-xs' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}`}
+            >
+              Satellite
+            </button>
+            <button
+              type="button"
+              onClick={() => setMapType('osm')}
+              className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition-all ${mapType === 'osm' ? 'bg-white dark:bg-slate-900 text-[#A05AFF] shadow-xs' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}`}
+            >
+              OSM
+            </button>
+          </div>
+
+          {/* GPS Button */}
+          <button
+            type="button"
+            onClick={handleGetCurrentLocation}
+            disabled={disabled || isLocating}
+            className="h-9 px-3.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg text-xs font-semibold transition-all flex items-center justify-center gap-1.5 border border-slate-200/80 dark:border-slate-700 shrink-0"
+          >
+            {isLocating ? (
+              <>
+                <Loader2 className="h-3.5 w-3.5 text-[#A05AFF] animate-spin" />
+                <span>Locating...</span>
+              </>
+            ) : (
+              <>
+                <Navigation className="h-3.5 w-3.5 text-[#A05AFF]" />
+                <span>GPS</span>
+              </>
+            )}
+          </button>
+        </div>
+      </div>
 
       {/* Error Alert Banner */}
       {error && (
@@ -271,10 +313,29 @@ export function SchoolLocationPicker({ initialLocation, onLocationChange, onAddr
           style={{ height: '320px', width: '100%' }}
           className={disabled ? 'opacity-50 pointer-events-none' : ''}
         >
-          <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
+          {mapType === 'google_roadmap' && (
+            <TileLayer
+              attribution='&copy; Google Maps'
+              url="https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}"
+              maxZoom={20}
+              subdomains={['mt0', 'mt1', 'mt2', 'mt3']}
+            />
+          )}
+          {mapType === 'google_satellite' && (
+            <TileLayer
+              attribution='&copy; Google Maps'
+              url="https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}"
+              maxZoom={20}
+              subdomains={['mt0', 'mt1', 'mt2', 'mt3']}
+            />
+          )}
+          {mapType === 'osm' && (
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              maxZoom={19}
+            />
+          )}
           <Marker
             draggable={!disabled}
             eventHandlers={{ dragend: handleMarkerDragEnd }}

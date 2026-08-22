@@ -64,8 +64,9 @@ export const deleteCreditPackage = (id) => api.delete(`/credit-packages/${id}`);
 
 // Locations
 export const getStates = () => api.get('/locations/states');
-export const getCities = (stateId) =>
-  api.get('/locations/cities', { params: stateId ? { stateId } : {} });
+export const getCities = (stateId) => api.get('/locations/cities', { params: { stateId } });
+export const searchLocation = (q, lat, lon) => api.get('/locations/search', { params: { q, lat, lon } });
+export const reverseGeocode = (lat, lon) => api.get('/locations/reverse', { params: { lat, lon } });
 export const createState = (data) => api.post('/locations/states', data);
 export const createCity = (data) => api.post('/locations/cities', data);
 export const updateState = (id, data) => api.put(`/locations/states/${id}`, data);

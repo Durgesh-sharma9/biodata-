@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Plus, X, Edit2, Trash2, Search, Layers, FileText, Bookmark, GraduationCap, CheckCircle, HelpCircle, Loader2 } from 'lucide-react';
+import { Plus, X, Edit2, Trash2, Search, Layers, FileText, Bookmark, GraduationCap, CheckCircle, HelpCircle, Loader2, Sliders } from 'lucide-react';
 import {
   getPositionsForAdmin,
   getSubjectsForAdmin,
@@ -34,7 +34,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
@@ -49,8 +48,15 @@ function MasterDataTable({ tab }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [editItem, setEditItem] = useState(null);
   const [newItem, setNewItem] = useState('');
-  const queryClient = useQueryClient();
+  
+  // Custom Fields Modal state for Positions
+  const [fieldsModalPosition, setFieldsModalPosition] = useState(null);
+  const [positionFields, setPositionFields] = useState([]);
+  const [newFieldLabel, setNewFieldLabel] = useState('');
+  const [newFieldType, setNewFieldType] = useState('checkbox');
+  const [newFieldOptions, setNewFieldOptions] = useState('');
 
+  const queryClient = useQueryClient();
   const TabIcon = tab.icon || Layers;
 
   const { data, isLoading } = useQuery({
@@ -67,10 +73,11 @@ function MasterDataTable({ tab }) {
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, name }) => tab.updateFn(id, { name }),
+    mutationFn: ({ id, name, fields, isActive }) => tab.updateFn(id, { name, fields, isActive }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['master-data', tab.id] });
       setEditItem(null);
+      setFieldsModalPosition(null);
     },
   });
 
@@ -106,6 +113,48 @@ function MasterDataTable({ tab }) {
     if (confirm('Are you sure you want to delete this item?')) {
       deleteMutation.mutate(id);
     }
+  };
+
+  const handleOpenFieldsModal = (positionItem) => {
+    setFieldsModalPosition(positionItem);
+    setPositionFields(positionItem.fields || []);
+    setNewFieldLabel('');
+    setNewFieldType('checkbox');
+    setNewFieldOptions('');
+  };
+
+  const handleAddFieldToPosition = () => {
+    if (!newFieldLabel.trim()) return;
+    const fieldName = newFieldLabel.toLowerCase().replace(/[^a-z0-9]/g, '');
+    const optionsArray = ['select', 'multi-select'].includes(newFieldType)
+      ? newFieldOptions.split(',').map((o) => o.trim()).filter(Boolean)
+      : [];
+
+    const updated = [
+      ...positionFields,
+      {
+        name: fieldName,
+        label: newFieldLabel.trim(),
+        type: newFieldType,
+        options: optionsArray,
+      },
+    ];
+    setPositionFields(updated);
+    setNewFieldLabel('');
+    setNewFieldOptions('');
+  };
+
+  const handleRemoveFieldFromPosition = (index) => {
+    setPositionFields(positionFields.filter((_, i) => i !== index));
+  };
+
+  const handleSavePositionFields = () => {
+    if (!fieldsModalPosition) return;
+    updateMutation.mutate({
+      id: fieldsModalPosition._id,
+      name: fieldsModalPosition.name,
+      fields: positionFields,
+    });
   };
 
   if (isLoading) {
@@ -204,9 +253,27 @@ function MasterDataTable({ tab }) {
                         Inactive
                       </Badge>
                     )}
+
+                    {tab.id === 'positions' && (
+                      <Badge variant="outline" className="border-purple-200 bg-purple-50 text-purple-700 text-[10px] font-bold">
+                        {item.fields?.length || 0} Custom Fields
+                      </Badge>
+                    )}
                   </div>
                   
-                  <div className="flex items-center gap-1 shrink-0 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    {tab.id === 'positions' && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleOpenFieldsModal(item)}
+                        className="h-8 px-2.5 text-xs font-semibold border-purple-200 text-purple-700 hover:bg-purple-50 flex items-center gap-1 rounded-lg"
+                      >
+                        <Sliders className="h-3.5 w-3.5" />
+                        <span>Form Fields</span>
+                      </Button>
+                    )}
+
                     <Button 
                       variant="edit" 
                       size="icon" 
@@ -230,14 +297,13 @@ function MasterDataTable({ tab }) {
               ))}
             </div>
           ) : (
-            /* Soft-Tint Empty State Configuration */
             <div className="flex flex-col items-center justify-center py-16 px-4 text-center max-w-sm mx-auto">
               <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-950 text-slate-400 mb-4 border border-slate-100 dark:border-slate-800">
                 <HelpCircle className="h-6 w-6 stroke-[1.5]" />
               </div>
               <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 tracking-wide">No Records Located</h3>
               <p className="text-xs text-slate-400 dark:text-slate-500 mt-1.5 leading-relaxed">
-                We couldn't locate matching records for "{searchTerm || tab.label}". Try introducing a fresh record configuration variant above.
+                We couldn't locate matching records for "{searchTerm || tab.label}".
               </p>
             </div>
           )}
@@ -287,6 +353,126 @@ function MasterDataTable({ tab }) {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Dynamic Form Field Builder Modal for Position */}
+      <Dialog open={!!fieldsModalPosition} onOpenChange={() => setFieldsModalPosition(null)}>
+        <DialogContent className="max-w-lg rounded-xl border border-slate-200/60 bg-white p-6 dark:bg-slate-900 shadow-xl">
+          <DialogHeader>
+            <DialogTitle className="text-sm font-bold tracking-wide text-slate-800 dark:text-slate-200 flex items-center gap-2">
+              <Sliders className="h-4 w-4 text-purple-600" />
+              Configure Dynamic Form Fields for "{fieldsModalPosition?.name}"
+            </DialogTitle>
+            <DialogDescription className="text-xs text-slate-400 dark:text-slate-500 font-medium mt-1">
+              Add custom checkboxes, dropdowns, or inputs for this specific position. Saved fields will automatically render on candidate forms for all school admins.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogBody className="pt-4 space-y-4">
+            
+            {/* Existing Fields List */}
+            <div className="space-y-2">
+              <Label className="text-xs font-bold uppercase tracking-wider text-slate-500">Configured Fields ({positionFields.length})</Label>
+              {positionFields.length === 0 ? (
+                <p className="text-xs text-slate-400 italic bg-slate-50 p-3 rounded-lg border border-slate-100">No custom fields added yet. Add one below!</p>
+              ) : (
+                <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1">
+                  {positionFields.map((field, idx) => (
+                    <div key={idx} className="flex items-center justify-between p-2.5 rounded-lg border border-slate-200 bg-slate-50 dark:bg-slate-800 text-xs">
+                      <div className="min-w-0">
+                        <p className="font-bold text-slate-800 dark:text-slate-200">{field.label}</p>
+                        <p className="text-[10px] text-slate-400 font-medium capitalize">Type: {field.type} {field.options?.length ? `(${field.options.join(', ')})` : ''}</p>
+                      </div>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleRemoveFieldFromPosition(idx)}
+                        className="h-7 w-7 text-rose-500 hover:bg-rose-50 rounded-md"
+                      >
+                        <X className="h-3.5 w-3.5" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Add New Field Box */}
+            <div className="p-3.5 rounded-xl border border-purple-100 bg-purple-50/50 space-y-3">
+              <Label className="text-xs font-bold text-purple-900 flex items-center gap-1">
+                <Plus className="h-3.5 w-3.5 text-purple-600" />
+                Add New Field
+              </Label>
+              
+              <div className="grid grid-cols-2 gap-2.5">
+                <div className="space-y-1">
+                  <Label className="text-[10px] font-semibold text-slate-500">Field Label *</Label>
+                  <Input
+                    placeholder="e.g. Heavy License Required"
+                    value={newFieldLabel}
+                    onChange={(e) => setNewFieldLabel(e.target.value)}
+                    className="h-9 text-xs bg-white border-slate-200"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <Label className="text-[10px] font-semibold text-slate-500">Input Type *</Label>
+                  <Select value={newFieldType} onValueChange={setNewFieldType}>
+                    <SelectTrigger className="h-9 text-xs bg-white border-slate-200">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="text-xs">
+                      <SelectItem value="checkbox">Checkbox (Yes/No)</SelectItem>
+                      <SelectItem value="select">Dropdown Select</SelectItem>
+                      <SelectItem value="multi-select">Multi-Select Dropdown</SelectItem>
+                      <SelectItem value="text">Text Input</SelectItem>
+                      <SelectItem value="number">Number Input</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              {['select', 'multi-select'].includes(newFieldType) && (
+                <div className="space-y-1">
+                  <Label className="text-[10px] font-semibold text-slate-500">Options (Comma-separated) *</Label>
+                  <Input
+                    placeholder="e.g. Heavy, Light, Commercial, School Bus"
+                    value={newFieldOptions}
+                    onChange={(e) => setNewFieldOptions(e.target.value)}
+                    className="h-9 text-xs bg-white border-slate-200"
+                  />
+                </div>
+              )}
+
+              <Button
+                type="button"
+                onClick={handleAddFieldToPosition}
+                disabled={!newFieldLabel.trim()}
+                className="w-full h-8 text-xs bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-lg"
+              >
+                Add Field To List
+              </Button>
+            </div>
+
+          </DialogBody>
+          <DialogFooter className="mt-4 flex gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setFieldsModalPosition(null)}
+              className="rounded-xl h-10 font-medium text-xs border-slate-200"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSavePositionFields}
+              disabled={updateMutation.isPending}
+              className="bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl h-10 px-5 text-xs"
+            >
+              {updateMutation.isPending ? 'Saving...' : 'Save Position Fields'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
     </div>
   );
 }

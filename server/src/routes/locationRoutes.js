@@ -9,6 +9,8 @@ import {
   updateCity,
   deleteCity,
   importIndiaLocations,
+  searchLocationProxy,
+  reverseGeocodeProxy,
 } from '../controllers/locationController.js';
 import { protect, authorize } from '../middleware/auth.js';
 
@@ -16,6 +18,8 @@ const router = Router();
 
 router.get('/states', getStates);
 router.get('/cities', getCities);
+router.get('/search', searchLocationProxy);
+router.get('/reverse', reverseGeocodeProxy);
 
 router.post('/states', protect, authorize('super_admin'), createState);
 router.put('/states/:id', protect, authorize('super_admin'), updateState);

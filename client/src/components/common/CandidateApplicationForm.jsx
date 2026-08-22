@@ -50,8 +50,14 @@ export function CandidateApplicationForm({
     const files = Array.from(e.target.files || []);
     if (!files.length) return;
 
-    if (documents.length + files.length > 10) {
-      setError('Maximum 10 files allowed');
+    if (documents.length + files.length > 5) {
+      setError('Maximum 5 documents allowed');
+      return;
+    }
+
+    const oversizedFiles = files.filter((f) => f.size > 2 * 1024 * 1024);
+    if (oversizedFiles.length > 0) {
+      setError(`Each file must be 2MB or smaller. Oversized file(s): ${oversizedFiles.map((f) => f.name).join(', ')}`);
       return;
     }
 
@@ -59,13 +65,22 @@ export function CandidateApplicationForm({
     setError('');
     try {
       const res = await uploadFiles(files);
-      setDocuments((prev) => [...prev, ...res.data.data]);
+      const newDocs = res.data.data.map((d) => ({ ...d, note: '' }));
+      setDocuments((prev) => [...prev, ...newDocs]);
     } catch (err) {
       setError(err.response?.data?.message || 'Upload failed');
     } finally {
       setUploading(false);
       e.target.value = '';
     }
+  };
+
+  const handleDocNoteChange = (index, noteText) => {
+    setDocuments((prev) => {
+      const updated = [...prev];
+      updated[index] = { ...updated[index], note: noteText };
+      return updated;
+    });
   };
 
   const handleSubmit = (e) => {
@@ -264,7 +279,7 @@ export function CandidateApplicationForm({
             <p className="text-sm font-bold text-slate-700 dark:text-slate-200">
               {uploading ? 'Processing Server Upload...' : 'Click to upload files'}
             </p>
-            <p className="text-xs text-slate-400">Max 10 files, up to 10MB each (Images, PDF, DOC, DOCX)</p>
+            <p className="text-xs text-slate-400">Max 5 documents allowed • Up to 2MB limit per file (Images, PDF, DOC, DOCX)</p>
           </div>
           <input
             type="file"
@@ -272,27 +287,38 @@ export function CandidateApplicationForm({
             className="hidden"
             accept="image/*,.pdf,.doc,.docx"
             onChange={handleFileUpload}
-            disabled={uploading || documents.length >= 10}
+            disabled={uploading || documents.length >= 5}
           />
         </label>
 
-        {/* Uploaded Documents List */}
+        {/* Uploaded Documents List with Note Field */}
         {documents.length > 0 && (
-          <div className="grid gap-2 sm:grid-cols-2 pt-2">
+          <div className="space-y-2 pt-2">
             {documents.map((doc, i) => (
-              <div key={i} className="flex items-center justify-between rounded-xl border border-slate-100 dark:border-slate-800 p-3 bg-white group hover:border-[#4BCBEB]/50 transition-colors shadow-xs">
-                <div className="flex items-center gap-2.5 min-w-0">
+              <div key={i} className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 rounded-xl border border-slate-100 dark:border-slate-800 p-3 bg-white dark:bg-slate-900 group shadow-xs">
+                <div className="flex items-center gap-2.5 min-w-0 flex-1">
                   <div className="p-2 bg-[#4BCBEB]/10 text-[#4BCBEB] rounded-lg shrink-0">
                     <FileText className="h-4 w-4" />
                   </div>
-                  <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate max-w-[180px]">{doc.name}</span>
+                  <div className="min-w-0 flex-1 space-y-1">
+                    <a href={doc.url} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-[#A05AFF] hover:underline truncate block">
+                      {doc.name}
+                    </a>
+                    <input
+                      type="text"
+                      value={doc.note || ''}
+                      onChange={(e) => handleDocNoteChange(i, e.target.value)}
+                      placeholder="Add optional note (e.g. 10th Marksheet, B.Ed Degree, Aadhar Card)..."
+                      className="w-full h-8 px-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg text-xs font-medium text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-1 focus:ring-[#A05AFF]"
+                    />
+                  </div>
                 </div>
                 <Button 
                   type="button" 
                   variant="ghost" 
                   size="icon" 
                   onClick={() => setDocuments(documents.filter((_, idx) => idx !== i))}
-                  className="h-8 w-8 rounded-lg hover:bg-[#FE9496]/10 hover:text-[#FE9496] transition-colors"
+                  className="h-8 w-8 rounded-lg hover:bg-[#FE9496]/10 hover:text-[#FE9496] transition-colors shrink-0 self-end sm:self-center"
                 >
                   <X className="h-3.5 w-3.5" />
                 </Button>

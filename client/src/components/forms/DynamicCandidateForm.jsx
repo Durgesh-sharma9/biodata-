@@ -3,7 +3,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import { 
   Upload, X, FileText, User, Camera, Calendar, Mail, Phone, 
-  MapPin, Sparkles, ClipboardCheck, AlertCircle, IndianRupee, 
+  Sparkles, ClipboardCheck, AlertCircle, IndianRupee, 
   FileUp, Briefcase, Loader2 
 } from 'lucide-react';
 import { uploadFiles } from '@/lib/api';
@@ -118,7 +118,12 @@ export function DynamicCandidateForm({
   const position = watch('position');
   const documents = watch('documents');
 
-  const professionFields = POSITION_FIELDS[position] || {};
+  // Hardcoded defaults + Super Admin custom fields
+  const hardcodedFields = POSITION_FIELDS[position] || {};
+  const selectedPosObj = (positions || settings?.positionsList || []).find(
+    (p) => typeof p === 'object' && (p.name === position || p._id === position)
+  );
+  const customFieldsList = selectedPosObj?.fields || [];
 
   useEffect(() => {
     if (initialValues) {
@@ -160,21 +165,34 @@ export function DynamicCandidateForm({
     const files = Array.from(e.target.files || []);
     if (!files.length) return;
 
-    if (documents.length + files.length > 10) {
-      alert('Maximum 10 files allowed');
+    if (documents.length + files.length > 5) {
+      alert('Maximum 5 documents allowed per candidate profile');
+      return;
+    }
+
+    const oversizedFiles = files.filter((f) => f.size > 2 * 1024 * 1024);
+    if (oversizedFiles.length > 0) {
+      alert(`File size limit exceeded! Each file must be 2MB or smaller.\nOversized file(s): ${oversizedFiles.map((f) => f.name).join(', ')}`);
       return;
     }
 
     setUploading(true);
     try {
       const res = await uploadFilesFn(files);
-      setValue('documents', [...documents, ...res.data.data]);
+      const newDocs = res.data.data.map((d) => ({ ...d, note: '' }));
+      setValue('documents', [...documents, ...newDocs]);
     } catch (err) {
       alert(err.response?.data?.message || 'Upload failed');
     } finally {
       setUploading(false);
       e.target.value = '';
     }
+  };
+
+  const handleDocNoteChange = (index, noteText) => {
+    const updatedDocs = [...documents];
+    updatedDocs[index] = { ...updatedDocs[index], note: noteText };
+    setValue('documents', updatedDocs);
   };
 
   const removeDocument = (index) => {
@@ -216,7 +234,7 @@ export function DynamicCandidateForm({
               render={({ field }) => (
                 <MultiSelect
                   options={Array.isArray(options) ? options : settings?.[options] || []}
-                  value={field.value}
+                  value={field.value || []}
                   onChange={field.onChange}
                   placeholder={`Select ${label.toLowerCase()}`}
                   className="rounded-lg min-h-9 border-slate-200 text-xs"
@@ -234,7 +252,7 @@ export function DynamicCandidateForm({
               name={fieldName}
               control={control}
               render={({ field }) => (
-                <Select value={field.value} onValueChange={field.onChange}>
+                <Select value={field.value || ''} onValueChange={field.onChange}>
                   <SelectTrigger className="rounded-lg h-9 border-slate-200 bg-white font-medium text-xs focus:ring-[#A05AFF]">
                     <SelectValue placeholder={`Select ${label.toLowerCase()}`} />
                   </SelectTrigger>
@@ -283,6 +301,20 @@ export function DynamicCandidateForm({
               type="number" 
               min="0" 
               {...register(fieldName)} 
+              className="rounded-lg h-9 border-slate-200 text-xs font-medium focus-visible:ring-[#A05AFF]"
+            />
+          </div>
+        );
+
+      case 'text':
+        return (
+          <div key={fieldName} className="space-y-1 group animate-in fade-in duration-200">
+            <Label htmlFor={fieldName} className="text-xs font-semibold text-slate-700 dark:text-slate-300">{label}</Label>
+            <Input 
+              id={fieldName} 
+              type="text" 
+              {...register(fieldName)} 
+              placeholder={`Enter ${label.toLowerCase()}`}
               className="rounded-lg h-9 border-slate-200 text-xs font-medium focus-visible:ring-[#A05AFF]"
             />
           </div>
@@ -435,22 +467,7 @@ export function DynamicCandidateForm({
               </div>
             </div>
 
-            {/* Street Address */}
-            <div className="space-y-1 sm:col-span-2 group">
-              <Label htmlFor="address" className="text-xs font-semibold text-slate-700 dark:text-slate-300">Complete Address</Label>
-              <div className="relative">
-                <Textarea 
-                  id="address" 
-                  placeholder="House/Apartment no., building, street, area landmark..."
-                  {...register('address')} 
-                  disabled={isFieldDisabled('address')} 
-                  className="rounded-lg border-slate-200 focus-visible:ring-[#A05AFF] pl-9 pt-2 text-xs font-medium min-h-[60px]"
-                />
-                <MapPin className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
-              </div>
-            </div>
-
-            {/* Location Select Module */}
+            {/* Unified Location Select Module (Contains State, City, Area, Address, Map Pin) */}
             <div className="sm:col-span-2 rounded-lg bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 p-3">
               <LocationSelect value={location} onChange={setLocation} />
             </div>
@@ -505,8 +522,8 @@ export function DynamicCandidateForm({
         </CardContent>
       </Card>
 
-      {/* 3. Conditional Dynamic Role Fields Card */}
-      {position && professionFields && Object.keys(professionFields).length > 0 && (
+      {/* 3. Conditional Dynamic Role Fields Card (Hardcoded + Super Admin Custom Fields) */}
+      {position && ((hardcodedFields && Object.keys(hardcodedFields).length > 0) || customFieldsList.length > 0) && (
         <Card className="border-l-4 border-l-[#A05AFF] animate-in fade-in duration-300">
           <CardHeader className="bg-white dark:bg-slate-900 py-3 px-4 sm:px-5">
             <div className="flex items-center gap-2.5">
@@ -521,8 +538,18 @@ export function DynamicCandidateForm({
           </CardHeader>
           
           <CardContent className="grid gap-3.5 sm:grid-cols-2 p-4 sm:p-5">
-            {Object.entries(professionFields).map(([fieldName, fieldConfig]) =>
+            {/* Render hardcoded role fields */}
+            {Object.entries(hardcodedFields).map(([fieldName, fieldConfig]) =>
               renderField(fieldName, fieldConfig)
+            )}
+
+            {/* Render Super Admin dynamic custom fields */}
+            {customFieldsList.map((cf) =>
+              renderField(cf.name || cf.label, {
+                type: cf.type,
+                label: cf.label,
+                options: cf.options,
+              })
             )}
           </CardContent>
         </Card>
@@ -633,7 +660,9 @@ export function DynamicCandidateForm({
                 <p className="text-xs font-bold text-slate-700 dark:text-slate-200">
                   {uploading ? 'Uploading files...' : 'Click or Drag files to upload'}
                 </p>
-                <p className="text-[10px] text-slate-400">Supports PDF, DOC, DOCX, JPG, PNG up to 10MB each (max 10 files)</p>
+                <p className="text-[10px] text-slate-400 font-medium">
+                  Max 5 documents allowed • 2MB limit per file (PDF, DOC, DOCX, JPG, PNG)
+                </p>
               </div>
               <input
                 type="file"
@@ -641,28 +670,38 @@ export function DynamicCandidateForm({
                 className="hidden"
                 accept="image/*,.pdf,.doc,.docx"
                 onChange={handleFileUpload}
-                disabled={uploading || documents.length >= 10 || isFieldDisabled('documents')}
+                disabled={uploading || documents.length >= 5 || isFieldDisabled('documents')}
               />
             </label>
           </div>
 
-          {/* Document Uploads List */}
+          {/* Document Uploads List with Note Input */}
           {documents.length > 0 && (
-            <div className="grid gap-2 sm:grid-cols-2 pt-1 animate-in fade-in duration-200">
+            <div className="space-y-2 pt-1 animate-in fade-in duration-200">
               {documents.map((doc, i) => (
-                <div key={i} className="flex items-center justify-between rounded-lg border border-slate-200 dark:border-slate-800 p-2.5 bg-white dark:bg-slate-900 group shadow-xs">
-                  <div className="flex items-center gap-2 min-w-0">
-                    <div className="p-1.5 bg-[#A05AFF]/10 text-[#A05AFF] rounded-md shrink-0">
-                      <FileText className="h-3.5 w-3.5" />
+                <div key={i} className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 rounded-lg border border-slate-200 dark:border-slate-800 p-2.5 bg-white dark:bg-slate-900 shadow-xs">
+                  <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                    <div className="p-2 bg-[#A05AFF]/10 text-[#A05AFF] rounded-md shrink-0">
+                      <FileText className="h-4 w-4" />
                     </div>
-                    <a
-                      href={doc.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-xs font-bold text-[#A05AFF] hover:underline truncate max-w-[180px]"
-                    >
-                      {doc.name}
-                    </a>
+                    <div className="min-w-0 flex-1 space-y-1">
+                      <a
+                        href={doc.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs font-bold text-[#A05AFF] hover:underline truncate block"
+                      >
+                        {doc.name}
+                      </a>
+                      <input
+                        type="text"
+                        value={doc.note || ''}
+                        onChange={(e) => handleDocNoteChange(i, e.target.value)}
+                        placeholder="Add optional note (e.g. 10th Marksheet, B.Ed Degree, Experience Letter)..."
+                        disabled={isFieldDisabled('documents')}
+                        className="w-full h-7 px-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded text-[11px] font-medium text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-1 focus:ring-[#A05AFF]"
+                      />
+                    </div>
                   </div>
                   <Button
                     type="button"
@@ -670,7 +709,7 @@ export function DynamicCandidateForm({
                     size="icon"
                     onClick={() => removeDocument(i)}
                     disabled={isFieldDisabled('documents')}
-                    className="h-7 w-7 rounded-md text-slate-400 hover:text-rose-500 hover:bg-rose-50 transition-all"
+                    className="h-7 w-7 rounded-md text-slate-400 hover:text-rose-500 hover:bg-rose-50 transition-all shrink-0 self-end sm:self-center"
                   >
                     <X className="h-3.5 w-3.5" />
                   </Button>
