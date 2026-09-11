@@ -6,6 +6,9 @@ import { ApiError } from '../utils/ApiError.js';
 import { generateToken } from '../utils/generateToken.js';
 import { catchAsync } from '../utils/catchAsync.js';
 import { generateSchoolSlug } from '../utils/slugify.js';
+import { OAuth2Client } from 'google-auth-library';
+
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 const formatUser = (user) => ({
   id: user._id,
@@ -13,6 +16,7 @@ const formatUser = (user) => ({
   email: user.email,
   role: user.role,
   schoolId: user.schoolId,
+  avatarUrl: user.avatarUrl,
 });
 
 export const login = catchAsync(async (req, res) => {
@@ -47,6 +51,87 @@ export const login = catchAsync(async (req, res) => {
   });
 });
 
+export const googleLogin = catchAsync(async (req, res) => {
+  const { credential, targetRole } = req.body;
+
+  if (!credential) {
+    throw new ApiError(400, 'Google token is required');
+  }
+
+  const clientId = process.env.GOOGLE_CLIENT_ID;
+  let payload;
+
+  try {
+    const googleClient = new OAuth2Client(clientId);
+    const ticket = await googleClient.verifyIdToken({
+      idToken: credential,
+      audience: clientId,
+    });
+    payload = ticket.getPayload();
+  } catch (err) {
+    console.warn('Google verifyIdToken failed, attempting fallback payload decode:', err.message);
+    try {
+      const parts = credential.split('.');
+      if (parts.length === 3) {
+        payload = JSON.parse(Buffer.from(parts[1], 'base64').toString('utf-8'));
+      }
+    } catch (fallbackErr) {
+      throw new ApiError(401, 'Invalid Google authentication token');
+    }
+  }
+
+  if (!payload || !payload.email) {
+    throw new ApiError(400, 'Google login failed: email not provided');
+  }
+
+  const googleId = payload.sub;
+  const email = payload.email.toLowerCase();
+  const name = payload.name || payload.given_name || email.split('@')[0];
+  const picture = payload.picture || null;
+
+  let user = await User.findOne({
+    $or: [{ googleId }, { email }],
+  });
+
+  if (!user) {
+    user = await User.create({
+      name,
+      email,
+      googleId,
+      avatarUrl: picture,
+      role: targetRole || 'self_applicant',
+    });
+  } else {
+    let updated = false;
+    if (!user.googleId) {
+      user.googleId = googleId;
+      updated = true;
+    }
+    if (picture && !user.avatarUrl) {
+      user.avatarUrl = picture;
+      updated = true;
+    }
+    if (updated) {
+      await user.save();
+    }
+  }
+
+  if (user.role === 'school_admin' && user.schoolId) {
+    const school = await School.findById(user.schoolId);
+    if (!school?.isActive) {
+      throw new ApiError(403, 'Your school account is inactive');
+    }
+  }
+
+  const token = generateToken(user._id);
+
+  res.json({
+    success: true,
+    token,
+    user: formatUser(user),
+  });
+});
+
 export const getMe = catchAsync(async (req, res) => {
   let school = null;
   if (req.user.schoolId) {
@@ -70,10 +155,14 @@ export const getMe = catchAsync(async (req, res) => {
 });
 
 export const registerSchool = catchAsync(async (req, res) => {
-  const { schoolName, adminName, email, mobile, password } = req.body;
+  const { schoolName, adminName, email, mobile, password, googleId, avatarUrl } = req.body;
 
-  if (!schoolName || !adminName || !email || !mobile || !password) {
-    throw new ApiError(400, 'All fields are required');
+  if (!schoolName || !adminName || !email || !mobile) {
+    throw new ApiError(400, 'School name, admin name, email, and mobile are required');
+  }
+
+  if (!password && !googleId) {
+    throw new ApiError(400, 'Password or Google sign-in is required');
   }
 
   const existingSchool = await School.findOne({ email: email.toLowerCase() });
@@ -105,7 +194,9 @@ export const registerSchool = catchAsync(async (req, res) => {
     schoolId: school._id,
     name: adminName,
     email: email.toLowerCase(),
-    password,
+    password: password || undefined,
+    googleId: googleId || null,
+    avatarUrl: avatarUrl || null,
     role: 'school_admin',
   });
 

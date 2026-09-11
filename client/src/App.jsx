@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
 import { ProtectedRoute } from '@/components/layout/ProtectedRoute';
 import { AppLayout } from '@/components/layout/AppLayout';
@@ -36,6 +37,7 @@ import ApplicantPlan from '@/pages/applicant/ApplicantPlan';
 import ApplicantDocuments from '@/pages/applicant/ApplicantDocuments';
 import ApplicantNotifications from '@/pages/applicant/ApplicantNotifications';
 import ApplicantPlans from '@/pages/admin/ApplicantPlans';
+const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '556980788726-rjrudmqdntj9jevortkn62pb0hr5f4dv.apps.googleusercontent.com';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -58,9 +60,10 @@ function RootRedirect() {
 
 export default function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <BrowserRouter>
+    <GoogleOAuthProvider clientId={googleClientId}>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <BrowserRouter>
           <Routes>
             <Route path="/" element={<Landing />} />
             <Route path="/features" element={<Features />} />
@@ -134,5 +137,6 @@ export default function App() {
         </BrowserRouter>
       </AuthProvider>
     </QueryClientProvider>
+  </GoogleOAuthProvider>
   );
 }

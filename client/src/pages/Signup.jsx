@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { Button } from '@/components/ui/Button';
+import { GoogleLoginButton } from '@/components/common/GoogleLoginButton';
 import { 
   Building2, 
   User, 
@@ -25,10 +26,35 @@ export default function Signup() {
     password: '',
     confirmPassword: '',
   });
+  const [googleData, setGoogleData] = useState(null);
   const [error, setError] = useState('');
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleGoogleSuccess = (res) => {
+    // If the user is already registered as a school_admin, redirect immediately
+    if (res?.user?.schoolId || res?.user?.role === 'school_admin') {
+      navigate('/dashboard');
+      window.location.reload();
+      return;
+    }
+
+    // Otherwise prefill name & email from Google
+    if (res?.user?.email) {
+      setGoogleData({
+        email: res.user.email,
+        name: res.user.name,
+        avatarUrl: res.user.avatarUrl,
+        googleId: res.user.googleId,
+      });
+      setFormData((prev) => ({
+        ...prev,
+        email: res.user.email || prev.email,
+        adminName: res.user.name || prev.adminName,
+      }));
+    }
   };
 
   const mutation = useMutation({
@@ -57,12 +83,12 @@ export default function Signup() {
     e.preventDefault();
     setError('');
 
-    if (formData.password !== formData.confirmPassword) {
+    if (!googleData && formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
       return;
     }
 
-    if (formData.password.length < 6) {
+    if (!googleData && formData.password.length < 6) {
       setError('Password must be at least 6 characters');
       return;
     }
@@ -72,7 +98,9 @@ export default function Signup() {
       adminName: formData.adminName,
       email: formData.email,
       mobile: formData.mobile,
-      password: formData.password,
+      password: googleData ? undefined : formData.password,
+      googleId: googleData?.googleId,
+      avatarUrl: googleData?.avatarUrl,
     });
   };
 
@@ -284,6 +312,17 @@ export default function Signup() {
                 )}
               </Button>
             </form>
+
+            <div className="relative my-4">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-slate-200 dark:border-slate-800" />
+              </div>
+              <div className="relative flex justify-center text-[10px] uppercase font-bold text-slate-400">
+                <span className="bg-white dark:bg-slate-900 px-2">Or continue with</span>
+              </div>
+            </div>
+
+            <GoogleLoginButton targetRole="school_admin" text="signup_with" onSuccessCustom={handleGoogleSuccess} />
 
             <p className="mt-6 text-center text-xs font-semibold text-slate-500 dark:text-slate-400">
               Already have an account?{' '}

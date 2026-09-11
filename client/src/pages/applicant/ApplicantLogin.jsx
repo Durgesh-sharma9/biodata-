@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { GoogleLoginButton } from '@/components/common/GoogleLoginButton';
 
 export default function ApplicantLogin() {
   const navigate = useNavigate();
@@ -38,7 +39,7 @@ export default function ApplicantLogin() {
         <CardHeader>
           <CardTitle>Applicant Login</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <Label>Email</Label>
@@ -52,10 +53,22 @@ export default function ApplicantLogin() {
             <Button type="submit" className="w-full" disabled={loading}>
               Login
             </Button>
-            <p className="text-center text-sm text-muted-foreground">
-              New applicant? <Link to="/applicant/signup" className="text-primary hover:underline">Create account</Link>
-            </p>
           </form>
+
+          <div className="relative my-4">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-slate-200 dark:border-slate-800" />
+            </div>
+            <div className="relative flex justify-center text-[10px] uppercase font-bold text-slate-400">
+              <span className="bg-white dark:bg-slate-900 px-2">Or continue with</span>
+            </div>
+          </div>
+
+          <GoogleLoginButton targetRole="self_applicant" redirectTo="/applicant/dashboard" />
+
+          <p className="text-center text-sm text-muted-foreground pt-2">
+            New applicant? <Link to="/applicant/signup" className="text-primary hover:underline">Create account</Link>
+          </p>
         </CardContent>
       </Card>
     </div>

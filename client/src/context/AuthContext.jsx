@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { getMe, login as loginApi } from '@/lib/api';
+import { getMe, login as loginApi, googleLogin as googleLoginApi } from '@/lib/api';
 
 const AuthContext = createContext(null);
 
@@ -43,6 +43,17 @@ export function AuthProvider({ children }) {
     return res.data;
   };
 
+  const loginWithGoogle = async (credential, targetRole) => {
+    const res = await googleLoginApi({ credential, targetRole });
+    localStorage.setItem('token', res.data.token);
+    localStorage.setItem('user', JSON.stringify(res.data.user));
+    setUser(res.data.user);
+
+    const meRes = await getMe();
+    setSchool(meRes.data.school);
+    return res.data;
+  };
+
   const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
@@ -64,6 +75,7 @@ export function AuthProvider({ children }) {
         school,
         loading,
         login,
+        loginWithGoogle,
         logout,
         refreshSchool,
         isSuperAdmin: user?.role === 'super_admin',

@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Database, ArrowRight, Sparkles, Lock, Mail, Eye, EyeOff, ShieldCheck } from 'lucide-react';
+import { GoogleLoginButton } from '@/components/common/GoogleLoginButton';
 
 const loginSchema = z.object({
   email: z.string().email('Please enter a valid institutional email'),
@@ -171,6 +172,17 @@ export default function Login({ redirectTo, signupLink = '/signup', title = 'Sig
                   ) : 'Sign In To Dashboard'}
                 </Button>
               </form>
+
+              <div className="relative my-4">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-slate-200 dark:border-slate-800" />
+                </div>
+                <div className="relative flex justify-center text-[10px] uppercase font-bold text-slate-400">
+                  <span className="bg-white dark:bg-slate-900 px-2">Or continue with</span>
+                </div>
+              </div>
+
+              <GoogleLoginButton targetRole="school_admin" redirectTo={redirectTo} />
               
               <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-[#1BCFB4] dark:border-slate-800">
                 <ShieldCheck className="w-4 h-4" /> FERPA Compliant Tunnel

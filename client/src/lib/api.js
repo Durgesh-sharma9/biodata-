@@ -32,6 +32,7 @@ export default api;
 
 // Auth
 export const login = (data) => api.post('/auth/login', data);
+export const googleLogin = (data) => api.post('/auth/google', data);
 export const registerSchool = (data) => api.post('/auth/register', data);
 export const getMe = () => api.get('/auth/me');
 
