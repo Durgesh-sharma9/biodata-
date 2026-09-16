@@ -29,12 +29,18 @@ const PORT = process.env.PORT || 5000;
 
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    origin: (origin, callback) => {
+      callback(null, true);
+    },
     credentials: true,
   })
 );
 app.use(express.json({ limit: '2mb' }));
 app.use(express.urlencoded({ extended: true }));
+
+app.get('/', (req, res) => {
+  res.json({ success: true, message: 'Server API is running' });
+});
 
 app.get('/api/health', (req, res) => {
   res.json({ success: true, message: 'API is running' });

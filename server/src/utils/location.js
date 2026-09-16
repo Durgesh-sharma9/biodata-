@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import State from '../models/State.js';
 import City from '../models/City.js';
 
@@ -29,6 +30,8 @@ export const formatDistanceKm = (distanceKm) => {
 };
 
 export const buildLocationPayload = async (body = {}) => {
+  const isValidId = (id) => id && mongoose.Types.ObjectId.isValid(id) && String(id) !== 'null' && String(id) !== 'undefined';
+
   const payload = {
     state: body.state ?? '',
     city: body.city ?? '',
@@ -37,23 +40,31 @@ export const buildLocationPayload = async (body = {}) => {
     latitude: toNumberOrUndefined(body.latitude),
     longitude: toNumberOrUndefined(body.longitude),
     workingRadius: toNumberOrUndefined(body.workingRadius),
-    stateId: body.stateId ?? null,
-    cityId: body.cityId ?? null,
+    stateId: isValidId(body.stateId) ? body.stateId : null,
+    cityId: isValidId(body.cityId) ? body.cityId : null,
   };
 
   if (payload.cityId) {
-    const city = await City.findById(payload.cityId).populate('stateId');
-    if (city) {
-      payload.city = city.name;
-      payload.state = city.stateId?.name || payload.state;
-      payload.cityId = city._id;
-      payload.stateId = city.stateId?._id || payload.stateId;
+    try {
+      const city = await City.findById(payload.cityId).populate('stateId');
+      if (city) {
+        payload.city = city.name;
+        payload.state = city.stateId?.name || payload.state;
+        payload.cityId = city._id;
+        payload.stateId = city.stateId?._id || payload.stateId;
+      }
+    } catch (e) {
+      payload.cityId = null;
     }
   } else if (payload.stateId) {
-    const state = await State.findById(payload.stateId);
-    if (state) {
-      payload.state = state.name;
-      payload.stateId = state._id;
+    try {
+      const state = await State.findById(payload.stateId);
+      if (state) {
+        payload.state = state.name;
+        payload.stateId = state._id;
+      }
+    } catch (e) {
+      payload.stateId = null;
     }
   }
 
