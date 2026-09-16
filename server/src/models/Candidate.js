@@ -108,7 +108,7 @@ const candidateSchema = new mongoose.Schema(
     cleaningExperience: { type: Boolean, default: false },
     schoolExperience: { type: Boolean, default: false },
   },
-  { timestamps: true }
+  { timestamps: true, strict: false }
 );
 
   candidateSchema.index({ ownerSchoolId: 1, mobile: 1 });

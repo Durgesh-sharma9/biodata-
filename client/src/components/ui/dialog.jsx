@@ -103,7 +103,9 @@ const DialogBody = React.forwardRef(({ className, children, ...props }, ref) => 
       minHeight: 0,
     }}
     {...props}
-  />
+  >
+    {children}
+  </div>
 ));
 DialogBody.displayName = 'DialogBody';
 

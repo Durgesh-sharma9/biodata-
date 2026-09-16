@@ -174,11 +174,14 @@ export default function CandidateImport() {
                         <SelectValue placeholder="Select talent role profile" />
                       </SelectTrigger>
                       <SelectContent className="rounded-xl border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900">
-                        {positions.map((p) => (
-                          <SelectItem key={p} value={p} className="rounded-lg py-2 focus:text-purple-600 focus:bg-purple-50">
-                            {p}
-                          </SelectItem>
-                        ))}
+                        {positions.map((p) => {
+                          const pName = typeof p === 'object' ? p.name : p;
+                          return (
+                            <SelectItem key={pName} value={pName} className="rounded-lg py-2 focus:text-purple-600 focus:bg-purple-50">
+                              {pName}
+                            </SelectItem>
+                          );
+                        })}
                       </SelectContent>
                     </Select>
                   </div>
@@ -251,11 +254,14 @@ export default function CandidateImport() {
                       <SelectValue placeholder="Choose role to unlock spreadsheet architecture" />
                     </SelectTrigger>
                     <SelectContent className="rounded-xl border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900">
-                      {positions.map((p) => (
-                        <SelectItem key={p} value={p} className="rounded-lg py-2 focus:text-purple-600 focus:bg-purple-50">
-                          {p}
-                        </SelectItem>
-                      ))}
+                      {positions.map((p) => {
+                        const pName = typeof p === 'object' ? p.name : p;
+                        return (
+                          <SelectItem key={pName} value={pName} className="rounded-lg py-2 focus:text-purple-600 focus:bg-purple-50">
+                            {pName}
+                          </SelectItem>
+                        );
+                      })}
                     </SelectContent>
                   </Select>
                 </div>

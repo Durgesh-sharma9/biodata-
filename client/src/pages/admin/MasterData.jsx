@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Plus, X, Edit2, Trash2, Search, Layers, FileText, Bookmark, GraduationCap, CheckCircle, HelpCircle, Loader2, Sliders } from 'lucide-react';
+import { Plus, X, Edit2, Trash2, Search, Layers, FileText, Bookmark, GraduationCap, CheckCircle, HelpCircle, Loader2, Sliders, Check, Tag, RotateCcw } from 'lucide-react';
 import {
   getPositionsForAdmin,
   getSubjectsForAdmin,
@@ -52,9 +52,12 @@ function MasterDataTable({ tab }) {
   // Custom Fields Modal state for Positions
   const [fieldsModalPosition, setFieldsModalPosition] = useState(null);
   const [positionFields, setPositionFields] = useState([]);
+  const [editingFieldIndex, setEditingFieldIndex] = useState(null);
   const [newFieldLabel, setNewFieldLabel] = useState('');
   const [newFieldType, setNewFieldType] = useState('checkbox');
-  const [newFieldOptions, setNewFieldOptions] = useState('');
+  const [newFieldOptionsList, setNewFieldOptionsList] = useState([]);
+  const [currentOptionInput, setCurrentOptionInput] = useState('');
+  const [newFieldRequired, setNewFieldRequired] = useState(false);
 
   const queryClient = useQueryClient();
   const TabIcon = tab.icon || Layers;
@@ -76,6 +79,8 @@ function MasterDataTable({ tab }) {
     mutationFn: ({ id, name, fields, isActive }) => tab.updateFn(id, { name, fields, isActive }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['master-data', tab.id] });
+      queryClient.invalidateQueries({ queryKey: ['positions'] });
+      queryClient.invalidateQueries({ queryKey: ['settings'] });
       setEditItem(null);
       setFieldsModalPosition(null);
     },
@@ -118,33 +123,123 @@ function MasterDataTable({ tab }) {
   const handleOpenFieldsModal = (positionItem) => {
     setFieldsModalPosition(positionItem);
     setPositionFields(positionItem.fields || []);
+    setEditingFieldIndex(null);
     setNewFieldLabel('');
     setNewFieldType('checkbox');
-    setNewFieldOptions('');
+    setNewFieldOptionsList([]);
+    setCurrentOptionInput('');
+    setNewFieldRequired(false);
   };
 
-  const handleAddFieldToPosition = () => {
-    if (!newFieldLabel.trim()) return;
-    const fieldName = newFieldLabel.toLowerCase().replace(/[^a-z0-9]/g, '');
-    const optionsArray = ['select', 'multi-select'].includes(newFieldType)
-      ? newFieldOptions.split(',').map((o) => o.trim()).filter(Boolean)
-      : [];
+  const handleStartEditField = (index) => {
+    const f = positionFields[index];
+    if (!f) return;
+    setEditingFieldIndex(index);
+    setNewFieldLabel(f.label || '');
+    setNewFieldType(f.type || 'checkbox');
+    setNewFieldOptionsList(Array.isArray(f.options) ? [...f.options] : []);
+    setCurrentOptionInput('');
+    setNewFieldRequired(Boolean(f.required));
+  };
 
-    const updated = [
-      ...positionFields,
-      {
-        name: fieldName,
+  const handleCancelEditField = () => {
+    setEditingFieldIndex(null);
+    setNewFieldLabel('');
+    setNewFieldType('checkbox');
+    setNewFieldOptionsList([]);
+    setCurrentOptionInput('');
+    setNewFieldRequired(false);
+  };
+
+  const handleAddOptionChip = () => {
+    if (!currentOptionInput.trim()) return;
+    const splitOptions = currentOptionInput
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean);
+
+    const merged = [...newFieldOptionsList];
+    for (const opt of splitOptions) {
+      if (!merged.includes(opt)) {
+        merged.push(opt);
+      }
+    }
+    setNewFieldOptionsList(merged);
+    setCurrentOptionInput('');
+  };
+
+  const handleRemoveOptionChip = (chipIdx) => {
+    setNewFieldOptionsList(newFieldOptionsList.filter((_, i) => i !== chipIdx));
+  };
+
+  const handleSaveFieldToList = () => {
+    if (!newFieldLabel.trim()) return;
+
+    const needsOptions = ['select', 'multi-select', 'radio'].includes(newFieldType);
+    let finalOptions = [...newFieldOptionsList];
+    if (needsOptions && currentOptionInput.trim()) {
+      const splitOptions = currentOptionInput
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean);
+      for (const opt of splitOptions) {
+        if (!finalOptions.includes(opt)) finalOptions.push(opt);
+      }
+    }
+
+    if (needsOptions && finalOptions.length === 0) {
+      alert('Please add at least one option for this dropdown / selection field (type an option and click "+ Add Option").');
+      return;
+    }
+
+    if (editingFieldIndex !== null) {
+      const updated = [...positionFields];
+      const existing = updated[editingFieldIndex];
+      updated[editingFieldIndex] = {
+        ...existing,
         label: newFieldLabel.trim(),
         type: newFieldType,
-        options: optionsArray,
-      },
-    ];
-    setPositionFields(updated);
-    setNewFieldLabel('');
-    setNewFieldOptions('');
+        options: needsOptions ? finalOptions : [],
+        required: newFieldRequired,
+      };
+      setPositionFields(updated);
+      handleCancelEditField();
+    } else {
+      let fieldName = newFieldLabel
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())
+        .replace(/[^a-zA-Z0-9]/g, '');
+
+      if (!fieldName) {
+        fieldName = `field_${Date.now()}`;
+      }
+
+      let uniqueName = fieldName;
+      let counter = 1;
+      while (positionFields.some((f) => f.name === uniqueName)) {
+        uniqueName = `${fieldName}_${counter++}`;
+      }
+
+      const updated = [
+        ...positionFields,
+        {
+          name: uniqueName,
+          label: newFieldLabel.trim(),
+          type: newFieldType,
+          options: needsOptions ? finalOptions : [],
+          required: newFieldRequired,
+        },
+      ];
+      setPositionFields(updated);
+      handleCancelEditField();
+    }
   };
 
   const handleRemoveFieldFromPosition = (index) => {
+    if (editingFieldIndex === index) {
+      handleCancelEditField();
+    }
     setPositionFields(positionFields.filter((_, i) => i !== index));
   };
 
@@ -312,30 +407,31 @@ function MasterDataTable({ tab }) {
 
       {/* Polish Confirmation Dialog Form Box */}
       <Dialog open={!!editItem} onOpenChange={() => setEditItem(null)}>
-        <DialogContent className="max-w-md rounded-xl border border-slate-200/60 bg-white p-6 dark:bg-slate-900 shadow-lg">
+        <DialogContent className="max-w-md rounded-2xl border border-slate-200/80 bg-white p-0 dark:bg-slate-900 shadow-2xl overflow-hidden">
           <DialogHeader>
             <DialogTitle className="text-sm font-bold tracking-wide text-slate-800 dark:text-slate-200">
-              Update Row Entry
+              Update {tab.label.slice(0, -1)} Name
             </DialogTitle>
             <DialogDescription className="text-xs text-slate-400 dark:text-slate-500 font-medium mt-1">
-              Refine parameters for global selection tags inside the infrastructure.
+              Modify the title parameter for this {tab.label.toLowerCase().slice(0, -1)}.
             </DialogDescription>
           </DialogHeader>
-          <DialogBody className="pt-4">
-            <div className="space-y-1.5">
-              <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                Item Identity Title Name
+          <DialogBody className="py-5">
+            <div className="space-y-2">
+              <Label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                {tab.label.slice(0, -1)} Name *
               </Label>
               <Input
                 value={editItem?.name || ''}
                 onChange={(e) => setEditItem({ ...editItem, name: e.target.value })}
-                className="h-11 border-slate-200 rounded-xl dark:bg-slate-800 dark:border-slate-700 text-sm"
-                placeholder="Modify name parameter..."
+                className="h-11 border-slate-200 rounded-xl dark:bg-slate-800 dark:border-slate-700 text-sm focus-visible:ring-purple-600"
+                placeholder={`Enter ${tab.label.toLowerCase().slice(0, -1)} name...`}
                 onKeyDown={(e) => e.key === 'Enter' && handleUpdate()}
+                autoFocus
               />
             </div>
           </DialogBody>
-          <DialogFooter className="mt-6 flex gap-2">
+          <DialogFooter className="flex gap-2">
             <Button
               variant="outline"
               onClick={() => setEditItem(null)}
@@ -356,105 +452,261 @@ function MasterDataTable({ tab }) {
 
       {/* Dynamic Form Field Builder Modal for Position */}
       <Dialog open={!!fieldsModalPosition} onOpenChange={() => setFieldsModalPosition(null)}>
-        <DialogContent className="max-w-lg rounded-xl border border-slate-200/60 bg-white p-6 dark:bg-slate-900 shadow-xl">
+        <DialogContent className="max-w-lg rounded-2xl border border-slate-200/80 bg-white p-0 dark:bg-slate-900 shadow-2xl overflow-hidden">
           <DialogHeader>
             <DialogTitle className="text-sm font-bold tracking-wide text-slate-800 dark:text-slate-200 flex items-center gap-2">
               <Sliders className="h-4 w-4 text-purple-600" />
-              Configure Dynamic Form Fields for "{fieldsModalPosition?.name}"
+              Configure Form Fields for "{fieldsModalPosition?.name}"
             </DialogTitle>
             <DialogDescription className="text-xs text-slate-400 dark:text-slate-500 font-medium mt-1">
-              Add custom checkboxes, dropdowns, or inputs for this specific position. Saved fields will automatically render on candidate forms for all school admins.
+              Add or remove dynamic fields for this role. Changes will automatically reflect on all school recruitment forms.
             </DialogDescription>
           </DialogHeader>
-          <DialogBody className="pt-4 space-y-4">
+          <DialogBody className="py-5 space-y-4">
             
             {/* Existing Fields List */}
             <div className="space-y-2">
-              <Label className="text-xs font-bold uppercase tracking-wider text-slate-500">Configured Fields ({positionFields.length})</Label>
+              <div className="flex items-center justify-between">
+                <Label className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                  Configured Fields ({positionFields.length})
+                </Label>
+                {editingFieldIndex !== null && (
+                  <span className="text-xs text-amber-600 font-semibold flex items-center gap-1 bg-amber-50 px-2 py-0.5 rounded border border-amber-200/60">
+                    <Edit2 className="h-3 w-3" /> Editing Field #{editingFieldIndex + 1}
+                  </span>
+                )}
+              </div>
+
               {positionFields.length === 0 ? (
-                <p className="text-xs text-slate-400 italic bg-slate-50 p-3 rounded-lg border border-slate-100">No custom fields added yet. Add one below!</p>
+                <p className="text-xs text-slate-400 italic bg-slate-50 p-3 rounded-xl border border-slate-100 text-center">
+                  No fields configured yet. Add your first field below!
+                </p>
               ) : (
-                <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1">
+                <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
                   {positionFields.map((field, idx) => (
-                    <div key={idx} className="flex items-center justify-between p-2.5 rounded-lg border border-slate-200 bg-slate-50 dark:bg-slate-800 text-xs">
-                      <div className="min-w-0">
-                        <p className="font-bold text-slate-800 dark:text-slate-200">{field.label}</p>
-                        <p className="text-[10px] text-slate-400 font-medium capitalize">Type: {field.type} {field.options?.length ? `(${field.options.join(', ')})` : ''}</p>
+                    <div
+                      key={idx}
+                      className={`p-3 rounded-xl border transition-all ${
+                        editingFieldIndex === idx
+                          ? 'border-purple-300 bg-purple-50/70 shadow-xs ring-2 ring-purple-500/20'
+                          : 'border-slate-200/80 bg-slate-50/60 dark:bg-slate-800'
+                      }`}
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0 space-y-1">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="font-bold text-slate-800 dark:text-slate-200 text-xs">
+                              {field.label}
+                            </span>
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-purple-100/70 text-purple-700 capitalize border border-purple-200/60">
+                              {field.type}
+                            </span>
+                            {field.required && (
+                              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-rose-100 text-rose-700 border border-rose-200/60">
+                                Required
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Options pills if select / multi-select / radio */}
+                          {field.options && field.options.length > 0 && (
+                            <div className="flex flex-wrap gap-1 pt-1">
+                              {field.options.map((opt, oIdx) => (
+                                <span
+                                  key={oIdx}
+                                  className="inline-flex items-center text-[10px] font-medium px-2 py-0.5 rounded-full bg-white dark:bg-slate-900 border border-slate-200 text-slate-600 dark:text-slate-300"
+                                >
+                                  {opt}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="flex items-center gap-1 shrink-0">
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleStartEditField(idx)}
+                            className="h-7 w-7 text-purple-600 hover:bg-purple-100 rounded-lg"
+                            title="Edit this field & options"
+                          >
+                            <Edit2 className="h-3.5 w-3.5" />
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleRemoveFieldFromPosition(idx)}
+                            className="h-7 w-7 text-rose-500 hover:bg-rose-100 rounded-lg"
+                            title="Delete field"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </Button>
+                        </div>
                       </div>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleRemoveFieldFromPosition(idx)}
-                        className="h-7 w-7 text-rose-500 hover:bg-rose-50 rounded-md"
-                      >
-                        <X className="h-3.5 w-3.5" />
-                      </Button>
                     </div>
                   ))}
                 </div>
               )}
             </div>
 
-            {/* Add New Field Box */}
-            <div className="p-3.5 rounded-xl border border-purple-100 bg-purple-50/50 space-y-3">
-              <Label className="text-xs font-bold text-purple-900 flex items-center gap-1">
-                <Plus className="h-3.5 w-3.5 text-purple-600" />
-                Add New Field
-              </Label>
+            {/* Add / Edit Field Box */}
+            <div className="p-4 rounded-xl border border-purple-200/70 bg-purple-50/40 space-y-3.5">
+              <div className="flex items-center justify-between">
+                <Label className="text-xs font-bold text-purple-900 flex items-center gap-1.5">
+                  {editingFieldIndex !== null ? (
+                    <>
+                      <Edit2 className="h-3.5 w-3.5 text-purple-600" />
+                      <span>Edit Field Properties</span>
+                    </>
+                  ) : (
+                    <>
+                      <Plus className="h-3.5 w-3.5 text-purple-600" />
+                      <span>Add New Field</span>
+                    </>
+                  )}
+                </Label>
+                {editingFieldIndex !== null && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleCancelEditField}
+                    className="h-6 px-2 text-[11px] text-slate-500 hover:text-slate-700"
+                  >
+                    Cancel Edit
+                  </Button>
+                )}
+              </div>
               
-              <div className="grid grid-cols-2 gap-2.5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <Label className="text-[10px] font-semibold text-slate-500">Field Label *</Label>
+                  <Label className="text-[11px] font-semibold text-slate-600 dark:text-slate-400">Field Label *</Label>
                   <Input
-                    placeholder="e.g. Heavy License Required"
+                    placeholder="e.g. Subjects, Heavy License, Shift"
                     value={newFieldLabel}
                     onChange={(e) => setNewFieldLabel(e.target.value)}
-                    className="h-9 text-xs bg-white border-slate-200"
+                    className="h-9 text-xs bg-white border-slate-200 rounded-lg"
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <Label className="text-[10px] font-semibold text-slate-500">Input Type *</Label>
+                  <Label className="text-[11px] font-semibold text-slate-600 dark:text-slate-400">Input Type *</Label>
                   <Select value={newFieldType} onValueChange={setNewFieldType}>
-                    <SelectTrigger className="h-9 text-xs bg-white border-slate-200">
+                    <SelectTrigger className="h-9 text-xs bg-white border-slate-200 rounded-lg font-medium">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="text-xs">
-                      <SelectItem value="checkbox">Checkbox (Yes/No)</SelectItem>
-                      <SelectItem value="select">Dropdown Select</SelectItem>
-                      <SelectItem value="multi-select">Multi-Select Dropdown</SelectItem>
-                      <SelectItem value="text">Text Input</SelectItem>
-                      <SelectItem value="number">Number Input</SelectItem>
+                      <SelectItem value="checkbox">Checkbox (Yes / No toggle)</SelectItem>
+                      <SelectItem value="select">Dropdown Select (Single choice)</SelectItem>
+                      <SelectItem value="multi-select">Multi-Select Dropdown (Multiple choices)</SelectItem>
+                      <SelectItem value="radio">Radio Buttons (Single choice pills)</SelectItem>
+                      <SelectItem value="text">Text Input (Short single line)</SelectItem>
+                      <SelectItem value="textarea">Textarea (Multi-line / Detailed)</SelectItem>
+                      <SelectItem value="number">Number Input (Years, Amount, Count)</SelectItem>
+                      <SelectItem value="date">Date Picker (Calendar date)</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
               </div>
 
-              {['select', 'multi-select'].includes(newFieldType) && (
-                <div className="space-y-1">
-                  <Label className="text-[10px] font-semibold text-slate-500">Options (Comma-separated) *</Label>
-                  <Input
-                    placeholder="e.g. Heavy, Light, Commercial, School Bus"
-                    value={newFieldOptions}
-                    onChange={(e) => setNewFieldOptions(e.target.value)}
-                    className="h-9 text-xs bg-white border-slate-200"
-                  />
+              {/* Mandatory checkbox */}
+              <label className="flex items-center space-x-2 text-xs font-semibold text-slate-700 dark:text-slate-300 cursor-pointer select-none pt-0.5">
+                <input
+                  type="checkbox"
+                  checked={newFieldRequired}
+                  onChange={(e) => setNewFieldRequired(e.target.checked)}
+                  className="h-3.5 w-3.5 rounded border-slate-300 text-purple-600 focus:ring-purple-500 accent-purple-600"
+                />
+                <span>Mark this field as Mandatory (Required)</span>
+              </label>
+
+              {/* Interactive Options Tag Builder for select, multi-select, and radio */}
+              {['select', 'multi-select', 'radio'].includes(newFieldType) && (
+                <div className="space-y-2 pt-1 p-3 rounded-lg bg-white border border-purple-100 shadow-2xs">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-[11px] font-bold text-purple-900">
+                      Dropdown Options ({newFieldOptionsList.length}) *
+                    </Label>
+                    <span className="text-[10px] text-slate-400">Type & press Enter or comma</span>
+                  </div>
+
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="Type option name (e.g. CBSE or Van, Bus) and click Add..."
+                      value={currentOptionInput}
+                      onChange={(e) => setCurrentOptionInput(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          handleAddOptionChip();
+                        }
+                      }}
+                      className="h-8 text-xs bg-white border-slate-200 rounded-lg"
+                    />
+                    <Button
+                      type="button"
+                      onClick={handleAddOptionChip}
+                      disabled={!currentOptionInput.trim()}
+                      className="h-8 px-3 text-xs bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-lg shrink-0 flex items-center gap-1"
+                    >
+                      <Plus className="h-3.5 w-3.5" />
+                      <span>Add Option</span>
+                    </Button>
+                  </div>
+
+                  {/* Render chips of added options */}
+                  {newFieldOptionsList.length > 0 ? (
+                    <div className="flex flex-wrap gap-1.5 pt-1 max-h-28 overflow-y-auto">
+                      {newFieldOptionsList.map((opt, chipIdx) => (
+                        <span
+                          key={chipIdx}
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-purple-50 border border-purple-200 text-purple-700 shadow-2xs group"
+                        >
+                          <span>{opt}</span>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveOptionChip(chipIdx)}
+                            className="text-purple-400 hover:text-rose-500 rounded-full p-0.5 transition-colors"
+                            title="Remove option"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-[11px] text-amber-700 bg-amber-50 p-2 rounded-md border border-amber-200/60 font-medium">
+                      ⚠️ Please add at least one option (type name above and click "Add Option").
+                    </p>
+                  )}
                 </div>
               )}
 
               <Button
                 type="button"
-                onClick={handleAddFieldToPosition}
+                onClick={handleSaveFieldToList}
                 disabled={!newFieldLabel.trim()}
-                className="w-full h-8 text-xs bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-lg"
+                className="w-full h-9 text-xs bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-lg shadow-sm flex items-center justify-center gap-1.5"
               >
-                Add Field To List
+                {editingFieldIndex !== null ? (
+                  <>
+                    <Check className="h-4 w-4 stroke-[2.5]" />
+                    <span>Update Field in List</span>
+                  </>
+                ) : (
+                  <>
+                    <Plus className="h-4 w-4 stroke-[2.5]" />
+                    <span>Add Field To List</span>
+                  </>
+                )}
               </Button>
             </div>
 
           </DialogBody>
-          <DialogFooter className="mt-4 flex gap-2">
+          <DialogFooter className="flex gap-2">
             <Button
               variant="outline"
               onClick={() => setFieldsModalPosition(null)}

@@ -6,10 +6,12 @@ const positionFieldSchema = new mongoose.Schema(
     label: { type: String, required: true, trim: true },
     type: {
       type: String,
-      enum: ['checkbox', 'select', 'multi-select', 'number', 'text'],
+      enum: ['checkbox', 'select', 'multi-select', 'number', 'text', 'textarea', 'date', 'radio'],
       default: 'checkbox',
     },
     options: [{ type: String, trim: true }],
+    required: { type: Boolean, default: false },
+    placeholder: { type: String, trim: true },
   },
   { _id: true }
 );

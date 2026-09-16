@@ -22,26 +22,30 @@ import { protect, authorize } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// All master data routes require authentication
-router.use(protect);
-
-// Get all master data in one call (read access for all authenticated users)
+// Public read access for positions and master data (needed for school forms, public apply & candidate forms)
 router.get('/all', getAllMasterData);
+router.get('/positions', getAllPositions);
+router.get('/subjects', getAllSubjects);
+router.get('/qualifications', getAllQualifications);
+router.get('/classes', getAllClasses);
+
+// All mutation routes require authentication & super_admin authorization
+router.use(protect, authorize('super_admin'));
 
 // Position routes
-router.route('/positions').get(getAllPositions).post(authorize('super_admin'), createPosition);
-router.route('/positions/:id').put(authorize('super_admin'), updatePosition).delete(authorize('super_admin'), deletePosition);
+router.post('/positions', createPosition);
+router.route('/positions/:id').put(updatePosition).delete(deletePosition);
 
 // Subject routes
-router.route('/subjects').get(getAllSubjects).post(authorize('super_admin'), createSubject);
-router.route('/subjects/:id').put(authorize('super_admin'), updateSubject).delete(authorize('super_admin'), deleteSubject);
+router.post('/subjects', createSubject);
+router.route('/subjects/:id').put(updateSubject).delete(deleteSubject);
 
 // Qualification routes
-router.route('/qualifications').get(getAllQualifications).post(authorize('super_admin'), createQualification);
-router.route('/qualifications/:id').put(authorize('super_admin'), updateQualification).delete(authorize('super_admin'), deleteQualification);
+router.post('/qualifications', createQualification);
+router.route('/qualifications/:id').put(updateQualification).delete(deleteQualification);
 
 // Class routes
-router.route('/classes').get(getAllClasses).post(authorize('super_admin'), createClass);
-router.route('/classes/:id').put(authorize('super_admin'), updateClass).delete(authorize('super_admin'), deleteClass);
+router.post('/classes', createClass);
+router.route('/classes/:id').put(updateClass).delete(deleteClass);
 
 export default router;

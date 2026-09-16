@@ -118,12 +118,14 @@ export function DynamicCandidateForm({
   const position = watch('position');
   const documents = watch('documents');
 
-  // Hardcoded defaults + Super Admin custom fields
-  const hardcodedFields = POSITION_FIELDS[position] || {};
+  // Super Admin controlled dynamic fields from database
   const selectedPosObj = (positions || settings?.positionsList || []).find(
     (p) => typeof p === 'object' && (p.name === position || p._id === position)
   );
-  const customFieldsList = selectedPosObj?.fields || [];
+  // Fields configured by Super Admin in Master Data (fallback to POSITION_FIELDS only if position has no DB fields)
+  const roleFields = (selectedPosObj && Array.isArray(selectedPosObj.fields) && selectedPosObj.fields.length > 0)
+    ? selectedPosObj.fields
+    : (POSITION_FIELDS[position] ? Object.entries(POSITION_FIELDS[position]).map(([name, conf]) => ({ name, ...conf })) : []);
 
   useEffect(() => {
     if (initialValues) {
@@ -317,6 +319,58 @@ export function DynamicCandidateForm({
               placeholder={`Enter ${label.toLowerCase()}`}
               className="rounded-lg h-9 border-slate-200 text-xs font-medium focus-visible:ring-[#A05AFF]"
             />
+          </div>
+        );
+
+      case 'textarea':
+        return (
+          <div key={fieldName} className="space-y-1 sm:col-span-2 group animate-in fade-in duration-200">
+            <Label htmlFor={fieldName} className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+              {label} {fieldConfig.required && <span className="text-rose-500">*</span>}
+            </Label>
+            <Textarea
+              id={fieldName}
+              {...register(fieldName)}
+              placeholder={fieldConfig.placeholder || `Enter ${label.toLowerCase()}`}
+              className="rounded-lg border-slate-200 text-xs font-medium focus-visible:ring-[#A05AFF] min-h-[65px]"
+            />
+          </div>
+        );
+
+      case 'date':
+        return (
+          <div key={fieldName} className="space-y-1 group animate-in fade-in duration-200">
+            <Label htmlFor={fieldName} className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+              {label} {fieldConfig.required && <span className="text-rose-500">*</span>}
+            </Label>
+            <Input
+              id={fieldName}
+              type="date"
+              {...register(fieldName)}
+              className="rounded-lg h-9 border-slate-200 text-xs font-medium focus-visible:ring-[#A05AFF]"
+            />
+          </div>
+        );
+
+      case 'radio':
+        return (
+          <div key={fieldName} className="space-y-2 sm:col-span-2 group animate-in fade-in duration-200 p-2.5 rounded-lg border border-slate-100 dark:border-slate-800 bg-slate-50/50">
+            <Label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block">
+              {label} {fieldConfig.required && <span className="text-rose-500">*</span>}
+            </Label>
+            <div className="flex flex-wrap gap-4 pt-1">
+              {(Array.isArray(options) ? options : settings?.[options] || []).map((opt) => (
+                <label key={opt} className="flex items-center space-x-2 text-xs font-medium text-slate-700 dark:text-slate-300 cursor-pointer select-none">
+                  <input
+                    type="radio"
+                    value={opt}
+                    {...register(fieldName)}
+                    className="h-3.5 w-3.5 text-[#A05AFF] focus:ring-[#A05AFF] accent-[#A05AFF]"
+                  />
+                  <span>{opt}</span>
+                </label>
+              ))}
+            </div>
           </div>
         );
 
@@ -522,8 +576,8 @@ export function DynamicCandidateForm({
         </CardContent>
       </Card>
 
-      {/* 3. Conditional Dynamic Role Fields Card (Hardcoded + Super Admin Custom Fields) */}
-      {position && ((hardcodedFields && Object.keys(hardcodedFields).length > 0) || customFieldsList.length > 0) && (
+      {/* 3. Conditional Dynamic Role Fields Card (Configured by Super Admin) */}
+      {position && roleFields.length > 0 && (
         <Card className="border-l-4 border-l-[#A05AFF] animate-in fade-in duration-300">
           <CardHeader className="bg-white dark:bg-slate-900 py-3 px-4 sm:px-5">
             <div className="flex items-center gap-2.5">
@@ -538,13 +592,7 @@ export function DynamicCandidateForm({
           </CardHeader>
           
           <CardContent className="grid gap-3.5 sm:grid-cols-2 p-4 sm:p-5">
-            {/* Render hardcoded role fields */}
-            {Object.entries(hardcodedFields).map(([fieldName, fieldConfig]) =>
-              renderField(fieldName, fieldConfig)
-            )}
-
-            {/* Render Super Admin dynamic custom fields */}
-            {customFieldsList.map((cf) =>
+            {roleFields.map((cf) =>
               renderField(cf.name || cf.label, {
                 type: cf.type,
                 label: cf.label,

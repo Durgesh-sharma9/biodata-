@@ -7,6 +7,7 @@ import Candidate from './models/Candidate.js';
 import Plan from './models/Plan.js';
 import CreditPackage from './models/CreditPackage.js';
 import ApplicantPlan from './models/ApplicantPlan.js';
+import Position from './models/Position.js';
 import { generateSchoolSlug } from './utils/slugify.js';
 
 const seed = async () => {
@@ -687,6 +688,107 @@ const seed = async () => {
     await ApplicantPlan.findOneAndUpdate({ name: plan.name }, plan, { upsert: true });
   }
   console.log('Default applicant plans seeded');
+
+  // 7. Default Positions with Form Fields
+  const defaultPositions = [
+    {
+      name: 'Teacher',
+      fields: [
+        { name: 'subjects', label: 'Subjects', type: 'multi-select', options: ['English', 'Hindi', 'Mathematics', 'Science', 'Social Science', 'Physics', 'Chemistry', 'Biology', 'Computer Science', 'Sanskrit', 'Economics'] },
+        { name: 'classesCanTeach', label: 'Classes Can Teach', type: 'multi-select', options: ['Nursery', 'LKG', 'UKG', 'Class 1', 'Class 2', 'Class 3', 'Class 4', 'Class 5', 'Class 6', 'Class 7', 'Class 8', 'Class 9', 'Class 10', 'Class 11', 'Class 12'] },
+        { name: 'medium', label: 'Teaching Medium', type: 'select', options: ['English', 'Hindi', 'Regional', 'Bilingual'] },
+        { name: 'boardExperience', label: 'Board Experience', type: 'multi-select', options: ['CBSE', 'ICSE', 'State Board', 'IB', 'IGCSE'] },
+        { name: 'bEd', label: 'B.Ed Qualified', type: 'checkbox' },
+        { name: 'mEd', label: 'M.Ed Qualified', type: 'checkbox' },
+      ],
+    },
+    {
+      name: 'Driver',
+      fields: [
+        { name: 'vehicleTypes', label: 'Vehicle Types', type: 'multi-select', options: ['Two Wheeler', 'Three Wheeler', 'Four Wheeler', 'Heavy Vehicle', 'School Bus'] },
+        { name: 'lightVehicle', label: 'Light Vehicle (LMV) License', type: 'checkbox' },
+        { name: 'heavyVehicle', label: 'Heavy Vehicle (HMV) License', type: 'checkbox' },
+        { name: 'schoolBusExperience', label: 'School Bus Experience', type: 'checkbox' },
+        { name: 'drivingExperience', label: 'Driving Experience (Years)', type: 'number' },
+      ],
+    },
+    {
+      name: 'Accountant',
+      fields: [
+        { name: 'tallyKnowledge', label: 'Tally Knowledge', type: 'checkbox' },
+        { name: 'gstKnowledge', label: 'GST Knowledge', type: 'checkbox' },
+        { name: 'payrollExperience', label: 'Payroll Experience', type: 'checkbox' },
+        { name: 'schoolAccountingExperience', label: 'School Accounting Experience', type: 'checkbox' },
+        { name: 'erpExperience', label: 'ERP Software Experience', type: 'checkbox' },
+      ],
+    },
+    {
+      name: 'Receptionist',
+      fields: [
+        { name: 'languagesKnown', label: 'Languages Known', type: 'multi-select', options: ['English', 'Hindi', 'Regional', 'Other'] },
+        { name: 'computerSkills', label: 'Computer Skills', type: 'checkbox' },
+        { name: 'frontDeskExperience', label: 'Front Desk Experience', type: 'checkbox' },
+        { name: 'communicationSkills', label: 'Communication Skills', type: 'checkbox' },
+      ],
+    },
+    {
+      name: 'Clerk',
+      fields: [
+        { name: 'typingSpeed', label: 'Typing Speed', type: 'select', options: ['Slow', 'Average', 'Fast', 'Very Fast'] },
+        { name: 'msOfficeKnowledge', label: 'MS Office Knowledge', type: 'checkbox' },
+        { name: 'excelKnowledge', label: 'Excel Knowledge', type: 'checkbox' },
+        { name: 'schoolOfficeExperience', label: 'School Office Experience', type: 'checkbox' },
+      ],
+    },
+    {
+      name: 'Librarian',
+      fields: [
+        { name: 'libraryManagementExperience', label: 'Library Management Experience', type: 'checkbox' },
+        { name: 'librarySoftwareKnowledge', label: 'Library Software Knowledge', type: 'checkbox' },
+      ],
+    },
+    {
+      name: 'Lab Assistant',
+      fields: [
+        { name: 'labType', label: 'Lab Type', type: 'select', options: ['Physics', 'Chemistry', 'Biology', 'Computer'] },
+        { name: 'labExperience', label: 'Lab Experience', type: 'checkbox' },
+      ],
+    },
+    {
+      name: 'Sports Coach',
+      fields: [
+        { name: 'sportsSpecialization', label: 'Sports Specialization', type: 'select', options: ['Cricket', 'Football', 'Basketball', 'Volleyball', 'Athletics', 'Swimming', 'Badminton', 'Table Tennis', 'Other'] },
+        { name: 'coachingCertificates', label: 'Coaching Certificates', type: 'multi-select', options: ['NIS', 'DPE', 'BPEd', 'MPEd', 'Other'] },
+        { name: 'coachingExperience', label: 'Coaching Experience (Years)', type: 'number' },
+      ],
+    },
+    {
+      name: 'Security Guard',
+      fields: [
+        { name: 'securityExperience', label: 'Security Experience', type: 'checkbox' },
+        { name: 'exArmy', label: 'Ex-Army Background', type: 'checkbox' },
+        { name: 'nightShiftAvailable', label: 'Night Shift Available', type: 'checkbox' },
+      ],
+    },
+    {
+      name: 'Cleaner',
+      fields: [
+        { name: 'cleaningExperience', label: 'Cleaning Experience', type: 'checkbox' },
+        { name: 'schoolExperience', label: 'School Experience', type: 'checkbox' },
+      ],
+    },
+  ];
+
+  for (const pos of defaultPositions) {
+    const existing = await Position.findOne({ name: pos.name });
+    if (!existing) {
+      await Position.create(pos);
+    } else if (!existing.fields || existing.fields.length === 0) {
+      existing.fields = pos.fields;
+      await existing.save();
+    }
+  }
+  console.log('Default positions and fields seeded');
 
   console.log('\n--- SEED COMPLETE ---');
   process.exit(0);

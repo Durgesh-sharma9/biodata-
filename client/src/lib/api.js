@@ -160,8 +160,8 @@ export const removeSettingItem = (data) => {
 // Master Data (Super Admin)
 export const getAllMasterData = () => api.get('/master-data/all');
 
-// For dropdowns (returns array of strings)
-export const getPositions = () => api.get('/master-data/positions').then((r) => ({ data: { data: r.data.data.map((p) => p.name) } }));
+// For positions and dynamic form fields (returns full position objects with their fields)
+export const getPositions = () => api.get('/master-data/positions');
 export const getSubjects = () => api.get('/master-data/subjects').then((r) => ({ data: { data: r.data.data.map((s) => s.name) } }));
 export const getQualifications = () => api.get('/master-data/qualifications').then((r) => ({ data: { data: r.data.data.map((q) => q.name) } }));
 export const getClasses = () => api.get('/master-data/classes').then((r) => ({ data: { data: r.data.data.map((c) => c.name) } }));
