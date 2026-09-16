@@ -42,7 +42,7 @@ function MapRecenter({ center }) {
   return null;
 }
 
-export function SchoolLocationPicker({ initialLocation, onLocationChange, onAddressResolved, disabled = false }) {
+export function SchoolLocationPicker({ initialLocation, onLocationChange, onAddressResolved, disabled = false, mapHeight = '380px' }) {
   const [location, setLocation] = useState({
     lat: Number(initialLocation?.latitude) || 28.6139,
     lng: Number(initialLocation?.longitude) || 77.2090,
@@ -249,27 +249,27 @@ export function SchoolLocationPicker({ initialLocation, onLocationChange, onAddr
           )}
         </div>
 
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center justify-between sm:justify-end gap-1.5 shrink-0">
           {/* Map Layer Type Selector Toggle */}
           <div className="flex items-center gap-0.5 bg-slate-100 dark:bg-slate-800 p-0.5 rounded-lg border border-slate-200 dark:border-slate-700">
             <button
               type="button"
               onClick={() => setMapType('google_roadmap')}
-              className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition-all ${mapType === 'google_roadmap' ? 'bg-white dark:bg-slate-900 text-[#A05AFF] shadow-xs' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}`}
+              className={`px-2 sm:px-2.5 py-1 rounded-md text-[10px] sm:text-[11px] font-bold transition-all ${mapType === 'google_roadmap' ? 'bg-white dark:bg-slate-900 text-[#A05AFF] shadow-xs' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}`}
             >
-              Google Maps
+              <span className="hidden sm:inline">Google </span>Map
             </button>
             <button
               type="button"
               onClick={() => setMapType('google_satellite')}
-              className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition-all ${mapType === 'google_satellite' ? 'bg-white dark:bg-slate-900 text-[#A05AFF] shadow-xs' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}`}
+              className={`px-2 sm:px-2.5 py-1 rounded-md text-[10px] sm:text-[11px] font-bold transition-all ${mapType === 'google_satellite' ? 'bg-white dark:bg-slate-900 text-[#A05AFF] shadow-xs' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}`}
             >
               Satellite
             </button>
             <button
               type="button"
               onClick={() => setMapType('osm')}
-              className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition-all ${mapType === 'osm' ? 'bg-white dark:bg-slate-900 text-[#A05AFF] shadow-xs' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}`}
+              className={`px-2 sm:px-2.5 py-1 rounded-md text-[10px] sm:text-[11px] font-bold transition-all ${mapType === 'osm' ? 'bg-white dark:bg-slate-900 text-[#A05AFF] shadow-xs' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}`}
             >
               OSM
             </button>
@@ -280,12 +280,12 @@ export function SchoolLocationPicker({ initialLocation, onLocationChange, onAddr
             type="button"
             onClick={handleGetCurrentLocation}
             disabled={disabled || isLocating}
-            className="h-9 px-3.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg text-xs font-semibold transition-all flex items-center justify-center gap-1.5 border border-slate-200/80 dark:border-slate-700 shrink-0"
+            className="h-8 sm:h-9 px-2.5 sm:px-3 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg text-xs font-semibold transition-all flex items-center justify-center gap-1.5 border border-slate-200/80 dark:border-slate-700 shrink-0 active:scale-95"
           >
             {isLocating ? (
               <>
                 <Loader2 className="h-3.5 w-3.5 text-[#A05AFF] animate-spin" />
-                <span>Locating...</span>
+                <span className="hidden xs:inline">Locating...</span>
               </>
             ) : (
               <>
@@ -310,7 +310,7 @@ export function SchoolLocationPicker({ initialLocation, onLocationChange, onAddr
         <MapContainer
           center={[location.lat, location.lng]}
           zoom={14}
-          style={{ height: '320px', width: '100%' }}
+          style={{ height: mapHeight, width: '100%', minHeight: '280px' }}
           className={disabled ? 'opacity-50 pointer-events-none' : ''}
         >
           {mapType === 'google_roadmap' && (
