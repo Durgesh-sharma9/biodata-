@@ -93,6 +93,8 @@ export default function App() {
               <Route path="/candidates/:id/edit" element={<CandidateForm />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/school-profile" element={<SchoolProfile />} />
+              <Route path="/school/profile" element={<Navigate to="/school-profile" replace />} />
+              <Route path="/school" element={<Navigate to="/school-profile" replace />} />
               <Route path="/credits" element={<Credits />} />
               <Route path="/application-links" element={<ApplicationLinks />} />
             </Route>
