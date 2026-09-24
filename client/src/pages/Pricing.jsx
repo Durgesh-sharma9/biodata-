@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/button';
 import { Check, Sparkles, ShieldCheck, ArrowRight, GraduationCap } from 'lucide-react';
 
 export default function Pricing() {

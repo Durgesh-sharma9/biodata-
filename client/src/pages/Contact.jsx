@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/button';
 import { Mail, Phone, MapPin, Clock, LifeBuoy, ArrowRight, Sparkles, Send } from 'lucide-react';
 
 export default function Contact() {
