@@ -5,20 +5,27 @@ import {
   getRequestSchoolDetails,
   getApplicantPlans,
   purchaseApplicantPlan,
+  createApplicantOrder,
+  verifyApplicantPayment,
   unlockRequest,
 } from '@/lib/api';
+import { openRazorpayPayment } from '@/lib/razorpay';
+import { useAuth } from '@/context/AuthContext';
 import { PageHeader } from '@/components/common/PageHeader';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { formatDate } from '@/lib/utils';
+import { CreditCard, Loader2, ShieldCheck, CheckCircle2 } from 'lucide-react';
 
 export default function ApplicantRequests() {
+  const { user } = useAuth();
   const queryClient = useQueryClient();
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [schoolDetails, setSchoolDetails] = useState(null);
   const [showPayment, setShowPayment] = useState(false);
+  const [processingPlanId, setProcessingPlanId] = useState(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ['applicant-requests'],
@@ -31,33 +38,90 @@ export default function ApplicantRequests() {
     enabled: showPayment,
   });
 
-  const purchaseMutation = useMutation({
-    mutationFn: purchaseApplicantPlan,
-    onSuccess: async () => {
-      queryClient.invalidateQueries({ queryKey: ['applicant-subscription'] });
-      queryClient.invalidateQueries({ queryKey: ['applicant-requests'] });
-      setShowPayment(false);
-      if (selectedRequest) {
-        const res = await getRequestSchoolDetails(selectedRequest._id);
-        setSchoolDetails(res.data.data);
+  const [errorMsg, setErrorMsg] = useState('');
+
+  const handlePurchasePlan = async (plan) => {
+    setProcessingPlanId(plan._id);
+    setErrorMsg('');
+
+    // If free plan
+    if (plan.price <= 0) {
+      try {
+        await purchaseApplicantPlan(plan._id);
+        queryClient.invalidateQueries({ queryKey: ['applicant-subscription'] });
+        queryClient.invalidateQueries({ queryKey: ['applicant-requests'] });
+        setShowPayment(false);
+        if (selectedRequest) {
+          const res = await getRequestSchoolDetails(selectedRequest._id);
+          setSchoolDetails(res.data.data);
+        }
+      } catch (err) {
+        setErrorMsg(err.response?.data?.message || 'Failed to activate plan');
+      } finally {
+        setProcessingPlanId(null);
       }
-    },
-    onError: (err) => {
-      alert(err.response?.data?.message || 'Payment failed');
-    },
-  });
+      return;
+    }
+
+    try {
+      const orderRes = await createApplicantOrder(plan._id);
+      const orderData = orderRes.data.data;
+
+      await openRazorpayPayment({
+        orderData,
+        user: {
+          name: user?.name,
+          email: user?.email,
+          mobile: user?.mobile,
+        },
+        title: 'HireHub School Request Unlock',
+        description: `Unlock contact details with ${plan.name}`,
+        onSuccess: async (paymentResponse) => {
+          try {
+            await verifyApplicantPayment({
+              planId: plan._id,
+              ...paymentResponse,
+            });
+
+            queryClient.invalidateQueries({ queryKey: ['applicant-subscription'] });
+            queryClient.invalidateQueries({ queryKey: ['applicant-requests'] });
+            setShowPayment(false);
+
+            if (selectedRequest) {
+              const res = await getRequestSchoolDetails(selectedRequest._id);
+              setSchoolDetails(res.data.data);
+            }
+          } catch (verErr) {
+            setErrorMsg(verErr.response?.data?.message || 'Payment signature verification failed.');
+          } finally {
+            setProcessingPlanId(null);
+          }
+        },
+        onFailure: (err) => {
+          setProcessingPlanId(null);
+          if (err.message && !err.message.includes('closed by user')) {
+            setErrorMsg(err.message);
+          }
+        },
+      });
+    } catch (err) {
+      setProcessingPlanId(null);
+      setErrorMsg(err.response?.data?.message || 'Failed to initialize Razorpay checkout.');
+    }
+  };
 
   const unlockMutation = useMutation({
     mutationFn: unlockRequest,
     onSuccess: (res) => {
       queryClient.invalidateQueries({ queryKey: ['applicant-requests'] });
       setSchoolDetails(res.data.data);
+      setErrorMsg('');
     },
     onError: (err) => {
       if (err.response?.status === 402) {
         setShowPayment(true);
       } else {
-        alert(err.response?.data?.message || 'Failed to unlock request');
+        setErrorMsg(err.response?.data?.message || 'Failed to unlock request');
       }
     },
   });
@@ -72,11 +136,12 @@ export default function ApplicantRequests() {
     try {
       const res = await getRequestSchoolDetails(request._id);
       setSchoolDetails(res.data.data);
+      setErrorMsg('');
     } catch (err) {
       if (err.response?.status === 402) {
         setShowPayment(true);
       } else {
-        alert(err.response?.data?.message || 'Failed to load school details');
+        setErrorMsg(err.response?.data?.message || 'Failed to load school details');
       }
     }
   };
@@ -90,6 +155,13 @@ export default function ApplicantRequests() {
         title="Received Requests"
         description="Schools interested in your profile"
       />
+
+      {errorMsg && (
+        <div className="p-3.5 rounded-xl border border-red-200 bg-red-50 text-red-700 text-xs font-bold flex items-center justify-between">
+          <span>{errorMsg}</span>
+          <button onClick={() => setErrorMsg('')} className="ml-4 font-black opacity-70 hover:opacity-100">✕</button>
+        </div>
+      )}
 
       <Card className="border border-slate-200/60 bg-white shadow-2xs dark:bg-slate-900">
         <CardContent className="pt-6">
@@ -200,11 +272,21 @@ export default function ApplicantRequests() {
                         <p className="text-2xl font-black text-slate-800 dark:text-white tracking-tight">₹{plan.price}</p>
                         <p className="text-sm text-slate-400 dark:text-slate-500">{plan.requestCount} request credits</p>
                         <Button
-                          className="mt-3 w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold rounded-lg"
-                          onClick={() => purchaseMutation.mutate(plan._id)}
-                          disabled={purchaseMutation.isPending}
+                          className="mt-3 w-full bg-gradient-to-r from-[#A05AFF] to-[#7928CA] hover:from-[#8f47ec] hover:to-[#681fb0] text-white font-bold rounded-xl h-10 flex items-center justify-center gap-2 shadow-xs transition-all"
+                          onClick={() => handlePurchasePlan(plan)}
+                          disabled={processingPlanId === plan._id}
                         >
-                          {purchaseMutation.isPending ? 'Processing...' : `Pay ₹${plan.price}`}
+                          {processingPlanId === plan._id ? (
+                            <>
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                              <span>Opening Razorpay...</span>
+                            </>
+                          ) : (
+                            <>
+                              <CreditCard className="h-4 w-4" />
+                              <span>Pay ₹{plan.price}</span>
+                            </>
+                          )}
                         </Button>
                       </CardContent>
                     </Card>
@@ -224,11 +306,21 @@ export default function ApplicantRequests() {
                         <p className="text-2xl font-black text-slate-800 dark:text-white tracking-tight">₹{plan.price}</p>
                         <p className="text-sm text-slate-400 dark:text-slate-500">{plan.durationDays} days</p>
                         <Button
-                          className="mt-3 w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold rounded-lg"
-                          onClick={() => purchaseMutation.mutate(plan._id)}
-                          disabled={purchaseMutation.isPending}
+                          className="mt-3 w-full bg-gradient-to-r from-[#A05AFF] to-[#7928CA] hover:from-[#8f47ec] hover:to-[#681fb0] text-white font-bold rounded-xl h-10 flex items-center justify-center gap-2 shadow-xs transition-all"
+                          onClick={() => handlePurchasePlan(plan)}
+                          disabled={processingPlanId === plan._id}
                         >
-                          {purchaseMutation.isPending ? 'Processing...' : `Pay ₹${plan.price}`}
+                          {processingPlanId === plan._id ? (
+                            <>
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                              <span>Opening Razorpay...</span>
+                            </>
+                          ) : (
+                            <>
+                              <CreditCard className="h-4 w-4" />
+                              <span>Pay ₹{plan.price}</span>
+                            </>
+                          )}
                         </Button>
                       </CardContent>
                     </Card>

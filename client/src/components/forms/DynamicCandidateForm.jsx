@@ -89,6 +89,7 @@ export function DynamicCandidateForm({
   const [uploading, setUploading] = useState(false);
   const [location, setLocation] = useState({});
   const [profilePhoto, setProfilePhoto] = useState(initialValues?.profilePhoto || null);
+  const [uploadError, setUploadError] = useState('');
 
   const {
     register,
@@ -150,13 +151,14 @@ export function DynamicCandidateForm({
     if (!file) return;
 
     setUploading(true);
+    setUploadError('');
     try {
       const res = await uploadFilesFn([file]);
       const photoUrl = res.data.data[0]?.url;
       setProfilePhoto(photoUrl);
       setValue('profilePhoto', photoUrl);
     } catch (err) {
-      alert(err.response?.data?.message || 'Upload failed');
+      setUploadError(err.response?.data?.message || 'Profile photo upload failed');
     } finally {
       setUploading(false);
       e.target.value = '';
@@ -168,23 +170,24 @@ export function DynamicCandidateForm({
     if (!files.length) return;
 
     if (documents.length + files.length > 5) {
-      alert('Maximum 5 documents allowed per candidate profile');
+      setUploadError('Maximum 5 documents allowed per candidate profile');
       return;
     }
 
     const oversizedFiles = files.filter((f) => f.size > 2 * 1024 * 1024);
     if (oversizedFiles.length > 0) {
-      alert(`File size limit exceeded! Each file must be 2MB or smaller.\nOversized file(s): ${oversizedFiles.map((f) => f.name).join(', ')}`);
+      setUploadError(`File size limit exceeded! Each file must be 2MB or smaller. Oversized file(s): ${oversizedFiles.map((f) => f.name).join(', ')}`);
       return;
     }
 
     setUploading(true);
+    setUploadError('');
     try {
       const res = await uploadFilesFn(files);
       const newDocs = res.data.data.map((d) => ({ ...d, note: '' }));
       setValue('documents', [...documents, ...newDocs]);
     } catch (err) {
-      alert(err.response?.data?.message || 'Upload failed');
+      setUploadError(err.response?.data?.message || 'Upload failed');
     } finally {
       setUploading(false);
       e.target.value = '';
@@ -699,6 +702,21 @@ export function DynamicCandidateForm({
         </CardHeader>
         
         <CardContent className="p-4 sm:p-5 space-y-3">
+          {uploadError && (
+            <div className="flex items-center justify-between gap-2 p-3 text-xs rounded-lg border border-rose-200 bg-rose-50 text-rose-700 dark:bg-rose-950/40 dark:border-rose-900/60 dark:text-rose-300 animate-in fade-in duration-200">
+              <div className="flex items-center gap-2">
+                <AlertCircle className="h-4 w-4 shrink-0 text-rose-500" />
+                <span className="font-semibold">{uploadError}</span>
+              </div>
+              <button 
+                type="button" 
+                onClick={() => setUploadError('')} 
+                className="text-rose-500 hover:text-rose-700 font-bold px-1.5 py-0.5 rounded hover:bg-rose-100 transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+          )}
           <div>
             <label className="flex flex-col items-center justify-center cursor-pointer gap-2 rounded-lg border-2 border-dashed border-slate-200 dark:border-slate-700 hover:border-[#A05AFF] p-4 text-center transition-all bg-slate-50/50 dark:bg-slate-900/10 hover:bg-[#A05AFF]/5 group">
               <div className="p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-400 group-hover:text-[#A05AFF] transition-all shadow-xs">

@@ -72,14 +72,14 @@ export default function SelfApply() {
 
         {/* Standard Container & Form Matrix Block */}
         <Card className="rounded-xl border-none bg-white shadow-sm dark:bg-slate-900 overflow-hidden">
-          <HeaderWrapper className="p-5 pb-4 border-b border-slate-100 dark:border-slate-800">
+          <CardHeader className="p-5 pb-4 border-b border-slate-100 dark:border-slate-800">
             <CardTitle className="text-base font-bold tracking-wide text-slate-800 dark:text-slate-200">
               Join the School Recruitment Network
             </CardTitle>
             <p className="text-xs text-slate-400 dark:text-slate-500 font-medium mt-1 leading-relaxed">
-              Submit your professional profile to be instantly discovered by premier educational institutions across the network grid. No login required.
+              Submit your professional profile to be discovered by top schools in our verified network. Free & instant registration.
             </p>
-          </HeaderWrapper>
+          </CardHeader>
           
           <CardContent className="p-5">
             {isFormLoading ? (
@@ -89,7 +89,7 @@ export default function SelfApply() {
                   <div className="absolute inset-0 bg-[#A05AFF]/10 rounded-full blur-md animate-pulse scale-150" />
                 </div>
                 <p className="text-slate-400 font-semibold tracking-wide text-xs">
-                  Assembling structural form parameters...
+                  Loading application form...
                 </p>
               </div>
             ) : settings && positions ? (
@@ -110,14 +110,14 @@ export default function SelfApply() {
                   settings={settings}
                   positions={positions}
                   isLoading={submitMutation.isPending}
-                  submitButtonText="Submit Application Pipeline"
+                  submitButtonText="Submit Application"
                   showConsent
                   uploadFilesFn={uploadPublicFiles}
                 />
               </div>
             ) : (
               <div className="p-5 rounded-xl bg-slate-50 text-center text-xs font-medium text-slate-400 border border-slate-100 dark:bg-slate-950 dark:border-slate-800 dark:text-slate-500">
-                Failed to resolve environmental data constants. Please reload your workspace matrix.
+                Failed to load form settings. Please refresh the page.
               </div>
             )}
           </CardContent>
@@ -126,11 +126,11 @@ export default function SelfApply() {
         {/* Modern Soft-Tint Badge Footers */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-1">
           <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border border-[#1BCFB4]/30 bg-[#1BCFB4]/5 text-[#1BCFB4] text-[11px] font-bold uppercase tracking-wider">
-            <ShieldCheck className="w-3.5 h-3.5" /> Encrypted Data Custody Protection
+            <ShieldCheck className="w-3.5 h-3.5" /> 256-Bit SSL Encrypted & Secure
           </div>
           <div className="flex items-center gap-4 text-[11px] text-slate-400 font-bold uppercase tracking-wider dark:text-slate-500">
             <span className="hover:text-[#A05AFF] transition-colors cursor-pointer flex items-center gap-1">
-              <HelpCircle className="w-3.5 h-3.5" /> Network SLA Code
+              <HelpCircle className="w-3.5 h-3.5" /> Privacy Policy & Terms
             </span>
           </div>
         </div>
@@ -139,5 +139,3 @@ export default function SelfApply() {
     </div>
   );
 }
-
-const HeaderWrapper = CardHeader;

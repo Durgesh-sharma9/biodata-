@@ -80,6 +80,8 @@ export const importIndiaLocations = () => api.post('/locations/import-india');
 export const getSchoolCredits = () => api.get('/credits');
 export const getUnlockHistory = () => api.get('/credits/history');
 export const purchaseCreditPackage = (packageId) => api.post('/credits/purchase', { packageId });
+export const createCreditOrder = (packageId) => api.post('/credits/create-order', { packageId });
+export const verifyCreditPayment = (data) => api.post('/credits/verify-payment', data);
 export const assignCreditsToSchool = (data) => api.post('/credits/assign', data);
 
 // Candidates
@@ -121,6 +123,8 @@ export const getRequestSchoolDetails = (requestId) => api.get(`/applicant/reques
 export const getApplicantSubscription = () => api.get('/applicant/subscription');
 export const getApplicantSubscriptionHistory = () => api.get('/applicant/subscription/history');
 export const purchaseApplicantPlan = (planId) => api.post('/applicant/subscription/purchase', { planId });
+export const createApplicantOrder = (planId) => api.post('/applicant/subscription/create-order', { planId });
+export const verifyApplicantPayment = (data) => api.post('/applicant/subscription/verify-payment', data);
 
 // Applicant Plans (Super Admin)
 export const getApplicantPlans = () => api.get('/applicant-plans');

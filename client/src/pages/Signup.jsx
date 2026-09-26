@@ -4,16 +4,17 @@ import { useMutation } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { GoogleLoginButton } from '@/components/common/GoogleLoginButton';
 import { 
+  Briefcase,
   Building2, 
   User, 
   Mail, 
   Phone, 
   Lock, 
-  ArrowRight, 
   Sparkles, 
   ShieldCheck, 
   AlertCircle, 
-  Loader2 
+  GraduationCap,
+  ArrowLeft
 } from 'lucide-react';
 
 export default function Signup() {
@@ -33,15 +34,21 @@ export default function Signup() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleBack = () => {
+    if (window.history.state && window.history.state.idx > 0) {
+      navigate(-1);
+    } else {
+      navigate('/');
+    }
+  };
+
   const handleGoogleSuccess = (res) => {
-    // If the user is already registered as a school_admin, redirect immediately
     if (res?.user?.schoolId || res?.user?.role === 'school_admin') {
       navigate('/dashboard');
       window.location.reload();
       return;
     }
 
-    // Otherwise prefill name & email from Google
     if (res?.user?.email) {
       setGoogleData({
         email: res.user.email,
@@ -105,68 +112,102 @@ export default function Signup() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f3f3f4] text-slate-800 font-sans antialiased flex flex-col justify-between relative dark:bg-slate-950 dark:text-slate-200">
+    <div className="min-h-screen bg-[#f8f9fc] text-slate-800 font-sans antialiased flex flex-col justify-between dark:bg-slate-950 dark:text-slate-200">
       
-      {/* FIXED NAVBAR MODULE */}
-      <nav className="sticky top-0 z-50 bg-white border-b border-slate-100 shadow-sm dark:bg-slate-900 dark:border-slate-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-20">
-            <div className="flex items-center">
-              <Link to="/" className="text-xl font-bold tracking-tight text-[#A05AFF] hover:opacity-90 transition-opacity">
-                BioData Manager
-              </Link>
+      {/* NAVBAR */}
+      <nav className="w-full h-20 border-b border-slate-200/80 bg-white/90 backdrop-blur-md shadow-sm dark:bg-slate-900/90 dark:border-slate-800">
+        <div className="max-w-7xl mx-auto h-full px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+          
+          <Link to="/" className="flex items-center gap-2.5 group">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#A05AFF] to-[#7928CA] flex items-center justify-center text-white shadow-md shadow-[#A05AFF]/25 group-hover:scale-105 transition-transform">
+              <Briefcase className="w-5 h-5 text-white" />
             </div>
-            <div className="flex items-center space-x-1 sm:space-x-4">
-              <Link to="/features" className="text-sm font-semibold text-slate-600 hover:text-[#A05AFF] px-3 py-2 rounded-xl hover:bg-slate-50 transition-all dark:text-slate-400 dark:hover:bg-slate-800">
-                Features
-              </Link>
-              <Link to="/pricing" className="text-sm font-semibold text-slate-600 hover:text-[#A05AFF] px-3 py-2 rounded-xl hover:bg-slate-50 transition-all dark:text-slate-400 dark:hover:bg-slate-800">
-                Pricing
-              </Link>
-              <Link to="/contact" className="text-sm font-semibold text-slate-600 hover:text-[#A05AFF] px-3 py-2 rounded-xl hover:bg-slate-50 transition-all dark:text-slate-400 dark:hover:bg-slate-800">
-                Contact
-              </Link>
-              <span className="h-5 w-px bg-slate-200 mx-2 hidden sm:inline-block dark:bg-slate-800" />
-              <Link to="/login">
-                <Button variant="outline" className="h-10 rounded-xl border-slate-200 text-slate-600 font-semibold hover:bg-slate-50 hover:text-[#A05AFF] transition-all px-5 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-800">Login</Button>
-              </Link>
+            <div className="flex flex-col">
+              <span className="text-2xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-1">
+                Hire<span className="text-[#A05AFF]">Hub</span>
+              </span>
+              <span className="text-[10px] font-semibold text-slate-400 tracking-wider uppercase -mt-1">
+                School Staff Recruitment
+              </span>
             </div>
+          </Link>
+
+          <div className="flex items-center space-x-3">
+            <button
+              type="button"
+              onClick={handleBack}
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-[#A05AFF] px-2.5 py-1.5 rounded-lg hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800 transition-colors"
+            >
+              <ArrowLeft className="w-4 h-4" /> Back
+            </button>
+            <Link to="/join">
+              <Button variant="ghost" className="text-xs font-bold text-slate-600 hover:text-[#1BCFB4] dark:text-slate-300">
+                <GraduationCap className="w-4 h-4 mr-1 text-[#1BCFB4]" /> Candidate Sign Up
+              </Button>
+            </Link>
+            <Link to="/login">
+              <Button variant="outline" className="h-9 rounded-xl border-slate-300 text-slate-700 font-bold text-xs px-4">
+                School Login
+              </Button>
+            </Link>
           </div>
         </div>
       </nav>
 
-      {/* REGISTRATION FORM CARD BLOCK CONTAINER */}
-      <main className="flex-1 flex items-center justify-center px-4 py-12">
-        <div className="max-w-xl w-full relative">
+      {/* SIGNUP FORM */}
+      <main className="flex-1 flex items-center justify-center px-4 py-12 relative overflow-hidden">
+        {/* Background Colorful Ambient Glows */}
+        <div className="absolute top-10 left-1/4 w-80 h-80 bg-[#A05AFF]/20 rounded-full blur-3xl pointer-events-none -z-10 animate-pulse-glow" />
+        <div className="absolute bottom-10 right-1/4 w-80 h-80 bg-[#1BCFB4]/20 rounded-full blur-3xl pointer-events-none -z-10 animate-float-slow" />
+        <div className="absolute top-1/2 left-10 w-72 h-72 bg-[#FE7096]/15 rounded-full blur-3xl pointer-events-none -z-10 animate-float-reverse" />
+
+        <div className="max-w-xl w-full relative z-10">
           
-          <div className="bg-white p-6 sm:p-8 rounded-xl border-none shadow-sm dark:bg-slate-900">
+          {/* Back button above card */}
+          <div className="mb-3 flex items-center justify-between">
+            <button
+              type="button"
+              onClick={handleBack}
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white/90 dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-[#A05AFF] hover:border-[#A05AFF]/50 text-xs font-bold shadow-xs transition-all group backdrop-blur-sm"
+            >
+              <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform text-[#A05AFF]" />
+              <span>Back</span>
+            </button>
+            <Link to="/" className="text-xs font-semibold text-slate-400 hover:text-[#A05AFF] transition-colors">
+              Back to Home
+            </Link>
+          </div>
+
+          <div className="bg-white/95 backdrop-blur-xl p-6 sm:p-8 rounded-3xl border border-slate-200/90 shadow-2xl dark:bg-slate-900/95 dark:border-slate-800">
             
             <div className="text-center mb-6">
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 mb-2 rounded-md border border-[#A05AFF]/30 bg-[#A05AFF]/5 text-[#A05AFF] text-[11px] font-bold uppercase tracking-wider">
-                <Sparkles className="h-3 w-3" /> Institutional Registry
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 mb-2 rounded-full border border-[#A05AFF]/30 bg-gradient-to-r from-[#A05AFF]/15 via-[#FE7096]/10 to-[#1BCFB4]/15 text-[#A05AFF] text-[11px] font-bold uppercase tracking-wider">
+                <Sparkles className="h-3 w-3" /> School Registration
               </div>
-              <h1 className="text-xl font-bold tracking-tight text-slate-800 dark:text-white">Create Your Account</h1>
-              <p className="mt-1 text-xs font-medium text-slate-400 dark:text-slate-500">Start your 30-day premium sandbox trial today</p>
+              <h1 className="text-2xl font-black tracking-tight text-slate-900 dark:text-white">
+                Register Your School on HireHub
+              </h1>
+              <p className="mt-1 text-xs font-medium text-slate-500">
+                Start your 14-day free trial. Includes your custom QR code &amp; talent pool access.
+              </p>
             </div>
 
-            {/* Premium Soft-Tint Destructive Alert Banner */}
             {error && (
-              <div className="border border-[#FE9496]/30 bg-[#FE9496]/5 text-[#FE9496] rounded-xl p-4 text-xs font-semibold flex items-start gap-2.5 mb-5">
+              <div className="border border-red-200 bg-red-50 text-red-600 rounded-xl p-3.5 text-xs font-semibold flex items-start gap-2.5 mb-5">
                 <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
                 <span>{error}</span>
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form onSubmit={handleSubmit} className="space-y-4">
               
-              {/* Structural Grid Layout Constraint */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <div className="space-y-2">
-                  <label htmlFor="schoolName" className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                    School Name *
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label htmlFor="schoolName" className="block text-xs font-bold text-slate-700 dark:text-slate-300">
+                    School / Institute Name *
                   </label>
                   <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                       <Building2 className="w-4 h-4" />
                     </div>
                     <input
@@ -176,18 +217,18 @@ export default function Signup() {
                       value={formData.schoolName}
                       onChange={handleChange}
                       required
-                      className="w-full h-11 pl-11 pr-4 bg-white border border-slate-200 rounded-xl transition-all placeholder:text-slate-400 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-0 focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 dark:bg-slate-950 dark:border-slate-800"
-                      placeholder="Enter school name"
+                      className="w-full h-11 pl-11 pr-4 bg-white border border-slate-200 rounded-xl text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A05AFF] dark:bg-slate-950 dark:border-slate-800"
+                      placeholder="e.g. Greenwood Public School"
                     />
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <label htmlFor="adminName" className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                    Admin Name *
+                <div className="space-y-1.5">
+                  <label htmlFor="adminName" className="block text-xs font-bold text-slate-700 dark:text-slate-300">
+                    Admin / Principal Name *
                   </label>
                   <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                       <User className="w-4 h-4" />
                     </div>
                     <input
@@ -197,19 +238,19 @@ export default function Signup() {
                       value={formData.adminName}
                       onChange={handleChange}
                       required
-                      className="w-full h-11 pl-11 pr-4 bg-white border border-slate-200 rounded-xl transition-all placeholder:text-slate-400 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-0 focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 dark:bg-slate-950 dark:border-slate-800"
-                      placeholder="Enter your name"
+                      className="w-full h-11 pl-11 pr-4 bg-white border border-slate-200 rounded-xl text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A05AFF] dark:bg-slate-950 dark:border-slate-800"
+                      placeholder="e.g. Dr. Rajesh Verma"
                     />
                   </div>
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <label htmlFor="email" className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                  Email Address *
+              <div className="space-y-1.5">
+                <label htmlFor="email" className="block text-xs font-bold text-slate-700 dark:text-slate-300">
+                  School Official Email Address *
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                     <Mail className="w-4 h-4" />
                   </div>
                   <input
@@ -219,18 +260,18 @@ export default function Signup() {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full h-11 pl-11 pr-4 bg-white border border-slate-200 rounded-xl transition-all placeholder:text-slate-400 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-0 focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 dark:bg-slate-950 dark:border-slate-800"
-                    placeholder="school@example.com"
+                    className="w-full h-11 pl-11 pr-4 bg-white border border-slate-200 rounded-xl text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A05AFF] dark:bg-slate-950 dark:border-slate-800"
+                    placeholder="admin@greenwood.edu.in"
                   />
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <label htmlFor="mobile" className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                  Mobile Number *
+              <div className="space-y-1.5">
+                <label htmlFor="mobile" className="block text-xs font-bold text-slate-700 dark:text-slate-300">
+                  Mobile / Contact Number *
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                     <Phone className="w-4 h-4" />
                   </div>
                   <input
@@ -240,115 +281,105 @@ export default function Signup() {
                     value={formData.mobile}
                     onChange={handleChange}
                     required
-                    className="w-full h-11 pl-11 pr-4 bg-white border border-slate-200 rounded-xl transition-all placeholder:text-slate-400 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-0 focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 dark:bg-slate-950 dark:border-slate-800"
+                    className="w-full h-11 pl-11 pr-4 bg-white border border-slate-200 rounded-xl text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A05AFF] dark:bg-slate-950 dark:border-slate-800"
                     placeholder="+91 98765 43210"
                   />
                 </div>
               </div>
 
-              {/* Password Credentials Layout Grid Constraint */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <div className="space-y-2">
-                  <label htmlFor="password" className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                    Password *
-                  </label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
-                      <Lock className="w-4 h-4" />
+              {!googleData && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label htmlFor="password" className="block text-xs font-bold text-slate-700 dark:text-slate-300">
+                      Password *
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <Lock className="w-4 h-4" />
+                      </div>
+                      <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        required
+                        className="w-full h-11 pl-11 pr-4 bg-white border border-slate-200 rounded-xl text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A05AFF] dark:bg-slate-950 dark:border-slate-800"
+                        placeholder="Min. 6 chars"
+                      />
                     </div>
-                    <input
-                      type="password"
-                      id="password"
-                      name="password"
-                      value={formData.password}
-                      onChange={handleChange}
-                      required
-                      minLength={6}
-                      className="w-full h-11 pl-11 pr-4 bg-white border border-slate-200 rounded-xl transition-all placeholder:text-slate-400 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-0 focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 dark:bg-slate-950 dark:border-slate-800"
-                      placeholder="••••••••"
-                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label htmlFor="confirmPassword" className="block text-xs font-bold text-slate-700 dark:text-slate-300">
+                      Confirm Password *
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <Lock className="w-4 h-4" />
+                      </div>
+                      <input
+                        type="password"
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        value={formData.confirmPassword}
+                        onChange={handleChange}
+                        required
+                        className="w-full h-11 pl-11 pr-4 bg-white border border-slate-200 rounded-xl text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A05AFF] dark:bg-slate-950 dark:border-slate-800"
+                        placeholder="Re-enter password"
+                      />
+                    </div>
                   </div>
                 </div>
+              )}
 
-                <div className="space-y-2">
-                  <label htmlFor="confirmPassword" className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                    Confirm Password *
-                  </label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
-                      <Lock className="w-4 h-4" />
-                    </div>
-                    <input
-                      type="password"
-                      id="confirmPassword"
-                      name="confirmPassword"
-                      value={formData.confirmPassword}
-                      onChange={handleChange}
-                      required
-                      minLength={6}
-                      className="w-full h-11 pl-11 pr-4 bg-white border border-slate-200 rounded-xl transition-all placeholder:text-slate-400 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-0 focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 dark:bg-slate-950 dark:border-slate-800"
-                      placeholder="••••••••"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Action Node Trigger bound to Violet Code palette */}
               <Button
                 type="submit"
-                className="w-full h-11 bg-[#A05AFF] hover:bg-[#A05AFF]/90 text-white font-bold rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 disabled:opacity-50 text-sm"
                 disabled={mutation.isPending}
+                className="w-full h-11 rounded-xl bg-[#A05AFF] hover:bg-[#8B3DFF] text-white font-bold text-sm shadow-md shadow-[#A05AFF]/25 transition-all mt-3"
               >
-                {mutation.isPending ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>Creating Workspace...</span>
-                  </>
-                ) : (
-                  <>
-                    <span>Create Free Account</span>
-                    <ArrowRight className="w-4 h-4 text-white/80" />
-                  </>
-                )}
+                {mutation.isPending ? 'Registering School...' : 'Create School Account'}
               </Button>
             </form>
 
-            <div className="relative my-4">
+            <div className="relative my-5">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-slate-200 dark:border-slate-800" />
               </div>
               <div className="relative flex justify-center text-[10px] uppercase font-bold text-slate-400">
-                <span className="bg-white dark:bg-slate-900 px-2">Or continue with</span>
+                <span className="bg-white dark:bg-slate-900 px-3">Or register with</span>
               </div>
             </div>
 
-            <GoogleLoginButton targetRole="school_admin" text="signup_with" onSuccessCustom={handleGoogleSuccess} />
+            <GoogleLoginButton
+              buttonText="Sign up with Google"
+              onSuccess={handleGoogleSuccess}
+              targetRole="school_admin"
+            />
 
-            <p className="mt-6 text-center text-xs font-semibold text-slate-500 dark:text-slate-400">
-              Already have an account?{' '}
-              <Link to="/login" className="text-[#A05AFF] hover:underline font-bold transition-colors">
-                Login here
-              </Link>
-            </p>
-
-            {/* Success Micro-Badge Element Wrapper */}
-            <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-[#1BCFB4] dark:border-slate-800">
-              <ShieldCheck className="w-4 h-4" /> Compliance Secure Node Environment
+            <div className="mt-6 pt-4 border-t border-slate-100 flex flex-col gap-2 text-center text-xs dark:border-slate-800">
+              <p className="text-slate-500 font-medium">
+                Already registered your school?{' '}
+                <Link to="/login" className="text-[#A05AFF] hover:underline font-bold">
+                  Sign in here
+                </Link>
+              </p>
+              <p className="text-slate-500 font-medium">
+                Are you a Teacher or Job Seeker?{' '}
+                <Link to="/join" className="text-[#1BCFB4] hover:underline font-bold">
+                  Apply as a Candidate for Free
+                </Link>
+              </p>
             </div>
+
           </div>
         </div>
       </main>
 
-      {/* MODERN FLAT CANVAS FOOTER LAYOUT */}
-      <footer className="bg-white border-t border-slate-100 text-slate-400 py-6 dark:bg-slate-900 dark:border-slate-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-          <p>&copy; 2026 BioData Manager. All rights reserved.</p>
-          <div className="flex gap-6">
-            <a href="#privacy" className="hover:text-[#A05AFF] transition-colors">Privacy Policy</a>
-            <a href="#terms" className="hover:text-[#A05AFF] transition-colors">Terms of Service</a>
-          </div>
-        </div>
+      <footer className="bg-white border-t border-slate-200/80 py-5 dark:bg-slate-900 dark:border-slate-800 text-center text-xs text-slate-400 font-medium">
+        &copy; {new Date().getFullYear()} HireHub Technologies. All rights reserved.
       </footer>
+
     </div>
   );
 }

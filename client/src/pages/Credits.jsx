@@ -1,5 +1,13 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getSchoolCredits, getUnlockHistory, getCreditPackages, purchaseCreditPackage } from '@/lib/api';
+import { useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { 
+  getSchoolCredits, 
+  getUnlockHistory, 
+  getCreditPackages, 
+  createCreditOrder, 
+  verifyCreditPayment 
+} from '@/lib/api';
+import { openRazorpayPayment } from '@/lib/razorpay';
 import { useAuth } from '@/context/AuthContext';
 import { PageHeader } from '@/components/common/PageHeader';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -17,12 +25,18 @@ import {
   Layers, 
   Calendar, 
   Loader2, 
-  ArrowUpRight 
+  ArrowUpRight,
+  ShieldCheck,
+  CheckCircle2,
+  AlertCircle,
+  CreditCard
 } from 'lucide-react';
 
 export default function Credits() {
-  const { refreshSchool } = useAuth();
+  const { user, refreshSchool } = useAuth();
   const queryClient = useQueryClient();
+  const [processingPackageId, setProcessingPackageId] = useState(null);
+  const [paymentBanner, setPaymentBanner] = useState(null);
 
   const { data: credits, isLoading: isLoadingCredits } = useQuery({
     queryKey: ['credits'],
@@ -39,17 +53,93 @@ export default function Credits() {
     queryFn: () => getCreditPackages().then((r) => r.data.data),
   });
 
-  const purchaseMutation = useMutation({
-    mutationFn: (packageId) => purchaseCreditPackage(packageId),
-    onSuccess: async () => {
-      queryClient.invalidateQueries({ queryKey: ['credits'] });
-      await refreshSchool();
-    },
-  });
+  const handlePurchaseWithRazorpay = async (pkg) => {
+    setProcessingPackageId(pkg._id);
+    setPaymentBanner(null);
+
+    try {
+      // 1. Create Order on Backend
+      const orderRes = await createCreditOrder(pkg._id);
+      const orderData = orderRes.data.data;
+
+      // 2. Launch Razorpay modal
+      await openRazorpayPayment({
+        orderData,
+        user: {
+          name: user?.name,
+          email: user?.email,
+          mobile: user?.mobile,
+        },
+        title: 'HireHub Candidate Credits',
+        description: `${pkg.credits} Token Credits for School Account`,
+        onSuccess: async (paymentResponse) => {
+          try {
+            // 3. Verify Payment Signature
+            const verifyRes = await verifyCreditPayment({
+              packageId: pkg._id,
+              ...paymentResponse,
+            });
+
+            queryClient.invalidateQueries({ queryKey: ['credits'] });
+            await refreshSchool();
+
+            setPaymentBanner({
+              type: 'success',
+              message: `🎉 Payment of ₹${pkg.price || orderData.amount} Successful! ${pkg.credits} credits added to your wallet. (Ref: ${paymentResponse.razorpay_payment_id})`,
+            });
+          } catch (verErr) {
+            setPaymentBanner({
+              type: 'error',
+              message: verErr.response?.data?.message || 'Payment signature verification failed.',
+            });
+          } finally {
+            setProcessingPackageId(null);
+          }
+        },
+        onFailure: (err) => {
+          setProcessingPackageId(null);
+          if (err.message && !err.message.includes('closed by user')) {
+            setPaymentBanner({ type: 'error', message: err.message });
+          }
+        },
+      });
+    } catch (err) {
+      setProcessingPackageId(null);
+      setPaymentBanner({
+        type: 'error',
+        message: err.response?.data?.message || 'Failed to initiate Razorpay checkout. Please try again.',
+      });
+    }
+  };
 
   return (
     <div className="space-y-6 w-full antialiased text-slate-800 dark:text-slate-200">
       
+      {/* Payment Feedback Banner */}
+      {paymentBanner && (
+        <div className={`p-4 rounded-xl border text-xs font-bold flex items-center justify-between shadow-xs animate-in fade-in duration-200 ${
+          paymentBanner.type === 'success' 
+            ? 'bg-emerald-50 text-emerald-800 border-emerald-200 dark:bg-emerald-950/40 dark:border-emerald-800 dark:text-emerald-300' 
+            : 'bg-rose-50 text-rose-800 border-rose-200 dark:bg-rose-950/40 dark:border-rose-800 dark:text-rose-300'
+        }`}>
+          <div className="flex items-center gap-2.5">
+            {paymentBanner.type === 'success' ? (
+              <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
+            ) : (
+              <AlertCircle className="h-4 w-4 text-rose-600 shrink-0" />
+            )}
+            <span>{paymentBanner.message}</span>
+          </div>
+          <button 
+            type="button" 
+            onClick={() => setPaymentBanner(null)} 
+            className="ml-4 opacity-70 hover:opacity-100 font-bold px-1.5 py-0.5 rounded hover:bg-black/5"
+          >
+            ✕
+          </button>
+        </div>
+      )}
+
       {/* Page Header Panel Layout */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
@@ -57,11 +147,11 @@ export default function Credits() {
             <Coins className="h-5 w-5 text-purple-600" /> Wallet &amp; Credits
           </h1>
           <p className="mt-1 text-sm text-slate-500 dark:text-slate-400 font-medium">
-            Scale your talent acquisition pipelines, purchase package extensions, and monitor historical profile unlocks.
+            Scale your talent acquisition pipelines, purchase package extensions via Razorpay, and monitor historical profile unlocks.
           </p>
         </div>
-        <div className="inline-flex items-center border border-purple-200/60 bg-purple-50/80 text-purple-700 rounded-lg px-3 py-1 text-xs font-semibold">
-          School Ecosystem Base
+        <div className="inline-flex items-center gap-1.5 border border-purple-200/60 bg-purple-50/80 text-purple-700 rounded-lg px-3 py-1.5 text-xs font-bold">
+          <ShieldCheck className="h-3.5 w-3.5 text-purple-600" /> Razorpay Test Gateway Active
         </div>
       </div>
 
@@ -112,42 +202,51 @@ export default function Credits() {
         <Card>
           <CardHeader className="p-5 pb-2 flex flex-row items-center justify-between space-y-0">
             <CardTitle className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-              Available Storefront Extensions
+              Purchase Credit Packs
             </CardTitle>
             <div className="p-2 border border-emerald-200/60 bg-emerald-50/80 text-emerald-600 rounded-lg">
               <ShoppingBag className="h-4 w-4" />
             </div>
           </CardHeader>
-          <CardContent className="p-5 pt-2 space-y-3 max-h-[200px] overflow-y-auto pr-1">
+          <CardContent className="p-5 pt-2 space-y-3 max-h-[300px] overflow-y-auto pr-1">
             {isLoadingPackages ? (
               <div className="py-8 flex justify-center"><Loader2 className="h-6 w-6 text-slate-400 animate-spin" /></div>
             ) : packages.filter((p) => p.isActive !== false).length === 0 ? (
-              <p className="text-sm text-slate-400 dark:text-slate-500 font-medium py-4 text-center">No active validation store packages configured.</p>
+              <p className="text-sm text-slate-400 dark:text-slate-500 font-medium py-4 text-center">No active packages configured.</p>
             ) : (
               packages.filter((p) => p.isActive !== false).map((pkg) => (
                 <div 
                   key={pkg._id} 
-                  className="flex items-center justify-between rounded-lg border border-slate-200/60 bg-slate-50/50 p-3 transition-all hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-950/50 dark:hover:bg-slate-950"
+                  className="flex items-center justify-between rounded-xl border border-slate-200/80 bg-white p-3.5 transition-all hover:border-[#A05AFF]/50 hover:shadow-xs dark:border-slate-800 dark:bg-slate-900"
                 >
-                  <div className="space-y-0.5">
-                    <p className="text-sm font-bold text-slate-800 dark:text-slate-200">
-                      {pkg.name}
-                    </p>
-                    <p className="text-[11px] font-bold uppercase tracking-wider text-purple-700 bg-purple-50/80 border border-purple-200/60 rounded-lg px-1.5 py-0.5 w-fit">
-                      {pkg.credits} tokens
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm font-bold text-slate-900 dark:text-white">
+                        {pkg.name}
+                      </p>
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-purple-700 bg-purple-50 border border-purple-200/70 rounded-md px-1.5 py-0.5">
+                        {pkg.credits} Credits
+                      </span>
+                    </div>
+                    <p className="text-xs font-extrabold text-[#A05AFF]">
+                      ₹{pkg.price || Math.max(99, pkg.credits * 15)}
                     </p>
                   </div>
                   <Button 
                     size="sm" 
-                    onClick={() => purchaseMutation.mutate(pkg._id)} 
-                    disabled={purchaseMutation.isPending}
-                    className="h-9 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-bold px-4 transition-all flex items-center gap-1.5"
+                    onClick={() => handlePurchaseWithRazorpay(pkg)} 
+                    disabled={processingPackageId === pkg._id}
+                    className="h-9 rounded-xl bg-gradient-to-r from-[#A05AFF] to-[#7928CA] hover:from-[#8f47ec] hover:to-[#681fb0] text-white text-xs font-bold px-3.5 transition-all shadow-xs flex items-center gap-1.5"
                   >
-                    {purchaseMutation.isPending && purchaseMutation.variables === pkg._id ? (
-                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    {processingPackageId === pkg._id ? (
+                      <>
+                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                        <span>Opening...</span>
+                      </>
                     ) : (
                       <>
-                        Purchase <ArrowUpRight className="h-3 w-3" />
+                        <CreditCard className="h-3.5 w-3.5" />
+                        <span>Buy Now</span>
                       </>
                     )}
                   </Button>

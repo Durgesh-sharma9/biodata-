@@ -19,6 +19,7 @@ import {
   Bell,
   LogOut,
   Building2,
+  SlidersHorizontal,
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { cn } from '@/lib/utils';
@@ -31,6 +32,7 @@ const schoolLinks = [
   { to: '/talent-pool', label: 'Talent Pool', icon: UserSquare2, color: '#3A86FF' }, // Blue
   { to: '/credits', label: 'Credits', icon: PiggyBank, color: '#1BCFB4' }, // Mint Teal
   { to: '/application-links', label: 'Application Links', icon: Share2, color: '#FF007A' }, // Pink
+  { to: '/settings', label: 'Settings', icon: SlidersHorizontal, color: '#06D6A0' }, // Emerald
 ];
 
 const adminLinks = [

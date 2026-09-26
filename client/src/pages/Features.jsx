@@ -19,11 +19,9 @@ export default function Features() {
       <nav className="sticky top-0 z-50 bg-white border-b border-slate-100 shadow-sm dark:bg-slate-900 dark:border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-20">
-            <div className="flex items-center">
-              <Link to="/" className="text-xl font-bold tracking-tight text-[#A05AFF] hover:opacity-90 transition-opacity">
-                BioData Manager
+              <Link to="/" className="text-2xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-1">
+                Hire<span className="text-[#A05AFF]">Hub</span>
               </Link>
-            </div>
             <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-6">
               <Link to="/features" className="text-sm font-semibold text-[#A05AFF] bg-[#A05AFF]/10 px-4 py-2 rounded-xl transition-all">
                 Features
@@ -149,7 +147,7 @@ export default function Features() {
       {/* Premium Footing Core Area */}
       <footer className="bg-white border-t border-slate-100 text-slate-400 py-8 mt-12 dark:bg-slate-900 dark:border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
-          <p className="text-xs font-medium text-slate-400">&copy; 2026 BioData Manager. All rights reserved.</p>
+          <p className="text-xs font-medium text-slate-400">&copy; {new Date().getFullYear()} HireHub Technologies. All rights reserved.</p>
           <div className="flex gap-6 text-xs font-semibold">
             <a href="#privacy" className="hover:text-[#A05AFF] text-slate-500 dark:text-slate-400 transition-colors">Privacy Policy</a>
             <a href="#terms" className="hover:text-[#A05AFF] text-slate-500 dark:text-slate-400 transition-colors">Terms of Service</a>

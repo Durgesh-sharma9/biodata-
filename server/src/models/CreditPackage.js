@@ -4,6 +4,7 @@ const creditPackageSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, trim: true },
     credits: { type: Number, required: true, min: 1 },
+    price: { type: Number, default: 0, min: 0 },
     isActive: { type: Boolean, default: true },
   },
   { timestamps: true }

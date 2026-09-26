@@ -21,6 +21,7 @@ export default function ApplicantPlans() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editPlan, setEditPlan] = useState(null);
   const [form, setForm] = useState(emptyForm);
+  const [planError, setPlanError] = useState('');
 
   const { data: plans = [], isLoading } = useQuery({
     queryKey: ['applicant-plans'],
@@ -34,9 +35,10 @@ export default function ApplicantPlans() {
       setDialogOpen(false);
       setEditPlan(null);
       setForm(emptyForm);
+      setPlanError('');
     },
     onError: (err) => {
-      alert(err.response?.data?.message || 'Failed to save plan');
+      setPlanError(err.response?.data?.message || 'Failed to save plan');
     },
   });
 
@@ -48,11 +50,13 @@ export default function ApplicantPlans() {
   const openCreate = () => {
     setEditPlan(null);
     setForm(emptyForm);
+    setPlanError('');
     setDialogOpen(true);
   };
 
   const openEdit = (plan) => {
     setEditPlan(plan);
+    setPlanError('');
     setForm({
       name: plan.name,
       planType: plan.planType,
@@ -266,6 +270,12 @@ export default function ApplicantPlans() {
           </DialogHeader>
           
           <form onSubmit={handleSubmit} className="space-y-5">
+            {planError && (
+              <div className="p-3 text-xs font-semibold rounded-lg border border-rose-200 bg-rose-50 text-rose-700 animate-in fade-in duration-200 flex items-center justify-between">
+                <span>{planError}</span>
+                <button type="button" onClick={() => setPlanError('')} className="font-bold text-rose-500 hover:text-rose-700">✕</button>
+              </div>
+            )}
             <div className="space-y-1.5">
               <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Plan Identifier Title</Label>
               <Input 

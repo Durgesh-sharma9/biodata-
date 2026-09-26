@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-import { Users, FileText, Inbox, CreditCard, Bell } from 'lucide-react';
+import { Users, FileText, Inbox, CreditCard, Bell, Loader2 } from 'lucide-react';
 import { getApplicantDashboard } from '@/lib/api';
 import { PageHeader } from '@/components/common/PageHeader';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -13,7 +13,12 @@ export default function ApplicantDashboard() {
   });
 
   if (isLoading) {
-    return <div className="flex h-64 items-center justify-center">Loading...</div>;
+    return (
+      <div className="flex h-64 flex-col items-center justify-center space-y-3 antialiased">
+        <Loader2 className="h-8 w-8 text-purple-600 animate-spin" />
+        <p className="text-xs font-semibold text-slate-400">Loading your candidate dashboard...</p>
+      </div>
+    );
   }
 
   const stats = [

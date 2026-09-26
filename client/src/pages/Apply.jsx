@@ -37,8 +37,8 @@ export default function Apply() {
         <div className="relative flex h-12 w-12 items-center justify-center rounded-xl bg-white dark:bg-slate-900 shadow-sm mb-3 animate-in fade-in duration-300">
           <Loader2 className="h-5 w-5 text-[#A05AFF] animate-spin" />
         </div>
-        <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 animate-pulse">
-          Syncing portal gateways...
+        <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 animate-pulse">
+          Loading application portal...
         </p>
       </div>
     );
@@ -56,7 +56,7 @@ export default function Apply() {
             <div className="space-y-1.5">
               <h2 className="text-sm font-bold tracking-wide text-slate-800 dark:text-slate-200">Application Link Expired</h2>
               <p className="text-xs font-medium text-slate-400 dark:text-slate-500 leading-relaxed">
-                The targeted institutional route is unavailable. Please verify the URL string parameter or get in touch with the administrator.
+                This application link is invalid or has expired. Please check the URL or contact the school administration.
               </p>
             </div>
           </CardContent>
@@ -77,7 +77,7 @@ export default function Apply() {
             <div className="space-y-2">
               <h2 className="text-sm font-bold tracking-wide text-slate-800 dark:text-slate-200">Application Received!</h2>
               <p className="text-xs font-medium text-slate-400 dark:text-slate-500 leading-relaxed">
-                Thank you for applying to <span className="font-bold text-slate-800 dark:text-slate-200">{school.schoolName}</span>. Your profile bundle is safely locked inside our talent cloud dashboard.
+                Thank you for applying to <span className="font-bold text-slate-800 dark:text-slate-200">{school.schoolName}</span>. Your application has been submitted successfully to their hiring team.
               </p>
             </div>
           </CardContent>
@@ -103,8 +103,8 @@ export default function Apply() {
                     Apply to {school.schoolName}
                   </CardTitle>
                 </div>
-                <CardDescription className="text-xs font-medium text-slate-400 dark:text-slate-500 leading-relaxed max-w-xl">
-                  Complete the professional entry options profile block grid below. Your registration files will index instantly onto this institution's secure global matrix tracker.
+                <CardDescription className="text-xs font-medium text-slate-500 leading-relaxed max-w-xl">
+                  Please fill in your details below. Your application and resume will be submitted directly to {school.schoolName}'s recruitment team for review.
                 </CardDescription>
               </div>
 
@@ -147,7 +147,7 @@ export default function Apply() {
         <div className="text-center">
           <p className="text-[11px] font-bold tracking-wider uppercase text-slate-400 dark:text-slate-500 flex items-center justify-center gap-1.5">
             <GraduationCap className="h-3.5 w-3.5 text-slate-400" />
-            <span>Powered by HireHub Recruitment Ecosystem Network Infrastructure</span>
+            <span>Powered by HireHub</span>
           </p>
         </div>
 

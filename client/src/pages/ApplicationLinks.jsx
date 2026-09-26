@@ -25,7 +25,6 @@ export default function ApplicationLinks() {
       navigator.clipboard.writeText(linkData.applyUrl);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-      alert('Link copied!'); // Maintained exactly as requested to preserve core business functional logic
     }
   };
 

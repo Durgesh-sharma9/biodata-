@@ -11,6 +11,8 @@ import {
   getApplicantSubscription,
   getApplicantSubscriptionHistory,
   purchaseApplicantPlan,
+  createApplicantOrder,
+  verifyApplicantPayment,
   getReceivedRequests,
   getRequestSchoolDetails,
   getApplicantDashboard,
@@ -34,5 +36,7 @@ router.post('/requests/:requestId/unlock', protect, authorize('self_applicant', 
 router.get('/subscription', protect, authorize('self_applicant', 'applicant'), getApplicantSubscription);
 router.get('/subscription/history', protect, authorize('self_applicant', 'applicant'), getApplicantSubscriptionHistory);
 router.post('/subscription/purchase', protect, authorize('self_applicant', 'applicant'), purchaseApplicantPlan);
+router.post('/subscription/create-order', protect, authorize('self_applicant', 'applicant'), createApplicantOrder);
+router.post('/subscription/verify-payment', protect, authorize('self_applicant', 'applicant'), verifyApplicantPayment);
 
 export default router;

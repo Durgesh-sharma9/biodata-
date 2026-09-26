@@ -58,6 +58,7 @@ function MasterDataTable({ tab }) {
   const [newFieldOptionsList, setNewFieldOptionsList] = useState([]);
   const [currentOptionInput, setCurrentOptionInput] = useState('');
   const [newFieldRequired, setNewFieldRequired] = useState(false);
+  const [fieldConfigError, setFieldConfigError] = useState('');
 
   const queryClient = useQueryClient();
   const TabIcon = tab.icon || Layers;
@@ -149,6 +150,7 @@ function MasterDataTable({ tab }) {
     setNewFieldOptionsList([]);
     setCurrentOptionInput('');
     setNewFieldRequired(false);
+    setFieldConfigError('');
   };
 
   const handleAddOptionChip = () => {
@@ -166,6 +168,7 @@ function MasterDataTable({ tab }) {
     }
     setNewFieldOptionsList(merged);
     setCurrentOptionInput('');
+    setFieldConfigError('');
   };
 
   const handleRemoveOptionChip = (chipIdx) => {
@@ -188,9 +191,10 @@ function MasterDataTable({ tab }) {
     }
 
     if (needsOptions && finalOptions.length === 0) {
-      alert('Please add at least one option for this dropdown / selection field (type an option and click "+ Add Option").');
+      setFieldConfigError('Please add at least one option for this dropdown / selection field (type an option and click "+ Add Option").');
       return;
     }
+    setFieldConfigError('');
 
     if (editingFieldIndex !== null) {
       const updated = [...positionFields];
@@ -682,6 +686,13 @@ function MasterDataTable({ tab }) {
                       ⚠️ Please add at least one option (type name above and click "Add Option").
                     </p>
                   )}
+                </div>
+              )}
+
+              {fieldConfigError && (
+                <div className="p-2.5 rounded-lg border border-rose-200 bg-rose-50 text-rose-700 text-xs font-semibold flex items-center justify-between animate-in fade-in duration-200">
+                  <span>{fieldConfigError}</span>
+                  <button type="button" onClick={() => setFieldConfigError('')} className="font-bold text-rose-500 hover:text-rose-700">✕</button>
                 </div>
               )}
 

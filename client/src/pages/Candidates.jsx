@@ -458,29 +458,33 @@ export function CandidateList({
       {/* Main Listing View Table Interface */}
       <Card>
         <CardContent className="p-0">
-          {section !== 'talent_pool' && (
-            <div className="flex items-center justify-end gap-2 border-b border-slate-100 px-4 py-3 dark:border-slate-800">
+          <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3 dark:border-slate-800">
+            <div className="text-xs font-semibold text-slate-500">
+              Showing <span className="font-bold text-slate-800 dark:text-slate-200">{filteredCandidates.length}</span> candidates
+            </div>
+            <div className="flex items-center gap-2">
               <Button
                 type="button"
+                size="sm"
                 variant={viewMode === 'list' ? 'default' : 'outline'}
-                className={viewMode === 'list' ? 'bg-[#A05AFF] text-white' : 'border-slate-200 bg-white text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300'}
+                className={viewMode === 'list' ? 'bg-[#A05AFF] text-white h-9 rounded-xl text-xs font-bold' : 'border-slate-200 bg-white text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 h-9 rounded-xl text-xs font-bold'}
                 onClick={() => setViewMode('list')}
               >
-                <List className="mr-2 h-4 w-4" />
+                <List className="mr-1.5 h-3.5 w-3.5" />
                 List View
               </Button>
               <Button
                 type="button"
+                size="sm"
                 variant={viewMode === 'map' ? 'default' : 'outline'}
-                className={viewMode === 'map' ? 'bg-[#A05AFF] text-white' : 'border-slate-200 bg-white text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300'}
+                className={viewMode === 'map' ? 'bg-[#A05AFF] text-white h-9 rounded-xl text-xs font-bold shadow-md shadow-[#A05AFF]/25' : 'border-slate-200 bg-white text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 h-9 rounded-xl text-xs font-bold'}
                 onClick={() => setViewMode('map')}
-                disabled={!data?.schoolLocation}
               >
-                <MapIcon className="mr-2 h-4 w-4" />
-                Map View
+                <MapIcon className="mr-1.5 h-3.5 w-3.5" />
+                Interactive Map View
               </Button>
             </div>
-          )}
+          </div>
 
           {isLoading ? (
             <div className="py-24 flex flex-col items-center justify-center space-y-3">
@@ -491,37 +495,55 @@ export function CandidateList({
             </div>
           ) : (
             <div className="w-full">
-              {section !== 'talent_pool' && viewMode === 'map' ? (
+              {viewMode === 'map' ? (
                 <div className="space-y-4 p-4">
-                  <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                    <div className="border-b border-slate-100 p-4 dark:border-slate-800">
-                      <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200">Nearby talent map</h3>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">School marker, candidate pins, distance, position, and area are surfaced here.</p>
+                  <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl dark:border-slate-800 dark:bg-slate-900">
+                    <div className="border-b border-slate-100 p-4 dark:border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                      <div>
+                        <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                          <MapPin className="w-4 h-4 text-[#A05AFF]" /> Interactive Talent Search Map
+                        </h3>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">
+                          Search any area or city above, click anywhere on map, or use GPS to extract location and find candidates within radius.
+                        </p>
+                      </div>
+                      <span className="text-xs font-bold text-[#A05AFF] bg-[#A05AFF]/10 px-3 py-1 rounded-full border border-[#A05AFF]/20">
+                        {filteredCandidates.length} Active Candidates
+                      </span>
                     </div>
                     <div className="p-4">
                       <MapView 
                         candidates={filteredCandidates} 
                         schoolLocation={data?.schoolLocation}
-                        workingRadius={filters.nearby ? Number(filters.radiusKm) || 50 : undefined}
+                        workingRadius={filters.nearby ? Number(filters.radiusKm) || 15 : 15}
+                        height="520px"
                       />
                     </div>
                   </div>
-                  <div className="grid gap-3 md:grid-cols-2">
+                  <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
                     {filteredCandidates.map((c) => (
-                      <div key={c._id} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                        <div className="flex items-start justify-between gap-3">
-                          <div>
-                            <p className="text-sm font-bold text-slate-800 dark:text-slate-200">{c.fullName}</p>
-                            <p className="text-xs text-slate-500 dark:text-slate-400">{c.position}</p>
+                      <div key={c._id} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm hover:shadow-md transition-shadow dark:border-slate-800 dark:bg-slate-900 flex flex-col justify-between">
+                        <div>
+                          <div className="flex items-start justify-between gap-3 mb-2">
+                            <div>
+                              <p className="text-sm font-bold text-slate-800 dark:text-slate-200">{c.fullName}</p>
+                              <p className="text-xs text-[#A05AFF] font-semibold">{c.position}</p>
+                            </div>
+                            {Number.isFinite(c.distanceKm) ? (
+                              <Badge className="rounded-full border-[#A05AFF]/20 bg-[#A05AFF]/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-[#A05AFF]">
+                                {c.distanceKm.toFixed(1)} km away
+                              </Badge>
+                            ) : null}
                           </div>
-                          {Number.isFinite(c.distanceKm) ? (
-                            <Badge className="rounded-full border-[#A05AFF]/20 bg-[#A05AFF]/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-[#A05AFF]">
-                              {c.distanceKm.toFixed(1)} km
-                            </Badge>
-                          ) : null}
+                          <p className="text-xs text-slate-500 dark:text-slate-400">{formatCandidateLocation(c)}</p>
+                          <p className="mt-1 text-[11px] text-slate-400 dark:text-slate-500">📍 {c.area || 'Area not specified'}</p>
                         </div>
-                        <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">{formatCandidateLocation(c)}</p>
-                        <p className="mt-1 text-[11px] text-slate-400 dark:text-slate-500">{c.area || 'Area not provided'}</p>
+                        <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
+                          <span className="text-slate-400 font-medium">Exp: {c.experience || 'N/A'}</span>
+                          <Link to={`/candidates/${c._id}`} className="text-[#A05AFF] hover:underline font-bold text-xs flex items-center gap-1">
+                            <Eye className="w-3.5 h-3.5" /> View Profile
+                          </Link>
+                        </div>
                       </div>
                     ))}
                   </div>

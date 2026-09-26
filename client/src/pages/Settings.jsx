@@ -61,7 +61,7 @@ function SettingsSection({ field, label, items, onAdd, onRemove, isPending, icon
         <div className="min-h-[76px] p-4 bg-slate-50/50 border border-slate-100 rounded-xl flex flex-wrap gap-2 items-start dark:bg-slate-950/50 dark:border-slate-800">
           {!items || items.length === 0 ? (
             <div className="text-xs font-medium text-slate-400 dark:text-slate-500 italic py-4 w-full text-center">
-              No list metrics configured. Define parameters above.
+              No items added yet. Add one above.
             </div>
           ) : (
             items.map((item) => (
@@ -113,7 +113,7 @@ export default function Settings() {
           <div className="absolute inset-0 bg-purple-100 rounded-full blur-xl animate-pulse scale-150" />
         </div>
         <p className="text-slate-500 dark:text-slate-400 font-bold tracking-wide text-xs">
-          Synchronizing workspace configurations...
+          Loading settings...
         </p>
       </div>
     );
@@ -128,14 +128,14 @@ export default function Settings() {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200/60 shadow-2xs">
         <div>
           <h1 className="text-xl font-bold tracking-tight text-slate-800 dark:text-white flex items-center gap-2">
-            <Sliders className="h-5 w-5 text-purple-600" /> System Configurations
+            <Sliders className="h-5 w-5 text-purple-600" /> Recruitment Settings
           </h1>
           <p className="mt-1 text-sm text-slate-500 dark:text-slate-400 font-medium">
-            Manage taxonomies across positions, subjects, classifications, and regulatory credentials.
+            Customize subjects, classes, qualifications, and positions for your school recruitment.
           </p>
         </div>
         <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-purple-200/60 bg-purple-50/80 text-purple-700 text-[11px] font-bold uppercase tracking-wider self-start md:self-auto">
-          <Sparkles className="h-3 w-3" /> Core Engine
+          <Sparkles className="h-3 w-3" /> School Preferences
         </div>
       </div>
 

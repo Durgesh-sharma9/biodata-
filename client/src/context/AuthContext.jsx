@@ -79,7 +79,7 @@ export function AuthProvider({ children }) {
         logout,
         refreshSchool,
         isSuperAdmin: user?.role === 'super_admin',
-        isApplicant: user?.role === 'self_applicant',
+        isApplicant: user?.role === 'self_applicant' || user?.role === 'applicant',
         isSchoolAdmin: user?.role === 'school_admin',
       }}
     >

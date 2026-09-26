@@ -4,8 +4,10 @@ import InterestRequest from '../models/InterestRequest.js';
 import School from '../models/School.js';
 import Candidate from '../models/Candidate.js';
 import User from '../models/User.js';
+import PaymentTransaction from '../models/PaymentTransaction.js';
 import { ApiError } from '../utils/ApiError.js';
 import { catchAsync } from '../utils/catchAsync.js';
+import { createRazorpayOrder, verifyRazorpaySignature } from '../utils/razorpay.js';
 import {
   expireApplicantSubscriptions,
   getActiveApplicantSubscription,
@@ -109,6 +111,153 @@ export const purchaseApplicantPlan = catchAsync(async (req, res) => {
       data: subscription,
     });
   }
+});
+
+export const createApplicantOrder = catchAsync(async (req, res) => {
+  const { planId } = req.body;
+  if (!planId) throw new ApiError(400, 'Plan ID is required');
+
+  const plan = await ApplicantPlan.findById(planId);
+  if (!plan || !plan.isActive) throw new ApiError(404, 'Applicant plan not found');
+
+  const candidate = await Candidate.findOne({
+    applicantUserId: req.user._id,
+    isDeleted: false,
+  });
+  if (!candidate) throw new ApiError(404, 'Applicant profile not found');
+
+  // If free plan, activate directly without Razorpay
+  if (plan.price <= 0) {
+    return purchaseApplicantPlan(req, res);
+  }
+
+  const order = await createRazorpayOrder({
+    amount: plan.price,
+    currency: 'INR',
+    receipt: `app_pln_${Date.now()}`,
+    notes: {
+      planId: String(plan._id),
+      userId: String(req.user._id),
+      candidateId: String(candidate._id),
+      planName: plan.name,
+    },
+  });
+
+  await PaymentTransaction.create({
+    orderId: order.id,
+    amount: plan.price,
+    currency: 'INR',
+    status: 'created',
+    paymentType: 'APPLICANT_PLAN',
+    userId: req.user._id,
+    planId: plan._id,
+    details: { planName: plan.name, planType: plan.planType, price: plan.price },
+  });
+
+  res.json({
+    success: true,
+    data: {
+      orderId: order.id,
+      amount: plan.price,
+      currency: 'INR',
+      keyId: process.env.RAZORPAY_KEY_ID,
+      planName: plan.name,
+      planType: plan.planType,
+    },
+  });
+});
+
+export const verifyApplicantPayment = catchAsync(async (req, res) => {
+  const { planId, razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+
+  if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+    throw new ApiError(400, 'Incomplete payment verification payload');
+  }
+
+  const isValid = verifyRazorpaySignature({
+    orderId: razorpay_order_id,
+    paymentId: razorpay_payment_id,
+    signature: razorpay_signature,
+  });
+
+  if (!isValid) {
+    await PaymentTransaction.findOneAndUpdate(
+      { orderId: razorpay_order_id },
+      { status: 'failed', paymentId: razorpay_payment_id }
+    );
+    throw new ApiError(400, 'Invalid payment signature. Transaction rejected.');
+  }
+
+  const plan = await ApplicantPlan.findById(planId);
+  if (!plan) throw new ApiError(404, 'Applicant plan not found');
+
+  const candidate = await Candidate.findOne({
+    applicantUserId: req.user._id,
+    isDeleted: false,
+  });
+  if (!candidate) throw new ApiError(404, 'Applicant profile not found');
+
+  await expireApplicantSubscriptions(req.user._id);
+  const user = await User.findById(req.user._id);
+
+  let subscription;
+
+  if (plan.planType === 'REQUEST_BASED') {
+    user.requestCredits = (user.requestCredits || 0) + plan.requestCount;
+    await user.save();
+
+    subscription = await ApplicantSubscription.create({
+      userId: req.user._id,
+      candidateId: candidate._id,
+      planId: plan._id,
+      planType: plan.planType,
+      planName: plan.name,
+      price: plan.price,
+      requestCount: plan.requestCount,
+      expiryDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+      status: 'active',
+    });
+  } else if (plan.planType === 'UNLIMITED') {
+    const expiryDate = new Date();
+    expiryDate.setDate(expiryDate.getDate() + plan.durationDays);
+
+    user.activePlan = plan._id;
+    user.planExpiryDate = expiryDate;
+    await user.save();
+
+    subscription = await ApplicantSubscription.create({
+      userId: req.user._id,
+      candidateId: candidate._id,
+      planId: plan._id,
+      planType: plan.planType,
+      planName: plan.name,
+      price: plan.price,
+      durationDays: plan.durationDays,
+      expiryDate,
+      status: 'active',
+    });
+  }
+
+  await PaymentTransaction.findOneAndUpdate(
+    { orderId: razorpay_order_id },
+    {
+      status: 'paid',
+      paymentId: razorpay_payment_id,
+      signature: razorpay_signature,
+    }
+  );
+
+  res.json({
+    success: true,
+    data: {
+      subscription,
+      requestCredits: user.requestCredits,
+      activePlan: user.activePlan,
+      planExpiryDate: user.planExpiryDate,
+      paymentId: razorpay_payment_id,
+    },
+    message: `Payment verified! ${plan.name} has been activated.`,
+  });
 });
 
 export const getReceivedRequests = catchAsync(async (req, res) => {

@@ -1,18 +1,27 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   getApplicantSubscription,
   getApplicantSubscriptionHistory,
   getApplicantPlans,
   purchaseApplicantPlan,
+  createApplicantOrder,
+  verifyApplicantPayment,
 } from '@/lib/api';
+import { openRazorpayPayment } from '@/lib/razorpay';
+import { useAuth } from '@/context/AuthContext';
 import { PageHeader } from '@/components/common/PageHeader';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { formatDate } from '@/lib/utils';
+import { CreditCard, Loader2, ShieldCheck, CheckCircle2 } from 'lucide-react';
 
 export default function ApplicantPlan() {
+  const { user } = useAuth();
   const queryClient = useQueryClient();
+  const [banner, setBanner] = useState(null);
+  const [processingPlanId, setProcessingPlanId] = useState(null);
 
   const { data: subscriptionData } = useQuery({
     queryKey: ['applicant-subscription'],
@@ -29,17 +38,76 @@ export default function ApplicantPlan() {
     queryFn: () => getApplicantPlans().then((r) => r.data.data),
   });
 
-  const purchaseMutation = useMutation({
-    mutationFn: purchaseApplicantPlan,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['applicant-subscription'] });
-      queryClient.invalidateQueries({ queryKey: ['applicant-subscription-history'] });
-      alert('Plan activated successfully');
-    },
-    onError: (err) => {
-      alert(err.response?.data?.message || 'Failed to purchase plan');
-    },
-  });
+  const handlePurchasePlan = async (plan) => {
+    setProcessingPlanId(plan._id);
+    setBanner(null);
+
+    // If free plan, activate directly
+    if (plan.price <= 0) {
+      try {
+        await purchaseApplicantPlan(plan._id);
+        queryClient.invalidateQueries({ queryKey: ['applicant-subscription'] });
+        queryClient.invalidateQueries({ queryKey: ['applicant-subscription-history'] });
+        setBanner({ type: 'success', message: `${plan.name} activated successfully!` });
+      } catch (err) {
+        setBanner({ type: 'error', message: err.response?.data?.message || 'Failed to activate plan' });
+      } finally {
+        setProcessingPlanId(null);
+      }
+      return;
+    }
+
+    // For paid plans, launch Razorpay
+    try {
+      const orderRes = await createApplicantOrder(plan._id);
+      const orderData = orderRes.data.data;
+
+      await openRazorpayPayment({
+        orderData,
+        user: {
+          name: user?.name,
+          email: user?.email,
+          mobile: user?.mobile,
+        },
+        title: 'HireHub Applicant Subscription',
+        description: `${plan.name} (${plan.planType === 'REQUEST_BASED' ? `${plan.requestCount} Requests` : `${plan.durationDays} Days Unlimited`})`,
+        onSuccess: async (paymentResponse) => {
+          try {
+            await verifyApplicantPayment({
+              planId: plan._id,
+              ...paymentResponse,
+            });
+
+            queryClient.invalidateQueries({ queryKey: ['applicant-subscription'] });
+            queryClient.invalidateQueries({ queryKey: ['applicant-subscription-history'] });
+            setBanner({
+              type: 'success',
+              message: `🎉 Payment of ₹${plan.price} Successful! ${plan.name} is now active on your account.`,
+            });
+          } catch (verErr) {
+            setBanner({
+              type: 'error',
+              message: verErr.response?.data?.message || 'Payment signature verification failed.',
+            });
+          } finally {
+            setProcessingPlanId(null);
+          }
+        },
+        onFailure: (err) => {
+          setProcessingPlanId(null);
+          if (err.message && !err.message.includes('closed by user')) {
+            setBanner({ type: 'error', message: err.message });
+          }
+        },
+      });
+    } catch (err) {
+      setProcessingPlanId(null);
+      setBanner({
+        type: 'error',
+        message: err.response?.data?.message || 'Failed to initialize Razorpay checkout.',
+      });
+    }
+  };
 
   const requestBasedPlans = plans.filter((p) => p.planType === 'REQUEST_BASED' && p.price > 0 && p.isActive);
   const unlimitedPlans = plans.filter((p) => p.planType === 'UNLIMITED' && p.price > 0 && p.isActive);
@@ -47,6 +115,17 @@ export default function ApplicantPlan() {
   return (
     <div className="space-y-6 w-full antialiased text-slate-800 dark:text-white">
       <PageHeader title="My Plan" description="Manage your subscription and credits" />
+
+      {banner && (
+        <div className={`p-4 rounded-xl border text-xs font-bold flex items-center justify-between ${
+          banner.type === 'success' 
+            ? 'bg-emerald-50 text-emerald-700 border-emerald-200' 
+            : 'bg-red-50 text-red-700 border-red-200'
+        }`}>
+          <span>{banner.message}</span>
+          <button onClick={() => setBanner(null)} className="ml-4 opacity-70 hover:opacity-100">✕</button>
+        </div>
+      )}
 
       {/* Current Status */}
       <Card className="border border-slate-200/60 bg-white shadow-2xs dark:bg-slate-900">
@@ -111,11 +190,21 @@ export default function ApplicantPlan() {
                     ))}
                   </ul>
                   <Button
-                    className="mt-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold rounded-lg"
-                    onClick={() => purchaseMutation.mutate(plan._id)}
-                    disabled={purchaseMutation.isPending}
+                    className="mt-3 bg-gradient-to-r from-[#A05AFF] to-[#7928CA] hover:from-[#8f47ec] hover:to-[#681fb0] text-white font-bold rounded-xl h-10 w-full flex items-center justify-center gap-2 shadow-xs transition-all"
+                    onClick={() => handlePurchasePlan(plan)}
+                    disabled={processingPlanId === plan._id}
                   >
-                    {purchaseMutation.isPending ? 'Processing...' : `Purchase — ₹${plan.price}`}
+                    {processingPlanId === plan._id ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        <span>Opening Razorpay...</span>
+                      </>
+                    ) : (
+                      <>
+                        <CreditCard className="h-4 w-4" />
+                        <span>Purchase — ₹{plan.price}</span>
+                      </>
+                    )}
                   </Button>
                 </CardContent>
               </Card>
@@ -145,11 +234,21 @@ export default function ApplicantPlan() {
                     ))}
                   </ul>
                   <Button
-                    className="mt-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold rounded-lg"
-                    onClick={() => purchaseMutation.mutate(plan._id)}
-                    disabled={purchaseMutation.isPending}
+                    className="mt-3 bg-gradient-to-r from-[#A05AFF] to-[#7928CA] hover:from-[#8f47ec] hover:to-[#681fb0] text-white font-bold rounded-xl h-10 w-full flex items-center justify-center gap-2 shadow-xs transition-all"
+                    onClick={() => handlePurchasePlan(plan)}
+                    disabled={processingPlanId === plan._id}
                   >
-                    {purchaseMutation.isPending ? 'Processing...' : `Subscribe — ₹${plan.price}`}
+                    {processingPlanId === plan._id ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        <span>Opening Razorpay...</span>
+                      </>
+                    ) : (
+                      <>
+                        <CreditCard className="h-4 w-4" />
+                        <span>Subscribe — ₹{plan.price}</span>
+                      </>
+                    )}
                   </Button>
                 </CardContent>
               </Card>

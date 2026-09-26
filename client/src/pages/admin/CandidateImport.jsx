@@ -50,6 +50,7 @@ export default function CandidateImport() {
   });
   const [bulkResult, setBulkResult] = useState(null);
   const [selectedPosition, setSelectedPosition] = useState('');
+  const [importNotice, setImportNotice] = useState(null);
 
   const { data: positions = [] } = useQuery({
     queryKey: ['positions'],
@@ -61,7 +62,11 @@ export default function CandidateImport() {
     onSuccess: () => {
       setForm({ fullName: '', mobile: '', email: '', position: '', experienceYears: 0, expectedSalary: '' });
       setLocation({});
-      alert('Candidate imported successfully');
+      setImportNotice({ type: 'success', message: 'Candidate imported successfully into the platform pool.' });
+      setTimeout(() => setImportNotice(null), 5000);
+    },
+    onError: (err) => {
+      setImportNotice({ type: 'error', message: err.response?.data?.message || 'Failed to import candidate.' });
     },
   });
 
@@ -72,16 +77,23 @@ export default function CandidateImport() {
       if (selectedPosition) formData.append('position', selectedPosition);
       return importBulkCandidates(formData);
     },
-    onSuccess: (res) => setBulkResult(res.data.data),
+    onSuccess: (res) => {
+      setBulkResult(res.data.data);
+      setImportNotice({ type: 'success', message: `Bulk import completed! Successfully processed ${res.data.data?.successCount || 0} candidates.` });
+    },
+    onError: (err) => {
+      setImportNotice({ type: 'error', message: err.response?.data?.message || 'Bulk import failed. Please check your spreadsheet headers.' });
+    },
   });
 
   const handleBulkUpload = (e) => {
     const file = e.target.files?.[0];
     if (file) {
       if (!selectedPosition) {
-        alert('Please select a position first');
+        setImportNotice({ type: 'error', message: 'Please select a target position before uploading your Excel or CSV file.' });
         return;
       }
+      setImportNotice(null);
       bulkMutation.mutate(file);
     }
   };
@@ -95,6 +107,25 @@ export default function CandidateImport() {
           description="Expand your talent network repository using single profile creation fields or fast bulk database spreadsheet integrations." 
         />
       </div>
+
+      {importNotice && (
+        <div
+          className={`flex items-center justify-between gap-3 p-4 rounded-xl border text-xs font-semibold animate-in fade-in duration-200 ${
+            importNotice.type === 'success'
+              ? 'border-emerald-200 bg-emerald-50 text-emerald-800 dark:bg-emerald-950/40 dark:border-emerald-800 dark:text-emerald-300'
+              : 'border-rose-200 bg-rose-50 text-rose-800 dark:bg-rose-950/40 dark:border-rose-800 dark:text-rose-300'
+          }`}
+        >
+          <span>{importNotice.message}</span>
+          <button
+            type="button"
+            onClick={() => setImportNotice(null)}
+            className="font-bold opacity-70 hover:opacity-100"
+          >
+            ✕
+          </button>
+        </div>
+      )}
 
       <Tabs defaultValue="single" className="w-full space-y-6">
         <TabsList className="inline-flex h-12 items-center justify-center rounded-xl bg-white dark:bg-slate-900 p-1 text-slate-500 border border-slate-200/60 dark:border-slate-800 shadow-sm">

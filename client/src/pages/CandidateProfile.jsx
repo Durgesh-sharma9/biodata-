@@ -51,14 +51,17 @@ export default function CandidateProfile() {
     enabled: !!candidate?.canSendInterest,
   });
 
+  const [statusBanner, setStatusBanner] = useState(null);
+
   const unlockMutation = useMutation({
     mutationFn: () => unlockCandidate(id),
     onSuccess: async (res) => {
       queryClient.setQueryData(['candidate', id], res.data.data);
       await refreshSchool();
+      setStatusBanner({ type: 'success', message: 'Candidate contact details unlocked successfully!' });
     },
     onError: (err) => {
-      alert(err.response?.data?.message || 'Failed to unlock profile');
+      setStatusBanner({ type: 'error', message: err.response?.data?.message || 'Failed to unlock profile. Please check your credit balance.' });
     },
   });
 
@@ -72,10 +75,10 @@ export default function CandidateProfile() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['interest-status', id] });
       setShowInterestForm(false);
-      alert('Interest request sent successfully');
+      setStatusBanner({ type: 'success', message: 'Interest request sent to candidate successfully!' });
     },
     onError: (err) => {
-      alert(err.response?.data?.message || 'Failed to send interest request');
+      setStatusBanner({ type: 'error', message: err.response?.data?.message || 'Failed to send interest request' });
     },
   });
 
@@ -118,7 +121,16 @@ export default function CandidateProfile() {
   return (
     <div className="space-y-6 w-full antialiased text-slate-800 dark:text-white">
       
-      {/* Page Header Panel Minimalist Scaffolding */}
+      {statusBanner && (
+        <div className={`p-4 rounded-xl border text-xs font-bold flex items-center justify-between transition-all ${
+          statusBanner.type === 'success' 
+            ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/30 dark:border-emerald-800 dark:text-emerald-300' 
+            : 'bg-red-50 text-red-700 border-red-200 dark:bg-red-950/30 dark:border-red-800 dark:text-red-300'
+        }`}>
+          <span>{statusBanner.message}</span>
+          <button onClick={() => setStatusBanner(null)} className="ml-4 opacity-70 hover:opacity-100 font-black">✕</button>
+        </div>
+      )}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5 border-b border-slate-200/60 dark:border-slate-800 pb-5">
         <PageHeader
           title={candidate.fullName}

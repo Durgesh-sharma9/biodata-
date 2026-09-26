@@ -28,6 +28,7 @@ export default function Locations() {
   const [cityStateId, setCityStateId] = useState('');
   const [viewCityId, setViewCityId] = useState('');
   const [importDialogOpen, setImportDialogOpen] = useState(false);
+  const [importBanner, setImportBanner] = useState(null);
 
   const { data: states = [], isLoading: statesLoading } = useQuery({
     queryKey: ['states'],
@@ -72,11 +73,17 @@ export default function Locations() {
     onSuccess: (data) => {
       invalidate();
       setImportDialogOpen(false);
-      // Show success message with counts
-      alert(`Import successful!\nStates imported: ${data.data.data.statesImported}\nCities imported: ${data.data.data.citiesImported}`);
+      setImportBanner({
+        type: 'success',
+        message: `Import successful! States added: ${data.data?.data?.statesImported || 0}, Cities added: ${data.data?.data?.citiesImported || 0}`,
+      });
+      setTimeout(() => setImportBanner(null), 6000);
     },
     onError: (error) => {
-      alert(`Import failed: ${error.response?.data?.message || error.message}`);
+      setImportBanner({
+        type: 'error',
+        message: `Import failed: ${error.response?.data?.message || error.message}`,
+      });
     },
   });
 
@@ -89,6 +96,26 @@ export default function Locations() {
           description="Configure and audit the structural region parameters spanning State → City networks." 
         />
       </div>
+
+      {importBanner && (
+        <div
+          className={cn(
+            'flex items-center justify-between gap-3 p-4 rounded-xl border text-xs font-semibold animate-in fade-in duration-200',
+            importBanner.type === 'success'
+              ? 'border-emerald-200 bg-emerald-50 text-emerald-800 dark:bg-emerald-950/40 dark:border-emerald-800 dark:text-emerald-300'
+              : 'border-rose-200 bg-rose-50 text-rose-800 dark:bg-rose-950/40 dark:border-rose-800 dark:text-rose-300'
+          )}
+        >
+          <span>{importBanner.message}</span>
+          <button
+            type="button"
+            onClick={() => setImportBanner(null)}
+            className="font-bold opacity-70 hover:opacity-100"
+          >
+            ✕
+          </button>
+        </div>
+      )}
 
       <Tabs defaultValue="states" className="w-full space-y-6">
         {/* Soft Translucent Highlight Tabs Wrapper */}
