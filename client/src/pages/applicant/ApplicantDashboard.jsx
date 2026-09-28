@@ -79,7 +79,10 @@ export default function ApplicantDashboard() {
         </CardHeader>
         <CardContent className="flex flex-wrap gap-2">
           <Button asChild variant="outline" className="rounded-lg border-slate-200 hover:bg-slate-50 hover:text-purple-600">
-            <Link to="/applicant/profile">Edit Profile</Link>
+            <Link to="/applicant/profile">View Profile</Link>
+          </Button>
+          <Button asChild variant="outline" className="rounded-lg border-slate-200 hover:bg-slate-50 hover:text-purple-600">
+            <Link to="/applicant/profile?edit=true">Edit Profile</Link>
           </Button>
           <Button asChild variant="outline" className="rounded-lg border-slate-200 hover:bg-slate-50 hover:text-purple-600">
             <Link to="/applicant/requests">View Requests</Link>

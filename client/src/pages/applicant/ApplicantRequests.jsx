@@ -27,10 +27,15 @@ export default function ApplicantRequests() {
   const [showPayment, setShowPayment] = useState(false);
   const [processingPlanId, setProcessingPlanId] = useState(null);
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ['applicant-requests'],
     queryFn: () => getReceivedRequests().then((r) => r.data),
+    retry: 1,
   });
+
+  const requests = data?.data || [];
+  const hasActivePlan = data?.hasActivePlan || false;
+  const requestCredits = data?.requestCredits || 0;
 
   const { data: plans = [] } = useQuery({
     queryKey: ['applicant-plans'],
@@ -167,13 +172,17 @@ export default function ApplicantRequests() {
         <CardContent className="pt-6">
           {isLoading ? (
             <p className="text-center py-8 text-slate-400 dark:text-slate-500">Loading...</p>
-          ) : data?.data?.length === 0 ? (
+          ) : isError ? (
+            <p className="text-center py-8 text-red-400 font-medium text-sm">
+              Could not load requests. Please refresh the page.
+            </p>
+          ) : requests.length === 0 ? (
             <p className="text-center py-8 text-slate-400 dark:text-slate-500">
               No requests yet. Complete your profile to attract schools.
             </p>
           ) : (
             <div className="space-y-4">
-              {data.data.map((request) => (
+              {requests.map((request) => (
                 <div key={request._id} className="rounded-lg border border-slate-200/60 p-4 hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-all">
                   <div className="flex items-start justify-between gap-4">
                     <div>

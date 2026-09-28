@@ -1,6 +1,7 @@
 import Candidate from '../models/Candidate.js';
 import School from '../models/School.js';
 import UnlockHistory from '../models/UnlockHistory.js';
+import InterestRequest from '../models/InterestRequest.js';
 import { ApiError } from '../utils/ApiError.js';
 import { catchAsync } from '../utils/catchAsync.js';
 import { TEACHING_POSITIONS, UNLOCK_CREDIT_COST } from '../config/constants.js';
@@ -403,6 +404,8 @@ export const getDashboardStats = catchAsync(async (req, res) => {
     ],
   };
 
+  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+
   const [
     myCandidates,
     talentPoolCount,
@@ -411,6 +414,14 @@ export const getDashboardStats = catchAsync(async (req, res) => {
     recentTalentPool,
     positionBreakdown,
     unlockedCount,
+    directApplications,
+    bEdCount,
+    newThisMonth,
+    experienceAgg,
+    genderAgg,
+    topLocationsAgg,
+    interestSentCount,
+    recentUnlocks,
   ] = await Promise.all([
     Candidate.countDocuments(myCandidatesFilter),
     Candidate.countDocuments(talentPoolFilter),
@@ -424,6 +435,52 @@ export const getDashboardStats = catchAsync(async (req, res) => {
       { $limit: 6 },
     ]),
     UnlockHistory.countDocuments({ schoolId }),
+    Candidate.countDocuments({ ...baseFilter, ownerSchoolId: schoolId, source: 'SCHOOL_LINK' }),
+    Candidate.countDocuments({ ...baseFilter, bEd: true }),
+    Candidate.countDocuments({ ...baseFilter, createdAt: { $gte: thirtyDaysAgo } }),
+    Candidate.aggregate([
+      { $match: { isDeleted: false } },
+      {
+        $project: {
+          bracket: {
+            $cond: [
+              { $lte: [{ $ifNull: ['$experienceYears', 0] }, 0] },
+              'Fresher (0 yr)',
+              {
+                $cond: [
+                  { $lte: ['$experienceYears', 2] },
+                  '1 - 2 Years',
+                  {
+                    $cond: [
+                      { $lte: ['$experienceYears', 5] },
+                      '3 - 5 Years',
+                      '5+ Years',
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        },
+      },
+      { $group: { _id: '$bracket', count: { $sum: 1 } } },
+    ]).catch(() => []),
+    Candidate.aggregate([
+      { $match: { isDeleted: false, gender: { $exists: true, $ne: '' } } },
+      { $group: { _id: { $toLower: '$gender' }, count: { $sum: 1 } } },
+    ]).catch(() => []),
+    Candidate.aggregate([
+      { $match: { isDeleted: false, city: { $exists: true, $ne: '', $ne: null } } },
+      { $group: { _id: '$city', count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+      { $limit: 4 },
+    ]).catch(() => []),
+    InterestRequest.countDocuments({ schoolId }).catch(() => 0),
+    UnlockHistory.find({ schoolId })
+      .populate('candidateId', 'fullName position createdAt')
+      .sort({ createdAt: -1 })
+      .limit(4)
+      .catch(() => []),
   ]);
 
   const [formattedRecent, formattedTalentPool] = await Promise.all([
@@ -431,15 +488,31 @@ export const getDashboardStats = catchAsync(async (req, res) => {
     Promise.all(recentTalentPool.map((c) => formatCandidateForSchool(c, schoolId))),
   ]);
 
+  const totalAllCandidates = myCandidates + talentPoolCount;
+
   res.json({
     success: true,
     data: {
       myCandidates,
       talentPoolCount,
-      totalCandidates: myCandidates + talentPoolCount,
+      totalCandidates: totalAllCandidates,
       ownedCandidates,
       unlockedCount,
       availableCredits: school?.credits || 0,
+      directApplications,
+      bEdCount,
+      bEdPercentage: totalAllCandidates > 0 ? Math.round((bEdCount / totalAllCandidates) * 100) : 0,
+      newThisMonth,
+      interestSentCount,
+      experienceBreakdown: (experienceAgg || []).map((e) => ({ label: e._id, count: e.count })),
+      genderBreakdown: (genderAgg || []).map((g) => ({ gender: g._id, count: g.count })),
+      topLocations: (topLocationsAgg || []).map((l) => ({ city: l._id, count: l.count })),
+      recentUnlocks: (recentUnlocks || []).map((u) => ({
+        id: u._id,
+        candidateName: u.candidateId?.fullName || 'Candidate Profile',
+        position: u.candidateId?.position || 'Teacher',
+        unlockedAt: u.createdAt,
+      })),
       recentCandidates: formattedRecent,
       recentTalentPool: formattedTalentPool,
       positionBreakdown: positionBreakdown.map((p) => ({ position: p._id || 'Other', count: p.count })),

@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 import { 
   Users, Coins, Plus, List, Search, ArrowRight, Sparkles, Loader2, 
   Briefcase, Eye, MapPin, GraduationCap, Phone, UserCheck, TrendingUp,
-  PieChart, BarChart3, Target, ShieldCheck, CheckCircle2, Award, Zap
+  PieChart, BarChart3, Target, ShieldCheck, CheckCircle2, Award, Zap,
+  Share2, Send, Clock, Flame, Activity
 } from 'lucide-react';
 import { getDashboardStats } from '@/lib/api';
 import { Button } from '@/components/ui/button';
@@ -36,6 +37,14 @@ export default function Dashboard() {
   const recentTalentPool = data?.recentTalentPool || [];
   const positionBreakdown = data?.positionBreakdown || [];
   const totalCandidates = data?.totalCandidates || 1;
+  const directApplications = data?.directApplications || 0;
+  const bEdCount = data?.bEdCount || 0;
+  const bEdPercentage = data?.bEdPercentage || 0;
+  const newThisMonth = data?.newThisMonth || 0;
+  const interestSentCount = data?.interestSentCount || 0;
+  const experienceBreakdown = data?.experienceBreakdown || [];
+  const topLocations = data?.topLocations || [];
+  const recentUnlocks = data?.recentUnlocks || [];
 
   // Colors for Position Analytics Bars
   const BAR_COLORS = [
@@ -157,7 +166,76 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* NEW ANALYTICS WIDGETS ROW */}
+      {/* SECONDARY RECRUITMENT KPI CHIPS */}
+      <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
+        
+        {/* Direct Link Applicants */}
+        <div className="p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-lg bg-pink-50 text-pink-600 dark:bg-pink-950/40 dark:text-pink-400">
+              <Share2 className="h-4 w-4" />
+            </div>
+            <div>
+              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Direct Link Applies</p>
+              <h4 className="text-lg font-black text-slate-800 dark:text-white">{directApplications}</h4>
+            </div>
+          </div>
+          <span className="text-[10px] font-bold text-pink-600 bg-pink-50 dark:bg-pink-900/30 px-2 py-0.5 rounded-md">
+            School Link
+          </span>
+        </div>
+
+        {/* B.Ed / Trained Staff */}
+        <div className="p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-lg bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400">
+              <GraduationCap className="h-4 w-4" />
+            </div>
+            <div>
+              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">B.Ed / Trained</p>
+              <h4 className="text-lg font-black text-slate-800 dark:text-white">{bEdCount}</h4>
+            </div>
+          </div>
+          <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-0.5 rounded-md">
+            {bEdPercentage}% of Pool
+          </span>
+        </div>
+
+        {/* New Inflow (30 Days) */}
+        <div className="p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-lg bg-amber-50 text-amber-600 dark:bg-amber-950/40 dark:text-amber-400">
+              <Flame className="h-4 w-4" />
+            </div>
+            <div>
+              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">New This Month</p>
+              <h4 className="text-lg font-black text-slate-800 dark:text-white">{newThisMonth}</h4>
+            </div>
+          </div>
+          <span className="text-[10px] font-bold text-amber-600 bg-amber-50 dark:bg-amber-900/30 px-2 py-0.5 rounded-md">
+            Active
+          </span>
+        </div>
+
+        {/* Interview Outreaches Sent */}
+        <div className="p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-lg bg-indigo-50 text-indigo-600 dark:bg-indigo-950/40 dark:text-indigo-400">
+              <Send className="h-4 w-4" />
+            </div>
+            <div>
+              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Outreach Sent</p>
+              <h4 className="text-lg font-black text-slate-800 dark:text-white">{interestSentCount}</h4>
+            </div>
+          </div>
+          <span className="text-[10px] font-bold text-indigo-600 bg-indigo-50 dark:bg-indigo-900/30 px-2 py-0.5 rounded-md">
+            Interview Inquiries
+          </span>
+        </div>
+
+      </div>
+
+      {/* MAIN ANALYTICS WIDGETS ROW */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* Position Distribution Analytics Widget (2 Cols) */}
@@ -249,6 +327,109 @@ export default function Dashboard() {
               <span className="text-xs font-bold uppercase px-2 py-0.5 rounded-md bg-blue-600 text-white">Premium</span>
             </div>
 
+          </CardContent>
+        </Card>
+
+      </div>
+
+      {/* SECONDARY ANALYTICS: EXPERIENCE & REGIONAL TALENT + RECENT ACTIVITY */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+        {/* Experience & Regional Distribution */}
+        <Card className="border border-slate-200/80 shadow-sm rounded-xl overflow-hidden bg-white">
+          <CardHeader className="p-5 border-b border-slate-100 bg-white space-y-0.5">
+            <CardTitle className="text-base font-bold tracking-wide text-slate-800 flex items-center gap-2">
+              <PieChart className="h-4 w-4 text-[#FF9F1C]" /> Experience & Regional Talent
+            </CardTitle>
+            <p className="text-xs text-slate-400 font-medium">Candidate seniority brackets & top regional hubs</p>
+          </CardHeader>
+          <CardContent className="p-5 space-y-5">
+            {/* Experience Buckets */}
+            <div className="space-y-3">
+              <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider">Experience Level</h4>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                {(experienceBreakdown.length > 0 ? experienceBreakdown : [
+                  { label: 'Fresher (0 yr)', count: 0 },
+                  { label: '1 - 2 Years', count: 0 },
+                  { label: '3 - 5 Years', count: 0 },
+                  { label: '5+ Years', count: 0 },
+                ]).map((exp) => (
+                  <div key={exp.label} className="p-3 rounded-xl bg-slate-50 border border-slate-100 text-center">
+                    <p className="text-lg font-black text-slate-800">{exp.count}</p>
+                    <p className="text-[11px] font-semibold text-slate-500 truncate">{exp.label}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Top Regional Hubs */}
+            {topLocations.length > 0 && (
+              <div className="space-y-2 pt-2 border-t border-slate-100">
+                <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+                  <MapPin className="h-3.5 w-3.5 text-[#3081e4]" /> Top Talent Locations
+                </h4>
+                <div className="flex flex-wrap gap-2">
+                  {topLocations.map((loc) => (
+                    <span 
+                      key={loc.city} 
+                      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-blue-50/70 border border-blue-100 text-xs font-semibold text-blue-700"
+                    >
+                      <MapPin className="h-3 w-3 text-blue-500" />
+                      {loc.city}: <strong className="font-bold">{loc.count}</strong>
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Recent Unlocks & Candidate Outreach Timeline */}
+        <Card className="border border-slate-200/80 shadow-sm rounded-xl overflow-hidden bg-white">
+          <CardHeader className="flex flex-row items-center justify-between p-5 border-b border-slate-100 bg-white space-y-0">
+            <div className="space-y-0.5">
+              <CardTitle className="text-base font-bold tracking-wide text-slate-800 flex items-center gap-2">
+                <Activity className="h-4 w-4 text-[#07cdae]" /> Recent Profile Unlocks & Activity
+              </CardTitle>
+              <p className="text-xs text-slate-400 font-medium">Latest recruitment actions on your school account</p>
+            </div>
+            <Button variant="ghost" asChild className="h-7 text-xs font-bold text-[#A05AFF] hover:bg-[#A05AFF]/10 px-2.5 rounded-md">
+              <Link to="/talent-pool">Explore Pool</Link>
+            </Button>
+          </CardHeader>
+          <CardContent className="p-5">
+            {recentUnlocks.length === 0 ? (
+              <div className="text-center py-6">
+                <ShieldCheck className="h-8 w-8 text-slate-300 mx-auto mb-2" />
+                <p className="text-xs font-bold text-slate-600">No unlocked profiles yet</p>
+                <p className="text-[11px] text-slate-400 mt-0.5">
+                  Unlocked candidate profiles from the talent pool will appear here.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {recentUnlocks.map((u) => (
+                  <div 
+                    key={u.id} 
+                    className="flex items-center justify-between p-3 rounded-xl bg-slate-50/70 hover:bg-slate-50 border border-slate-100 transition-colors"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="h-8 w-8 rounded-lg bg-teal-100 text-teal-700 flex items-center justify-center font-bold text-xs">
+                        <CheckCircle2 className="h-4 w-4 text-teal-600" />
+                      </div>
+                      <div>
+                        <h4 className="text-xs font-bold text-slate-800">{u.candidateName}</h4>
+                        <p className="text-[11px] text-slate-400 font-medium">{u.position}</p>
+                      </div>
+                    </div>
+                    <span className="text-[10px] font-semibold text-slate-400 flex items-center gap-1">
+                      <Clock className="h-3 w-3" />
+                      {u.unlockedAt ? formatDate(u.unlockedAt) : 'Recent'}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
           </CardContent>
         </Card>
 

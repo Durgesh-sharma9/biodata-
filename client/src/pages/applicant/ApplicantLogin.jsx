@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { GoogleLoginButton } from '@/components/common/GoogleLoginButton';
-import { Briefcase, GraduationCap, Mail, Lock, Building2, ArrowLeft } from 'lucide-react';
+import { Briefcase, GraduationCap, Mail, Lock, Building2, ArrowLeft, Eye, EyeOff, Sparkles } from 'lucide-react';
 
 export default function ApplicantLogin() {
   const navigate = useNavigate();
@@ -16,6 +16,12 @@ export default function ApplicantLogin() {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
+  const fillCredentials = (email, password) => {
+    setForm({ email, password });
+    setError('');
+  };
 
   const handleBack = () => {
     if (window.history.state && window.history.state.idx > 0) {
@@ -116,6 +122,23 @@ export default function ApplicantLogin() {
           </CardHeader>
           
           <CardContent className="space-y-4 pt-3">
+
+            {/* QUICK DEMO FILL CHIPS */}
+            <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs dark:bg-slate-800/50 dark:border-slate-700">
+              <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5 flex items-center gap-1">
+                <Sparkles className="w-3 h-3 text-[#1BCFB4]" /> Quick Demo Login (Click to autofill):
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => fillCredentials('demo@candidate.com', 'Demo@123')}
+                  className="px-2.5 py-1 rounded-lg bg-white border border-slate-200 hover:border-[#1BCFB4] hover:text-[#1BCFB4] text-[11px] font-bold text-slate-700 shadow-xs transition-all dark:bg-slate-900 dark:border-slate-700 dark:text-slate-200"
+                >
+                  🎓 Demo Candidate
+                </button>
+              </div>
+            </div>
+
             {error && (
               <div className="rounded-xl border border-red-200 bg-red-50 text-red-600 p-3 text-xs font-semibold">
                 {error}
@@ -143,13 +166,20 @@ export default function ApplicantLogin() {
                 <div className="relative">
                   <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                   <Input 
-                    type="password" 
+                    type={showPassword ? 'text' : 'password'}
                     value={form.password} 
                     onChange={(e) => setForm({ ...form, password: e.target.value })} 
                     required 
                     placeholder="••••••••"
-                    className="h-11 pl-11 pr-4 rounded-xl"
+                    className="h-11 pl-11 pr-11 rounded-xl"
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#1BCFB4] transition-colors"
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
                 </div>
               </div>
 

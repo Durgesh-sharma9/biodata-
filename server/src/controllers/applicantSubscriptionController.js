@@ -266,7 +266,15 @@ export const getReceivedRequests = catchAsync(async (req, res) => {
     isDeleted: false,
   });
 
-  if (!candidate) throw new ApiError(404, 'Applicant profile not found');
+  // New applicants who haven't set up a profile yet — return empty gracefully
+  if (!candidate) {
+    return res.json({
+      success: true,
+      data: [],
+      hasActivePlan: false,
+      requestCredits: 0,
+    });
+  }
 
   const requests = await InterestRequest.find({ candidateId: candidate._id })
     .sort({ createdAt: -1 });
@@ -357,12 +365,18 @@ export const getRequestSchoolDetails = catchAsync(async (req, res) => {
 });
 
 export const getApplicantDashboard = catchAsync(async (req, res) => {
-  const candidate = await Candidate.findOne({
+  let candidate = await Candidate.findOne({
     applicantUserId: req.user._id,
     isDeleted: false,
   });
 
-  if (!candidate) throw new ApiError(404, 'Applicant profile not found');
+  if (!candidate && req.user.email) {
+    candidate = await Candidate.findOne({ email: req.user.email, isDeleted: false });
+    if (candidate && !candidate.applicantUserId) {
+      candidate.applicantUserId = req.user._id;
+      await candidate.save();
+    }
+  }
 
   await expireApplicantSubscriptions(req.user._id);
   const subscription = await getActiveApplicantSubscription(req.user._id);
@@ -370,7 +384,23 @@ export const getApplicantDashboard = catchAsync(async (req, res) => {
   const user = await User.findById(req.user._id).select('requestCredits activePlan planExpiryDate unlockedRequests');
 
   // Check if user has active unlimited plan
-  const hasUnlimitedPlan = user.activePlan && user.planExpiryDate && new Date(user.planExpiryDate) > new Date();
+  const hasUnlimitedPlan = user?.activePlan && user?.planExpiryDate && new Date(user.planExpiryDate) > new Date();
+
+  if (!candidate) {
+    return res.json({
+      success: true,
+      data: {
+        profileComplete: false,
+        documentCount: 0,
+        requestCount: 0,
+        unreadNotifications: 0,
+        hasActivePlan: hasUnlimitedPlan,
+        subscription,
+        requestCredits: user?.requestCredits || 0,
+        unlockedRequestsCount: user?.unlockedRequests?.length || 0,
+      },
+    });
+  }
 
   const [requestCount, unreadNotifications] = await Promise.all([
     InterestRequest.countDocuments({ candidateId: candidate._id }),
@@ -383,14 +413,14 @@ export const getApplicantDashboard = catchAsync(async (req, res) => {
   res.json({
     success: true,
     data: {
-      profileComplete: candidate.position && candidate.position !== 'Pending' && candidate.mobile !== 'pending',
+      profileComplete: !!(candidate.position && candidate.position !== 'Pending' && candidate.mobile !== 'pending'),
       documentCount: candidate.documents?.length || 0,
       requestCount,
       unreadNotifications,
       hasActivePlan: hasUnlimitedPlan,
       subscription,
-      requestCredits: user.requestCredits,
-      unlockedRequestsCount: user.unlockedRequests?.length || 0,
+      requestCredits: user?.requestCredits || 0,
+      unlockedRequestsCount: user?.unlockedRequests?.length || 0,
     },
   });
 });

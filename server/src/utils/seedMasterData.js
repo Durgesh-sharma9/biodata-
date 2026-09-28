@@ -3,6 +3,8 @@ import Position from '../models/Position.js';
 import Subject from '../models/Subject.js';
 import Qualification from '../models/Qualification.js';
 import Class from '../models/Class.js';
+import User from '../models/User.js';
+import Candidate from '../models/Candidate.js';
 
 const DEFAULT_POSITIONS = [
   'Teacher',
@@ -209,6 +211,75 @@ export async function seedMasterData() {
       console.log(`✅ Seeded ${DEFAULT_APPLICANT_PLANS.length} applicant plans`);
     } else {
       console.log(`⏭️ Applicant Plans already exist (${existingApplicantPlans} records)`);
+    }
+
+    // Seed Demo Applicant User & Profile
+    const DEMO_APPLICANT_EMAIL = 'demo@candidate.com';
+    const DEMO_APPLICANT_PASSWORD = 'Demo@123';
+    let demoApplicantUser = await User.findOne({ email: DEMO_APPLICANT_EMAIL, role: 'applicant' });
+    if (!demoApplicantUser) {
+      console.log('📝 Seeding demo applicant user...');
+      demoApplicantUser = await User.create({
+        name: 'Pooja Sharma',
+        email: DEMO_APPLICANT_EMAIL,
+        password: DEMO_APPLICANT_PASSWORD,
+        role: 'applicant',
+        mobile: '9876543210',
+        activePlan: 'Premium Plan',
+        planExpiryDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+        requestCredits: 10,
+      });
+      console.log('✅ Demo applicant user created: demo@candidate.com / Demo@123');
+    } else {
+      console.log('⏭️ Demo applicant already exists');
+    }
+
+    if (demoApplicantUser) {
+      const existingCandidate = await Candidate.findOne({
+        $or: [{ applicantUserId: demoApplicantUser._id }, { email: DEMO_APPLICANT_EMAIL }],
+      });
+      if (!existingCandidate) {
+        console.log('📝 Seeding candidate profile for demo applicant...');
+        await Candidate.create({
+          applicantUserId: demoApplicantUser._id,
+          source: 'SELF_APPLICANT',
+          fullName: 'Pooja Sharma',
+          mobile: '9876543210',
+          email: DEMO_APPLICANT_EMAIL,
+          gender: 'Female',
+          dob: new Date('1996-08-20'),
+          address: 'B-42, Model Town, Malviya Nagar',
+          state: 'Rajasthan',
+          city: 'Jaipur',
+          area: 'Malviya Nagar',
+          latitude: 26.8532,
+          longitude: 75.8234,
+          workingRadius: 20,
+          position: 'Teacher',
+          qualifications: ['B.Ed', 'BCA'],
+          subjects: ['English', 'Chemistry'],
+          classesCanTeach: ['Class 9', 'Class 10', 'Class 11', 'Class 12'],
+          experienceYears: 4,
+          expectedSalary: 38000,
+          medium: 'English',
+          boardExperience: ['CBSE', 'RBSE'],
+          bEd: true,
+          communicationSkills: true,
+          computerSkills: true,
+          msOfficeKnowledge: true,
+          profileSharingConsent: true,
+          contactConsent: true,
+          isDeleted: false,
+          documents: [
+            {
+              name: 'Resume_Pooja_Sharma.pdf',
+              url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
+              type: 'resume',
+            },
+          ],
+        });
+        console.log('✅ Demo candidate profile created');
+      }
     }
 
     console.log('✨ Master data seeding completed successfully');

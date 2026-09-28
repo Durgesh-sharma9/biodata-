@@ -85,6 +85,8 @@ export function DynamicCandidateForm({
   disabledFields = [],
   showConsent = false,
   uploadFilesFn = uploadFiles,
+  onCancel,
+  cancelHref,
 }) {
   const [uploading, setUploading] = useState(false);
   const [location, setLocation] = useState({});
@@ -826,14 +828,25 @@ export function DynamicCandidateForm({
 
       {/* Bottom Form Actions Control Bar */}
       <div className="flex flex-col-reverse sm:flex-row items-center justify-between gap-3 bg-white dark:bg-slate-900 p-3.5 sm:p-4 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-sm">
-        <Button
-          type="button"
-          variant="outline"
-          asChild
-          className="w-full sm:w-auto h-9 rounded-lg border-slate-200 text-slate-600 dark:text-slate-300 font-semibold text-xs px-5"
-        >
-          <Link to="/candidates">Cancel</Link>
-        </Button>
+        {onCancel ? (
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onCancel}
+            className="w-full sm:w-auto h-9 rounded-lg border-slate-200 text-slate-600 dark:text-slate-300 font-semibold text-xs px-5 hover:bg-slate-50 dark:hover:bg-slate-800"
+          >
+            Cancel
+          </Button>
+        ) : (
+          <Button
+            type="button"
+            variant="outline"
+            asChild
+            className="w-full sm:w-auto h-9 rounded-lg border-slate-200 text-slate-600 dark:text-slate-300 font-semibold text-xs px-5 hover:bg-slate-50 dark:hover:bg-slate-800"
+          >
+            <Link to={cancelHref || "/candidates"}>Cancel</Link>
+          </Button>
+        )}
 
         <Button 
           type="submit" 

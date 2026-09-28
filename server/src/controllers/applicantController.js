@@ -150,23 +150,45 @@ export const registerApplicant = catchAsync(async (req, res) => {
 });
 
 export const getApplicantProfile = catchAsync(async (req, res) => {
-  const candidate = await Candidate.findOne({
+  let candidate = await Candidate.findOne({
     applicantUserId: req.user._id,
     isDeleted: false,
   });
 
-  if (!candidate) throw new ApiError(404, 'Profile not found');
+  if (!candidate && req.user.email) {
+    candidate = await Candidate.findOne({ email: req.user.email, isDeleted: false });
+    if (candidate && !candidate.applicantUserId) {
+      candidate.applicantUserId = req.user._id;
+      await candidate.save();
+    }
+  }
+
+  if (!candidate) {
+    return res.json({
+      success: true,
+      data: {
+        fullName: req.user.name || '',
+        email: req.user.email || '',
+        mobile: req.user.mobile || '',
+        position: '',
+        qualifications: [],
+        subjects: [],
+        classesCanTeach: [],
+        experienceYears: 0,
+        expectedSalary: 0,
+        documents: [],
+      },
+    });
+  }
 
   res.json({ success: true, data: candidate });
 });
 
 export const updateApplicantProfile = catchAsync(async (req, res) => {
-  const candidate = await Candidate.findOne({
+  let candidate = await Candidate.findOne({
     applicantUserId: req.user._id,
     isDeleted: false,
   });
-
-  if (!candidate) throw new ApiError(404, 'Profile not found');
 
   const {
     fullName,
@@ -213,9 +235,8 @@ export const updateApplicantProfile = catchAsync(async (req, res) => {
     longitude,
     workingRadius,
   });
-  Object.assign(candidate, locationPayload);
 
-  Object.assign(candidate, {
+  const profileData = {
     fullName,
     mobile: mobile.trim(),
     email,
@@ -227,13 +248,25 @@ export const updateApplicantProfile = catchAsync(async (req, res) => {
     vehicleTypes: vehicleTypes || [],
     experienceYears: experienceYears || 0,
     expectedSalary,
-    documents: documents || candidate.documents,
     profilePhoto,
     profileSharingConsent: true,
     contactConsent: true,
-  });
+    ...locationPayload,
+  };
 
-  await candidate.save();
+  if (!candidate) {
+    // First-time profile setup: create the candidate document
+    candidate = await Candidate.create({
+      ...profileData,
+      applicantUserId: req.user._id,
+      source: 'SELF_APPLICANT',
+      documents: documents || [],
+    });
+  } else {
+    Object.assign(candidate, profileData);
+    candidate.documents = documents || candidate.documents;
+    await candidate.save();
+  }
 
   if (req.body.name && req.body.name !== req.user.name) {
     req.user.name = req.body.name;
