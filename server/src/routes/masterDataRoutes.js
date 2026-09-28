@@ -17,6 +17,10 @@ import {
   updateClass,
   deleteClass,
   getAllMasterData,
+  createMasterDataRequest,
+  getMyMasterDataRequests,
+  getAllMasterDataRequests,
+  updateMasterDataRequestStatus,
 } from '../controllers/masterDataController.js';
 import { protect, authorize } from '../middleware/auth.js';
 
@@ -29,8 +33,17 @@ router.get('/subjects', getAllSubjects);
 router.get('/qualifications', getAllQualifications);
 router.get('/classes', getAllClasses);
 
+// School Admin request routes
+router.post('/requests', protect, authorize('school_admin'), createMasterDataRequest);
+router.get('/my-requests', protect, authorize('school_admin'), getMyMasterDataRequests);
+
 // All mutation routes require authentication & super_admin authorization
 router.use(protect, authorize('super_admin'));
+
+// Super admin request management routes
+router.get('/requests', getAllMasterDataRequests);
+router.patch('/requests/:id/status', updateMasterDataRequestStatus);
+
 
 // Position routes
 router.post('/positions', createPosition);

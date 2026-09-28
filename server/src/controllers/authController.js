@@ -218,3 +218,31 @@ export const registerSchool = catchAsync(async (req, res) => {
     },
   });
 });
+
+export const changePassword = catchAsync(async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+
+  if (!currentPassword || !newPassword) {
+    throw new ApiError(400, 'Current and new password are required');
+  }
+
+  if (newPassword.length < 6) {
+    throw new ApiError(400, 'New password must be at least 6 characters');
+  }
+
+  const user = await User.findById(req.user._id).select('+password');
+  if (!user) throw new ApiError(404, 'User not found');
+
+  if (user.password && !(await user.comparePassword(currentPassword))) {
+    throw new ApiError(400, 'Current password is incorrect');
+  }
+
+  user.password = newPassword;
+  await user.save();
+
+  res.json({
+    success: true,
+    message: 'Password changed successfully',
+  });
+});
+

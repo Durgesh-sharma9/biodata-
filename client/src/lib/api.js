@@ -142,24 +142,20 @@ export const getNotifications = () => api.get('/notifications');
 export const markNotificationRead = (id) => api.patch(`/notifications/${id}/read`);
 export const markAllNotificationsRead = () => api.patch('/notifications/read-all');
 
-// Settings (deprecated - use master data instead)
-export const getSettings = () => getAllMasterData().then((r) => ({ data: { data: r.data.data } }));
-export const addSettingItem = (data) => {
-  // Map field to appropriate master data endpoint
-  const fieldToEndpoint = {
-    positions: 'positions',
-    subjects: 'subjects',
-    qualifications: 'qualifications',
-    classes: 'classes',
-  };
-  const endpoint = fieldToEndpoint[data.field];
-  if (!endpoint) return Promise.reject(new Error('Invalid field'));
-  return api.post(`/master-data/${endpoint}`, { name: data.value });
-};
-export const removeSettingItem = (data) => {
-  // This is deprecated - master data uses soft delete
-  return Promise.reject(new Error('Use master data endpoints instead'));
-};
+// School Settings & Recruitment Preferences
+export const getSchoolSettings = () => api.get('/settings');
+export const addSchoolSettingItem = ({ field, value }) => api.post('/settings/add', { field, value });
+export const bulkAddSchoolSettingItems = ({ field, values }) => api.post('/settings/bulk-add', { field, values });
+export const removeSchoolSettingItem = ({ field, value }) => api.post('/settings/remove', { field, value });
+export const resetSchoolSettingField = ({ field }) => api.post('/settings/reset', { field });
+export const updateSchoolPreferences = (data) => api.put('/settings/preferences', data);
+export const changeUserPassword = (data) => api.put('/auth/change-password', data);
+
+// Settings fallback for legacy references
+export const getSettings = () => getSchoolSettings().catch(() => getAllMasterData().then((r) => ({ data: { data: r.data.data } })));
+export const addSettingItem = ({ field, value }) => addSchoolSettingItem({ field, value });
+export const removeSettingItem = ({ field, value }) => removeSchoolSettingItem({ field, value });
+
 
 // Master Data (Super Admin)
 export const getAllMasterData = () => api.get('/master-data/all');
@@ -190,7 +186,14 @@ export const createClass = (data) => api.post('/master-data/classes', data);
 export const updateClass = (id, data) => api.put(`/master-data/classes/${id}`, data);
 export const deleteClass = (id) => api.delete(`/master-data/classes/${id}`);
 
+// Master Data Requests (School <-> Super Admin)
+export const createMasterDataRequest = (data) => api.post('/master-data/requests', data);
+export const getMyMasterDataRequests = () => api.get('/master-data/my-requests');
+export const getAllMasterDataRequests = (params) => api.get('/master-data/requests', { params });
+export const updateMasterDataRequestStatus = (id, data) => api.patch(`/master-data/requests/${id}/status`, data);
+
 export const unlockRequest = (requestId) => api.post(`/applicant/requests/${requestId}/unlock`);
+
 
 export const uploadPublicFiles = (files) => {
   const formData = new FormData();

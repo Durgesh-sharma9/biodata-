@@ -18,7 +18,10 @@ import {
   createClass,
   updateClass,
   deleteClass,
+  getAllMasterDataRequests,
+  updateMasterDataRequestStatus,
 } from '@/lib/api';
+
 import { PageHeader } from '@/components/common/PageHeader';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -740,8 +743,266 @@ function MasterDataTable({ tab }) {
   );
 }
 
+function SchoolRequestsManager() {
+  const queryClient = useQueryClient();
+  const [statusFilter, setStatusFilter] = useState('');
+  const [rejectModal, setRejectModal] = useState(null);
+  const [rejectReason, setRejectReason] = useState('');
+
+  const { data: requests = [], isLoading } = useQuery({
+    queryKey: ['admin-master-data-requests', statusFilter],
+    queryFn: () => getAllMasterDataRequests({ status: statusFilter || undefined }).then((r) => r.data.data),
+  });
+
+  const updateStatusMutation = useMutation({
+    mutationFn: ({ id, status, adminNotes }) => updateMasterDataRequestStatus(id, { status, adminNotes }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-master-data-requests'] });
+      queryClient.invalidateQueries({ queryKey: ['master-data'] });
+      queryClient.invalidateQueries({ queryKey: ['platform-master-data'] });
+      setRejectModal(null);
+      setRejectReason('');
+    },
+  });
+
+  const handleApprove = (req) => {
+    updateStatusMutation.mutate({
+      id: req._id,
+      status: 'approved',
+      adminNotes: 'Approved & added to global master taxonomy.',
+    });
+  };
+
+  const handleRejectSubmit = (e) => {
+    e.preventDefault();
+    if (!rejectModal) return;
+    updateStatusMutation.mutate({
+      id: rejectModal._id,
+      status: 'rejected',
+      adminNotes: rejectReason.trim() || 'Request declined by Super Admin.',
+    });
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex h-64 items-center justify-center">
+        <Loader2 className="h-8 w-8 text-purple-600 animate-spin" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      
+      {/* Top Filter Bar */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-xl border border-slate-200/60 bg-white dark:bg-slate-900 shadow-sm">
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Status:</span>
+          <div className="flex items-center gap-1.5">
+            <button
+              type="button"
+              onClick={() => setStatusFilter('')}
+              className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all ${
+                statusFilter === '' 
+                  ? 'bg-purple-100 text-purple-700 font-bold' 
+                  : 'text-slate-600 hover:bg-slate-100'
+              }`}
+            >
+              All ({requests.length})
+            </button>
+            <button
+              type="button"
+              onClick={() => setStatusFilter('pending')}
+              className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all ${
+                statusFilter === 'pending' 
+                  ? 'bg-amber-100 text-amber-700 font-bold' 
+                  : 'text-slate-600 hover:bg-slate-100'
+              }`}
+            >
+              Pending
+            </button>
+            <button
+              type="button"
+              onClick={() => setStatusFilter('approved')}
+              className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all ${
+                statusFilter === 'approved' 
+                  ? 'bg-emerald-100 text-emerald-700 font-bold' 
+                  : 'text-slate-600 hover:bg-slate-100'
+              }`}
+            >
+              Approved
+            </button>
+            <button
+              type="button"
+              onClick={() => setStatusFilter('rejected')}
+              className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all ${
+                statusFilter === 'rejected' 
+                  ? 'bg-rose-100 text-rose-700 font-bold' 
+                  : 'text-slate-600 hover:bg-slate-100'
+              }`}
+            >
+              Declined
+            </button>
+          </div>
+        </div>
+
+        <span className="text-xs text-slate-400">
+          Approving automatically registers the item in live database collections.
+        </span>
+      </div>
+
+      {/* Requests Table */}
+      <Card className="border border-slate-200/60 overflow-hidden shadow-sm">
+        <CardContent className="p-0">
+          {requests.length === 0 ? (
+            <div className="py-16 text-center text-slate-400 space-y-2">
+              <CheckCircle className="h-8 w-8 text-emerald-500 mx-auto" />
+              <p className="text-sm font-semibold">No requests matching this filter</p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-slate-50/80 text-slate-500 text-[11px] font-bold uppercase tracking-wider border-b border-slate-200/60">
+                  <tr>
+                    <th className="p-4 pl-5">School Name</th>
+                    <th className="p-4">Category</th>
+                    <th className="p-4">Requested Item</th>
+                    <th className="p-4">School Notes / Context</th>
+                    <th className="p-4">Date</th>
+                    <th className="p-4">Status</th>
+                    <th className="p-4 pr-5 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 font-medium">
+                  {requests.map((req) => (
+                    <tr key={req._id} className="hover:bg-slate-50/50 transition-colors">
+                      <td className="p-4 pl-5 font-bold text-slate-900">
+                        {req.schoolName}
+                      </td>
+                      <td className="p-4">
+                        <span className="capitalize px-2.5 py-0.5 rounded-md text-[11px] font-bold border border-slate-200 bg-white text-slate-700">
+                          {req.category}
+                        </span>
+                      </td>
+                      <td className="p-4 font-bold text-purple-700 text-sm">
+                        {req.name}
+                      </td>
+                      <td className="p-4 text-slate-500 max-w-xs truncate">
+                        {req.description || '—'}
+                      </td>
+                      <td className="p-4 text-slate-400 whitespace-nowrap">
+                        {new Date(req.createdAt).toLocaleDateString()}
+                      </td>
+                      <td className="p-4 whitespace-nowrap">
+                        {req.status === 'approved' && (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-emerald-50 text-emerald-700 font-bold text-[11px] border border-emerald-200">
+                            Approved
+                          </span>
+                        )}
+                        {req.status === 'pending' && (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-amber-50 text-amber-700 font-bold text-[11px] border border-amber-200">
+                            Pending
+                          </span>
+                        )}
+                        {req.status === 'rejected' && (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-rose-50 text-rose-700 font-bold text-[11px] border border-rose-200">
+                            Declined
+                          </span>
+                        )}
+                      </td>
+                      <td className="p-4 pr-5 text-right whitespace-nowrap">
+                        {req.status === 'pending' ? (
+                          <div className="flex items-center justify-end gap-2">
+                            <Button
+                              size="sm"
+                              onClick={() => handleApprove(req)}
+                              disabled={updateStatusMutation.isPending}
+                              className="h-8 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs"
+                            >
+                              Approve & Add
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => setRejectModal(req)}
+                              disabled={updateStatusMutation.isPending}
+                              className="h-8 px-3 rounded-lg border-rose-200 text-rose-600 hover:bg-rose-50 font-bold text-xs"
+                            >
+                              Decline
+                            </Button>
+                          </div>
+                        ) : (
+                          <span className="text-slate-400 text-xs italic">
+                            {req.adminNotes || 'Completed'}
+                          </span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Reject Modal */}
+      <Dialog open={!!rejectModal} onOpenChange={(open) => !open && setRejectModal(null)}>
+        <DialogContent className="max-w-md p-6 rounded-2xl bg-white shadow-xl">
+          <DialogHeader className="space-y-1">
+            <DialogTitle className="text-base font-bold text-slate-900">
+              Decline Master Data Request
+            </DialogTitle>
+            <DialogDescription className="text-xs text-slate-500">
+              Provide a brief explanation for declining {rejectModal?.name} ({rejectModal?.schoolName}).
+            </DialogDescription>
+          </DialogHeader>
+
+          <form onSubmit={handleRejectSubmit} className="space-y-4 pt-2">
+            <div className="space-y-1.5">
+              <Label className="text-xs font-bold text-slate-700">Reason for declining (Optional)</Label>
+              <Input
+                value={rejectReason}
+                onChange={(e) => setRejectReason(e.target.value)}
+                placeholder="e.g. Please use the standard 'Teacher' role instead."
+                className="h-10 text-xs rounded-xl"
+              />
+            </div>
+
+            <DialogFooter className="flex gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setRejectModal(null)}
+                className="h-10 text-xs font-semibold rounded-xl"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                disabled={updateStatusMutation.isPending}
+                className="h-10 px-5 text-xs font-semibold rounded-xl bg-rose-600 hover:bg-rose-700 text-white"
+              >
+                {updateStatusMutation.isPending ? 'Declining...' : 'Confirm Decline'}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+    </div>
+  );
+}
+
 export default function MasterData() {
   const [activeTab, setActiveTab] = useState('positions');
+
+  const { data: allRequests = [] } = useQuery({
+    queryKey: ['admin-master-data-requests-badge'],
+    queryFn: () => getAllMasterDataRequests().then((r) => r.data.data),
+  });
+
+  const pendingCount = allRequests.filter((r) => r.status === 'pending').length;
 
   return (
     <div className="space-y-6 w-full antialiased text-slate-800 dark:text-white">
@@ -770,6 +1031,19 @@ export default function MasterData() {
               </TabsTrigger>
             );
           })}
+
+          <TabsTrigger
+            value="requests"
+            className="inline-flex items-center gap-2 rounded-lg px-5 py-2 text-sm font-semibold tracking-wide transition-all data-[state=active]:bg-purple-50 data-[state=active]:text-purple-600 active:scale-[0.97] relative"
+          >
+            <HelpCircle className="h-3.5 w-3.5" />
+            <span>School Requests</span>
+            {pendingCount > 0 && (
+              <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-amber-500 text-white animate-pulse">
+                {pendingCount}
+              </span>
+            )}
+          </TabsTrigger>
         </TabsList>
 
         {TABS.map((tab) => (
@@ -777,6 +1051,10 @@ export default function MasterData() {
             <MasterDataTable tab={tab} />
           </TabsContent>
         ))}
+
+        <TabsContent value="requests" className="outline-none focus-visible:ring-0 mt-0">
+          <SchoolRequestsManager />
+        </TabsContent>
       </Tabs>
     </div>
   );

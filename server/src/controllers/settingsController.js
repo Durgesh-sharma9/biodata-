@@ -1,8 +1,21 @@
 import SchoolSettings from '../models/SchoolSettings.js';
 import { ApiError } from '../utils/ApiError.js';
 import { catchAsync } from '../utils/catchAsync.js';
+import {
+  DEFAULT_POSITIONS,
+  DEFAULT_SUBJECTS,
+  DEFAULT_CLASSES,
+  DEFAULT_QUALIFICATIONS,
+} from '../config/constants.js';
 
 const ALLOWED_FIELDS = ['positions', 'subjects', 'qualifications', 'classes'];
+
+const DEFAULTS_MAP = {
+  positions: DEFAULT_POSITIONS,
+  subjects: DEFAULT_SUBJECTS,
+  qualifications: DEFAULT_QUALIFICATIONS,
+  classes: DEFAULT_CLASSES,
+};
 
 export const getSettings = catchAsync(async (req, res) => {
   let settings = await SchoolSettings.findOne({ schoolId: req.schoolId });
@@ -41,6 +54,35 @@ export const addSettingItem = catchAsync(async (req, res) => {
   res.json({ success: true, data: settings });
 });
 
+export const bulkAddSettingItems = catchAsync(async (req, res) => {
+  const { field, values } = req.body;
+
+  if (!ALLOWED_FIELDS.includes(field)) {
+    throw new ApiError(400, 'Invalid settings field');
+  }
+
+  if (!Array.isArray(values) || values.length === 0) {
+    throw new ApiError(400, 'Values array is required');
+  }
+
+  let settings = await SchoolSettings.findOne({ schoolId: req.schoolId });
+  if (!settings) {
+    settings = await SchoolSettings.create({ schoolId: req.schoolId });
+  }
+
+  const currentSet = new Set(settings[field]);
+  values.forEach((v) => {
+    const trimmed = String(v).trim();
+    if (trimmed && !currentSet.has(trimmed)) {
+      settings[field].push(trimmed);
+      currentSet.add(trimmed);
+    }
+  });
+
+  await settings.save();
+  res.json({ success: true, data: settings });
+});
+
 export const removeSettingItem = catchAsync(async (req, res) => {
   const { field, value } = req.body;
 
@@ -56,3 +98,54 @@ export const removeSettingItem = catchAsync(async (req, res) => {
 
   res.json({ success: true, data: settings });
 });
+
+export const resetField = catchAsync(async (req, res) => {
+  const { field } = req.body;
+
+  if (!ALLOWED_FIELDS.includes(field)) {
+    throw new ApiError(400, 'Invalid settings field to reset');
+  }
+
+  let settings = await SchoolSettings.findOne({ schoolId: req.schoolId });
+  if (!settings) {
+    settings = await SchoolSettings.create({ schoolId: req.schoolId });
+  }
+
+  settings[field] = [...(DEFAULTS_MAP[field] || [])];
+  await settings.save();
+
+  res.json({ success: true, message: `${field} reset to defaults`, data: settings });
+});
+
+export const updatePreferences = catchAsync(async (req, res) => {
+  const {
+    isActivelyHiring,
+    allowWalkInApplications,
+    emailNotifications,
+    whatsappAlerts,
+    dailyDigest,
+    autoAcknowledgeCandidates,
+    customWelcomeMessage,
+    contactWorkingHours,
+    preferredExperienceMin,
+  } = req.body;
+
+  let settings = await SchoolSettings.findOne({ schoolId: req.schoolId });
+  if (!settings) {
+    settings = await SchoolSettings.create({ schoolId: req.schoolId });
+  }
+
+  if (typeof isActivelyHiring === 'boolean') settings.isActivelyHiring = isActivelyHiring;
+  if (typeof allowWalkInApplications === 'boolean') settings.allowWalkInApplications = allowWalkInApplications;
+  if (typeof emailNotifications === 'boolean') settings.emailNotifications = emailNotifications;
+  if (typeof whatsappAlerts === 'boolean') settings.whatsappAlerts = whatsappAlerts;
+  if (typeof dailyDigest === 'boolean') settings.dailyDigest = dailyDigest;
+  if (typeof autoAcknowledgeCandidates === 'boolean') settings.autoAcknowledgeCandidates = autoAcknowledgeCandidates;
+  if (customWelcomeMessage !== undefined) settings.customWelcomeMessage = customWelcomeMessage;
+  if (contactWorkingHours !== undefined) settings.contactWorkingHours = contactWorkingHours;
+  if (preferredExperienceMin !== undefined) settings.preferredExperienceMin = Number(preferredExperienceMin) || 0;
+
+  await settings.save();
+  res.json({ success: true, message: 'Preferences updated successfully', data: settings });
+});
+
