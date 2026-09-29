@@ -23,6 +23,7 @@ import ApplicationLinks from '@/pages/ApplicationLinks';
 import Apply from '@/pages/Apply';
 import AdminDashboard from '@/pages/admin/AdminDashboard';
 import Admins from '@/pages/admin/Admins';
+import Schools from '@/pages/admin/Schools';
 import Plans from '@/pages/admin/Plans';
 import CreditPackages from '@/pages/admin/CreditPackages';
 import Locations from '@/pages/admin/Locations';
@@ -72,6 +73,7 @@ export default function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/login" element={<Login />} />
             <Route path="/apply/:slug" element={<Apply />} />
+            <Route path="/apply" element={<Navigate to="/join" replace />} />
             <Route path="/join" element={<SelfApply />} />
             <Route path="/applicant/signup" element={<ApplicantSignup />} />
             <Route path="/applicant/login" element={<ApplicantLogin />} />
@@ -114,7 +116,7 @@ export default function App() {
               <Route path="/admin/import" element={<CandidateImport />} />
               <Route path="/admin/applicant-plans" element={<ApplicantPlans />} />
               <Route path="/admin/master-data" element={<MasterData />} />
-              <Route path="/admin/schools" element={<Navigate to="/admin/admins" replace />} />
+              <Route path="/admin/schools" element={<Schools />} />
               <Route path="/admin/stats" element={<Navigate to="/admin/dashboard" replace />} />
             </Route>
 

@@ -1,8 +1,15 @@
 // Helper to dynamically load the official Razorpay Checkout SDK
 export const loadRazorpayScript = () => {
   return new Promise((resolve) => {
-    if (window.Razorpay) {
+    if (typeof window !== 'undefined' && window.Razorpay) {
       return resolve(true);
+    }
+    const existingScript = document.querySelector('script[src="https://checkout.razorpay.com/v1/checkout.js"]');
+    if (existingScript) {
+      if (window.Razorpay) return resolve(true);
+      existingScript.addEventListener('load', () => resolve(true));
+      existingScript.addEventListener('error', () => resolve(false));
+      return;
     }
     const script = document.createElement('script');
     script.src = 'https://checkout.razorpay.com/v1/checkout.js';
@@ -33,19 +40,21 @@ export const openRazorpayPayment = async ({
 }) => {
   const isLoaded = await loadRazorpayScript();
   if (!isLoaded || !window.Razorpay) {
-    if (onFailure) onFailure(new Error('Razorpay SDK failed to load. Please check your internet connection.'));
+    const error = new Error('Razorpay SDK failed to load. Please check your internet connection or ad-blocker.');
+    if (onFailure) onFailure(error);
     return;
   }
 
-  const key = orderData.keyId || import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_TNFrLSunBdtmcv';
+  const key = orderData?.keyId || import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_TNFrLSunBdtmcv';
+  const amountInPaise = orderData?.amount ? Math.round(Number(orderData.amount) * 100) : undefined;
 
   const options = {
     key,
-    amount: Math.round(Number(orderData.amount) * 100),
-    currency: orderData.currency || 'INR',
+    amount: amountInPaise,
+    currency: orderData?.currency || 'INR',
     name: title,
-    description: description || orderData.packageName || orderData.planName || 'Credits Purchase',
-    order_id: orderData.orderId,
+    description: description || orderData?.packageName || orderData?.planName || 'Credits Purchase',
+    order_id: orderData?.orderId,
     prefill: {
       name: user.name || user.fullName || '',
       email: user.email || '',
@@ -73,12 +82,21 @@ export const openRazorpayPayment = async ({
     },
   };
 
-  const razorpayInstance = new window.Razorpay(options);
-  razorpayInstance.on('payment.failed', function (response) {
-    if (onFailure) {
-      onFailure(new Error(response.error?.description || 'Payment transaction failed'));
-    }
-  });
+  try {
+    const razorpayInstance = new window.Razorpay(options);
+    razorpayInstance.on('payment.failed', function (response) {
+      if (onFailure) {
+        onFailure(new Error(response.error?.description || 'Payment transaction failed'));
+      }
+    });
 
-  razorpayInstance.open();
+    razorpayInstance.open();
+  } catch (err) {
+    console.error('Razorpay initialization error:', err);
+    if (onFailure) {
+      onFailure(err);
+    } else {
+      throw err;
+    }
+  }
 };

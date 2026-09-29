@@ -124,10 +124,20 @@ export const updatePreferences = catchAsync(async (req, res) => {
     emailNotifications,
     whatsappAlerts,
     dailyDigest,
+    smsAlerts,
+    weeklyReport,
     autoAcknowledgeCandidates,
     customWelcomeMessage,
     contactWorkingHours,
     preferredExperienceMin,
+    boardAffiliation,
+    hrContactPerson,
+    hrContactDesignation,
+    hrContactPhone,
+    interviewMode,
+    salaryVisibility,
+    staffBenefits,
+    interviewReminderHours,
   } = req.body;
 
   let settings = await SchoolSettings.findOne({ schoolId: req.schoolId });
@@ -140,10 +150,20 @@ export const updatePreferences = catchAsync(async (req, res) => {
   if (typeof emailNotifications === 'boolean') settings.emailNotifications = emailNotifications;
   if (typeof whatsappAlerts === 'boolean') settings.whatsappAlerts = whatsappAlerts;
   if (typeof dailyDigest === 'boolean') settings.dailyDigest = dailyDigest;
+  if (typeof smsAlerts === 'boolean') settings.smsAlerts = smsAlerts;
+  if (typeof weeklyReport === 'boolean') settings.weeklyReport = weeklyReport;
   if (typeof autoAcknowledgeCandidates === 'boolean') settings.autoAcknowledgeCandidates = autoAcknowledgeCandidates;
   if (customWelcomeMessage !== undefined) settings.customWelcomeMessage = customWelcomeMessage;
   if (contactWorkingHours !== undefined) settings.contactWorkingHours = contactWorkingHours;
   if (preferredExperienceMin !== undefined) settings.preferredExperienceMin = Number(preferredExperienceMin) || 0;
+  if (boardAffiliation !== undefined) settings.boardAffiliation = boardAffiliation;
+  if (hrContactPerson !== undefined) settings.hrContactPerson = hrContactPerson;
+  if (hrContactDesignation !== undefined) settings.hrContactDesignation = hrContactDesignation;
+  if (hrContactPhone !== undefined) settings.hrContactPhone = hrContactPhone;
+  if (interviewMode !== undefined) settings.interviewMode = interviewMode;
+  if (salaryVisibility !== undefined) settings.salaryVisibility = salaryVisibility;
+  if (Array.isArray(staffBenefits)) settings.staffBenefits = staffBenefits;
+  if (interviewReminderHours !== undefined) settings.interviewReminderHours = Number(interviewReminderHours) || 24;
 
   await settings.save();
   res.json({ success: true, message: 'Preferences updated successfully', data: settings });

@@ -1,4 +1,6 @@
 import { NavLink } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { getMySchool } from '@/lib/api';
 import {
   LayoutDashboard,
   ShieldAlert,
@@ -56,7 +58,16 @@ const applicantLinks = [
 ];
 
 export function Sidebar() {
-  const { user, logout, isSuperAdmin, isApplicant } = useAuth();
+  const { user, school: authSchool, logout, isSuperAdmin, isApplicant } = useAuth();
+  
+  const { data: mySchoolData } = useQuery({
+    queryKey: ['mySchool'],
+    queryFn: () => getMySchool().then((r) => r.data.data),
+    enabled: !isSuperAdmin && !isApplicant,
+    staleTime: 30000,
+  });
+
+  const school = mySchoolData || authSchool;
   const links = isSuperAdmin ? adminLinks : isApplicant ? applicantLinks : schoolLinks;
   const roleLabel = isSuperAdmin ? 'Super Admin' : isApplicant ? 'Applicant' : 'Recruiter';
 
@@ -125,17 +136,23 @@ export function Sidebar() {
 
       {/* Profile Footer & Logout */}
       <div className="p-4 border-t border-slate-50 dark:border-slate-800/50 bg-slate-50/50 dark:bg-slate-900/50">
-        <div className="flex items-center gap-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700/50 p-3 mb-2 shadow-sm transition-all duration-300 hover:shadow-md">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-tr from-[#9E58FF] to-[#A05AFF] text-white font-bold text-sm shadow-md shadow-[#9E58FF]/20">
-            {user?.name ? user.name.charAt(0).toUpperCase() : 'A'}
+        <div className="flex items-center gap-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700/50 p-2.5 mb-2 shadow-sm transition-all duration-300 hover:shadow-md">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl overflow-hidden bg-gradient-to-tr from-[#9E58FF] to-[#A05AFF] text-white font-bold text-sm shadow-md shadow-[#9E58FF]/20 border border-slate-200 dark:border-slate-700">
+            {school?.logoUrl ? (
+              <img src={school.logoUrl} alt="Logo" className="h-full w-full object-contain p-0.5 bg-white" />
+            ) : user?.name ? (
+              user.name.charAt(0).toUpperCase()
+            ) : (
+              'A'
+            )}
           </div>
           <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-bold text-slate-800 dark:text-slate-200 leading-tight">
-              {user?.name || 'Super Admin'}
+            <p className="truncate text-xs font-bold text-slate-800 dark:text-slate-200 leading-tight">
+              {school?.schoolName || user?.name || 'School Principal'}
             </p>
-            <p className="truncate text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mt-0.5 flex items-center gap-1">
+            <p className="truncate text-[10px] font-semibold text-slate-400 dark:text-slate-500 mt-0.5 flex items-center gap-1">
               <span className="h-1.5 w-1.5 rounded-full bg-[#1BCFB4] inline-block animate-pulse" />
-              Secure Session
+              {user?.name || 'Secure Session'}
             </p>
           </div>
         </div>

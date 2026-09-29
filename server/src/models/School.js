@@ -5,6 +5,7 @@ const schoolSchema = new mongoose.Schema(
   {
     schoolId: { type: String, required: true, unique: true, trim: true },
     schoolName: { type: String, required: true, trim: true },
+    logoUrl: { type: String, default: null, trim: true },
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     phone: { type: String, trim: true },
     state: { type: String, trim: true },

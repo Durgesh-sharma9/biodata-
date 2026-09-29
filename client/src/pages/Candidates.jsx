@@ -68,8 +68,8 @@ export function CandidateList({
   });
 
   const { data: filterCities = [] } = useQuery({
-    queryKey: ['cities'],
-    queryFn: () => getCities().then((r) => r.data.data),
+    queryKey: ['cities', filters.stateId],
+    queryFn: () => getCities(filters.stateId || undefined).then((r) => r.data.data),
   });
 
   const stateOptions = useMemo(() => [
@@ -114,31 +114,22 @@ export function CandidateList({
   const filteredCandidates = useMemo(() => {
     if (!data?.data) return [];
 
-    const query = (filters.name || '').trim().toLowerCase();
     const nearbyEnabled = !!filters.nearby;
+    if (!nearbyEnabled) {
+      return data.data;
+    }
+
     const radiusLimit = Number(filters.radiusKm) || 50;
-
     return data.data.filter((candidate) => {
-      const searchText = buildLocationSearchText(candidate);
-      const matchesSearch = !query || searchText.includes(query);
-      const matchesState = !filters.state || (candidate.state || '').toLowerCase().includes(filters.state.toLowerCase());
-      const matchesCity = !filters.city || (candidate.city || '').toLowerCase().includes(filters.city.toLowerCase());
-      const matchesArea = !filters.area || (candidate.area || '').toLowerCase().includes(filters.area.toLowerCase());
-
-      let matchesNearby = true;
-      if (nearbyEnabled) {
-        const distanceKm = candidate.distanceKm ?? calculateDistanceKm(
-          candidate.schoolLatitude,
-          candidate.schoolLongitude,
-          candidate.latitude,
-          candidate.longitude
-        );
-        matchesNearby = distanceKm === null || distanceKm <= radiusLimit;
-      }
-
-      return matchesSearch && matchesState && matchesCity && matchesArea && matchesNearby;
+      const distanceKm = candidate.distanceKm ?? calculateDistanceKm(
+        candidate.schoolLatitude,
+        candidate.schoolLongitude,
+        candidate.latitude,
+        candidate.longitude
+      );
+      return distanceKm === null || distanceKm <= radiusLimit;
     });
-  }, [data?.data, filters]);
+  }, [data?.data, filters.nearby, filters.radiusKm]);
 
   const deleteMutation = useMutation({
     mutationFn: deleteCandidate,
@@ -360,7 +351,7 @@ export function CandidateList({
                 value={filters.stateId || ''}
                 onChange={(v) => {
                   const state = states.find(s => s._id === v);
-                  setFilters(prev => ({ ...prev, stateId: v, state: state?.name || '' }));
+                  setFilters(prev => ({ ...prev, stateId: v, state: state?.name || '', cityId: '', city: '' }));
                   setPage(1);
                 }}
                 placeholder="All States"

@@ -101,3 +101,16 @@
 .animate-pulse-glow {
   animation: pulse-glow 5s ease-in-out infinite;
 }
+
+/* Ensure Leaflet map canvases and controls never leak above modals, dialogs or search palette */
+.leaflet-container {
+  z-index: 0 !important;
+  isolation: isolate;
+}
+.leaflet-pane {
+  z-index: 10 !important;
+}
+.leaflet-top,
+.leaflet-bottom {
+  z-index: 20 !important;
+}

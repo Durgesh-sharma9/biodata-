@@ -1,21 +1,34 @@
+import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getNotifications, markNotificationRead, markAllNotificationsRead } from '@/lib/api';
 import { PageHeader } from '@/components/common/PageHeader';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { formatDate, formatDateTime } from '@/lib/utils';
-import { Bell, AlertCircle, CheckCircle, Info, CreditCard, User } from 'lucide-react';
+import {
+  Bell,
+  AlertCircle,
+  CheckCircle,
+  Info,
+  CreditCard,
+  User,
+  Inbox,
+  Sparkles,
+  CheckCheck,
+  Calendar,
+} from 'lucide-react';
 
 const NOTIFICATION_CATEGORIES = {
-  REQUEST: { label: 'Request', icon: Bell, color: 'bg-blue-600' },
-  PLAN: { label: 'Plan', icon: CreditCard, color: 'bg-purple-600' },
-  SYSTEM: { label: 'System', icon: Info, color: 'bg-slate-500' },
-  PROFILE: { label: 'Profile', icon: User, color: 'bg-emerald-600' },
+  REQUEST: { label: 'School Inquiry', icon: Inbox, color: 'text-blue-600', bg: 'bg-blue-500/10' },
+  PLAN: { label: 'Plan & Billing', icon: CreditCard, color: 'text-indigo-600', bg: 'bg-indigo-500/10' },
+  SYSTEM: { label: 'System Notice', icon: Info, color: 'text-slate-600', bg: 'bg-slate-500/10' },
+  PROFILE: { label: 'Profile Update', icon: User, color: 'text-emerald-600', bg: 'bg-emerald-500/10' },
 };
 
 export default function ApplicantNotifications() {
   const queryClient = useQueryClient();
+  const [filter, setFilter] = useState('ALL');
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['notifications'],
@@ -43,102 +56,170 @@ export default function ApplicantNotifications() {
     return NOTIFICATION_CATEGORIES[type] || NOTIFICATION_CATEGORIES.SYSTEM;
   };
 
-  return (
-    <div className="space-y-6 w-full antialiased text-slate-800 dark:text-white">
-      <PageHeader
-        title="Notifications"
-        description="Stay updated with your account activity"
-        action={
-          data?.unreadCount > 0 ? (
-            <Button variant="outline" size="sm" onClick={() => markAllMutation.mutate()} className="rounded-lg border-slate-200 hover:bg-slate-50 hover:text-purple-600">
-              Mark all read
-            </Button>
-          ) : null
-        }
-      />
+  const notifications = data?.data || [];
+  const unreadCount = data?.unreadCount || 0;
 
-      <Card className="border border-slate-200/60 bg-white shadow-2xs dark:bg-slate-900">
-        <CardContent className="pt-6">
+  const filteredNotifications = notifications.filter((n) => {
+    if (filter === 'UNREAD') return !n.isRead;
+    if (filter === 'REQUEST') return n.type === 'REQUEST';
+    if (filter === 'PLAN') return n.type === 'PLAN';
+    return true;
+  });
+
+  return (
+    <div className="space-y-6 w-full antialiased text-slate-800 dark:text-white max-w-6xl mx-auto pb-10">
+      
+      {/* Page Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <PageHeader
+          title="Notifications & Alerts"
+          description="Stay updated with school inquiries, interview invitations, and membership activity"
+        />
+
+        {unreadCount > 0 && (
+          <Button
+            variant="outline"
+            onClick={() => markAllMutation.mutate()}
+            disabled={markAllMutation.isPending}
+            className="h-9 px-4 rounded-xl border-slate-200 dark:border-slate-700 text-xs font-semibold shrink-0 self-start sm:self-auto flex items-center gap-1.5 hover:bg-slate-50 dark:hover:bg-slate-800"
+          >
+            <CheckCheck className="h-4 w-4 text-blue-600" />
+            <span>Mark All as Read</span>
+          </Button>
+        )}
+      </div>
+
+      {/* Filter Tabs Bar */}
+      <div className="flex flex-wrap items-center justify-between gap-3 p-2 bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl shadow-xs">
+        <div className="flex items-center gap-1.5">
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={() => setFilter('ALL')}
+            className={`h-9 px-3.5 rounded-xl text-xs font-bold transition-all ${
+              filter === 'ALL'
+                ? 'bg-blue-600 text-white hover:bg-blue-700 hover:text-white'
+                : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+            }`}
+          >
+            All Alerts ({notifications.length})
+          </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={() => setFilter('UNREAD')}
+            className={`h-9 px-3.5 rounded-xl text-xs font-bold transition-all ${
+              filter === 'UNREAD'
+                ? 'bg-blue-600 text-white hover:bg-blue-700 hover:text-white'
+                : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+            }`}
+          >
+            Unread ({unreadCount})
+          </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={() => setFilter('REQUEST')}
+            className={`h-9 px-3.5 rounded-xl text-xs font-bold transition-all ${
+              filter === 'REQUEST'
+                ? 'bg-blue-600 text-white hover:bg-blue-700 hover:text-white'
+                : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+            }`}
+          >
+            School Inquiries
+          </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={() => setFilter('PLAN')}
+            className={`h-9 px-3.5 rounded-xl text-xs font-bold transition-all ${
+              filter === 'PLAN'
+                ? 'bg-blue-600 text-white hover:bg-blue-700 hover:text-white'
+                : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+            }`}
+          >
+            Plans & Credits
+          </Button>
+        </div>
+
+        <span className="text-xs text-slate-400 pr-2">
+          {unreadCount > 0 ? `${unreadCount} unread message(s)` : 'All caught up!'}
+        </span>
+      </div>
+
+      {/* Notifications List */}
+      <Card className="border border-slate-200/80 bg-white dark:bg-slate-900 dark:border-slate-800 shadow-xs rounded-2xl overflow-hidden">
+        <CardContent className="p-0">
           {isLoading ? (
-            <div className="flex flex-col items-center justify-center py-12">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mb-4"></div>
-              <p className="text-slate-400 dark:text-slate-500">Loading notifications...</p>
+            <div className="flex flex-col items-center justify-center py-16">
+              <div className="h-8 w-8 rounded-full border-3 border-blue-600 border-t-transparent animate-spin mb-3" />
+              <p className="text-xs text-slate-400 font-semibold">Loading notifications...</p>
             </div>
           ) : error ? (
-            <div className="flex flex-col items-center justify-center py-12">
-              <AlertCircle className="h-12 w-12 text-rose-600 mb-4" />
-              <p className="text-rose-600 font-bold">Failed to load notifications</p>
-              <p className="text-sm text-slate-400 dark:text-slate-500 mt-1">Please try again later</p>
-              <Button variant="outline" className="mt-4 rounded-lg border-slate-200 hover:bg-slate-50" onClick={() => queryClient.invalidateQueries({ queryKey: ['notifications'] })}>
+            <div className="flex flex-col items-center justify-center py-12 p-4 text-center">
+              <AlertCircle className="h-10 w-10 text-rose-500 mb-2" />
+              <p className="text-sm font-bold text-rose-600">Failed to load notifications</p>
+              <Button
+                variant="outline"
+                className="mt-3 rounded-xl text-xs font-semibold"
+                onClick={() => queryClient.invalidateQueries({ queryKey: ['notifications'] })}
+              >
                 Retry
               </Button>
             </div>
-          ) : data?.data?.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-12">
-              <div className="p-4 rounded-xl bg-slate-50 border border-slate-100 dark:bg-slate-950 dark:border-slate-800 text-slate-400 mb-4">
-                <Bell className="h-8 w-8" />
+          ) : filteredNotifications.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-16 p-6 text-center">
+              <div className="h-12 w-12 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center mb-3">
+                <Bell className="h-6 w-6" />
               </div>
-              <h3 className="text-xl font-bold text-slate-800 dark:text-slate-200 mb-2">No Notifications Yet</h3>
-              <p className="text-slate-400 dark:text-slate-500 text-center max-w-md mb-6">
-                You will receive notifications when:
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                No Notifications Here
+              </h3>
+              <p className="text-xs text-slate-400 max-w-sm mt-1 leading-relaxed">
+                When schools view your profile, send requests, or your subscription updates, notifications will appear here.
               </p>
-              <ul className="text-sm text-slate-400 dark:text-slate-500 space-y-2 text-left max-w-md">
-                <li className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-emerald-600" />
-                  Schools show interest in your profile
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-emerald-600" />
-                  Schools send requests
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-emerald-600" />
-                  Requests are unlocked
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-emerald-600" />
-                  Plans are purchased
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-emerald-600" />
-                  Plans expire
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-emerald-600" />
-                  Important account updates occur
-                </li>
-              </ul>
             </div>
           ) : (
-            <div className="space-y-3">
-              {data.data.map((notification) => {
-                const category = getCategory(notification);
-                const CategoryIcon = category.icon;
+            <div className="divide-y divide-slate-100 dark:divide-slate-800">
+              {filteredNotifications.map((n) => {
+                const cat = getCategory(n);
+                const Icon = cat.icon;
                 return (
                   <div
-                    key={notification._id}
-                    className={`rounded-lg border p-4 cursor-pointer transition-all hover:bg-slate-50 dark:hover:bg-slate-800/30 ${
-                      !notification.isRead ? 'bg-slate-50/50 border-l-4 border-l-purple-600 dark:bg-slate-900/30' : ''
+                    key={n._id}
+                    onClick={() => handleNotificationClick(n)}
+                    className={`p-4 sm:p-5 flex items-start gap-4 transition-colors cursor-pointer ${
+                      n.isRead
+                        ? 'bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800/40'
+                        : 'bg-blue-50/40 dark:bg-blue-950/20 hover:bg-blue-50/70 dark:hover:bg-blue-950/30'
                     }`}
-                    onClick={() => handleNotificationClick(notification)}
                   >
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
-                          <Badge className={`${category.color} text-white`}>
-                            <CategoryIcon className="h-3 w-3 mr-1" />
-                            {category.label}
+                    <div className={`p-2.5 rounded-xl shrink-0 ${cat.bg} ${cat.color} mt-0.5`}>
+                      <Icon className="h-5 w-5" />
+                    </div>
+
+                    <div className="min-w-0 flex-1 space-y-1">
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                          <Badge variant="outline" className="border-slate-200 text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                            {cat.label}
                           </Badge>
-                          {!notification.isRead && (
-                            <Badge className="bg-purple-100 text-purple-700 border-purple-200/60">New</Badge>
+                          {!n.isRead && (
+                            <span className="h-2 w-2 rounded-full bg-blue-600 animate-pulse" />
                           )}
                         </div>
-                        <p className="font-bold text-slate-800 dark:text-slate-200">{notification.title}</p>
-                        <p className="text-sm mt-1 text-slate-400 dark:text-slate-500">{notification.message}</p>
-                        <p className="text-xs text-slate-400 dark:text-slate-500 mt-2 flex items-center gap-1">
-                          {formatDateTime(notification.createdAt)}
-                        </p>
+                        <span className="text-[11px] text-slate-400 font-medium shrink-0">
+                          {formatDateTime(n.createdAt)}
+                        </span>
                       </div>
+
+                      <h4 className={`text-sm ${n.isRead ? 'font-semibold text-slate-800 dark:text-slate-200' : 'font-extrabold text-slate-900 dark:text-white'}`}>
+                        {n.title}
+                      </h4>
+
+                      <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                        {n.message}
+                      </p>
                     </div>
                   </div>
                 );
@@ -147,6 +228,7 @@ export default function ApplicantNotifications() {
           )}
         </CardContent>
       </Card>
+
     </div>
   );
 }

@@ -35,37 +35,36 @@ import {
   Award,
   Clock,
   BookOpen,
-  Layers,
 } from 'lucide-react';
 
 function Toast({ type, message, onClose }) {
   const isSuccess = type === 'success';
   return (
     <div
-      className={`fixed bottom-6 right-6 z-50 flex items-start gap-3 p-4 rounded-2xl shadow-2xl border max-w-sm w-full animate-in slide-in-from-bottom-4 fade-in duration-300
+      className={`fixed bottom-6 right-6 z-50 flex items-start gap-3 p-4 rounded-2xl shadow-xl border max-w-sm w-full animate-in slide-in-from-bottom-4 fade-in duration-300
         ${isSuccess
-          ? 'bg-white border-emerald-200 dark:bg-slate-900 dark:border-emerald-700'
-          : 'bg-white border-red-200 dark:bg-slate-900 dark:border-red-700'
+          ? 'bg-white border-emerald-300 text-slate-800 dark:bg-slate-900 dark:border-emerald-700 dark:text-white'
+          : 'bg-white border-red-300 text-slate-800 dark:bg-slate-900 dark:border-red-700 dark:text-white'
         }`}
       style={{ animation: 'slideUpFade 0.35s ease-out' }}
     >
-      <div className={`p-2 rounded-xl flex-shrink-0 ${isSuccess ? 'bg-emerald-50 dark:bg-emerald-900/30' : 'bg-red-50 dark:bg-red-900/30'}`}>
+      <div className={`p-2 rounded-xl flex-shrink-0 ${isSuccess ? 'bg-emerald-100 dark:bg-emerald-950/60' : 'bg-red-100 dark:bg-red-950/60'}`}>
         {isSuccess
-          ? <CheckCircle2 className="h-5 w-5 text-emerald-500" />
-          : <XCircle className="h-5 w-5 text-red-500" />
+          ? <CheckCircle2 className="h-5 w-5 text-emerald-600" />
+          : <XCircle className="h-5 w-5 text-red-600" />
         }
       </div>
       <div className="flex-1 min-w-0">
-        <p className={`text-sm font-bold ${isSuccess ? 'text-emerald-700 dark:text-emerald-300' : 'text-red-700 dark:text-red-300'}`}>
-          {isSuccess ? 'Profile Updated!' : 'Update Failed'}
+        <p className={`text-sm font-bold ${isSuccess ? 'text-emerald-800 dark:text-emerald-300' : 'text-red-800 dark:text-red-300'}`}>
+          {isSuccess ? 'Profile Updated' : 'Update Failed'}
         </p>
-        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed">
+        <p className="text-xs text-slate-600 dark:text-slate-300 mt-0.5 leading-relaxed">
           {message}
         </p>
         {isSuccess && (
           <div className="mt-2 h-1 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
             <div
-              className="h-full bg-emerald-400 rounded-full"
+              className="h-full bg-emerald-500 rounded-full"
               style={{ animation: 'shrinkBar 4s linear forwards' }}
             />
           </div>
@@ -73,7 +72,7 @@ function Toast({ type, message, onClose }) {
       </div>
       <button
         onClick={onClose}
-        className="flex-shrink-0 text-slate-300 hover:text-slate-500 dark:hover:text-slate-200 transition-colors mt-0.5"
+        className="flex-shrink-0 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors mt-0.5"
       >
         <X className="h-4 w-4" />
       </button>
@@ -95,12 +94,12 @@ function Toast({ type, message, onClose }) {
 function DetailRow({ label, value, icon: Icon }) {
   if (value == null || value === '') return null;
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-1.5 sm:gap-4 border-b border-slate-100 dark:border-slate-800/60 py-3 last:border-0 hover:bg-slate-50/50 dark:hover:bg-slate-800/20 px-2 rounded-lg transition-colors">
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-1.5 sm:gap-4 border-b border-slate-100 dark:border-slate-800/80 py-3 last:border-0 hover:bg-slate-50/80 dark:hover:bg-slate-800/40 px-2 rounded-lg transition-colors">
       <dt className="text-xs font-semibold text-slate-500 dark:text-slate-400 flex items-center gap-2 self-center">
         {Icon && <Icon className="h-3.5 w-3.5 text-slate-400 dark:text-slate-500 shrink-0" />}
         <span>{label}</span>
       </dt>
-      <dd className="sm:col-span-2 text-sm font-semibold text-slate-800 dark:text-slate-200 self-center break-words">
+      <dd className="sm:col-span-2 text-sm font-semibold text-slate-800 dark:text-slate-100 self-center break-words">
         {value}
       </dd>
     </div>
@@ -164,10 +163,7 @@ function ProfileView({ candidate, onEdit, positionsData }) {
   return (
     <div className="space-y-6">
       {/* Hero Profile Card */}
-      <div className="relative overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-6 sm:p-7 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-        {/* Subtle Decorative Ambient Glow */}
-        <div className="absolute top-0 right-0 h-40 w-96 bg-gradient-to-bl from-[#1BCFB4]/15 via-[#A05AFF]/15 to-transparent pointer-events-none rounded-bl-full blur-2xl" />
-
+      <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 sm:p-7 shadow-sm dark:border-slate-800 dark:bg-slate-900">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
             {/* Avatar Component */}
@@ -176,54 +172,54 @@ function ProfileView({ candidate, onEdit, positionsData }) {
                 <img
                   src={candidate.profilePhoto}
                   alt={candidate.fullName}
-                  className="h-20 w-20 sm:h-24 sm:w-24 rounded-2xl object-cover ring-4 ring-white dark:ring-slate-900 shadow-md border border-slate-100 dark:border-slate-800"
+                  className="h-20 w-20 sm:h-24 sm:w-24 rounded-2xl object-cover ring-2 ring-slate-200 dark:ring-slate-700 shadow-sm border border-slate-100 dark:border-slate-800"
                 />
               ) : (
-                <div className="h-20 w-20 sm:h-24 sm:w-24 rounded-2xl bg-gradient-to-tr from-[#1BCFB4] to-[#A05AFF] text-white flex items-center justify-center text-3xl font-black shadow-md shadow-[#1BCFB4]/25">
+                <div className="h-20 w-20 sm:h-24 sm:w-24 rounded-2xl bg-gradient-to-tr from-blue-700 to-indigo-700 text-white flex items-center justify-center text-3xl font-black shadow-sm">
                   {candidate.fullName?.charAt(0)?.toUpperCase() || 'C'}
                 </div>
               )}
               <span
-                className="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500 ring-2 ring-white dark:ring-slate-900 shadow-xs"
+                className="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-emerald-600 ring-2 ring-white dark:ring-slate-900 shadow-xs"
                 title="Profile Active in Talent Pool"
               >
                 <CheckCircle2 className="h-3.5 w-3.5 text-white" />
               </span>
             </div>
 
-            {/* Candidate Identity & Key Tags */}
+            {/* Candidate Identity */}
             <div className="space-y-2">
               <div className="flex flex-wrap items-center gap-2.5">
                 <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
                   {candidate.fullName}
                 </h1>
-                <Badge className="bg-[#1BCFB4]/15 text-[#07cdae] dark:text-[#1BCFB4] hover:bg-[#1BCFB4]/25 border-0 font-bold px-3 py-1 rounded-xl text-xs uppercase tracking-wide">
+                <Badge className="bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200 dark:border-blue-800 font-bold px-3 py-1 rounded-xl text-xs uppercase tracking-wide">
                   {candidate.position || 'Applicant'}
                 </Badge>
                 <Badge
                   variant="outline"
-                  className="text-emerald-700 bg-emerald-50 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800 text-xs font-semibold px-2.5 py-0.5"
+                  className="text-emerald-700 bg-emerald-50 border-emerald-300 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800 text-xs font-semibold px-2.5 py-0.5"
                 >
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 mr-1.5 animate-pulse" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-600 mr-1.5 animate-pulse" />
                   Talent Pool Active
                 </Badge>
               </div>
 
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-slate-500 dark:text-slate-400 font-medium">
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-slate-600 dark:text-slate-300 font-medium">
                 {candidate.city && (
                   <span className="flex items-center gap-1.5">
-                    <MapPin className="h-3.5 w-3.5 text-[#1BCFB4]" />
+                    <MapPin className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
                     {candidate.city}{candidate.state ? `, ${candidate.state}` : ''}
                   </span>
                 )}
                 {candidate.experienceYears != null && (
                   <span className="flex items-center gap-1.5">
-                    <Briefcase className="h-3.5 w-3.5 text-[#A05AFF]" />
+                    <Briefcase className="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400" />
                     {candidate.experienceYears} Years Experience
                   </span>
                 )}
                 {candidate.expectedSalary != null && candidate.expectedSalary > 0 && (
-                  <span className="flex items-center gap-1 font-semibold text-emerald-600 dark:text-emerald-400">
+                  <span className="flex items-center gap-1 font-semibold text-emerald-700 dark:text-emerald-400">
                     <IndianRupee className="h-3.5 w-3.5" />
                     ₹{Number(candidate.expectedSalary).toLocaleString('en-IN')}/mo Expected
                   </span>
@@ -238,7 +234,7 @@ function ProfileView({ candidate, onEdit, positionsData }) {
               type="button"
               variant="outline"
               onClick={() => window.print()}
-              className="h-10 px-4 rounded-xl border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-semibold gap-1.5 shadow-xs"
+              className="h-10 px-4 rounded-xl border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-semibold gap-1.5 shadow-xs"
             >
               <Printer className="h-3.5 w-3.5 text-slate-500" />
               <span>Print CV</span>
@@ -247,7 +243,7 @@ function ProfileView({ candidate, onEdit, positionsData }) {
             <Button
               type="button"
               onClick={onEdit}
-              className="h-10 px-5 rounded-xl bg-gradient-to-r from-[#1BCFB4] to-[#07cdae] hover:from-[#16B59D] hover:to-[#05b297] text-white font-bold text-xs shadow-md shadow-[#1BCFB4]/25 flex items-center gap-1.5 transition-all hover:scale-[1.02] active:scale-95"
+              className="h-10 px-5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-md shadow-blue-600/25 flex items-center gap-1.5 transition-all hover:scale-[1.02] active:scale-95"
             >
               <Pencil className="h-3.5 w-3.5" />
               <span>Edit Profile</span>
@@ -256,55 +252,51 @@ function ProfileView({ candidate, onEdit, positionsData }) {
         </div>
       </div>
 
-      {/* 4 Quick Stat Metric Cards */}
+      {/* 4 Stat Metric Cards (Matte & Clear) */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        {/* Metric 1 */}
-        <div className="p-4 sm:p-5 rounded-2xl border border-slate-200/80 bg-white dark:bg-slate-900 dark:border-slate-800 shadow-xs flex items-center gap-3.5">
-          <div className="h-11 w-11 rounded-xl bg-[#1BCFB4]/10 text-[#1BCFB4] flex items-center justify-center shrink-0">
+        <div className="p-4 sm:p-5 rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 dark:border-slate-800 shadow-xs flex items-center gap-3.5">
+          <div className="h-11 w-11 rounded-xl bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 flex items-center justify-center shrink-0">
             <Briefcase className="h-5 w-5" />
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Primary Role</p>
-            <p className="text-base font-black text-slate-800 dark:text-slate-100 truncate mt-0.5">
+            <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Primary Role</p>
+            <p className="text-base font-black text-slate-900 dark:text-slate-100 truncate mt-0.5">
               {candidate.position || 'Teacher'}
             </p>
           </div>
         </div>
 
-        {/* Metric 2 */}
-        <div className="p-4 sm:p-5 rounded-2xl border border-slate-200/80 bg-white dark:bg-slate-900 dark:border-slate-800 shadow-xs flex items-center gap-3.5">
-          <div className="h-11 w-11 rounded-xl bg-[#A05AFF]/10 text-[#A05AFF] flex items-center justify-center shrink-0">
+        <div className="p-4 sm:p-5 rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 dark:border-slate-800 shadow-xs flex items-center gap-3.5">
+          <div className="h-11 w-11 rounded-xl bg-indigo-50 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300 flex items-center justify-center shrink-0">
             <Clock className="h-5 w-5" />
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Experience</p>
-            <p className="text-base font-black text-slate-800 dark:text-slate-100 truncate mt-0.5">
+            <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Experience</p>
+            <p className="text-base font-black text-slate-900 dark:text-slate-100 truncate mt-0.5">
               {candidate.experienceYears != null ? `${candidate.experienceYears} Years` : 'Fresher'}
             </p>
           </div>
         </div>
 
-        {/* Metric 3 */}
-        <div className="p-4 sm:p-5 rounded-2xl border border-slate-200/80 bg-white dark:bg-slate-900 dark:border-slate-800 shadow-xs flex items-center gap-3.5">
-          <div className="h-11 w-11 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+        <div className="p-4 sm:p-5 rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 dark:border-slate-800 shadow-xs flex items-center gap-3.5">
+          <div className="h-11 w-11 rounded-xl bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 flex items-center justify-center shrink-0">
             <IndianRupee className="h-5 w-5" />
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Expected Salary</p>
-            <p className="text-base font-black text-emerald-600 dark:text-emerald-400 truncate mt-0.5">
+            <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Expected Salary</p>
+            <p className="text-base font-black text-emerald-700 dark:text-emerald-400 truncate mt-0.5">
               {candidate.expectedSalary ? `₹${Number(candidate.expectedSalary).toLocaleString('en-IN')}` : 'Negotiable'}
             </p>
           </div>
         </div>
 
-        {/* Metric 4 */}
-        <div className="p-4 sm:p-5 rounded-2xl border border-slate-200/80 bg-white dark:bg-slate-900 dark:border-slate-800 shadow-xs flex items-center gap-3.5">
-          <div className="h-11 w-11 rounded-xl bg-sky-500/10 text-sky-600 dark:text-sky-400 flex items-center justify-center shrink-0">
+        <div className="p-4 sm:p-5 rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 dark:border-slate-800 shadow-xs flex items-center gap-3.5">
+          <div className="h-11 w-11 rounded-xl bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 flex items-center justify-center shrink-0">
             <Compass className="h-5 w-5" />
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Working Radius</p>
-            <p className="text-base font-black text-slate-800 dark:text-slate-100 truncate mt-0.5">
+            <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Working Radius</p>
+            <p className="text-base font-black text-slate-900 dark:text-slate-100 truncate mt-0.5">
               {candidate.workingRadius ? `${candidate.workingRadius} km Radius` : 'Flexible'}
             </p>
           </div>
@@ -316,18 +308,18 @@ function ProfileView({ candidate, onEdit, positionsData }) {
         
         {/* Left Column: Personal & Contact + Privacy */}
         <div className="space-y-6">
-          <Card className="border-slate-200/80 dark:border-slate-800 shadow-xs rounded-2xl overflow-hidden">
-            <CardHeader className="p-5 border-b border-slate-100 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/40">
+          <Card className="border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs rounded-2xl overflow-hidden">
+            <CardHeader className="p-5 border-b border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/60">
               <div className="flex items-center gap-3">
-                <div className="p-2.5 bg-[#1BCFB4]/10 text-[#1BCFB4] rounded-xl">
+                <div className="p-2.5 bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 rounded-xl">
                   <User className="h-4 w-4" />
                 </div>
                 <div>
-                  <CardTitle className="text-sm font-bold text-slate-800 dark:text-slate-200">
+                  <CardTitle className="text-sm font-bold text-slate-900 dark:text-slate-100">
                     Personal & Contact Details
                   </CardTitle>
-                  <CardDescription className="text-xs">
-                    Your identity details visible to verified schools in the network
+                  <CardDescription className="text-xs text-slate-500">
+                    Your contact information visible to verified schools
                   </CardDescription>
                 </div>
               </div>
@@ -351,40 +343,40 @@ function ProfileView({ candidate, onEdit, positionsData }) {
             </CardContent>
           </Card>
 
-          {/* Talent Pool & Sharing Consents Card */}
-          <Card className="border-slate-200/80 dark:border-slate-800 shadow-xs rounded-2xl overflow-hidden">
-            <CardHeader className="p-5 border-b border-slate-100 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/40">
+          {/* Privacy & Consents */}
+          <Card className="border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs rounded-2xl overflow-hidden">
+            <CardHeader className="p-5 border-b border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/60">
               <div className="flex items-center gap-3">
-                <div className="p-2.5 bg-emerald-100 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400 rounded-xl">
+                <div className="p-2.5 bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 rounded-xl">
                   <ShieldCheck className="h-4 w-4" />
                 </div>
                 <div>
-                  <CardTitle className="text-sm font-bold text-slate-800 dark:text-slate-200">
+                  <CardTitle className="text-sm font-bold text-slate-900 dark:text-slate-100">
                     Recruitment Privacy & Visibility
                   </CardTitle>
-                  <CardDescription className="text-xs">
+                  <CardDescription className="text-xs text-slate-500">
                     Active consent settings for school recruitment outreach
                   </CardDescription>
                 </div>
               </div>
             </CardHeader>
             <CardContent className="p-4 sm:p-5 space-y-3">
-              <div className="flex items-center justify-between p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 text-xs">
+              <div className="flex items-center justify-between p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/60 dark:border-slate-800 text-xs">
                 <div>
                   <span className="font-bold text-slate-800 dark:text-slate-200">Talent Pool Discovery</span>
-                  <p className="text-[11px] text-slate-400 mt-0.5">Profile appears in candidate search for school principals</p>
+                  <p className="text-[11px] text-slate-500 mt-0.5">Profile appears in candidate search for school principals</p>
                 </div>
-                <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300 border-0 text-[11px] font-bold shrink-0 ml-2">
+                <Badge className="bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border-0 text-[11px] font-bold shrink-0 ml-2">
                   Active
                 </Badge>
               </div>
 
-              <div className="flex items-center justify-between p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 text-xs">
+              <div className="flex items-center justify-between p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/60 dark:border-slate-800 text-xs">
                 <div>
                   <span className="font-bold text-slate-800 dark:text-slate-200">School Contact Consent</span>
-                  <p className="text-[11px] text-slate-400 mt-0.5">Verified schools can send direct employment interest requests</p>
+                  <p className="text-[11px] text-slate-500 mt-0.5">Verified schools can send direct employment interest requests</p>
                 </div>
-                <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300 border-0 text-[11px] font-bold shrink-0 ml-2">
+                <Badge className="bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border-0 text-[11px] font-bold shrink-0 ml-2">
                   Granted
                 </Badge>
               </div>
@@ -394,17 +386,17 @@ function ProfileView({ candidate, onEdit, positionsData }) {
 
         {/* Right Column: Qualifications, Specialization & Documents */}
         <div className="space-y-6">
-          <Card className="border-slate-200/80 dark:border-slate-800 shadow-xs rounded-2xl overflow-hidden">
-            <CardHeader className="p-5 border-b border-slate-100 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/40">
+          <Card className="border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs rounded-2xl overflow-hidden">
+            <CardHeader className="p-5 border-b border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/60">
               <div className="flex items-center gap-3">
-                <div className="p-2.5 bg-[#A05AFF]/10 text-[#A05AFF] rounded-xl">
+                <div className="p-2.5 bg-indigo-50 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300 rounded-xl">
                   <GraduationCap className="h-4 w-4" />
                 </div>
                 <div>
-                  <CardTitle className="text-sm font-bold text-slate-800 dark:text-slate-200">
+                  <CardTitle className="text-sm font-bold text-slate-900 dark:text-slate-100">
                     Qualifications & Specialization
                   </CardTitle>
-                  <CardDescription className="text-xs">
+                  <CardDescription className="text-xs text-slate-500">
                     Academic degrees, subjects, and teaching credentials
                   </CardDescription>
                 </div>
@@ -421,7 +413,7 @@ function ProfileView({ candidate, onEdit, positionsData }) {
                       <Badge
                         key={q}
                         variant="outline"
-                        className="bg-[#A05AFF]/10 border-[#A05AFF]/30 text-[#A05AFF] font-bold text-xs px-3 py-1 rounded-xl shadow-xs"
+                        className="bg-indigo-50 border-indigo-200 text-indigo-800 dark:bg-indigo-950/60 dark:border-indigo-800 dark:text-indigo-300 font-bold text-xs px-3 py-1 rounded-xl shadow-xs"
                       >
                         {q}
                       </Badge>
@@ -442,7 +434,7 @@ function ProfileView({ candidate, onEdit, positionsData }) {
                       <Badge
                         key={s}
                         variant="secondary"
-                        className="bg-indigo-50 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-300 font-bold text-xs px-3 py-1 rounded-xl"
+                        className="bg-blue-50 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200 dark:border-blue-800 font-bold text-xs px-3 py-1 rounded-xl"
                       >
                         {s}
                       </Badge>
@@ -486,18 +478,18 @@ function ProfileView({ candidate, onEdit, positionsData }) {
             </CardContent>
           </Card>
 
-          {/* Uploaded Documents / Portfolio Card */}
-          <Card className="border-slate-200/80 dark:border-slate-800 shadow-xs rounded-2xl overflow-hidden">
-            <CardHeader className="p-5 border-b border-slate-100 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/40">
+          {/* Uploaded Documents */}
+          <Card className="border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs rounded-2xl overflow-hidden">
+            <CardHeader className="p-5 border-b border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/60">
               <div className="flex items-center gap-3">
-                <div className="p-2.5 bg-cyan-100 text-cyan-600 dark:bg-cyan-950/40 dark:text-cyan-400 rounded-xl">
+                <div className="p-2.5 bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 rounded-xl">
                   <FileText className="h-4 w-4" />
                 </div>
                 <div>
-                  <CardTitle className="text-sm font-bold text-slate-800 dark:text-slate-200">
+                  <CardTitle className="text-sm font-bold text-slate-900 dark:text-slate-100">
                     Uploaded Documents & Resume
                   </CardTitle>
-                  <CardDescription className="text-xs">
+                  <CardDescription className="text-xs text-slate-500">
                     Certificates and CV available to prospective employers
                   </CardDescription>
                 </div>
@@ -509,11 +501,11 @@ function ProfileView({ candidate, onEdit, positionsData }) {
                   {candidate.documents.map((doc, idx) => (
                     <div
                       key={idx}
-                      className="flex items-center justify-between p-3.5 rounded-xl border border-slate-200/80 bg-white dark:bg-slate-800/50 dark:border-slate-800 hover:border-[#1BCFB4] transition-colors"
+                      className="flex items-center justify-between p-3.5 rounded-xl border border-slate-200 bg-white dark:bg-slate-800/50 dark:border-slate-800 hover:border-blue-400 transition-colors"
                     >
                       <div className="flex items-center gap-3 min-w-0 pr-2">
-                        <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 shrink-0">
-                          <FileCheck className="h-4 w-4 text-[#1BCFB4]" />
+                        <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-blue-600 dark:text-blue-400 shrink-0">
+                          <FileCheck className="h-4 w-4" />
                         </div>
                         <div className="min-w-0">
                           <p className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">
@@ -530,7 +522,7 @@ function ProfileView({ candidate, onEdit, positionsData }) {
                           href={doc.url}
                           target="_blank"
                           rel="noreferrer"
-                          className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-[#1BCFB4] text-slate-700 hover:text-white dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-[#1BCFB4] text-xs font-bold transition-colors"
+                          className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-blue-600 text-slate-700 hover:text-white dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-blue-600 text-xs font-bold transition-colors"
                         >
                           <span>View</span>
                           <ExternalLink className="h-3 w-3" />
@@ -549,7 +541,7 @@ function ProfileView({ candidate, onEdit, positionsData }) {
                     type="button"
                     variant="link"
                     onClick={onEdit}
-                    className="text-xs font-bold text-[#1BCFB4] mt-1 h-auto p-0"
+                    className="text-xs font-bold text-blue-600 mt-1 h-auto p-0"
                   >
                     Click here to upload your Resume in Edit Profile
                   </Button>
@@ -584,15 +576,12 @@ export default function ApplicantProfile() {
 
   const [toast, setToast] = useState(null);
 
-  // Profile exists if has _id, position and fullName
   const hasExistingProfile = Boolean(profile?._id && profile?.fullName && profile?.position);
 
-  // Manage editing state: URL ?edit=true takes priority, else default to view mode if profile exists
   const [isEditing, setIsEditing] = useState(() => {
     return searchParams.get('edit') === 'true';
   });
 
-  // If query returns and applicant has never completed their profile, auto-open form
   useEffect(() => {
     if (!isLoading && profile) {
       if (!profile._id || !profile.position) {
@@ -638,7 +627,7 @@ export default function ApplicantProfile() {
   if (isLoading) {
     return (
       <div className="flex h-64 flex-col items-center justify-center space-y-2 antialiased">
-        <div className="h-7 w-7 rounded-full border-2 border-[#1BCFB4] border-t-transparent animate-spin" />
+        <div className="h-7 w-7 rounded-full border-2 border-blue-600 border-t-transparent animate-spin" />
         <p className="text-xs font-semibold text-slate-400">Loading your profile...</p>
       </div>
     );
@@ -647,11 +636,11 @@ export default function ApplicantProfile() {
   return (
     <div className="space-y-6 w-full antialiased text-slate-800 dark:text-white max-w-6xl mx-auto pb-10">
       
-      {/* Edit Mode Top Header / Banner (Only shown in Edit Mode) */}
+      {/* Edit Mode Top Header / Banner */}
       {isEditing && (
-        <div className="flex items-center justify-between p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs">
+        <div className="flex items-center justify-between p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-[#A05AFF]/10 text-[#A05AFF]">
+            <div className="p-2 rounded-xl bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300">
               <Pencil className="h-4 w-4" />
             </div>
             <div>
@@ -678,7 +667,7 @@ export default function ApplicantProfile() {
         </div>
       )}
 
-      {/* Main Content: View Mode or Edit Form */}
+      {/* Main Content */}
       {isEditing ? (
         <DynamicCandidateForm
           initialValues={profile}

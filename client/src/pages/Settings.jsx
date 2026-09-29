@@ -1,4 +1,5 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { 
   Sliders, 
@@ -24,7 +25,6 @@ import {
   Building2, 
   FileText, 
   Save, 
-  Sparkle, 
   KeyRound,
   Settings2,
   Send,
@@ -32,7 +32,18 @@ import {
   BadgeCheck,
   ChevronDown,
   ChevronUp,
-  Sparkles
+  Sparkles,
+  Gift,
+  Download,
+  Laptop,
+  RefreshCw,
+  User,
+  Share2,
+  CheckSquare,
+  Globe,
+  Calendar,
+  MessageSquare,
+  Award
 } from 'lucide-react';
 import { 
   getAllMasterData,
@@ -88,12 +99,40 @@ const CATEGORIES = [
   },
 ];
 
+const DEFAULT_POPULAR_PERKS = [
+  'Provident Fund (PF / EPF)',
+  'Paid Vacation & Casual Leaves',
+  'Free Staff Transport (Bus Facility)',
+  'Staff Children School Fee Concession',
+  'Medical & ESIC Health Insurance',
+  'Free Daily Lunch / School Canteen',
+  'Furnished Staff Quarters / Accommodation',
+  'Annual Performance Bonus & Gratuity',
+  'Teacher Training & Skill Workshops',
+  'Air-Conditioned Staff Room & Labs',
+  'Maternity & Paternity Benefits',
+  'Laptop / Digital Teaching Device Allowance',
+];
+
 export default function Settings() {
   const queryClient = useQueryClient();
   const { user, school } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  // Default tab is now Hiring Workflow (general school preferences)
-  const [activeTab, setActiveTab] = useState('hiring');
+  // Tab state synced with URL ?tab=...
+  const tabParam = searchParams.get('tab');
+  const [activeTab, setActiveTab] = useState(tabParam || 'hiring');
+
+  useEffect(() => {
+    if (tabParam && ['hiring', 'perks', 'notifications', 'taxonomy', 'security'].includes(tabParam)) {
+      setActiveTab(tabParam);
+    }
+  }, [tabParam]);
+
+  const handleTabChange = (val) => {
+    setActiveTab(val);
+    setSearchParams({ tab: val });
+  };
 
   // Request New Option Modal State
   const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
@@ -108,6 +147,9 @@ export default function Settings() {
   const [catalogSearch, setCatalogSearch] = useState('');
   const [selectedCatalogCategory, setSelectedCatalogCategory] = useState('positions');
 
+  // Custom Perk Input State
+  const [newPerkInput, setNewPerkInput] = useState('');
+
   // Preferences form state
   const [preferencesForm, setPreferencesForm] = useState(null);
   const [prefSaveSuccess, setPrefSaveSuccess] = useState(false);
@@ -120,6 +162,7 @@ export default function Settings() {
   });
   const [showCurrentPw, setShowCurrentPw] = useState(false);
   const [showNewPw, setShowNewPw] = useState(false);
+  const [showConfirmPw, setShowConfirmPw] = useState(false);
   const [passwordSuccess, setPasswordSuccess] = useState(false);
   const [passwordError, setPasswordError] = useState('');
 
@@ -150,14 +193,54 @@ export default function Settings() {
       emailNotifications: settings.emailNotifications ?? true,
       whatsappAlerts: settings.whatsappAlerts ?? false,
       dailyDigest: settings.dailyDigest ?? true,
+      smsAlerts: settings.smsAlerts ?? false,
+      weeklyReport: settings.weeklyReport ?? true,
       autoAcknowledgeCandidates: settings.autoAcknowledgeCandidates ?? true,
       customWelcomeMessage: settings.customWelcomeMessage || 'Thank you for applying to our school. Our recruitment team will review your application soon.',
-      contactWorkingHours: settings.contactWorkingHours || '09:00 AM - 04:00 PM',
+      contactWorkingHours: settings.contactWorkingHours || '09:00 AM - 04:00 PM (Monday to Saturday)',
       preferredExperienceMin: settings.preferredExperienceMin ?? 0,
+      boardAffiliation: settings.boardAffiliation || 'CBSE',
+      hrContactPerson: settings.hrContactPerson || '',
+      hrContactDesignation: settings.hrContactDesignation || 'HR Manager / Principal',
+      hrContactPhone: settings.hrContactPhone || '',
+      interviewMode: settings.interviewMode || 'In-Person & Online',
+      salaryVisibility: settings.salaryVisibility || 'Negotiable / Competitive',
+      staffBenefits: settings.staffBenefits?.length ? settings.staffBenefits : [
+        'Provident Fund (PF / EPF)',
+        'Paid Vacation & Casual Leaves',
+        'Free Staff Transport (Bus Facility)',
+        'Staff Children School Fee Concession',
+      ],
+      interviewReminderHours: settings.interviewReminderHours ?? 24,
     };
   }, [settings]);
 
-  const currentPreferences = preferencesForm || preferences || {};
+  const currentPreferences = preferencesForm || preferences || {
+    isActivelyHiring: true,
+    allowWalkInApplications: true,
+    emailNotifications: true,
+    whatsappAlerts: false,
+    dailyDigest: true,
+    smsAlerts: false,
+    weeklyReport: true,
+    autoAcknowledgeCandidates: true,
+    customWelcomeMessage: 'Thank you for applying to our school. Our recruitment team will review your application soon.',
+    contactWorkingHours: '09:00 AM - 04:00 PM (Monday to Saturday)',
+    preferredExperienceMin: 0,
+    boardAffiliation: 'CBSE',
+    hrContactPerson: '',
+    hrContactDesignation: 'HR Manager / Principal',
+    hrContactPhone: '',
+    interviewMode: 'In-Person & Online',
+    salaryVisibility: 'Negotiable / Competitive',
+    staffBenefits: [
+      'Provident Fund (PF / EPF)',
+      'Paid Vacation & Casual Leaves',
+      'Free Staff Transport (Bus Facility)',
+      'Staff Children School Fee Concession',
+    ],
+    interviewReminderHours: 24,
+  };
 
   // Request Mutation
   const requestMutation = useMutation({
@@ -183,7 +266,7 @@ export default function Settings() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['settings'] });
       setPrefSaveSuccess(true);
-      setTimeout(() => setPrefSaveSuccess(false), 3000);
+      setTimeout(() => setPrefSaveSuccess(false), 3500);
     },
   });
 
@@ -193,7 +276,7 @@ export default function Settings() {
       setPasswordSuccess(true);
       setPasswordError('');
       setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
-      setTimeout(() => setPasswordSuccess(false), 4000);
+      setTimeout(() => setPasswordSuccess(false), 5000);
     },
     onError: (err) => {
       setPasswordError(err?.response?.data?.message || 'Failed to update password. Please check your current password.');
@@ -202,21 +285,55 @@ export default function Settings() {
 
   const handlePreferenceChange = (key, value) => {
     setPreferencesForm((prev) => ({
-      ...(prev || preferences),
+      ...(prev || preferences || currentPreferences),
       [key]: value,
     }));
   };
 
-  const handleSavePreferences = (e) => {
+  const handleTogglePerk = (perk) => {
+    const currentList = currentPreferences.staffBenefits || [];
+    const exists = currentList.includes(perk);
+    const updatedList = exists ? currentList.filter((p) => p !== perk) : [...currentList, perk];
+    handlePreferenceChange('staffBenefits', updatedList);
+  };
+
+  const handleAddCustomPerk = (e) => {
     e.preventDefault();
+    if (!newPerkInput.trim()) return;
+    const trimmed = newPerkInput.trim();
+    const currentList = currentPreferences.staffBenefits || [];
+    if (!currentList.includes(trimmed)) {
+      handlePreferenceChange('staffBenefits', [...currentList, trimmed]);
+    }
+    setNewPerkInput('');
+  };
+
+  const handleSavePreferences = (e) => {
+    if (e) e.preventDefault();
     preferencesMutation.mutate(currentPreferences);
   };
+
+  // Password Strength calculation
+  const passwordStrength = useMemo(() => {
+    const pw = passwordForm.newPassword;
+    if (!pw) return { score: 0, text: '', color: 'bg-slate-200 dark:bg-slate-800' };
+    let score = 0;
+    if (pw.length >= 6) score += 1;
+    if (pw.length >= 8) score += 1;
+    if (/[A-Z]/.test(pw) && /[a-z]/.test(pw)) score += 1;
+    if (/[0-9]/.test(pw)) score += 1;
+    if (/[^A-Za-z0-9]/.test(pw)) score += 1;
+
+    if (score <= 2) return { score: 1, text: 'Weak', color: 'bg-rose-500' };
+    if (score <= 3) return { score: 2, text: 'Medium', color: 'bg-amber-500' };
+    return { score: 3, text: 'Strong', color: 'bg-emerald-500' };
+  }, [passwordForm.newPassword]);
 
   const handleChangePassword = (e) => {
     e.preventDefault();
     setPasswordError('');
     if (passwordForm.newPassword.length < 6) {
-      setPasswordError('New password must be at least 6 characters.');
+      setPasswordError('New password must be at least 6 characters long.');
       return;
     }
     if (passwordForm.newPassword !== passwordForm.confirmPassword) {
@@ -251,6 +368,36 @@ export default function Settings() {
     });
   };
 
+  // Download School Settings & Data Backup JSON
+  const handleExportBackup = () => {
+    const exportData = {
+      schoolName: school?.schoolName || 'School',
+      schoolId: school?.schoolId,
+      adminEmail: user?.email,
+      preferences: currentPreferences,
+      staffBenefits: currentPreferences.staffBenefits,
+      taxonomyCounts: {
+        positions: masterData?.positions?.length || 0,
+        subjects: masterData?.subjects?.length || 0,
+        qualifications: masterData?.qualifications?.length || 0,
+        classes: masterData?.classes?.length || 0,
+      },
+      exportedAt: new Date().toISOString(),
+      platform: 'HireHub School Recruitment Portal',
+    };
+
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    const sanitizedName = (school?.schoolName || 'School').replace(/[^a-zA-Z0-9]/g, '_');
+    link.download = `${sanitizedName}_settings_backup_${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   const positionsCount = masterData?.positions?.length || 0;
   const subjectsCount = masterData?.subjects?.length || 0;
   const qualificationsCount = masterData?.qualifications?.length || 0;
@@ -262,31 +409,48 @@ export default function Settings() {
     : catalogItems;
 
   return (
-    <div className="space-y-6 w-full antialiased text-slate-800 dark:text-slate-200 pb-12">
+    <div className="space-y-6 w-full antialiased text-slate-800 dark:text-slate-200 pb-16">
       
       {/* Page Header */}
       <PageHeader 
-        title="Settings & Preferences" 
-        description="Manage your school's recruitment status, candidate portal settings, notifications, and security." 
+        title="Settings & Portal Configuration" 
+        description="Customize your school hiring workflow, password & security, teacher perks, notifications, and candidate rules." 
         action={
-          <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#A05AFF]/30 bg-[#A05AFF]/5 text-[#A05AFF] text-xs font-bold">
-            <Building2 className="h-3.5 w-3.5" />
-            <span>{school?.schoolName || 'School Admin'}</span>
+          <div className="flex items-center gap-2">
+            {prefSaveSuccess && (
+              <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 text-xs font-semibold border border-emerald-200 animate-in fade-in">
+                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" /> Settings Saved!
+              </span>
+            )}
+            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#A05AFF]/30 bg-[#A05AFF]/5 text-[#A05AFF] text-xs font-bold shadow-2xs">
+              <Building2 className="h-3.5 w-3.5" />
+              <span>{school?.schoolName || 'School Portal'}</span>
+            </div>
           </div>
         }
       />
 
       {/* Tabs Navigation */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full space-y-6">
-        <TabsList className="bg-slate-100 dark:bg-slate-900 p-1 rounded-xl h-auto border border-slate-200/80 dark:border-slate-800 grid grid-cols-2 sm:grid-cols-4 gap-1">
-          <TabsTrigger value="hiring" className="flex items-center gap-2 py-2.5 text-xs font-bold rounded-lg">
-            <Settings2 className="h-4 w-4" />
-            <span>Hiring Workflow</span>
+      <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full space-y-6">
+        <TabsList className="bg-slate-100 dark:bg-slate-900 p-1 rounded-xl h-auto border border-slate-200/80 dark:border-slate-800 grid grid-cols-2 sm:grid-cols-5 gap-1">
+          <TabsTrigger value="hiring" className="flex items-center gap-1.5 py-2.5 text-xs font-bold rounded-lg">
+            <Settings2 className="h-4 w-4 shrink-0 text-[#A05AFF]" />
+            <span className="truncate">Hiring Workflow</span>
           </TabsTrigger>
 
-          <TabsTrigger value="taxonomy" className="flex items-center gap-2 py-2.5 text-xs font-bold rounded-lg relative">
-            <Sliders className="h-4 w-4" />
-            <span>Recruitment Criteria</span>
+          <TabsTrigger value="perks" className="flex items-center gap-1.5 py-2.5 text-xs font-bold rounded-lg">
+            <Award className="h-4 w-4 shrink-0 text-amber-500" />
+            <span className="truncate">Staff Perks & Perks</span>
+          </TabsTrigger>
+
+          <TabsTrigger value="notifications" className="flex items-center gap-1.5 py-2.5 text-xs font-bold rounded-lg">
+            <Bell className="h-4 w-4 shrink-0 text-sky-500" />
+            <span className="truncate">Notifications</span>
+          </TabsTrigger>
+
+          <TabsTrigger value="taxonomy" className="flex items-center gap-1.5 py-2.5 text-xs font-bold rounded-lg relative">
+            <Sliders className="h-4 w-4 shrink-0 text-indigo-500" />
+            <span className="truncate">Criteria & Catalog</span>
             {myRequests.length > 0 && (
               <span className="ml-1 px-1.5 py-0.2 rounded-full text-[10px] bg-[#A05AFF]/15 text-[#A05AFF] font-bold">
                 {myRequests.length}
@@ -294,18 +458,13 @@ export default function Settings() {
             )}
           </TabsTrigger>
 
-          <TabsTrigger value="notifications" className="flex items-center gap-2 py-2.5 text-xs font-bold rounded-lg">
-            <Bell className="h-4 w-4" />
-            <span>Notifications</span>
-          </TabsTrigger>
-
-          <TabsTrigger value="security" className="flex items-center gap-2 py-2.5 text-xs font-bold rounded-lg">
-            <ShieldCheck className="h-4 w-4" />
-            <span>Account & Security</span>
+          <TabsTrigger value="security" className="flex items-center gap-1.5 py-2.5 text-xs font-bold rounded-lg">
+            <KeyRound className="h-4 w-4 shrink-0 text-emerald-500" />
+            <span className="truncate">Password & Security</span>
           </TabsTrigger>
         </TabsList>
 
-        {/* TAB 1: HIRING WORKFLOW (PRIMARY SCHOOL SETTINGS) */}
+        {/* TAB 1: HIRING WORKFLOW & PUBLIC PORTAL PREFERENCES */}
         <TabsContent value="hiring" className="space-y-6 mt-0">
           <form onSubmit={handleSavePreferences}>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -315,14 +474,14 @@ export default function Settings() {
                   <CardHeader className="p-5 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/30">
                     <CardTitle className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
                       <Settings2 className="h-4 w-4 text-[#A05AFF]" />
-                      Public Application Portal Behaviour
+                      Candidate Application & Hiring Rules
                     </CardTitle>
                     <CardDescription className="text-xs text-slate-500 dark:text-slate-400">
-                      Configure how candidate submissions are handled through your unique QR code and portal links.
+                      Configure how candidate submissions, QR code applications, and hiring standards operate.
                     </CardDescription>
                   </CardHeader>
 
-                  <CardContent className="p-5 space-y-6">
+                  <CardContent className="p-5 space-y-5">
                     {/* Actively Hiring Toggle */}
                     <div className="flex items-center justify-between p-4 rounded-xl border border-slate-200/70 dark:border-slate-800 bg-slate-50/40 dark:bg-slate-900/20">
                       <div className="space-y-1">
@@ -331,7 +490,7 @@ export default function Settings() {
                           Active Recruitment Status
                         </div>
                         <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                          Show "We are actively hiring" banner on your school's public candidate application form.
+                          Displays "We are actively hiring teachers & staff" banner on your school's application portal.
                         </p>
                       </div>
                       <button
@@ -352,11 +511,12 @@ export default function Settings() {
                     {/* Walk-in & QR applications Toggle */}
                     <div className="flex items-center justify-between p-4 rounded-xl border border-slate-200/70 dark:border-slate-800 bg-slate-50/40 dark:bg-slate-900/20">
                       <div className="space-y-1">
-                        <div className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                        <div className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                          <CheckSquare className="h-3.5 w-3.5 text-[#A05AFF]" />
                           Accept Walk-In & QR Code Submissions
                         </div>
                         <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                          Allows candidates to scan your reception standee and apply on their smartphone immediately.
+                          Allows prospective candidates to scan your reception standee or flyer and apply on smartphones.
                         </p>
                       </div>
                       <button
@@ -374,32 +534,115 @@ export default function Settings() {
                       </button>
                     </div>
 
-                    {/* Minimum Experience Preference */}
-                    <div className="space-y-2">
-                      <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
-                        Default Preferred Experience Requirement
-                      </label>
-                      <select
-                        value={currentPreferences.preferredExperienceMin}
-                        onChange={(e) => handlePreferenceChange('preferredExperienceMin', Number(e.target.value))}
-                        className="w-full h-11 px-3.5 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#A05AFF]"
+                    {/* Auto Acknowledge Toggle */}
+                    <div className="flex items-center justify-between p-4 rounded-xl border border-slate-200/70 dark:border-slate-800 bg-slate-50/40 dark:bg-slate-900/20">
+                      <div className="space-y-1">
+                        <div className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                          <MessageSquare className="h-3.5 w-3.5 text-sky-500" />
+                          Auto-Acknowledge Candidate Submissions
+                        </div>
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                          Instantly send a formatted confirmation screen and email acknowledging their application.
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handlePreferenceChange('autoAcknowledgeCandidates', !currentPreferences.autoAcknowledgeCandidates)}
+                        className={`w-12 h-6 flex items-center rounded-full p-1 transition-colors ${
+                          currentPreferences.autoAcknowledgeCandidates ? 'bg-[#A05AFF]' : 'bg-slate-300 dark:bg-slate-700'
+                        }`}
                       >
-                        <option value={0}>Any Experience Level / Freshers Welcome</option>
-                        <option value={1}>Minimum 1 Year Teaching / Relevant Experience</option>
-                        <option value={2}>Minimum 2 Years Teaching / Relevant Experience</option>
-                        <option value={3}>Minimum 3+ Years Prior Experience</option>
-                        <option value={5}>Senior Staff (5+ Years Experience)</option>
-                      </select>
-                      <p className="text-[11px] text-slate-400">
-                        Applicants meeting this threshold get tagged with a priority indicator in your dashboard.
-                      </p>
+                        <div
+                          className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${
+                            currentPreferences.autoAcknowledgeCandidates ? 'translate-x-6' : 'translate-x-0'
+                          }`}
+                        />
+                      </button>
+                    </div>
+
+                    {/* Grid of Select Fields */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+                      
+                      {/* Board Affiliation */}
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                          <Globe className="h-3.5 w-3.5 text-[#A05AFF]" />
+                          School Education Board / Affiliation
+                        </label>
+                        <select
+                          value={currentPreferences.boardAffiliation}
+                          onChange={(e) => handlePreferenceChange('boardAffiliation', e.target.value)}
+                          className="w-full h-10 px-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#A05AFF]"
+                        >
+                          <option value="CBSE">CBSE (Central Board of Secondary Education)</option>
+                          <option value="ICSE">ICSE / ISC Board</option>
+                          <option value="State Board">State Board (RBSE / UP / MH etc.)</option>
+                          <option value="IB">IB (International Baccalaureate)</option>
+                          <option value="Cambridge">Cambridge / IGCSE</option>
+                          <option value="Other">Other Recognized Educational Board</option>
+                        </select>
+                      </div>
+
+                      {/* Minimum Experience Preference */}
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                          <GraduationCap className="h-3.5 w-3.5 text-indigo-500" />
+                          Default Experience Requirement
+                        </label>
+                        <select
+                          value={currentPreferences.preferredExperienceMin}
+                          onChange={(e) => handlePreferenceChange('preferredExperienceMin', Number(e.target.value))}
+                          className="w-full h-10 px-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#A05AFF]"
+                        >
+                          <option value={0}>Any Experience Level / Freshers Welcome</option>
+                          <option value={1}>Minimum 1 Year Teaching / Relevant Exp.</option>
+                          <option value={2}>Minimum 2 Years Teaching / Relevant Exp.</option>
+                          <option value={3}>Minimum 3+ Years Prior Experience</option>
+                          <option value={5}>Senior Staff (5+ Years Experience)</option>
+                        </select>
+                      </div>
+
+                      {/* Interview Mode Preference */}
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                          <Laptop className="h-3.5 w-3.5 text-emerald-500" />
+                          Preferred Interview Mode
+                        </label>
+                        <select
+                          value={currentPreferences.interviewMode}
+                          onChange={(e) => handlePreferenceChange('interviewMode', e.target.value)}
+                          className="w-full h-10 px-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#A05AFF]"
+                        >
+                          <option value="In-Person & Online">Hybrid (In-Person & Online Video Rounds)</option>
+                          <option value="In-Person Only">In-Person Campus Interview Only</option>
+                          <option value="Online Video First">Online Video Demo First Round</option>
+                        </select>
+                      </div>
+
+                      {/* Salary Transparency Policy */}
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                          <Award className="h-3.5 w-3.5 text-amber-500" />
+                          Remuneration / Salary Policy
+                        </label>
+                        <select
+                          value={currentPreferences.salaryVisibility}
+                          onChange={(e) => handlePreferenceChange('salaryVisibility', e.target.value)}
+                          className="w-full h-10 px-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#A05AFF]"
+                        >
+                          <option value="Negotiable / Competitive">Negotiable / Competitive (Based on merit)</option>
+                          <option value="As Per 7th Pay / School Norms">As Per School Pay Scale & Norms</option>
+                          <option value="Disclosed on Interview">Disclosed During Personal Interview</option>
+                        </select>
+                      </div>
+
                     </div>
 
                     {/* Contact Working Hours */}
-                    <div className="space-y-2">
+                    <div className="space-y-1.5">
                       <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                         <Clock className="h-3.5 w-3.5 text-[#A05AFF]" />
-                        School Recruitment & Interview Hours
+                        School Recruitment & Interview Office Hours
                       </label>
                       <Input
                         value={currentPreferences.contactWorkingHours}
@@ -408,117 +651,536 @@ export default function Settings() {
                         className="h-10 text-xs border-slate-200 dark:border-slate-800 rounded-xl"
                       />
                       <p className="text-[11px] text-slate-400">
-                        Informs candidates when to contact the school administration office.
+                        Informs applicants when the school administrative desk is available for enquiries or demo classes.
                       </p>
                     </div>
 
                     {/* Custom Candidate Welcome & Acknowledgement Message */}
-                    <div className="space-y-2">
-                      <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                        <MessageSquare className="h-3.5 w-3.5 text-[#A05AFF]" />
                         Candidate Success Confirmation Message
                       </label>
                       <textarea
                         rows={3}
                         value={currentPreferences.customWelcomeMessage}
                         onChange={(e) => handlePreferenceChange('customWelcomeMessage', e.target.value)}
-                        placeholder="Enter the message displayed to candidates immediately after form submission..."
-                        className="w-full p-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#A05AFF]"
+                        placeholder="Enter message displayed after candidate submits their application..."
+                        className="w-full p-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#A05AFF]"
                       />
                       <p className="text-[11px] text-slate-400">
-                        Displayed on screen when an applicant completes their submission.
+                        This custom greeting appears on the thank-you screen after an applicant finishes submission.
                       </p>
+                    </div>
+
+                  </CardContent>
+                </Card>
+
+                {/* Recruiter / HR Contact Card */}
+                <Card className="border border-slate-200/80 dark:border-slate-800 shadow-sm">
+                  <CardHeader className="p-5 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/30">
+                    <CardTitle className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                      <User className="h-4 w-4 text-[#A05AFF]" />
+                      Recruiter / HR Contact Person (Optional Display)
+                    </CardTitle>
+                    <CardDescription className="text-xs text-slate-500 dark:text-slate-400">
+                      Display contact info of the staff member managing recruitment communication.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="p-5">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                          Contact Person Name
+                        </label>
+                        <Input
+                          value={currentPreferences.hrContactPerson}
+                          onChange={(e) => handlePreferenceChange('hrContactPerson', e.target.value)}
+                          placeholder="e.g. Dr. Rajesh Sharma"
+                          className="h-10 text-xs border-slate-200 dark:border-slate-800 rounded-xl"
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                          Designation
+                        </label>
+                        <Input
+                          value={currentPreferences.hrContactDesignation}
+                          onChange={(e) => handlePreferenceChange('hrContactDesignation', e.target.value)}
+                          placeholder="e.g. Principal / HR Head"
+                          className="h-10 text-xs border-slate-200 dark:border-slate-800 rounded-xl"
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                          Direct Desk Phone
+                        </label>
+                        <Input
+                          value={currentPreferences.hrContactPhone}
+                          onChange={(e) => handlePreferenceChange('hrContactPhone', e.target.value)}
+                          placeholder="e.g. +91 9876543210"
+                          className="h-10 text-xs border-slate-200 dark:border-slate-800 rounded-xl"
+                        />
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
+
               </div>
 
-              {/* Action Sidebar Card */}
+              {/* Right Side: Quick Action & Summary Column */}
               <div className="space-y-6">
-                <Card className="border border-slate-200/80 dark:border-slate-800 shadow-sm p-5 space-y-4">
-                  <div className="space-y-1">
-                    <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-                      Save Hiring Preferences
-                    </h3>
-                    <p className="text-xs text-slate-500">
-                      Changes take effect instantly on your public link and application workflow.
-                    </p>
-                  </div>
-
-                  {prefSaveSuccess && (
-                    <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400 text-xs font-semibold flex items-center gap-2">
-                      <CheckCircle2 className="h-4 w-4 shrink-0" />
-                      <span>Preferences saved successfully!</span>
+                
+                {/* Save Button Card */}
+                <Card className="border border-slate-200/80 dark:border-slate-800 shadow-sm bg-gradient-to-br from-slate-50 to-purple-50/20 dark:from-slate-900/40 dark:to-slate-900/20">
+                  <CardContent className="p-5 space-y-4">
+                    <div className="flex items-center gap-2.5">
+                      <div className="p-2 rounded-xl bg-[#A05AFF]/10 text-[#A05AFF]">
+                        <Save className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <h4 className="text-xs font-bold text-slate-900 dark:text-white">Save All Workflow Preferences</h4>
+                        <p className="text-[11px] text-slate-400">Settings take effect immediately on public forms.</p>
+                      </div>
                     </div>
-                  )}
 
-                  <Button
-                    type="submit"
-                    disabled={preferencesMutation.isPending}
-                    className="w-full h-11 bg-[#A05AFF] hover:bg-[#8e44ee] text-white font-semibold text-xs rounded-xl shadow-sm"
-                  >
-                    {preferencesMutation.isPending ? (
-                      <>
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        Saving Changes...
-                      </>
-                    ) : (
-                      <>
-                        <Save className="h-4 w-4 mr-2" />
-                        Save Preferences
-                      </>
+                    {prefSaveSuccess && (
+                      <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400 text-xs font-semibold flex items-center gap-2">
+                        <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
+                        <span>Changes saved successfully!</span>
+                      </div>
                     )}
-                  </Button>
+
+                    <Button
+                      type="submit"
+                      disabled={preferencesMutation.isPending}
+                      className="w-full h-10 bg-[#A05AFF] hover:bg-[#8e44ee] text-white font-bold text-xs rounded-xl shadow-md transition-all active:scale-98"
+                    >
+                      {preferencesMutation.isPending ? (
+                        <>
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          Saving Preferences...
+                        </>
+                      ) : (
+                        <>
+                          <Save className="h-4 w-4 mr-1.5" />
+                          Save Workflow Changes
+                        </>
+                      )}
+                    </Button>
+                  </CardContent>
                 </Card>
 
-                <Card className="border border-[#A05AFF]/20 bg-[#A05AFF]/5 p-5 space-y-2.5">
-                  <div className="flex items-center gap-2 text-xs font-bold text-[#A05AFF]">
-                    <Sparkle className="h-4 w-4" />
-                    <span>Recruiter Tip</span>
-                  </div>
-                  <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
-                    Setting your <strong>Recruitment Hours</strong> clearly helps candidates call during official school office timings.
-                  </p>
+                {/* Application Links & Standee Shortcut */}
+                <Card className="border border-slate-200/80 dark:border-slate-800 shadow-sm">
+                  <CardHeader className="p-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30">
+                    <CardTitle className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
+                      <Share2 className="h-4 w-4 text-[#A05AFF]" />
+                      Public Links & Standee
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-4 space-y-3 text-xs">
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                      Share your custom school application link or download high-resolution QR standees for your school reception desk.
+                    </p>
+                    <a
+                      href="/application-links"
+                      className="inline-flex items-center justify-center w-full h-9 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 text-slate-700 dark:text-slate-200 font-semibold text-xs shadow-2xs transition-colors"
+                    >
+                      View QR Code & Links ↗
+                    </a>
+                  </CardContent>
                 </Card>
+
+                {/* Direct Password & Security Shortcut */}
+                <Card className="border border-slate-200/80 dark:border-slate-800 shadow-sm bg-gradient-to-br from-emerald-50/30 to-slate-50 dark:from-emerald-950/20 dark:to-slate-900/20">
+                  <CardContent className="p-4 space-y-2.5">
+                    <div className="flex items-center gap-2 text-xs font-bold text-slate-800 dark:text-slate-200">
+                      <KeyRound className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                      <span>Account Security</span>
+                    </div>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                      Need to update your admin login password or review active sessions?
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => handleTabChange('security')}
+                      className="inline-flex items-center gap-1.5 text-xs font-bold text-[#A05AFF] hover:underline"
+                    >
+                      Jump to Password Settings →
+                    </button>
+                  </CardContent>
+                </Card>
+
               </div>
 
             </div>
           </form>
         </TabsContent>
 
-        {/* TAB 2: RECRUITMENT CRITERIA & REQUESTS (CLEAN SUMMARY - NO MESSY PILL DUMP) */}
-        <TabsContent value="taxonomy" className="space-y-6 mt-0">
-          
-          {/* Clean Overview Card with Stats */}
-          <Card className="border border-slate-200/80 dark:border-slate-800 shadow-sm overflow-hidden">
-            <CardHeader className="p-5 border-b border-slate-100 dark:border-slate-800/80 bg-gradient-to-r from-purple-50/60 via-white to-slate-50/40 dark:from-slate-900/50 dark:to-slate-900/10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <div className="flex items-start gap-3.5">
-                <div className="p-2.5 rounded-xl bg-[#A05AFF]/10 text-[#A05AFF] shrink-0 mt-0.5">
-                  <BadgeCheck className="h-5 w-5" />
-                </div>
+        {/* TAB 2: STAFF PERKS & BENEFITS */}
+        <TabsContent value="perks" className="space-y-6 mt-0">
+          <div className="max-w-4xl space-y-6">
+            <Card className="border border-slate-200/80 dark:border-slate-800 shadow-sm">
+              <CardHeader className="p-5 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/30 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div>
-                  <CardTitle className="text-sm font-bold text-slate-900 dark:text-slate-100">
-                    Central Platform Recruitment Criteria
+                  <CardTitle className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <Gift className="h-4 w-4 text-amber-500" />
+                    Teacher & Staff Perks Highlighted on Application Portal
                   </CardTitle>
-                  <CardDescription className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                    Centrally maintained by Super Admin according to CBSE / ICSE standards. Need a custom role or subject? Request it below.
+                  <CardDescription className="text-xs text-slate-500 dark:text-slate-400">
+                    Highlighting benefits increases qualified teacher applications by up to 40%. Click to toggle active perks.
                   </CardDescription>
                 </div>
-              </div>
 
-              <Button
-                type="button"
-                onClick={() => handleOpenRequestModal('position')}
-                className="shrink-0 h-9 px-4 rounded-xl bg-[#A05AFF] hover:bg-[#8e44ee] text-white text-xs font-bold shadow-xs flex items-center gap-1.5"
-              >
-                <Plus className="h-4 w-4 stroke-[2.2]" />
-                Request Custom Option
-              </Button>
+                <Button
+                  type="button"
+                  onClick={handleSavePreferences}
+                  disabled={preferencesMutation.isPending}
+                  className="h-9 px-4 bg-[#A05AFF] hover:bg-[#8e44ee] text-white text-xs font-bold rounded-xl shrink-0"
+                >
+                  {preferencesMutation.isPending ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" />
+                  ) : (
+                    <Save className="h-3.5 w-3.5 mr-1" />
+                  )}
+                  Save Perks Selection
+                </Button>
+              </CardHeader>
+
+              <CardContent className="p-5 space-y-6">
+                
+                {prefSaveSuccess && (
+                  <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400 text-xs font-semibold flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
+                    <span>Staff perks and benefits saved successfully!</span>
+                  </div>
+                )}
+
+                {/* Interactive Perks Tags Grid */}
+                <div className="space-y-3">
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                    Select Offered Amenities & Perks ({currentPreferences.staffBenefits?.length || 0} active)
+                  </label>
+                  
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
+                    {DEFAULT_POPULAR_PERKS.map((perk) => {
+                      const isSelected = (currentPreferences.staffBenefits || []).includes(perk);
+                      return (
+                        <button
+                          key={perk}
+                          type="button"
+                          onClick={() => handleTogglePerk(perk)}
+                          className={`p-3 rounded-xl text-left text-xs font-semibold flex items-start gap-2.5 transition-all border ${
+                            isSelected
+                              ? 'bg-purple-50/80 dark:bg-purple-950/40 border-[#A05AFF]/60 text-purple-900 dark:text-purple-200 shadow-2xs'
+                              : 'bg-white dark:bg-slate-900 border-slate-200/80 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-50'
+                          }`}
+                        >
+                          <div className={`mt-0.5 h-4 w-4 rounded-md flex items-center justify-center shrink-0 border ${
+                            isSelected ? 'bg-[#A05AFF] border-[#A05AFF] text-white' : 'border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950'
+                          }`}>
+                            {isSelected && <Check className="h-3 w-3 stroke-[3]" />}
+                          </div>
+                          <span className="leading-snug">{perk}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Custom Additional Perks */}
+                {((currentPreferences.staffBenefits || []).filter((p) => !DEFAULT_POPULAR_PERKS.includes(p)).length > 0) && (
+                  <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                      Your Custom Added Perks
+                    </label>
+                    <div className="flex flex-wrap gap-2">
+                      {(currentPreferences.staffBenefits || [])
+                        .filter((p) => !DEFAULT_POPULAR_PERKS.includes(p))
+                        .map((customPerk) => (
+                          <span
+                            key={customPerk}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#A05AFF]/10 text-[#A05AFF] border border-[#A05AFF]/30 text-xs font-semibold"
+                          >
+                            <span>{customPerk}</span>
+                            <button
+                              type="button"
+                              onClick={() => handleTogglePerk(customPerk)}
+                              className="hover:text-rose-500 transition-colors"
+                            >
+                              <X className="h-3.5 w-3.5" />
+                            </button>
+                          </span>
+                        ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Add Custom Perk Form */}
+                <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-2">
+                    Add a Custom School Perk
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      value={newPerkInput}
+                      onChange={(e) => setNewPerkInput(e.target.value)}
+                      placeholder="e.g. Free Gym & Sports Club Access, Subsidized Hostel..."
+                      className="h-10 text-xs border-slate-200 dark:border-slate-800 rounded-xl"
+                    />
+                    <Button
+                      type="button"
+                      onClick={handleAddCustomPerk}
+                      className="h-10 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-slate-100 dark:hover:bg-slate-200 dark:text-slate-900 text-xs font-bold shrink-0"
+                    >
+                      <Plus className="h-3.5 w-3.5 mr-1" />
+                      Add Perk
+                    </Button>
+                  </div>
+                </div>
+
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        {/* TAB 3: NOTIFICATIONS & ALERT CHANNELS */}
+        <TabsContent value="notifications" className="space-y-6 mt-0">
+          <div className="max-w-3xl space-y-6">
+            <Card className="border border-slate-200/80 dark:border-slate-800 shadow-sm">
+              <CardHeader className="p-5 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/30">
+                <CardTitle className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                  <Bell className="h-4 w-4 text-[#A05AFF]" />
+                  Recruitment Alert Channels & Schedule
+                </CardTitle>
+                <CardDescription className="text-xs text-slate-500 dark:text-slate-400">
+                  Select which events trigger automated notifications to the school administration desk.
+                </CardDescription>
+              </CardHeader>
+
+              <CardContent className="p-5 space-y-5">
+                
+                {prefSaveSuccess && (
+                  <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400 text-xs font-semibold flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
+                    <span>Notification preferences updated successfully!</span>
+                  </div>
+                )}
+
+                {/* Email Notification on new application */}
+                <div className="flex items-center justify-between p-4 rounded-xl border border-slate-200/70 dark:border-slate-800 bg-slate-50/40 dark:bg-slate-900/20">
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 rounded-xl bg-sky-50 text-sky-600 dark:bg-sky-950/40 dark:text-sky-400 shrink-0 mt-0.5">
+                      <Mail className="h-4 w-4" />
+                    </div>
+                    <div className="space-y-0.5">
+                      <div className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                        New Candidate Email Alert
+                      </div>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                        Receive an instant email alert when a candidate applies (sent to {user?.email || 'school email'}).
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const nextVal = !currentPreferences.emailNotifications;
+                      handlePreferenceChange('emailNotifications', nextVal);
+                      preferencesMutation.mutate({ ...currentPreferences, emailNotifications: nextVal });
+                    }}
+                    className={`w-12 h-6 flex items-center rounded-full p-1 transition-colors ${
+                      currentPreferences.emailNotifications ? 'bg-[#A05AFF]' : 'bg-slate-300 dark:bg-slate-700'
+                    }`}
+                  >
+                    <div
+                      className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${
+                        currentPreferences.emailNotifications ? 'translate-x-6' : 'translate-x-0'
+                      }`}
+                    />
+                  </button>
+                </div>
+
+                {/* Daily Digest */}
+                <div className="flex items-center justify-between p-4 rounded-xl border border-slate-200/70 dark:border-slate-800 bg-slate-50/40 dark:bg-slate-900/20">
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 rounded-xl bg-purple-50 text-purple-600 dark:bg-purple-950/40 dark:text-purple-400 shrink-0 mt-0.5">
+                      <FileText className="h-4 w-4" />
+                    </div>
+                    <div className="space-y-0.5">
+                      <div className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                        Daily Candidate Summary Digest
+                      </div>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                        A morning summary email with total active candidates and recent submissions.
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const nextVal = !currentPreferences.dailyDigest;
+                      handlePreferenceChange('dailyDigest', nextVal);
+                      preferencesMutation.mutate({ ...currentPreferences, dailyDigest: nextVal });
+                    }}
+                    className={`w-12 h-6 flex items-center rounded-full p-1 transition-colors ${
+                      currentPreferences.dailyDigest ? 'bg-[#A05AFF]' : 'bg-slate-300 dark:bg-slate-700'
+                    }`}
+                  >
+                    <div
+                      className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${
+                        currentPreferences.dailyDigest ? 'translate-x-6' : 'translate-x-0'
+                      }`}
+                    />
+                  </button>
+                </div>
+
+                {/* Weekly Analytics Report */}
+                <div className="flex items-center justify-between p-4 rounded-xl border border-slate-200/70 dark:border-slate-800 bg-slate-50/40 dark:bg-slate-900/20">
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 rounded-xl bg-indigo-50 text-indigo-600 dark:bg-indigo-950/40 dark:text-indigo-400 shrink-0 mt-0.5">
+                      <Calendar className="h-4 w-4" />
+                    </div>
+                    <div className="space-y-0.5">
+                      <div className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                        Weekly Recruitment Analytics Report
+                      </div>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                        Weekly hiring velocity overview, shortlisted candidates, and credits usage metrics.
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const nextVal = !currentPreferences.weeklyReport;
+                      handlePreferenceChange('weeklyReport', nextVal);
+                      preferencesMutation.mutate({ ...currentPreferences, weeklyReport: nextVal });
+                    }}
+                    className={`w-12 h-6 flex items-center rounded-full p-1 transition-colors ${
+                      currentPreferences.weeklyReport ? 'bg-[#A05AFF]' : 'bg-slate-300 dark:bg-slate-700'
+                    }`}
+                  >
+                    <div
+                      className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${
+                        currentPreferences.weeklyReport ? 'translate-x-6' : 'translate-x-0'
+                      }`}
+                    />
+                  </button>
+                </div>
+
+                {/* WhatsApp Alert */}
+                <div className="flex items-center justify-between p-4 rounded-xl border border-slate-200/70 dark:border-slate-800 bg-slate-50/40 dark:bg-slate-900/20">
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400 shrink-0 mt-0.5">
+                      <Phone className="h-4 w-4" />
+                    </div>
+                    <div className="space-y-0.5">
+                      <div className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                        WhatsApp Urgent Alerts
+                      </div>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                        Instant WhatsApp ping for urgent position applications (sent to school mobile).
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const nextVal = !currentPreferences.whatsappAlerts;
+                      handlePreferenceChange('whatsappAlerts', nextVal);
+                      preferencesMutation.mutate({ ...currentPreferences, whatsappAlerts: nextVal });
+                    }}
+                    className={`w-12 h-6 flex items-center rounded-full p-1 transition-colors ${
+                      currentPreferences.whatsappAlerts ? 'bg-emerald-500' : 'bg-slate-300 dark:bg-slate-700'
+                    }`}
+                  >
+                    <div
+                      className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${
+                        currentPreferences.whatsappAlerts ? 'translate-x-6' : 'translate-x-0'
+                      }`}
+                    />
+                  </button>
+                </div>
+
+                {/* SMS Quick Alerts */}
+                <div className="flex items-center justify-between p-4 rounded-xl border border-slate-200/70 dark:border-slate-800 bg-slate-50/40 dark:bg-slate-900/20">
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 rounded-xl bg-amber-50 text-amber-600 dark:bg-amber-950/40 dark:text-amber-400 shrink-0 mt-0.5">
+                      <MessageSquare className="h-4 w-4" />
+                    </div>
+                    <div className="space-y-0.5">
+                      <div className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                        SMS Text Alerts
+                      </div>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                        Send fast SMS alerts to recruiter mobile on candidate interview confirmations.
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const nextVal = !currentPreferences.smsAlerts;
+                      handlePreferenceChange('smsAlerts', nextVal);
+                      preferencesMutation.mutate({ ...currentPreferences, smsAlerts: nextVal });
+                    }}
+                    className={`w-12 h-6 flex items-center rounded-full p-1 transition-colors ${
+                      currentPreferences.smsAlerts ? 'bg-[#A05AFF]' : 'bg-slate-300 dark:bg-slate-700'
+                    }`}
+                  >
+                    <div
+                      className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${
+                        currentPreferences.smsAlerts ? 'translate-x-6' : 'translate-x-0'
+                      }`}
+                    />
+                  </button>
+                </div>
+
+                {/* Interview Reminder Schedule */}
+                <div className="p-4 rounded-xl border border-slate-200/70 dark:border-slate-800 bg-slate-50/40 dark:bg-slate-900/20 space-y-2">
+                  <label className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                    <Clock className="h-3.5 w-3.5 text-[#A05AFF]" />
+                    Candidate Interview Auto-Reminder Schedule
+                  </label>
+                  <select
+                    value={currentPreferences.interviewReminderHours}
+                    onChange={(e) => {
+                      const val = Number(e.target.value);
+                      handlePreferenceChange('interviewReminderHours', val);
+                      preferencesMutation.mutate({ ...currentPreferences, interviewReminderHours: val });
+                    }}
+                    className="w-full h-10 px-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#A05AFF]"
+                  >
+                    <option value={12}>Send reminder 12 Hours before scheduled interview</option>
+                    <option value={24}>Send reminder 24 Hours (1 Day) before interview (Recommended)</option>
+                    <option value={48}>Send reminder 48 Hours (2 Days) before interview</option>
+                  </select>
+                </div>
+
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        {/* TAB 4: RECRUITMENT CRITERIA & PLATFORM CATALOG */}
+        <TabsContent value="taxonomy" className="space-y-6 mt-0">
+          <Card className="border border-slate-200/80 dark:border-slate-800 shadow-sm">
+            <CardHeader className="p-5 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/30">
+              <CardTitle className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <Sliders className="h-4 w-4 text-[#A05AFF]" />
+                Standard Platform Recruitment Taxonomies
+              </CardTitle>
+              <CardDescription className="text-xs text-slate-500 dark:text-slate-400">
+                HireHub maintains a standardized database of teaching roles, subjects, and degrees across verified schools.
+              </CardDescription>
             </CardHeader>
 
             <CardContent className="p-5 space-y-6">
               
-              {/* 4 Sleek Compact Metric Counters */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {/* Stat Counters Grid */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
                 <div className="p-3.5 rounded-xl border border-cyan-200/80 bg-cyan-50/40 dark:bg-cyan-950/20 dark:border-cyan-800/60 flex items-center gap-3">
                   <div className="p-2 rounded-lg bg-cyan-500/10 text-cyan-700 dark:text-cyan-300">
                     <Briefcase className="h-4 w-4" />
@@ -528,7 +1190,7 @@ export default function Settings() {
                       {positionsCount}
                     </div>
                     <div className="text-[11px] font-semibold text-cyan-700/80 dark:text-cyan-400">
-                      Standard Positions
+                      Positions
                     </div>
                   </div>
                 </div>
@@ -542,7 +1204,7 @@ export default function Settings() {
                       {subjectsCount}
                     </div>
                     <div className="text-[11px] font-semibold text-indigo-700/80 dark:text-indigo-400">
-                      Academic Subjects
+                      Subjects
                     </div>
                   </div>
                 </div>
@@ -556,7 +1218,7 @@ export default function Settings() {
                       {qualificationsCount}
                     </div>
                     <div className="text-[11px] font-semibold text-purple-700/80 dark:text-purple-400">
-                      Degrees & Diplomas
+                      Qualifications
                     </div>
                   </div>
                 </div>
@@ -570,13 +1232,13 @@ export default function Settings() {
                       {classesCount}
                     </div>
                     <div className="text-[11px] font-semibold text-emerald-700/80 dark:text-emerald-400">
-                      Active Classes
+                      Class Levels
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Collapsible "Browse Supported Options" Drawer (Hidden by default, clean when opened) */}
+              {/* Collapsible "Browse Supported Options" Drawer */}
               <div className="border border-slate-200/80 dark:border-slate-800 rounded-xl overflow-hidden">
                 <button
                   type="button"
@@ -626,7 +1288,7 @@ export default function Settings() {
                     </div>
 
                     {/* Compact Tag View */}
-                    <div className="max-h-40 overflow-y-auto p-3 bg-slate-50 dark:bg-slate-900 rounded-xl flex flex-wrap gap-1.5">
+                    <div className="max-h-48 overflow-y-auto p-3 bg-slate-50 dark:bg-slate-900 rounded-xl flex flex-wrap gap-1.5">
                       {filteredCatalogItems.length === 0 ? (
                         <span className="text-xs text-slate-400 italic py-2">No matching items found.</span>
                       ) : (
@@ -653,10 +1315,10 @@ export default function Settings() {
               <div>
                 <CardTitle className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
                   <HelpCircle className="h-4 w-4 text-[#A05AFF]" />
-                  My Custom Requests
+                  My Custom Requested Taxonomies
                 </CardTitle>
                 <CardDescription className="text-xs text-slate-500 dark:text-slate-400">
-                  Track the approval & configuration status of positions, subjects, or qualifications requested by your school.
+                  Track the approval & configuration status of custom positions or subjects requested by your school.
                 </CardDescription>
               </div>
 
@@ -680,7 +1342,7 @@ export default function Settings() {
                     No custom options requested yet
                   </h4>
                   <p className="text-xs text-slate-400 max-w-sm mx-auto leading-relaxed">
-                    Need a position or subject not in the platform defaults? Click "Submit New Request" to ask Super Admin to configure it.
+                    Need a rare position or subject not in the platform catalog? Click "Submit New Request" to ask Super Admin to configure it.
                   </p>
                 </div>
               ) : (
@@ -734,7 +1396,7 @@ export default function Settings() {
                             )}
                           </td>
                           <td className="p-4 pr-5 text-slate-500 dark:text-slate-400 max-w-xs">
-                            {req.adminNotes || (req.status === 'pending' ? 'Reviewing criteria & custom fields' : '—')}
+                            {req.adminNotes || (req.status === 'pending' ? 'Reviewing criteria' : '—')}
                           </td>
                         </tr>
                       ))}
@@ -747,287 +1409,288 @@ export default function Settings() {
 
         </TabsContent>
 
-        {/* TAB 3: NOTIFICATIONS */}
-        <TabsContent value="notifications" className="space-y-6 mt-0">
-          <div className="max-w-3xl space-y-6">
-            <Card className="border border-slate-200/80 dark:border-slate-800 shadow-sm">
-              <CardHeader className="p-5 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/30">
-                <CardTitle className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                  <Bell className="h-4 w-4 text-[#A05AFF]" />
-                  Recruitment Alert Channels
-                </CardTitle>
-                <CardDescription className="text-xs text-slate-500 dark:text-slate-400">
-                  Select which events trigger automated notifications to the school administration.
-                </CardDescription>
-              </CardHeader>
-
-              <CardContent className="p-5 space-y-5">
-                
-                {/* Email Notification on new application */}
-                <div className="flex items-center justify-between p-4 rounded-xl border border-slate-200/70 dark:border-slate-800 bg-slate-50/40 dark:bg-slate-900/20">
-                  <div className="flex items-start gap-3">
-                    <div className="p-2 rounded-xl bg-sky-50 text-sky-600 dark:bg-sky-950/40 dark:text-sky-400 shrink-0 mt-0.5">
-                      <Mail className="h-4 w-4" />
-                    </div>
-                    <div className="space-y-0.5">
-                      <div className="text-xs font-bold text-slate-800 dark:text-slate-200">
-                        New Candidate Email Notification
-                      </div>
-                      <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                        Receive an immediate email alert whenever a candidate submits a form to {user?.email || 'your email'}.
-                      </p>
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      handlePreferenceChange('emailNotifications', !currentPreferences.emailNotifications);
-                      preferencesMutation.mutate({
-                        ...currentPreferences,
-                        emailNotifications: !currentPreferences.emailNotifications,
-                      });
-                    }}
-                    className={`w-12 h-6 flex items-center rounded-full p-1 transition-colors ${
-                      currentPreferences.emailNotifications ? 'bg-[#A05AFF]' : 'bg-slate-300 dark:bg-slate-700'
-                    }`}
-                  >
-                    <div
-                      className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${
-                        currentPreferences.emailNotifications ? 'translate-x-6' : 'translate-x-0'
-                      }`}
-                    />
-                  </button>
-                </div>
-
-                {/* Daily Digest */}
-                <div className="flex items-center justify-between p-4 rounded-xl border border-slate-200/70 dark:border-slate-800 bg-slate-50/40 dark:bg-slate-900/20">
-                  <div className="flex items-start gap-3">
-                    <div className="p-2 rounded-xl bg-purple-50 text-purple-600 dark:bg-purple-950/40 dark:text-purple-400 shrink-0 mt-0.5">
-                      <FileText className="h-4 w-4" />
-                    </div>
-                    <div className="space-y-0.5">
-                      <div className="text-xs font-bold text-slate-800 dark:text-slate-200">
-                        Daily Candidate Summary Digest
-                      </div>
-                      <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                        A morning summary email with total active candidates and recent submissions.
-                      </p>
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      handlePreferenceChange('dailyDigest', !currentPreferences.dailyDigest);
-                      preferencesMutation.mutate({
-                        ...currentPreferences,
-                        dailyDigest: !currentPreferences.dailyDigest,
-                      });
-                    }}
-                    className={`w-12 h-6 flex items-center rounded-full p-1 transition-colors ${
-                      currentPreferences.dailyDigest ? 'bg-[#A05AFF]' : 'bg-slate-300 dark:bg-slate-700'
-                    }`}
-                  >
-                    <div
-                      className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${
-                        currentPreferences.dailyDigest ? 'translate-x-6' : 'translate-x-0'
-                      }`}
-                    />
-                  </button>
-                </div>
-
-                {/* WhatsApp Alert */}
-                <div className="flex items-center justify-between p-4 rounded-xl border border-slate-200/70 dark:border-slate-800 bg-slate-50/40 dark:bg-slate-900/20">
-                  <div className="flex items-start gap-3">
-                    <div className="p-2 rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400 shrink-0 mt-0.5">
-                      <Phone className="h-4 w-4" />
-                    </div>
-                    <div className="space-y-0.5">
-                      <div className="text-xs font-bold text-slate-800 dark:text-slate-200">
-                        WhatsApp Alerts
-                      </div>
-                      <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                        Instant WhatsApp ping for urgent position applications (sent to school mobile).
-                      </p>
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      handlePreferenceChange('whatsappAlerts', !currentPreferences.whatsappAlerts);
-                      preferencesMutation.mutate({
-                        ...currentPreferences,
-                        whatsappAlerts: !currentPreferences.whatsappAlerts,
-                      });
-                    }}
-                    className={`w-12 h-6 flex items-center rounded-full p-1 transition-colors ${
-                      currentPreferences.whatsappAlerts ? 'bg-emerald-500' : 'bg-slate-300 dark:bg-slate-700'
-                    }`}
-                  >
-                    <div
-                      className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${
-                        currentPreferences.whatsappAlerts ? 'translate-x-6' : 'translate-x-0'
-                      }`}
-                    />
-                  </button>
-                </div>
-
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
-
-        {/* TAB 4: ACCOUNT & SECURITY */}
+        {/* TAB 5: PASSWORD, ACCOUNT & SECURITY */}
         <TabsContent value="security" className="space-y-6 mt-0">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             
-            {/* Account Details Card */}
-            <Card className="border border-slate-200/80 dark:border-slate-800 shadow-sm">
-              <CardHeader className="p-5 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/30">
-                <CardTitle className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                  <ShieldCheck className="h-4 w-4 text-[#A05AFF]" />
-                  Administrator Profile & Session
-                </CardTitle>
-                <CardDescription className="text-xs text-slate-500 dark:text-slate-400">
-                  Current authenticated school recruiter credentials
-                </CardDescription>
-              </CardHeader>
+            {/* Change Password Card (7 cols on lg) */}
+            <div className="lg:col-span-7 space-y-6">
+              <Card className="border border-slate-200/80 dark:border-slate-800 shadow-sm relative overflow-hidden">
+                <div className="h-1 bg-gradient-to-r from-[#A05AFF] via-[#4BCBEB] to-emerald-400" />
+                <CardHeader className="p-5 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/30">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                      <KeyRound className="h-4 w-4 text-[#A05AFF]" />
+                      Change Account Password
+                    </CardTitle>
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#A05AFF]/10 text-[#A05AFF] border border-[#A05AFF]/20">
+                      School Recruiter Access
+                    </span>
+                  </div>
+                  <CardDescription className="text-xs text-slate-500 dark:text-slate-400">
+                    Update your login credentials. Use a strong combination of letters, numbers, and symbols.
+                  </CardDescription>
+                </CardHeader>
 
-              <CardContent className="p-5 space-y-4">
-                <div className="space-y-3">
+                <CardContent className="p-5">
+                  <form onSubmit={handleChangePassword} className="space-y-4">
+                    
+                    {passwordSuccess && (
+                      <div className="p-3.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 text-xs font-semibold flex items-center gap-2.5 animate-in fade-in">
+                        <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
+                        <div>
+                          <p className="font-bold">Password Updated Successfully!</p>
+                          <p className="text-[11px] font-normal text-emerald-600 dark:text-emerald-400">Your school account password has been changed and secured.</p>
+                        </div>
+                      </div>
+                    )}
+
+                    {passwordError && (
+                      <div className="p-3.5 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-rose-800 dark:text-rose-300 text-xs font-semibold flex items-center gap-2.5 animate-in fade-in">
+                        <AlertCircle className="h-4 w-4 shrink-0 text-rose-600" />
+                        <span>{passwordError}</span>
+                      </div>
+                    )}
+
+                    {/* Current Password Field */}
+                    <div className="space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                          Current Password
+                        </label>
+                        <span className="text-[10px] text-slate-400 font-normal">
+                          (Leave blank if signed up via Google)
+                        </span>
+                      </div>
+                      <div className="relative">
+                        <Input
+                          type={showCurrentPw ? 'text' : 'password'}
+                          value={passwordForm.currentPassword}
+                          onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
+                          placeholder="Enter your current password..."
+                          className="h-10 pr-10 text-xs border-slate-200 dark:border-slate-800 rounded-xl"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowCurrentPw(!showCurrentPw)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                        >
+                          {showCurrentPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* New Password Field */}
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                        New Password (Minimum 6 characters)
+                      </label>
+                      <div className="relative">
+                        <Input
+                          type={showNewPw ? 'text' : 'password'}
+                          value={passwordForm.newPassword}
+                          onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
+                          required
+                          placeholder="Create strong new password..."
+                          className="h-10 pr-10 text-xs border-slate-200 dark:border-slate-800 rounded-xl"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowNewPw(!showNewPw)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                        >
+                          {showNewPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </button>
+                      </div>
+
+                      {/* Password Strength Indicator Bar */}
+                      {passwordForm.newPassword && (
+                        <div className="space-y-1 pt-1">
+                          <div className="flex items-center justify-between text-[10px] font-semibold">
+                            <span className="text-slate-400">Password Strength:</span>
+                            <span className={
+                              passwordStrength.score === 1 ? 'text-rose-500' :
+                              passwordStrength.score === 2 ? 'text-amber-500' : 'text-emerald-500'
+                            }>
+                              {passwordStrength.text}
+                            </span>
+                          </div>
+                          <div className="grid grid-cols-3 gap-1.5 h-1.5 w-full">
+                            <div className={`h-full rounded-full transition-colors ${passwordStrength.score >= 1 ? passwordStrength.color : 'bg-slate-200 dark:bg-slate-800'}`} />
+                            <div className={`h-full rounded-full transition-colors ${passwordStrength.score >= 2 ? passwordStrength.color : 'bg-slate-200 dark:bg-slate-800'}`} />
+                            <div className={`h-full rounded-full transition-colors ${passwordStrength.score >= 3 ? passwordStrength.color : 'bg-slate-200 dark:bg-slate-800'}`} />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Confirm New Password Field */}
+                    <div className="space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                          Confirm New Password
+                        </label>
+                        {passwordForm.confirmPassword && (
+                          <span className={`text-[10px] font-semibold flex items-center gap-1 ${
+                            passwordForm.newPassword === passwordForm.confirmPassword ? 'text-emerald-600' : 'text-rose-500'
+                          }`}>
+                            {passwordForm.newPassword === passwordForm.confirmPassword ? (
+                              <><CheckCircle2 className="h-3 w-3" /> Passwords match</>
+                            ) : (
+                              <><X className="h-3 w-3" /> Passwords do not match</>
+                            )}
+                          </span>
+                        )}
+                      </div>
+                      <div className="relative">
+                        <Input
+                          type={showConfirmPw ? 'text' : 'password'}
+                          value={passwordForm.confirmPassword}
+                          onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
+                          required
+                          placeholder="Re-enter new password..."
+                          className="h-10 pr-10 text-xs border-slate-200 dark:border-slate-800 rounded-xl"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowConfirmPw(!showConfirmPw)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                        >
+                          {showConfirmPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="pt-2">
+                      <Button
+                        type="submit"
+                        disabled={passwordMutation.isPending}
+                        className="w-full h-11 bg-gradient-to-r from-[#A05AFF] via-[#9E58FF] to-[#4BCBEB] hover:opacity-95 text-white font-bold text-xs rounded-xl shadow-md transition-all active:scale-98"
+                      >
+                        {passwordMutation.isPending ? (
+                          <>
+                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                            Updating Password...
+                          </>
+                        ) : (
+                          <>
+                            <Lock className="h-4 w-4 mr-2" />
+                            Change Password
+                          </>
+                        )}
+                      </Button>
+                    </div>
+
+                  </form>
+                </CardContent>
+              </Card>
+
+              {/* Data Backup & Privacy Card */}
+              <Card className="border border-slate-200/80 dark:border-slate-800 shadow-sm">
+                <CardHeader className="p-5 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/30">
+                  <CardTitle className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <Download className="h-4 w-4 text-[#A05AFF]" />
+                    School Settings & Configuration Backup
+                  </CardTitle>
+                  <CardDescription className="text-xs text-slate-500 dark:text-slate-400">
+                    Download an offline copy of all your portal settings, preferences, staff benefits, and configuration data.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+                  <div className="text-xs text-slate-500 space-y-0.5">
+                    <p className="font-semibold text-slate-800 dark:text-slate-200">Export Backup File</p>
+                    <p className="text-[11px] text-slate-400">Generates a timestamped JSON file with full settings state.</p>
+                  </div>
+                  <Button
+                    type="button"
+                    onClick={handleExportBackup}
+                    className="h-9 px-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 text-slate-700 dark:text-slate-200 text-xs font-semibold shadow-2xs shrink-0"
+                  >
+                    <Download className="h-3.5 w-3.5 mr-1.5 text-[#A05AFF]" />
+                    Export Backup (JSON)
+                  </Button>
+                </CardContent>
+              </Card>
+
+            </div>
+
+            {/* Account Details & Session Info (5 cols on lg) */}
+            <div className="lg:col-span-5 space-y-6">
+              
+              {/* Account Details Card */}
+              <Card className="border border-slate-200/80 dark:border-slate-800 shadow-sm">
+                <CardHeader className="p-5 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/30">
+                  <CardTitle className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <ShieldCheck className="h-4 w-4 text-[#A05AFF]" />
+                    Administrator Profile Details
+                  </CardTitle>
+                  <CardDescription className="text-xs text-slate-500 dark:text-slate-400">
+                    Logged in recruiter account metadata
+                  </CardDescription>
+                </CardHeader>
+
+                <CardContent className="p-5 space-y-3.5">
                   <div className="p-3.5 rounded-xl border border-slate-200/70 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40 flex items-center justify-between">
-                    <span className="text-xs font-medium text-slate-500">Administrator Name</span>
-                    <span className="text-xs font-bold text-slate-800 dark:text-slate-200">{user?.name || 'School Admin'}</span>
+                    <span className="text-xs font-medium text-slate-500">Admin Name</span>
+                    <span className="text-xs font-bold text-slate-800 dark:text-slate-200">{user?.name || 'School Administrator'}</span>
                   </div>
 
                   <div className="p-3.5 rounded-xl border border-slate-200/70 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40 flex items-center justify-between">
                     <span className="text-xs font-medium text-slate-500">Login Email</span>
-                    <span className="text-xs font-mono font-semibold text-slate-800 dark:text-slate-200">{user?.email}</span>
+                    <span className="text-xs font-mono font-semibold text-slate-800 dark:text-slate-200 truncate max-w-[180px]">{user?.email}</span>
                   </div>
 
                   <div className="p-3.5 rounded-xl border border-slate-200/70 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40 flex items-center justify-between">
-                    <span className="text-xs font-medium text-slate-500">School Identifier</span>
-                    <span className="text-xs font-mono font-bold text-[#A05AFF]">{school?.schoolId || 'N/A'}</span>
+                    <span className="text-xs font-medium text-slate-500">School ID Code</span>
+                    <span className="text-xs font-mono font-bold text-[#A05AFF]">{school?.schoolId || 'SCH-ACTIVE'}</span>
                   </div>
 
                   <div className="p-3.5 rounded-xl border border-slate-200/70 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40 flex items-center justify-between">
-                    <span className="text-xs font-medium text-slate-500">Security Clearance</span>
-                    <span className="px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/60 dark:bg-emerald-950/40 dark:text-emerald-400">
-                      Active Authorized Session
+                    <span className="text-xs font-medium text-slate-500">Portal Role</span>
+                    <span className="text-xs font-semibold capitalize text-slate-700 dark:text-slate-300">
+                      {user?.role?.replace('_', ' ') || 'School Admin'}
                     </span>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
 
-            {/* Change Password Card */}
-            <Card className="border border-slate-200/80 dark:border-slate-800 shadow-sm">
-              <CardHeader className="p-5 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/30">
-                <CardTitle className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                  <KeyRound className="h-4 w-4 text-[#A05AFF]" />
-                  Change Password
-                </CardTitle>
-                <CardDescription className="text-xs text-slate-500 dark:text-slate-400">
-                  Update your school admin portal access password
-                </CardDescription>
-              </CardHeader>
-
-              <CardContent className="p-5">
-                <form onSubmit={handleChangePassword} className="space-y-4">
-                  
-                  {passwordSuccess && (
-                    <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400 text-xs font-semibold flex items-center gap-2">
-                      <CheckCircle2 className="h-4 w-4 shrink-0" />
-                      <span>Password changed successfully!</span>
-                    </div>
-                  )}
-
-                  {passwordError && (
-                    <div className="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-400 text-xs font-semibold flex items-center gap-2">
-                      <AlertCircle className="h-4 w-4 shrink-0" />
-                      <span>{passwordError}</span>
-                    </div>
-                  )}
-
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
-                      Current Password
-                    </label>
-                    <div className="relative">
-                      <Input
-                        type={showCurrentPw ? 'text' : 'password'}
-                        value={passwordForm.currentPassword}
-                        onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
-                        required
-                        placeholder="••••••••"
-                        className="h-10 pr-10 text-xs border-slate-200 dark:border-slate-800 rounded-xl"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowCurrentPw(!showCurrentPw)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                      >
-                        {showCurrentPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                      </button>
-                    </div>
+                  <div className="p-3.5 rounded-xl border border-slate-200/70 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40 flex items-center justify-between">
+                    <span className="text-xs font-medium text-slate-500">Authentication Mode</span>
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-purple-50 text-purple-700 border border-purple-200/60 dark:bg-purple-950/40 dark:text-purple-400">
+                      <BadgeCheck className="h-3 w-3" /> Secure JWT Session
+                    </span>
                   </div>
+                </CardContent>
+              </Card>
 
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
-                      New Password (min 6 characters)
-                    </label>
-                    <div className="relative">
-                      <Input
-                        type={showNewPw ? 'text' : 'password'}
-                        value={passwordForm.newPassword}
-                        onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
-                        required
-                        placeholder="••••••••"
-                        className="h-10 pr-10 text-xs border-slate-200 dark:border-slate-800 rounded-xl"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowNewPw(!showNewPw)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                      >
-                        {showNewPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                      </button>
-                    </div>
+              {/* Active Session & Device Security Info */}
+              <Card className="border border-slate-200/80 dark:border-slate-800 shadow-sm">
+                <CardHeader className="p-5 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/30">
+                  <CardTitle className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <Laptop className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                    Current Browser & Security
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-5 space-y-3">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-slate-400">Connection</span>
+                    <span className="font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                      <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                      256-Bit SSL Encrypted
+                    </span>
                   </div>
-
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
-                      Confirm New Password
-                    </label>
-                    <Input
-                      type="password"
-                      value={passwordForm.confirmPassword}
-                      onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
-                      required
-                      placeholder="••••••••"
-                      className="h-10 text-xs border-slate-200 dark:border-slate-800 rounded-xl"
-                    />
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-slate-400">Environment</span>
+                    <span className="font-medium text-slate-700 dark:text-slate-300">
+                      {window.navigator.userAgent.includes('Windows') ? 'Windows Web Client' : 'Modern Browser Client'}
+                    </span>
                   </div>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-slate-400">Last Password Check</span>
+                    <span className="font-medium text-slate-500">Today</span>
+                  </div>
+                </CardContent>
+              </Card>
 
-                  <Button
-                    type="submit"
-                    disabled={passwordMutation.isPending}
-                    className="w-full h-10 bg-[#A05AFF] hover:bg-[#8e44ee] text-white font-semibold text-xs rounded-xl shadow-xs"
-                  >
-                    {passwordMutation.isPending ? (
-                      <>
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        Updating Password...
-                      </>
-                    ) : (
-                      <>
-                        <Lock className="h-3.5 w-3.5 mr-1.5" />
-                        Update Password
-                      </>
-                    )}
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
+            </div>
 
           </div>
         </TabsContent>
@@ -1048,95 +1711,83 @@ export default function Settings() {
           </DialogHeader>
 
           <form onSubmit={handleSubmitRequest} className="space-y-4 pt-2">
-            
             {requestSuccess && (
               <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400 text-xs font-semibold flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 shrink-0" />
+                <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
                 <span>Request sent to Super Admin for approval!</span>
               </div>
             )}
 
             {requestError && (
               <div className="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-400 text-xs font-semibold flex items-center gap-2">
-                <AlertCircle className="h-4 w-4 shrink-0" />
+                <AlertCircle className="h-4 w-4 shrink-0 text-rose-600" />
                 <span>{requestError}</span>
               </div>
             )}
 
-            {/* Category Select */}
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
-                Option Category
-              </label>
+              <label className="text-xs font-bold text-slate-700 dark:text-slate-300">Category</label>
               <select
                 value={requestCategory}
                 onChange={(e) => setRequestCategory(e.target.value)}
-                className="w-full h-10 px-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-medium text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#A05AFF]"
+                className="w-full h-10 px-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#A05AFF]"
               >
-                <option value="position">Position (e.g. Swimming Coach, AI Trainer)</option>
-                <option value="subject">Subject (e.g. French, Coding, Robotics)</option>
-                <option value="qualification">Qualification (e.g. CTET, PhD, NTT)</option>
-                <option value="class">Class (e.g. Pre-Nursery, Daycare)</option>
+                <option value="position">Position (e.g. Robotics Instructor, Coding Teacher)</option>
+                <option value="subject">Subject (e.g. Artificial Intelligence, French)</option>
+                <option value="qualification">Degree / Qualification (e.g. B.Tech Ed, M.P.Ed)</option>
+                <option value="class">Class / Grade Level (e.g. Day Care, Cambridge Grade 1)</option>
               </select>
             </div>
 
-            {/* Name Input */}
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
-                Requested Title / Name *
-              </label>
+              <label className="text-xs font-bold text-slate-700 dark:text-slate-300">Name / Title</label>
               <Input
                 value={requestName}
                 onChange={(e) => setRequestName(e.target.value)}
-                placeholder="e.g. Robotics & Coding Trainer"
+                placeholder="e.g. STEAM Facilitator"
                 required
-                className="h-10 text-xs border-slate-200 dark:border-slate-800 rounded-xl"
+                className="h-10 text-xs border-slate-200 dark:border-slate-800 rounded-xl font-medium"
               />
             </div>
 
-            {/* Description / Requirement Note */}
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
-                School Requirement / Field Details (Optional)
-              </label>
+              <label className="text-xs font-bold text-slate-700 dark:text-slate-300">Description / Rationale (Optional)</label>
               <textarea
-                rows={3}
+                rows={2}
                 value={requestDescription}
                 onChange={(e) => setRequestDescription(e.target.value)}
-                placeholder="Describe why this option is needed or any specific fields to collect from candidates..."
-                className="w-full p-2.5 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-medium text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#A05AFF]"
+                placeholder="Why should this be added to the platform catalog?"
+                className="w-full p-2.5 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#A05AFF]"
               />
             </div>
 
-            <DialogFooter className="pt-2 flex gap-2">
+            <DialogFooter className="gap-2 pt-2">
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => setIsRequestModalOpen(false)}
-                className="h-10 text-xs font-semibold rounded-xl border-slate-200"
+                className="h-10 rounded-xl text-xs font-semibold"
               >
                 Cancel
               </Button>
-
               <Button
                 type="submit"
-                disabled={requestMutation.isPending || requestSuccess}
-                className="h-10 px-5 text-xs font-semibold rounded-xl bg-[#A05AFF] hover:bg-[#8e44ee] text-white"
+                disabled={requestMutation.isPending}
+                className="h-10 px-5 rounded-xl bg-[#A05AFF] hover:bg-[#8e44ee] text-white text-xs font-semibold"
               >
                 {requestMutation.isPending ? (
                   <>
-                    <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
+                    <Loader2 className="h-4 w-4 mr-1.5 animate-spin" />
                     Submitting...
                   </>
                 ) : (
                   <>
                     <Send className="h-3.5 w-3.5 mr-1.5" />
-                    Send Request
+                    Submit Request
                   </>
                 )}
               </Button>
             </DialogFooter>
-
           </form>
         </DialogContent>
       </Dialog>

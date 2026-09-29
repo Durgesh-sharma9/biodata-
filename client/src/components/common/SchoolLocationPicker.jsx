@@ -306,7 +306,7 @@ export function SchoolLocationPicker({ initialLocation, onLocationChange, onAddr
       )}
 
       {/* Interactive Map Canvas Container */}
-      <div className="relative rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm">
+      <div className="relative rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm isolate z-0">
         <MapContainer
           center={[location.lat, location.lng]}
           zoom={14}

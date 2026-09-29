@@ -98,16 +98,17 @@ export default function Credits() {
         },
         onFailure: (err) => {
           setProcessingPackageId(null);
-          if (err.message && !err.message.includes('closed by user')) {
+          if (err?.message && !err.message.includes('closed by user')) {
             setPaymentBanner({ type: 'error', message: err.message });
           }
         },
       });
     } catch (err) {
+      console.error('Checkout error:', err);
       setProcessingPackageId(null);
       setPaymentBanner({
         type: 'error',
-        message: err.response?.data?.message || 'Failed to initiate Razorpay checkout. Please try again.',
+        message: err.response?.data?.message || err.message || 'Failed to initiate Razorpay checkout. Please try again.',
       });
     }
   };

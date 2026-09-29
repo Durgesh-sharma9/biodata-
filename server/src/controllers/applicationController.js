@@ -1,8 +1,10 @@
 import QRCode from 'qrcode';
 import School from '../models/School.js';
 import Candidate from '../models/Candidate.js';
+import User from '../models/User.js';
 import { ApiError } from '../utils/ApiError.js';
 import { catchAsync } from '../utils/catchAsync.js';
+import { createNotification } from '../utils/notifications.js';
 // Locality master removed; area is free-text
 import { generateSchoolSlug } from '../utils/slugify.js';
 import { buildLocationPayload } from '../utils/location.js';
@@ -50,7 +52,7 @@ export const getApplicationQR = catchAsync(async (req, res) => {
 
 export const getSchoolBySlug = catchAsync(async (req, res) => {
   const school = await School.findOne({ slug: req.params.slug, isActive: true }).select(
-    'schoolName slug schoolId'
+    'schoolName slug schoolId logoUrl address city state phone email'
   );
   if (!school) throw new ApiError(404, 'Application link not found');
   res.json({ success: true, data: school });
@@ -124,8 +126,26 @@ export const submitApplication = catchAsync(async (req, res) => {
     area: locationFields.area,
     latitude: locationFields.latitude,
     longitude: locationFields.longitude,
-    workingRadius: locationFields.workingRadius,
   });
+
+  // Notify school administrator if user exists
+  try {
+    const schoolAdmin = await User.findOne({ schoolId: school._id, role: 'school_admin' });
+    if (schoolAdmin) {
+      await createNotification({
+        userId: schoolAdmin._id,
+        type: 'candidate_application',
+        title: 'New Candidate Application',
+        message: `${fullName} has applied for "${position}" via your school direct application link.`,
+        data: {
+          schoolId: school._id,
+          candidateId: candidate._id,
+        },
+      });
+    }
+  } catch (notifErr) {
+    console.error('Failed to dispatch application notification:', notifErr.message);
+  }
 
   res.status(201).json({
     success: true,

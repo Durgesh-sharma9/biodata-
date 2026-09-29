@@ -468,7 +468,7 @@ export function MapView({
       {/* ─────────────────────────────────────────────────────────────
           LEAFLET MAP CONTAINER
       ───────────────────────────────────────────────────────────── */}
-      <div className="relative flex-1" style={{ height }}>
+      <div className="relative flex-1 isolate z-0" style={{ height }}>
         <MapContainer
           center={[searchCenter.lat, searchCenter.lng]}
           zoom={13}

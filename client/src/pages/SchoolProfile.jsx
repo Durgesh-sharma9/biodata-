@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { 
   MapPin, 
@@ -13,9 +13,14 @@ import {
   CheckCircle2, 
   AlertCircle,
   X,
-  Compass
+  Compass,
+  Upload,
+  Trash2,
+  Camera,
+  Image as ImageIcon
 } from 'lucide-react';
-import { getMySchool, updateMySchool } from '@/lib/api';
+import { getMySchool, updateMySchool, uploadFiles } from '@/lib/api';
+import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -23,10 +28,17 @@ import { SchoolLocationPicker } from '@/components/common/SchoolLocationPicker';
 
 export default function SchoolProfile() {
   const queryClient = useQueryClient();
+  const { refreshSchool } = useAuth();
+  const fileInputRef = useRef(null);
+
   const [locationData, setLocationData] = useState(null);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [isUploadingLogo, setIsUploadingLogo] = useState(false);
+  const [logoError, setLogoError] = useState('');
+
   const [formData, setFormData] = useState({
     schoolName: '',
+    logoUrl: '',
     email: '',
     phone: '',
     state: '',
@@ -45,6 +57,7 @@ export default function SchoolProfile() {
     if (school) {
       setFormData({
         schoolName: school.schoolName || '',
+        logoUrl: school.logoUrl || '',
         email: school.email || '',
         phone: school.phone || '',
         state: school.state || '',
@@ -68,6 +81,7 @@ export default function SchoolProfile() {
       queryClient.invalidateQueries({ queryKey: ['mySchool'] });
       queryClient.invalidateQueries({ queryKey: ['dashboard'] });
       queryClient.invalidateQueries({ queryKey: ['candidates'] });
+      if (refreshSchool) refreshSchool();
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 5000);
     },
@@ -89,6 +103,44 @@ export default function SchoolProfile() {
     }
   };
 
+  const handleLogoUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      setLogoError('Please choose a valid image file (PNG, JPG, SVG, WebP)');
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setLogoError('Image size exceeds 5MB limit');
+      return;
+    }
+
+    setLogoError('');
+    setIsUploadingLogo(true);
+    try {
+      const res = await uploadFiles([file]);
+      const uploadedUrl = res.data?.data?.[0]?.url;
+      if (uploadedUrl) {
+        setFormData((prev) => ({ ...prev, logoUrl: uploadedUrl }));
+        await updateMutation.mutateAsync({ logoUrl: uploadedUrl });
+      }
+    } catch (err) {
+      setLogoError(err?.response?.data?.message || 'Failed to upload logo. Please try again.');
+    } finally {
+      setIsUploadingLogo(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
+
+  const handleRemoveLogo = async () => {
+    setFormData((prev) => ({ ...prev, logoUrl: '' }));
+    await updateMutation.mutateAsync({ logoUrl: null });
+  };
+
   const handleSave = () => {
     if (!school) return;
 
@@ -97,6 +149,7 @@ export default function SchoolProfile() {
 
     const formDataToSubmit = {
       schoolName: formData.schoolName,
+      logoUrl: formData.logoUrl || null,
       email: formData.email,
       phone: formData.phone,
       state: formData.state,
@@ -134,8 +187,12 @@ export default function SchoolProfile() {
       {/* Compact Header Bar */}
       <div className="bg-white dark:bg-slate-900 px-4 py-3.5 sm:px-5 sm:py-4 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-xl bg-purple-50 dark:bg-purple-950/40 text-[#A05AFF] flex items-center justify-center border border-[#A05AFF]/20 shrink-0">
-            <Building2 className="h-5 w-5" />
+          <div className="h-11 w-11 rounded-xl bg-purple-50 dark:bg-purple-950/40 text-[#A05AFF] flex items-center justify-center border border-[#A05AFF]/20 shrink-0 overflow-hidden shadow-2xs">
+            {formData.logoUrl ? (
+              <img src={formData.logoUrl} alt="School Logo" className="h-full w-full object-contain p-1" />
+            ) : (
+              <Building2 className="h-5 w-5" />
+            )}
           </div>
           <div className="min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
@@ -152,13 +209,13 @@ export default function SchoolProfile() {
               </span>
             </div>
             <p className="text-xs text-slate-500 dark:text-slate-400 font-medium truncate mt-0.5">
-              Manage school contact info and geo-pinning for candidate proximity search
+              Manage school branding, official logo, contact info, and geo-pinning for candidate proximity search
             </p>
           </div>
         </div>
 
         {/* Top Save Button (Desktop / Tablet) */}
-        <div className="hidden sm:flex items-center gap-2 shrink-0">
+        <div className="hidden sm:flex items-center gap-2.5 shrink-0">
           <Button
             onClick={handleSave}
             disabled={updateMutation.isPending}
@@ -181,10 +238,10 @@ export default function SchoolProfile() {
 
       {/* Success Notification Alert */}
       {saveSuccess && (
-        <div className="px-4 py-2.5 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/80 rounded-xl text-xs text-emerald-800 dark:text-emerald-300 flex items-center justify-between shadow-xs animate-in fade-in slide-in-from-top-1 duration-200">
+        <div className="px-4 py-2.5 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/80 rounded-xl text-xs text-emerald-800 dark:text-emerald-300 flex items-center justify-between shadow-xs animate-in fade-in">
           <div className="flex items-center gap-2 font-semibold">
             <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-            <span>School profile & location settings updated successfully!</span>
+            <span>School profile information and logo updated successfully!</span>
           </div>
           <button 
             type="button" 
@@ -219,24 +276,116 @@ export default function SchoolProfile() {
         {/* Left Column: Form Cards (5 cols on lg) */}
         <div className="lg:col-span-5 space-y-4 sm:space-y-4">
           
-          {/* Card 1: Basic Information */}
+          {/* Card 1: Basic Information & School Logo */}
           <Card className="border border-slate-200/80 dark:border-slate-800 shadow-xs">
             <CardHeader className="px-4 py-3 sm:px-5 sm:py-3.5 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
               <CardTitle className="text-xs sm:text-sm font-bold tracking-tight text-slate-800 dark:text-slate-200 flex items-center gap-2">
                 <Building2 className="h-4 w-4 text-[#A05AFF]" />
-                Basic Information
+                Basic Information & Branding
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-4 sm:p-5 space-y-3">
+            <CardContent className="p-4 sm:p-5 space-y-4">
+              
+              {/* School Logo Upload & Preview Section */}
+              <div className="p-3.5 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30 flex flex-col sm:flex-row items-center sm:items-start gap-4">
+                <div className="relative group shrink-0">
+                  <div className="h-18 w-18 sm:h-20 sm:w-20 rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 flex items-center justify-center overflow-hidden shadow-xs">
+                    {formData.logoUrl ? (
+                      <img
+                        src={formData.logoUrl}
+                        alt="School Logo"
+                        className="h-full w-full object-contain p-1"
+                      />
+                    ) : (
+                      <div className="text-center p-2">
+                        <Building2 className="h-7 w-7 text-slate-400 mx-auto mb-0.5" />
+                        <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider block">No Logo</span>
+                      </div>
+                    )}
+                  </div>
+                  {isUploadingLogo && (
+                    <div className="absolute inset-0 bg-black/40 rounded-2xl flex items-center justify-center">
+                      <Loader2 className="h-6 w-6 text-white animate-spin" />
+                    </div>
+                  )}
+                </div>
+
+                <div className="space-y-1.5 flex-1 text-center sm:text-left">
+                  <div className="flex items-center justify-center sm:justify-start gap-2">
+                    <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200">School Official Logo</h4>
+                    {formData.logoUrl && (
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200/60">
+                        Active
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                    Upload school crest or logo (PNG, JPG, SVG, max 5MB). Displayed on public application portal & standees.
+                  </p>
+
+                  {logoError && (
+                    <p className="text-[11px] font-semibold text-rose-600 dark:text-rose-400 flex items-center gap-1">
+                      <AlertCircle className="h-3 w-3" /> {logoError}
+                    </p>
+                  )}
+
+                  <div className="flex items-center justify-center sm:justify-start gap-2 pt-1">
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      onChange={handleLogoUpload}
+                      accept="image/png,image/jpeg,image/jpg,image/webp,image/svg+xml"
+                      className="hidden"
+                    />
+                    <Button
+                      type="button"
+                      size="sm"
+                      disabled={isUploadingLogo}
+                      onClick={() => fileInputRef.current?.click()}
+                      className="h-8 px-3 text-xs font-bold bg-[#A05AFF] hover:bg-[#8e44ee] text-white rounded-lg shadow-2xs"
+                    >
+                      {isUploadingLogo ? (
+                        <>
+                          <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
+                          Uploading...
+                        </>
+                      ) : (
+                        <>
+                          <Upload className="h-3.5 w-3.5 mr-1.5" />
+                          {formData.logoUrl ? 'Change Logo' : 'Upload Logo'}
+                        </>
+                      )}
+                    </Button>
+
+                    {formData.logoUrl && (
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        disabled={isUploadingLogo}
+                        onClick={handleRemoveLogo}
+                        className="h-8 px-2.5 text-xs font-semibold text-rose-600 hover:text-rose-700 hover:bg-rose-50 border-rose-200 dark:border-rose-900 rounded-lg"
+                      >
+                        <Trash2 className="h-3.5 w-3.5 mr-1" />
+                        Remove
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* School Name */}
               <div className="space-y-1">
                 <label className="text-[11px] font-semibold text-slate-600 dark:text-slate-400">School Name</label>
                 <Input
                   value={formData.schoolName}
-                  readOnly
-                  className="h-9 px-3 text-xs bg-slate-50 dark:bg-slate-950/70 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-medium"
+                  onChange={(e) => setFormData({ ...formData, schoolName: e.target.value })}
+                  placeholder="Enter school name"
+                  className="h-9 px-3 text-xs bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 font-medium focus:border-[#A05AFF]"
                 />
               </div>
 
+              {/* Email (Account ID) */}
               <div className="space-y-1">
                 <div className="flex items-center justify-between">
                   <label className="text-[11px] font-semibold text-slate-600 dark:text-slate-400">Email (Account ID)</label>
@@ -250,9 +399,10 @@ export default function SchoolProfile() {
                   disabled
                   className="h-9 px-3 text-xs bg-slate-100/80 dark:bg-slate-950 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-800 cursor-not-allowed font-medium select-none"
                 />
-                <p className="text-[10px] text-slate-400 dark:text-slate-500">School account login email cannot be changed.</p>
+                <p className="text-[10px] text-slate-400 dark:text-slate-500">School account login email is permanent.</p>
               </div>
 
+              {/* Phone Number */}
               <div className="space-y-1">
                 <label className="text-[11px] font-semibold text-slate-600 dark:text-slate-400 flex items-center gap-1">
                   <Phone className="h-3 w-3 text-emerald-500" /> Phone Number
@@ -298,72 +448,63 @@ export default function SchoolProfile() {
                 </div>
               </div>
 
-              {/* Area & Working Radius side-by-side */}
+              {/* Area & Search Radius side-by-side */}
               <div className="grid grid-cols-2 gap-2.5">
                 <div className="space-y-1">
                   <label className="text-[11px] font-semibold text-slate-600 dark:text-slate-400">Area / Locality</label>
                   <Input
                     value={formData.area}
                     onChange={(e) => setFormData({ ...formData, area: e.target.value })}
-                    placeholder="e.g. Bapu Nagar"
+                    placeholder="e.g. Bagru Nagar"
                     className="h-9 px-3 text-xs border-slate-200 dark:border-slate-800 font-medium"
                   />
                 </div>
                 <div className="space-y-1">
-                  <div className="flex items-center justify-between">
-                    <label className="text-[11px] font-semibold text-slate-600 dark:text-slate-400">Search Radius</label>
-                    <span className="text-[10px] font-bold text-[#A05AFF]">KM</span>
+                  <label className="text-[11px] font-semibold text-slate-600 dark:text-slate-400">Search Radius</label>
+                  <div className="relative">
+                    <Input
+                      type="number"
+                      min="1"
+                      max="200"
+                      value={formData.workingRadius}
+                      onChange={(e) => setFormData({ ...formData, workingRadius: e.target.value })}
+                      placeholder="50"
+                      className="h-9 px-3 pr-8 text-xs border-slate-200 dark:border-slate-800 font-medium"
+                    />
+                    <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-400">KM</span>
                   </div>
-                  <Input
-                    type="number"
-                    value={formData.workingRadius}
-                    onChange={(e) => setFormData({ ...formData, workingRadius: e.target.value })}
-                    placeholder="e.g. 25"
-                    className="h-9 px-3 text-xs border-slate-200 dark:border-slate-800 font-medium"
-                    min="0"
-                    step="0.5"
-                  />
                 </div>
               </div>
 
-              {/* Full Address */}
+              {/* Resolved / Full Address */}
               <div className="space-y-1">
-                <label className="text-[11px] font-semibold text-slate-600 dark:text-slate-400">Full Address</label>
-                <textarea
+                <label className="text-[11px] font-semibold text-slate-600 dark:text-slate-400">
+                  Full Address / Landmark
+                </label>
+                <Input
                   value={formData.address}
                   onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                  placeholder="Complete postal address with landmarks..."
-                  rows={2}
-                  className="w-full px-3 py-2 text-xs rounded-lg border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 font-medium text-slate-700 dark:text-slate-200 placeholder:text-slate-400 outline-none focus:border-[#A05AFF]/60 focus:ring-2 focus:ring-[#A05AFF]/10 resize-none"
+                  placeholder="Street address, colony, or landmark"
+                  className="h-9 px-3 text-xs border-slate-200 dark:border-slate-800 font-medium"
                 />
               </div>
 
-              {/* GPS Coordinates Badge Preview */}
-              <div className="bg-slate-50 dark:bg-slate-950/60 p-2.5 rounded-lg border border-slate-200/70 dark:border-slate-800/80 space-y-1.5">
-                <div className="flex items-center justify-between text-[11px]">
-                  <span className="font-semibold text-slate-600 dark:text-slate-400 flex items-center gap-1">
-                    <Compass className="h-3.5 w-3.5 text-[#A05AFF]" />
-                    GPS Coordinates:
-                  </span>
-                  <span className="text-[10px] text-slate-400 dark:text-slate-500">Auto-pinned</span>
-                </div>
-                <div className="grid grid-cols-2 gap-2 text-[11px] font-mono">
-                  <div className="bg-white dark:bg-slate-900 px-2.5 py-1.5 rounded border border-slate-200 dark:border-slate-800 truncate">
-                    <span className="text-slate-400 select-none mr-1">Lat:</span>
-                    <span className="text-slate-800 dark:text-slate-200 font-semibold">{lat !== undefined && lat !== null && lat !== '' ? Number(lat).toFixed(5) : 'Not set'}</span>
-                  </div>
-                  <div className="bg-white dark:bg-slate-900 px-2.5 py-1.5 rounded border border-slate-200 dark:border-slate-800 truncate">
-                    <span className="text-slate-400 select-none mr-1">Lng:</span>
-                    <span className="text-slate-800 dark:text-slate-200 font-semibold">{lng !== undefined && lng !== null && lng !== '' ? Number(lng).toFixed(5) : 'Not set'}</span>
-                  </div>
-                </div>
+              {/* Coordinates Indicator */}
+              <div className="pt-1 flex items-center justify-between text-[11px] text-slate-400 border-t border-slate-100 dark:border-slate-800">
+                <span className="flex items-center gap-1 font-mono text-[10px]">
+                  <Compass className="h-3 w-3 text-[#A05AFF]" />
+                  {lat && lng ? `${Number(lat).toFixed(4)}, ${Number(lng).toFixed(4)}` : 'No coordinates pinned'}
+                </span>
+                <span className="text-[10px] text-slate-400">
+                  {school?.locationUpdatedAt ? `Updated ${new Date(school.locationUpdatedAt).toLocaleDateString()}` : 'Click map to set GPS'}
+                </span>
               </div>
             </CardContent>
           </Card>
-
+          
         </div>
 
-        {/* Right Column: Interactive Map Picker (7 cols on lg) */}
+        {/* Right Column: Interactive Map Pinpoint (7 cols on lg) */}
         <div className="lg:col-span-7">
           <Card className="border border-slate-200/80 dark:border-slate-800 shadow-xs h-full flex flex-col">
             <CardHeader className="px-4 py-3 sm:px-5 sm:py-3.5 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 flex flex-row items-center justify-between">
@@ -371,17 +512,16 @@ export default function SchoolProfile() {
                 <Navigation className="h-4 w-4 text-[#A05AFF]" />
                 Interactive Map Pinpoint
               </CardTitle>
-              <span className="hidden sm:inline-block text-[11px] font-semibold text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-950/50 px-2 py-0.5 rounded border border-purple-200/60 dark:border-purple-800">
+              <span className="text-[11px] text-[#A05AFF] font-medium bg-[#A05AFF]/10 px-2 py-0.5 rounded-full border border-[#A05AFF]/20">
                 Click map or drag pin
               </span>
             </CardHeader>
-            <CardContent className="p-3 sm:p-4 flex-1 flex flex-col justify-between">
+            <CardContent className="p-4 sm:p-5 flex-1 flex flex-col min-h-[460px] sm:min-h-[500px]">
               <SchoolLocationPicker
-                initialLocation={school}
+                initialLocation={locationData}
                 onLocationChange={handleLocationChange}
                 onAddressResolved={handleAddressResolved}
-                disabled={updateMutation.isPending}
-                mapHeight="380px"
+                className="w-full flex-1 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 min-h-[440px]"
               />
             </CardContent>
           </Card>
@@ -389,27 +529,20 @@ export default function SchoolProfile() {
 
       </div>
 
-      {/* Bottom Save Action Bar */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-white dark:bg-slate-900 p-3.5 sm:p-4 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-xs">
-        <div className="flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400">
-          <Sparkles className="h-4 w-4 text-[#A05AFF] shrink-0" />
-          <span>Clicking save will update your school address and synchronize nearby candidate search radius.</span>
-        </div>
-
+      {/* Floating / Sticky Mobile Save Button */}
+      <div className="sm:hidden fixed bottom-4 right-4 z-40">
         <Button
           onClick={handleSave}
           disabled={updateMutation.isPending}
-          className="w-full sm:w-auto bg-gradient-to-r from-[#A05AFF] via-[#9E58FF] to-[#4BCBEB] hover:opacity-95 text-white font-bold rounded-xl px-6 h-10 transition-all active:scale-95 shadow-sm text-xs shrink-0"
+          className="h-11 px-5 bg-gradient-to-r from-[#A05AFF] to-[#4BCBEB] text-white text-xs font-bold rounded-full shadow-lg flex items-center gap-2"
         >
           {updateMutation.isPending ? (
             <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Saving Changes...
+              <Loader2 className="h-4 w-4 animate-spin" /> Saving...
             </>
           ) : (
             <>
-              <Save className="mr-2 h-4 w-4 stroke-[2.5]" />
-              Save Profile Changes
+              <Save className="h-4 w-4" /> Save Changes
             </>
           )}
         </Button>

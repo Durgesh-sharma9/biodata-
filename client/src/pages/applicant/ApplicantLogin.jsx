@@ -72,7 +72,7 @@ export default function ApplicantLogin() {
             <button
               type="button"
               onClick={handleBack}
-              className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-[#1BCFB4] px-2.5 py-1.5 rounded-lg hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800 transition-colors"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-blue-600 px-2.5 py-1.5 rounded-lg hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800 transition-colors"
             >
               <ArrowLeft className="w-4 h-4" /> Back
             </button>
@@ -87,9 +87,9 @@ export default function ApplicantLogin() {
 
       {/* Main Form */}
       <main className="flex-1 flex items-center justify-center p-6 relative overflow-hidden">
-        {/* Colorful Ambient Glow Orbs */}
-        <div className="absolute top-1/4 -left-20 w-80 h-80 bg-gradient-to-tr from-[#1BCFB4]/25 to-[#A05AFF]/20 rounded-full blur-3xl pointer-events-none animate-pulse" />
-        <div className="absolute bottom-1/4 -right-20 w-80 h-80 bg-gradient-to-br from-[#A05AFF]/25 to-[#FE7096]/20 rounded-full blur-3xl pointer-events-none animate-pulse" />
+        {/* Soft Ambient Glow Orbs */}
+        <div className="absolute top-1/4 -left-20 w-80 h-80 bg-gradient-to-tr from-blue-500/15 to-indigo-500/10 rounded-full blur-3xl pointer-events-none animate-pulse" />
+        <div className="absolute bottom-1/4 -right-20 w-80 h-80 bg-gradient-to-br from-indigo-500/15 to-blue-500/10 rounded-full blur-3xl pointer-events-none animate-pulse" />
 
         <div className="w-full max-w-md relative z-10">
           
@@ -98,19 +98,19 @@ export default function ApplicantLogin() {
             <button
               type="button"
               onClick={handleBack}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/90 dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-[#1BCFB4] hover:border-[#1BCFB4]/50 text-xs font-bold shadow-xs transition-all group backdrop-blur-sm"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/90 dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-blue-600 hover:border-blue-500/50 text-xs font-bold shadow-xs transition-all group backdrop-blur-sm"
             >
-              <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform text-[#1BCFB4]" />
+              <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform text-blue-600" />
               <span>Back</span>
             </button>
-            <Link to="/" className="text-xs font-semibold text-slate-400 hover:text-[#1BCFB4] transition-colors">
+            <Link to="/" className="text-xs font-semibold text-slate-400 hover:text-blue-600 transition-colors">
               Back to Home
             </Link>
           </div>
 
           <Card className="w-full rounded-2xl border border-slate-200/90 shadow-2xl bg-white/95 backdrop-blur-xl dark:bg-slate-900/95 dark:border-slate-800">
             <CardHeader className="text-center pb-2">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-[#1BCFB4]/30 bg-[#1BCFB4]/10 text-[#1BCFB4] text-[11px] font-bold uppercase tracking-wider mb-2 self-center">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-blue-200 bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:border-blue-800 dark:text-blue-300 text-[11px] font-bold uppercase tracking-wider mb-2 self-center">
               <GraduationCap className="w-3.5 h-3.5" /> Educator &amp; Staff Login
             </div>
             <CardTitle className="text-2xl font-black text-slate-900 dark:text-white">
@@ -126,13 +126,13 @@ export default function ApplicantLogin() {
             {/* QUICK DEMO FILL CHIPS */}
             <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs dark:bg-slate-800/50 dark:border-slate-700">
               <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5 flex items-center gap-1">
-                <Sparkles className="w-3 h-3 text-[#1BCFB4]" /> Quick Demo Login (Click to autofill):
+                <Sparkles className="w-3 h-3 text-blue-600" /> Quick Demo Login (Click to autofill):
               </div>
               <div className="flex flex-wrap gap-2">
                 <button
                   type="button"
                   onClick={() => fillCredentials('demo@candidate.com', 'Demo@123')}
-                  className="px-2.5 py-1 rounded-lg bg-white border border-slate-200 hover:border-[#1BCFB4] hover:text-[#1BCFB4] text-[11px] font-bold text-slate-700 shadow-xs transition-all dark:bg-slate-900 dark:border-slate-700 dark:text-slate-200"
+                  className="px-2.5 py-1 rounded-lg bg-white border border-slate-200 hover:border-blue-500 hover:text-blue-600 text-[11px] font-bold text-slate-700 shadow-xs transition-all dark:bg-slate-900 dark:border-slate-700 dark:text-slate-200"
                 >
                   🎓 Demo Candidate
                 </button>
@@ -176,7 +176,7 @@ export default function ApplicantLogin() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#1BCFB4] transition-colors"
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-blue-600 transition-colors"
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
@@ -185,7 +185,7 @@ export default function ApplicantLogin() {
 
               <Button 
                 type="submit" 
-                className="w-full h-11 bg-gradient-to-r from-[#1BCFB4] to-[#07cdae] hover:from-[#16B59D] hover:to-[#05b297] text-white font-bold rounded-xl shadow-lg shadow-[#1BCFB4]/25 text-xs mt-1" 
+                className="w-full h-11 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg shadow-blue-500/20 text-xs mt-1" 
                 disabled={loading}
               >
                 {loading ? 'Logging in...' : 'Sign In as Candidate'}
@@ -206,13 +206,13 @@ export default function ApplicantLogin() {
             <div className="text-center text-xs text-slate-500 pt-3 border-t border-slate-100 dark:border-slate-800 space-y-1.5">
               <p>
                 Don't have a candidate account?{' '}
-                <Link to="/join" className="text-[#1BCFB4] font-bold hover:underline">
+                <Link to="/join" className="text-blue-600 font-bold hover:underline">
                   Register for Free
                 </Link>
               </p>
               <p>
                 School Admin?{' '}
-                <Link to="/login" className="text-[#A05AFF] font-bold hover:underline">
+                <Link to="/login" className="text-indigo-600 font-bold hover:underline">
                   School Login here
                 </Link>
               </p>

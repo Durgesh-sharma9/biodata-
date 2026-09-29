@@ -94,25 +94,44 @@ export default function Apply() {
         <Card className="rounded-xl border-none bg-white shadow-sm dark:bg-slate-900 overflow-hidden">
           <CardHeader className="p-5 border-b border-slate-100 dark:border-slate-800/60 bg-slate-50/70 dark:bg-slate-900/20">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div className="space-y-1.5">
-                <div className="flex items-center gap-2.5">
-                  <div className="p-2 bg-[#A05AFF]/10 text-[#A05AFF] rounded-xl shrink-0">
-                    <School className="h-4 w-4 stroke-[2.2]" />
+              <div className="flex items-start gap-3.5">
+                {school.logoUrl ? (
+                  <div className="h-12 w-12 rounded-xl border border-slate-200/80 bg-white p-1 shadow-xs shrink-0 flex items-center justify-center overflow-hidden">
+                    <img
+                      src={school.logoUrl}
+                      alt={school.schoolName}
+                      className="h-full w-full object-contain rounded-lg"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                        e.currentTarget.parentElement.innerHTML = '<span class="text-xs font-black text-[#A05AFF]">SCH</span>';
+                      }}
+                    />
                   </div>
+                ) : (
+                  <div className="p-3 bg-[#A05AFF]/10 text-[#A05AFF] rounded-xl shrink-0">
+                    <School className="h-5 w-5 stroke-[2.2]" />
+                  </div>
+                )}
+                <div className="space-y-1">
                   <CardTitle className="text-xl font-bold tracking-tight text-slate-800 dark:text-white">
                     Apply to {school.schoolName}
                   </CardTitle>
+                  {(school.city || school.state) && (
+                    <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                      <span>📍 {[school.city, school.state].filter(Boolean).join(', ')}</span>
+                    </p>
+                  )}
+                  <CardDescription className="text-xs font-medium text-slate-500 leading-relaxed max-w-xl">
+                    Please fill in your details below. Your application and resume will be submitted directly to {school.schoolName}'s recruitment team for review.
+                  </CardDescription>
                 </div>
-                <CardDescription className="text-xs font-medium text-slate-500 leading-relaxed max-w-xl">
-                  Please fill in your details below. Your application and resume will be submitted directly to {school.schoolName}'s recruitment team for review.
-                </CardDescription>
               </div>
 
               {/* Secure Channel Badge Pillar (Modern Soft-Tint) */}
               <div className="self-start sm:self-center shrink-0">
                 <div className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-[#A05AFF]/30 bg-[#A05AFF]/5 text-[#A05AFF] font-bold text-[11px] uppercase tracking-wider rounded-xl shadow-none">
                   <ShieldCheck className="h-3.5 w-3.5" />
-                  <span>Secure Channel</span>
+                  <span>Verified School</span>
                 </div>
               </div>
             </div>

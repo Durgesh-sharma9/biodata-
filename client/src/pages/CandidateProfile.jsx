@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link, useParams } from 'react-router-dom';
-import { Pencil, FileText, ExternalLink, Lock, Send, Unlock, User, Briefcase, FileCheck, ShieldAlert, BadgeInfo, CheckCircle2, Loader2, Sparkles } from 'lucide-react';
+import { Pencil, FileText, ExternalLink, Lock, Send, Unlock, User, Briefcase, FileCheck, ShieldAlert, BadgeInfo, CheckCircle2, Loader2, Sparkles, Phone, MessageSquare, Mail } from 'lucide-react';
 import {
   getCandidate,
   unlockCandidate,
@@ -226,9 +226,56 @@ export default function CandidateProfile() {
             <dl className="divide-y divide-slate-100 dark:divide-slate-800/40">
               <DetailRow label="Full Name" value={candidate.fullName} />
               {candidate.gender && <DetailRow label="Gender" value={candidate.gender} />}
-              {candidate.dob && <DetailRow label="Date of Birth" value={new Date(candidate.dob).toLocaleDateString()} />}
-              {!isContactHidden && <DetailRow label="Mobile" value={candidate.mobile} />}
-              {!isContactHidden && <DetailRow label="Email" value={candidate.email} />}
+              {!isContactHidden && (
+                <DetailRow
+                  label="Mobile"
+                  value={
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="font-bold text-slate-800 dark:text-slate-100">{candidate.mobile}</span>
+                      <div className="flex items-center gap-1.5">
+                        <a
+                          href={`tel:${candidate.mobile}`}
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-bold bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-blue-950/40 dark:text-blue-400 border border-blue-200/50 transition-colors"
+                          title="Call Candidate"
+                        >
+                          <Phone className="h-3 w-3" />
+                          <span>Call</span>
+                        </a>
+                        <a
+                          href={`https://wa.me/${String(candidate.mobile).replace(/\D/g, '')}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-bold bg-emerald-50 text-emerald-600 hover:bg-emerald-100 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200/50 transition-colors"
+                          title="WhatsApp Chat"
+                        >
+                          <MessageSquare className="h-3 w-3" />
+                          <span>WhatsApp</span>
+                        </a>
+                      </div>
+                    </div>
+                  }
+                />
+              )}
+              {!isContactHidden && (
+                <DetailRow
+                  label="Email"
+                  value={
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="font-bold text-slate-800 dark:text-slate-100 break-all">{candidate.email}</span>
+                      {candidate.email && (
+                        <a
+                          href={`mailto:${candidate.email}`}
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-bold bg-purple-50 text-[#A05AFF] hover:bg-purple-100 dark:bg-purple-950/40 dark:text-purple-300 border border-purple-200/50 transition-colors"
+                          title="Send Email"
+                        >
+                          <Mail className="h-3 w-3" />
+                          <span>Email</span>
+                        </a>
+                      )}
+                    </div>
+                  }
+                />
+              )}
               {[{ label: 'State', value: candidate.state }, { label: 'City', value: candidate.city }, { label: 'Area', value: candidate.area }, { label: 'Address', value: candidate.address }]
                 .filter((item) => item.value)
                 .map((item) => (

@@ -8,17 +8,18 @@ import {
   CreditCard,
   Bell,
   LogOut,
+  Sparkles,
+  ChevronRight,
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { cn } from '@/lib/utils';
 
-// Links updated to conform strictly to consistent slate micro-colors when inactive
 const applicantLinks = [
   { to: '/applicant/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { to: '/applicant/profile', label: 'My Profile', icon: User },
-  { to: '/applicant/documents', label: 'Documents', icon: FileText },
+  { to: '/applicant/documents', label: 'Documents & CV', icon: FileText },
   { to: '/applicant/requests', label: 'Received Requests', icon: Inbox },
-  { to: '/applicant/plan', label: 'My Plan', icon: CreditCard },
+  { to: '/applicant/plan', label: 'Plans & Credits', icon: CreditCard },
   { to: '/applicant/notifications', label: 'Notifications', icon: Bell },
 ];
 
@@ -26,49 +27,53 @@ export function ApplicantSidebar() {
   const { user, logout } = useAuth();
 
   return (
-    <aside className="flex h-full w-full flex-col bg-white dark:bg-slate-900 border-r border-slate-100 dark:border-slate-800/50 z-30">
-      {/* Premium Branding Header Segment */}
-      <div className="p-5 border-b border-slate-100 dark:border-slate-800/50">
-        <div className="flex items-center gap-2.5">
-          {/* Main platform logo badge using Success / Mint Teal design */}
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#1BCFB4]">
-            <Briefcase className="h-4 w-4 text-white" />
+    <aside className="flex h-full w-full flex-col bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 border-r border-slate-200/80 dark:border-slate-800 z-30 select-none shadow-xs">
+      {/* Brand Header */}
+      <div className="p-5 border-b border-slate-100 dark:border-slate-800">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 shadow-sm shadow-blue-500/20">
+            <Briefcase className="h-5 w-5 text-white" />
           </div>
-          <div>
-            <h1 className="text-xl font-bold tracking-tight text-slate-800 dark:text-white">
-              HireHub
+          <div className="flex flex-col">
+            <h1 className="text-xl font-black tracking-tight text-slate-900 dark:text-white leading-tight">
+              Hire<span className="text-blue-600">Hub</span>
             </h1>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-              Applicant
+            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+              Candidate Portal
             </span>
           </div>
         </div>
       </div>
 
-      {/* Primary Navigation Row Links */}
-      <nav className="flex-1 space-y-1 p-5 overflow-y-auto">
+      {/* Navigation Links */}
+      <nav className="flex-1 space-y-1.5 p-4 overflow-y-auto">
+        <p className="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">
+          Navigation
+        </p>
         {applicantLinks.map(({ to, label, icon: Icon }) => (
           <NavLink
             key={to}
             to={to}
             className={({ isActive }) =>
               cn(
-                'flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-semibold tracking-wide transition-all duration-200 select-none group relative',
-                isActive 
-                  ? 'bg-[#A05AFF]/10 text-[#A05AFF]' 
-                  : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50/50 dark:hover:bg-slate-800/30 hover:text-slate-900 dark:hover:text-slate-200'
+                'flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-semibold tracking-wide transition-all duration-150 group relative',
+                isActive
+                  ? 'bg-blue-50 text-blue-700 font-bold border border-blue-200/70 shadow-xs dark:bg-blue-950/40 dark:text-blue-300 dark:border-blue-900/60'
+                  : 'text-slate-600 hover:bg-slate-100/70 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white'
               )
             }
           >
             {({ isActive }) => (
               <>
-                <Icon className={cn(
-                  "h-4 w-4 transition-transform duration-200 group-hover:scale-105", 
-                  isActive ? "text-[#A05AFF]" : "text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300"
-                )} />
-                <span>{label}</span>
+                <Icon
+                  className={cn(
+                    'h-4 w-4 transition-transform duration-150 group-hover:scale-110 shrink-0',
+                    isActive ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300'
+                  )}
+                />
+                <span className="truncate">{label}</span>
                 {isActive && (
-                  <div className="absolute right-4 h-1.5 w-1.5 rounded-full bg-[#A05AFF]" />
+                  <ChevronRight className="ml-auto h-4 w-4 text-blue-600/70 dark:text-blue-400/70" />
                 )}
               </>
             )}
@@ -76,29 +81,29 @@ export function ApplicantSidebar() {
         ))}
       </nav>
 
-      {/* Profile Footer & Logout Control Section */}
-      <div className="p-5 border-t border-slate-100 dark:border-slate-800/50">
-        <div className="flex items-center gap-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/60 p-3 mb-3 shadow-sm">
-          {/* Avatar frame aligned tightly with Secondary deep purple accent */}
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#9E58FF] text-white font-bold text-sm">
-            {user?.name ? user.name.charAt(0).toUpperCase() : 'A'}
+      {/* Profile Footer */}
+      <div className="p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-950/40">
+        <div className="flex items-center gap-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-2.5 mb-2 shadow-xs">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-black text-sm shadow-xs">
+            {user?.name ? user.name.charAt(0).toUpperCase() : 'C'}
           </div>
           <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-bold text-slate-800 dark:text-slate-200 leading-tight">
-              {user?.name || 'Applicant Account'}
+            <p className="truncate text-xs font-bold text-slate-800 dark:text-white">
+              {user?.name || 'Candidate User'}
             </p>
-            <p className="truncate text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mt-0.5">
-              Active Session
-            </p>
+            <div className="flex items-center gap-1.5 text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span>In Talent Pool</span>
+            </div>
           </div>
         </div>
-        
+
         <button
           onClick={logout}
-          className="flex w-full items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-500 dark:text-slate-400 transition-all duration-200 hover:bg-[#FE9496]/5 hover:text-[#FE9496] dark:hover:bg-[#FE9496]/10 group"
+          className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-semibold text-slate-500 hover:bg-rose-50 hover:text-rose-600 dark:text-slate-400 dark:hover:bg-rose-950/30 dark:hover:text-rose-300 transition-colors"
         >
-          <LogOut className="h-4 w-4 text-slate-400 group-hover:text-[#FE9496] transition-colors duration-200" />
-          Logout
+          <LogOut className="h-3.5 w-3.5 text-slate-400 group-hover:text-rose-500" />
+          <span>Sign Out</span>
         </button>
       </div>
     </aside>

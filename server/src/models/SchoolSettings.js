@@ -32,6 +32,19 @@ const schoolSettingsSchema = new mongoose.Schema(
     },
     contactWorkingHours: { type: String, default: '09:00 AM - 04:00 PM' },
     preferredExperienceMin: { type: Number, default: 0 },
+    boardAffiliation: { type: String, default: 'CBSE' },
+    hrContactPerson: { type: String, default: '' },
+    hrContactDesignation: { type: String, default: 'HR Manager / Principal' },
+    hrContactPhone: { type: String, default: '' },
+    interviewMode: { type: String, default: 'In-Person & Online' },
+    salaryVisibility: { type: String, default: 'Negotiable / Competitive' },
+    staffBenefits: { 
+      type: [String], 
+      default: () => ['Provident Fund (PF)', 'Paid Leaves', 'Free Staff Transport', 'Staff Children Fee Concession'] 
+    },
+    smsAlerts: { type: Boolean, default: false },
+    weeklyReport: { type: Boolean, default: true },
+    interviewReminderHours: { type: Number, default: 24 },
   },
   { timestamps: true }
 );

@@ -136,7 +136,7 @@ export const getMe = catchAsync(async (req, res) => {
   let school = null;
   if (req.user.schoolId) {
     school = await School.findById(req.user.schoolId).select(
-      'schoolName email isActive subscriptionPlan subscriptionStatus credits slug planId'
+      'schoolId schoolName logoUrl email isActive subscriptionPlan subscriptionStatus credits slug planId'
     );
     if (school && school.planId) {
       try {
@@ -222,8 +222,8 @@ export const registerSchool = catchAsync(async (req, res) => {
 export const changePassword = catchAsync(async (req, res) => {
   const { currentPassword, newPassword } = req.body;
 
-  if (!currentPassword || !newPassword) {
-    throw new ApiError(400, 'Current and new password are required');
+  if (!newPassword) {
+    throw new ApiError(400, 'New password is required');
   }
 
   if (newPassword.length < 6) {
@@ -233,8 +233,14 @@ export const changePassword = catchAsync(async (req, res) => {
   const user = await User.findById(req.user._id).select('+password');
   if (!user) throw new ApiError(404, 'User not found');
 
-  if (user.password && !(await user.comparePassword(currentPassword))) {
-    throw new ApiError(400, 'Current password is incorrect');
+  if (user.password) {
+    if (!currentPassword) {
+      throw new ApiError(400, 'Current password is required');
+    }
+    const isMatch = await user.comparePassword(currentPassword);
+    if (!isMatch) {
+      throw new ApiError(400, 'Current password is incorrect');
+    }
   }
 
   user.password = newPassword;
