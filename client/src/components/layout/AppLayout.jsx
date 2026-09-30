@@ -127,8 +127,8 @@ export function AppLayout() {
                   alt="HireHub Logo"
                   className="h-7.5 w-7.5 object-contain shrink-0 group-hover:scale-105 transition-transform"
                 />
-                <span className="font-extrabold text-sm sm:text-base tracking-tight text-slate-900 dark:text-white">
-                  Hire<span className="text-[#8A3BD4]">Hub</span>
+                <span className="font-extrabold text-sm sm:text-base tracking-tight text-slate-900 dark:text-white font-sans">
+                  Hire<span className="bg-gradient-to-r from-[#8A3BD4] to-[#00D2FF] bg-clip-text text-transparent">Hub</span>
                 </span>
               </Link>
             )}

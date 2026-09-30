@@ -178,10 +178,10 @@ export function CandidateList({
   };
 
   const SOURCE_LABELS = {
-    ADMIN: { label: 'Walk-in', color: 'border-blue-200/60 bg-blue-50 text-blue-700 dark:bg-blue-950/30 dark:text-blue-400 dark:border-blue-800/50' },
-    SCHOOL_LINK: { label: 'QR Scan', color: 'border-emerald-200/60 bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-800/50' },
+    ADMIN: { label: 'Walk-in', color: 'border-purple-200/60 bg-purple-50 text-purple-700 dark:bg-purple-950/30 dark:text-purple-400 dark:border-purple-800/50' },
+    SCHOOL_LINK: { label: 'QR Scan', color: 'border-cyan-200/80 bg-cyan-50 text-cyan-700 dark:bg-cyan-950/40 dark:text-cyan-300 dark:border-cyan-800/60' },
     SELF_APPLICANT: { label: 'Self Applied', color: 'border-[#1BCFB4]/30 bg-[#1BCFB4]/5 text-teal-700 dark:text-teal-400' },
-    SUPER_ADMIN_IMPORT: { label: 'Imported', color: 'border-purple-200/60 bg-purple-50 text-purple-700 dark:bg-purple-950/30 dark:text-purple-400 dark:border-purple-800/50' },
+    SUPER_ADMIN_IMPORT: { label: 'Imported', color: 'border-slate-200/60 bg-slate-50 text-slate-700 dark:bg-slate-800/50 dark:text-slate-300' },
   };
 
   const getSourceBadge = (source) => {

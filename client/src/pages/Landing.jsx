@@ -196,7 +196,7 @@ export default function Landing() {
               />
               <div className="flex flex-col">
                 <span className="text-2xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-1 font-sans">
-                  Hire<span className="text-[#8A3BD4]">Hub</span>
+                  Hire<span className="bg-gradient-to-r from-[#8A3BD4] to-[#00D2FF] bg-clip-text text-transparent">Hub</span>
                 </span>
                 <span className="text-[10px] font-semibold text-slate-400 tracking-wider uppercase -mt-1">
                   School Staff Recruitment
@@ -1578,7 +1578,7 @@ export default function Landing() {
                   className="w-7 h-7 object-contain"
                 />
                 <span className="text-xl font-black tracking-tight text-slate-900 dark:text-white font-sans">
-                  Hire<span className="text-[#8A3BD4]">Hub</span>
+                  Hire<span className="bg-gradient-to-r from-[#8A3BD4] to-[#00D2FF] bg-clip-text text-transparent">Hub</span>
                 </span>
               </div>
               <p className="text-xs text-slate-500 leading-relaxed font-medium max-w-sm">

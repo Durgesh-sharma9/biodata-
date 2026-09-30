@@ -354,7 +354,11 @@ export default function CandidateProfile() {
                   {candidate.position}
                 </Badge>
                 {candidate.source && (
-                  <span className="text-[11px] font-bold px-2 py-0.5 rounded-md border border-blue-200/70 bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300 dark:border-blue-800 uppercase tracking-wide">
+                  <span className={`text-[11px] font-bold px-2 py-0.5 rounded-md border uppercase tracking-wide ${
+                    candidate.source === 'SCHOOL_LINK'
+                      ? 'border-cyan-200/80 bg-cyan-50 text-cyan-700 dark:bg-cyan-950/40 dark:text-cyan-300 dark:border-cyan-800'
+                      : 'border-blue-200/70 bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300 dark:border-blue-800'
+                  }`}>
                     {candidate.source === 'ADMIN' ? 'Walk-in' : candidate.source === 'SCHOOL_LINK' ? 'QR Scan' : candidate.source === 'SELF_APPLICANT' ? 'Self Applied' : candidate.source}
                   </span>
                 )}

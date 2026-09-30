@@ -254,8 +254,8 @@ export default function Dashboard() {
   const demoInterview = pipeline.interview ?? 0;
   const hired = pipeline.hired ?? 0;
 
-  // Donut Colors for Subject Categories
-  const SUBJECT_COLORS = ['#0F766E', '#14B8A6', '#3B82F6', '#8B5CF6', '#F59E0B', '#EC4899'];
+  // Donut Colors for Subject Categories (includes HireHub Electric Cyan as lead)
+  const SUBJECT_COLORS = ['#00D2FF', '#8A3BD4', '#0F766E', '#3B82F6', '#F59E0B', '#EC4899'];
 
   // Subject Donut Segments (Pure Real Data from Position Breakdown)
   const subjectSegments = (positionBreakdown || []).map((p, idx) => ({
@@ -290,16 +290,16 @@ export default function Dashboard() {
         
         {/* Quick Action Buttons */}
         <div className="flex items-center gap-2 w-full sm:w-auto">
-          <Button asChild className="flex-1 sm:flex-initial h-9 px-3.5 rounded-lg bg-gradient-to-r from-[#7C3AED] via-[#9333EA] to-[#A855F7] hover:from-[#6D28D9] hover:via-[#7E22CE] hover:to-[#9333EA] text-white font-bold text-xs shadow-sm shadow-purple-500/20 transition-all cursor-pointer border-none">
+          <Button asChild className="flex-1 sm:flex-initial h-9 px-3.5 rounded-lg bg-gradient-to-r from-[#7C3AED] via-[#8A3BD4] to-[#00D2FF] hover:from-[#6D28D9] hover:via-[#7E22CE] hover:to-[#0284C7] text-white font-bold text-xs shadow-sm shadow-cyan-500/20 transition-all cursor-pointer border-none">
             <Link to="/candidates/new" className="flex items-center justify-center gap-1.5">
               <Plus className="h-3.5 w-3.5" />
               <span>Add Biodata</span>
             </Link>
           </Button>
 
-          <Button variant="outline" asChild className="flex-1 sm:flex-initial h-9 px-3.5 rounded-xl border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-purple-50/50 hover:text-[#8A3BD4] hover:border-[#8A3BD4]/40 text-xs font-semibold transition-all cursor-pointer">
+          <Button variant="outline" asChild className="flex-1 sm:flex-initial h-9 px-3.5 rounded-xl border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-cyan-50/50 hover:text-[#00D2FF] hover:border-[#00D2FF]/40 text-xs font-semibold transition-all cursor-pointer">
             <Link to="/application-links" className="flex items-center justify-center gap-1.5">
-              <QrCode className="h-3.5 w-3.5 text-[#8A3BD4]" />
+              <QrCode className="h-3.5 w-3.5 text-[#00D2FF]" />
               <span>QR & Apply Links</span>
             </Link>
           </Button>
@@ -491,9 +491,9 @@ export default function Dashboard() {
 
             {/* Quick Channel & Compliance Pills */}
             <div className="pt-3 border-t border-slate-100 dark:border-slate-800 grid grid-cols-3 gap-2">
-              <div className="p-2.5 rounded-lg bg-slate-50/80 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-800 text-center">
-                <span className="text-[10px] text-slate-400 uppercase font-bold block">QR Links</span>
-                <span className="text-sm font-black text-slate-800 dark:text-slate-200">{directApplications}</span>
+              <div className="p-2.5 rounded-lg bg-cyan-50/80 dark:bg-cyan-950/30 border border-cyan-200/70 dark:border-cyan-800 text-center">
+                <span className="text-[10px] text-cyan-600 dark:text-cyan-400 uppercase font-bold block">QR Links</span>
+                <span className="text-sm font-black text-cyan-800 dark:text-cyan-200">{directApplications}</span>
               </div>
               <div className="p-2.5 rounded-lg bg-slate-50/80 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-800 text-center">
                 <span className="text-[10px] text-slate-400 uppercase font-bold block">Walk-ins</span>

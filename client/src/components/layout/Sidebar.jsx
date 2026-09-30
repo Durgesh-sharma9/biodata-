@@ -83,7 +83,7 @@ export function Sidebar({ onNavigate }) {
             className="h-8 w-8 object-contain shrink-0 group-hover:scale-105 transition-transform"
           />
           <h1 className="text-lg font-black tracking-tight text-slate-900 dark:text-white leading-tight font-sans">
-            Hire<span className="text-[#8A3BD4]">Hub</span>
+            Hire<span className="bg-gradient-to-r from-[#8A3BD4] to-[#00D2FF] bg-clip-text text-transparent">Hub</span>
           </h1>
         </Link>
       </div>
@@ -137,7 +137,7 @@ export function Sidebar({ onNavigate }) {
               {school?.schoolName || user?.name || 'School Principal'}
             </p>
             <p className="truncate text-[10px] font-semibold text-slate-400 dark:text-slate-500 mt-0.5 flex items-center gap-1">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#8A3BD4] inline-block animate-pulse" />
+              <span className="h-1.5 w-1.5 rounded-full bg-[#00D2FF] inline-block animate-pulse shadow-[0_0_8px_#00D2FF]" />
               {user?.name || 'Secure Session'}
             </p>
           </div>
