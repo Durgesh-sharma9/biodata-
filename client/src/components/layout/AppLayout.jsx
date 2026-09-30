@@ -25,13 +25,13 @@ export function AppLayout() {
   return (
     <div className="flex h-screen w-full overflow-hidden bg-[#F4F7F6] dark:bg-slate-950 antialiased selection:bg-[#0F766E]/15 selection:text-[#0F766E]">
       {/* Desktop Sidebar Panel */}
-      <div className="hidden md:block w-64 shrink-0 relative z-30 h-full">
+      <div className="hidden md:block w-64 shrink-0 relative z-30 h-full no-print">
         <Sidebar />
       </div>
 
       {/* Mobile Drawer Overlay */}
       {mobileNavOpen && (
-        <div className="md:hidden fixed inset-0 z-50 flex">
+        <div className="md:hidden fixed inset-0 z-50 flex no-print">
           <div 
             className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity" 
             onClick={() => setMobileNavOpen(false)} 
@@ -39,7 +39,7 @@ export function AppLayout() {
           <div className="relative w-64 max-w-[85vw] h-full z-10 bg-white dark:bg-slate-900 shadow-2xl flex flex-col">
             <div className="absolute top-3 right-3 z-20">
               <button 
-                onClick={() => setMobileNavOpen(false)}
+                onClick={() => setMobileNavOpen(false)} 
                 className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800"
               >
                 <X className="w-4 h-4" />
@@ -55,7 +55,7 @@ export function AppLayout() {
       {/* Main Content Area */}
       <div className="flex flex-1 flex-col min-w-0 h-full overflow-hidden relative">
         {/* Top Header Bar - Compact */}
-        <header className="flex h-13 sm:h-14 shrink-0 items-center justify-between border-b border-[#E2EAE7] dark:border-slate-800/60 bg-white dark:bg-slate-900 px-3 sm:px-5 z-20 shadow-2xs gap-2 sm:gap-4">
+        <header className="flex h-13 sm:h-14 shrink-0 items-center justify-between border-b border-[#E2EAE7] dark:border-slate-800/60 bg-white dark:bg-slate-900 px-3 sm:px-5 z-20 shadow-2xs gap-2 sm:gap-4 no-print">
           {/* Left: Mobile Hamburger & Brand */}
           <div className="flex items-center gap-2.5 shrink-0">
             <button
@@ -114,8 +114,8 @@ export function AppLayout() {
                   </div>
                 </Link>
 
-                {/* Credits Badge */}
-                {school.credits != null && (
+                {/* Milestone 2: Credits Badge (Disabled in Milestone 1) */}
+                {/* {school.credits != null && (
                   <Link to="/credits">
                     <Badge 
                       variant="secondary" 
@@ -126,14 +126,14 @@ export function AppLayout() {
                       <span className="hidden md:inline font-semibold text-[10px] opacity-80">Credits</span>
                     </Badge>
                   </Link>
-                )}
+                )} */}
               </div>
             )}
           </div>
         </header>
         
         {/* Main scrollable page container - Compact spacing */}
-        <main className="flex-1 overflow-y-auto p-3.5 sm:p-5 lg:p-6">
+        <main className="flex-1 overflow-y-auto p-3.5 sm:p-5 lg:p-6 printable-area">
           <div className="w-full max-w-[1400px] mx-auto space-y-5">
             <Outlet />
           </div>

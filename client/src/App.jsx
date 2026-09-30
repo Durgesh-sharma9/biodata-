@@ -89,7 +89,9 @@ export default function App() {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/candidates" element={<Navigate to="/my-candidates" replace />} />
               <Route path="/my-candidates" element={<Candidates />} />
-              <Route path="/talent-pool" element={<TalentPool />} />
+              {/* Milestone 2: Talent Pool & Credits (Redirected for Milestone 1) */}
+              <Route path="/talent-pool" element={<Navigate to="/my-candidates" replace />} />
+              <Route path="/credits" element={<Navigate to="/dashboard" replace />} />
               <Route path="/candidates/new" element={<CandidateForm />} />
               <Route path="/candidates/:id" element={<CandidateProfile />} />
               <Route path="/candidates/:id/edit" element={<CandidateForm />} />
@@ -97,7 +99,6 @@ export default function App() {
               <Route path="/school-profile" element={<SchoolProfile />} />
               <Route path="/school/profile" element={<Navigate to="/school-profile" replace />} />
               <Route path="/school" element={<Navigate to="/school-profile" replace />} />
-              <Route path="/credits" element={<Credits />} />
               <Route path="/application-links" element={<ApplicationLinks />} />
             </Route>
 

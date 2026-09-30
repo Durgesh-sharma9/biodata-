@@ -60,6 +60,7 @@ const buildCandidateFilter = (query) => {
     });
   }
   if (query.source) conditions.push({ source: query.source });
+  if (query.status) conditions.push({ status: query.status });
   if (query.expectedSalaryMin || query.expectedSalaryMax) {
     const expectedSalary = {};
     if (query.expectedSalaryMin) expectedSalary.$gte = Number(query.expectedSalaryMin);
@@ -417,6 +418,7 @@ export const getDashboardStats = catchAsync(async (req, res) => {
     directApplications,
     bEdCount,
     newThisMonth,
+    shortlistedCount,
     experienceAgg,
     genderAgg,
     topLocationsAgg,
@@ -438,6 +440,7 @@ export const getDashboardStats = catchAsync(async (req, res) => {
     Candidate.countDocuments({ ...baseFilter, ownerSchoolId: schoolId, source: 'SCHOOL_LINK' }),
     Candidate.countDocuments({ ...baseFilter, bEd: true }),
     Candidate.countDocuments({ ...baseFilter, createdAt: { $gte: thirtyDaysAgo } }),
+    Candidate.countDocuments({ ...myCandidatesFilter, status: 'shortlisted' }),
     Candidate.aggregate([
       { $match: { isDeleted: false } },
       {
@@ -503,6 +506,7 @@ export const getDashboardStats = catchAsync(async (req, res) => {
       bEdCount,
       bEdPercentage: totalAllCandidates > 0 ? Math.round((bEdCount / totalAllCandidates) * 100) : 0,
       newThisMonth,
+      shortlistedCount: shortlistedCount || 0,
       interestSentCount,
       experienceBreakdown: (experienceAgg || []).map((e) => ({ label: e._id, count: e.count })),
       genderBreakdown: (genderAgg || []).map((g) => ({ gender: g._id, count: g.count })),

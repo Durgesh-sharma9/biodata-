@@ -22,19 +22,20 @@ import {
   LogOut,
   Building2,
   SlidersHorizontal,
+  UserPlus,
+  QrCode,
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { cn } from '@/lib/utils';
 
-// हर एक लिंक के लिए एकदम सॉलिड और ब्राइट कलर (Hex Code) सेट किया है
+// Milestone 1: Pure School Biodata Management Links
 const schoolLinks = [
-  { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, color: '#0F766E' }, // Purple
-  { to: '/school-profile', label: 'School Profile', icon: Building2, color: '#14B8A6' }, // Violet
-  { to: '/my-candidates', label: 'My Candidates', icon: Users2, color: '#FF9F1C' }, // Orange
-  { to: '/talent-pool', label: 'Talent Pool', icon: UserSquare2, color: '#3A86FF' }, // Blue
-  { to: '/credits', label: 'Credits', icon: PiggyBank, color: '#1BCFB4' }, // Mint Teal
-  { to: '/application-links', label: 'Application Links', icon: Share2, color: '#FF007A' }, // Pink
-  { to: '/settings', label: 'Settings', icon: SlidersHorizontal, color: '#06D6A0' }, // Emerald
+  { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, color: '#0F766E' },
+  { to: '/my-candidates', label: 'Biodata List', icon: Users2, color: '#FF9F1C' },
+  { to: '/candidates/new', label: 'Add Biodata', icon: UserPlus, color: '#3A86FF' },
+  { to: '/application-links', label: 'QR & Apply Links', icon: QrCode, color: '#FF007A' },
+  { to: '/school-profile', label: 'School Profile', icon: Building2, color: '#14B8A6' },
+  { to: '/settings', label: 'Settings', icon: SlidersHorizontal, color: '#06D6A0' },
 ];
 
 const adminLinks = [

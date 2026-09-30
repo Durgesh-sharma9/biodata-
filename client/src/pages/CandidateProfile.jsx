@@ -1,9 +1,14 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link, useParams } from 'react-router-dom';
-import { Pencil, FileText, ExternalLink, Lock, Send, Unlock, User, Briefcase, FileCheck, ShieldAlert, BadgeInfo, CheckCircle2, Loader2, Sparkles, Phone, MessageSquare, Mail } from 'lucide-react';
+import { 
+  Pencil, FileText, ExternalLink, Lock, Send, Unlock, User, Briefcase, 
+  FileCheck, ShieldAlert, BadgeInfo, CheckCircle2, Loader2, Sparkles, 
+  Phone, MessageSquare, Mail, Printer, Star, Calendar, BookmarkCheck, Check
+} from 'lucide-react';
 import {
   getCandidate,
+  updateCandidate,
   unlockCandidate,
   sendInterestRequest,
   getInterestRequestStatus,
@@ -28,16 +33,65 @@ function DetailRow({ label, value }) {
   );
 }
 
+const PIPELINE_STAGES = [
+  { id: 'new', label: 'New Application', color: 'bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100 active:ring-blue-400' },
+  { id: 'shortlisted', label: 'Shortlisted', color: 'bg-teal-50 text-teal-700 border-teal-200 hover:bg-teal-100 active:ring-teal-400' },
+  { id: 'interview_scheduled', label: 'Interview Scheduled', color: 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100 active:ring-amber-400' },
+  { id: 'demo_class', label: 'Demo Class', color: 'bg-indigo-50 text-indigo-700 border-indigo-200 hover:bg-indigo-100 active:ring-indigo-400' },
+  { id: 'offered', label: 'Offered', color: 'bg-purple-50 text-purple-700 border-purple-200 hover:bg-purple-100 active:ring-purple-400' },
+  { id: 'hired', label: 'Hired', color: 'bg-emerald-50 text-emerald-800 border-emerald-300 hover:bg-emerald-100 active:ring-emerald-400 font-bold' },
+  { id: 'rejected', label: 'Rejected', color: 'bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100 active:ring-rose-400' },
+];
+
 export default function CandidateProfile() {
   const { id } = useParams();
   const queryClient = useQueryClient();
   const { refreshSchool, school } = useAuth();
   const [interestForm, setInterestForm] = useState({ positionOffered: '', message: '' });
   const [showInterestForm, setShowInterestForm] = useState(false);
+  const [pipelineStatus, setPipelineStatus] = useState('new');
+  const [interviewerNotes, setInterviewerNotes] = useState('');
+  const [candidateRating, setCandidateRating] = useState(0);
+  const [interviewDate, setInterviewDate] = useState('');
 
   const { data: candidate, isLoading } = useQuery({
     queryKey: ['candidate', id],
     queryFn: () => getCandidate(id).then((r) => r.data.data),
+  });
+
+  useEffect(() => {
+    if (candidate) {
+      setPipelineStatus(candidate.status || 'new');
+      setInterviewerNotes(candidate.notes || '');
+      setCandidateRating(candidate.rating || 0);
+      setInterviewDate(
+        candidate.interviewDate ? new Date(candidate.interviewDate).toISOString().slice(0, 16) : ''
+      );
+    }
+  }, [candidate]);
+
+  const updatePipelineMutation = useMutation({
+    mutationFn: (customPayload) =>
+      updateCandidate(id, {
+        status: customPayload?.status ?? pipelineStatus,
+        notes: customPayload?.notes ?? interviewerNotes,
+        rating: customPayload?.rating ?? candidateRating,
+        interviewDate: (customPayload?.interviewDate ?? interviewDate) || undefined,
+      }),
+    onSuccess: (res) => {
+      queryClient.setQueryData(['candidate', id], (prev) => ({
+        ...prev,
+        ...res.data.data,
+      }));
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      setStatusBanner({ type: 'success', message: 'Recruitment status & evaluation notes updated successfully!' });
+    },
+    onError: (err) => {
+      setStatusBanner({
+        type: 'error',
+        message: err.response?.data?.message || 'Failed to update candidate recruitment status',
+      });
+    },
   });
 
   const { data: positionsData } = useQuery({
@@ -131,13 +185,23 @@ export default function CandidateProfile() {
           <button onClick={() => setStatusBanner(null)} className="ml-4 opacity-70 hover:opacity-100 font-black">✕</button>
         </div>
       )}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5 border-b border-slate-200/60 dark:border-slate-800 pb-5">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5 border-b border-slate-200/60 dark:border-slate-800 pb-5 no-print">
         <PageHeader
           title={candidate.fullName}
           description={`${candidate.position}${candidate.source ? ` • ${candidate.source}` : ''} • Added ${formatDate(candidate.createdAt)}`}
         />
         
         <div className="flex flex-wrap items-center gap-3 shrink-0 z-10 self-start md:self-auto">
+          {/* Print Biodata Sheet for physical interview panel */}
+          <Button 
+            onClick={() => window.print()}
+            className="h-11 rounded-lg bg-[#0F766E] hover:bg-[#115E59] text-white font-bold text-xs gap-2 shadow-2xs transition-all active:scale-95"
+            title="Print A4 Biodata Sheet for Interview Panel"
+          >
+            <Printer className="h-4 w-4" />
+            <span>Print Biodata Sheet (A4)</span>
+          </Button>
+
           {isLocked && (
             <Button 
               onClick={() => unlockMutation.mutate()} 
@@ -167,6 +231,112 @@ export default function CandidateProfile() {
         </div>
       </div>
 
+      {/* RECRUITMENT PIPELINE & INTERVIEW EVALUATION CARD (School Owned / Direct Candidates) */}
+      {candidate.canEdit && (
+        <Card className="border border-[#E2EAE7] dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xs rounded-xl overflow-hidden no-print">
+          <CardHeader className="p-4 border-b border-[#E2EAE7] dark:border-slate-800 bg-[#F4F7F6]/60 dark:bg-slate-900/40">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+              <div className="flex items-center gap-2.5">
+                <div className="p-1.5 rounded-lg bg-[#0F766E] text-white">
+                  <BookmarkCheck className="h-4 w-4" />
+                </div>
+                <div>
+                  <CardTitle className="text-sm font-bold text-slate-900 dark:text-white">Recruitment Pipeline & Evaluation</CardTitle>
+                  <CardDescription className="text-xs text-slate-500">Track application stages, schedule demo/interview, and log private evaluation notes</CardDescription>
+                </div>
+              </div>
+              
+              {/* Star Rating Selector */}
+              <div className="flex items-center gap-1 bg-white dark:bg-slate-800 px-2.5 py-1 rounded-lg border border-[#E2EAE7] dark:border-slate-700">
+                <span className="text-[11px] font-bold text-slate-500 mr-1">Rating:</span>
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <button
+                    key={star}
+                    type="button"
+                    onClick={() => {
+                      setCandidateRating(star);
+                      updatePipelineMutation.mutate({ rating: star });
+                    }}
+                    className="p-0.5 hover:scale-110 transition-transform text-amber-400"
+                    title={`${star} Star Rating`}
+                  >
+                    <Star 
+                      className={`h-4 w-4 ${star <= candidateRating ? 'fill-amber-400 text-amber-400' : 'text-slate-300 dark:text-slate-600'}`} 
+                    />
+                  </button>
+                ))}
+              </div>
+            </div>
+          </CardHeader>
+
+          <CardContent className="p-4 space-y-4">
+            {/* Interactive Pipeline Stage Selector Pills */}
+            <div className="space-y-1.5">
+              <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Current Pipeline Stage</Label>
+              <div className="flex flex-wrap gap-2 pt-1">
+                {PIPELINE_STAGES.map((stage) => {
+                  const isActive = pipelineStatus === stage.id;
+                  return (
+                    <button
+                      key={stage.id}
+                      type="button"
+                      onClick={() => {
+                        setPipelineStatus(stage.id);
+                        updatePipelineMutation.mutate({ status: stage.id });
+                      }}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all flex items-center gap-1.5 ${stage.color} ${
+                        isActive 
+                          ? 'ring-2 ring-[#0F766E] shadow-xs scale-102 font-extrabold' 
+                          : 'opacity-70 hover:opacity-100'
+                      }`}
+                    >
+                      {isActive && <Check className="h-3 w-3 stroke-[3]" />}
+                      <span>{stage.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Interview Date & Private Notes Row */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2 border-t border-slate-100 dark:border-slate-800">
+              <div className="space-y-1.5">
+                <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1">
+                  <Calendar className="h-3.5 w-3.5 text-[#0F766E]" /> Interview / Demo Date
+                </Label>
+                <Input
+                  type="datetime-local"
+                  value={interviewDate}
+                  onChange={(e) => setInterviewDate(e.target.value)}
+                  className="h-10 text-xs border-[#E2EAE7] rounded-lg dark:bg-slate-800"
+                />
+              </div>
+
+              <div className="md:col-span-2 space-y-1.5">
+                <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                  Private Interviewer Notes & Demo Feedback
+                </Label>
+                <div className="flex gap-2">
+                  <Textarea
+                    value={interviewerNotes}
+                    onChange={(e) => setInterviewerNotes(e.target.value)}
+                    placeholder="Enter private school evaluation notes, subject test score, demo class review..."
+                    className="text-xs border-[#E2EAE7] rounded-lg dark:bg-slate-800 min-h-[40px] h-10 resize-none py-2"
+                  />
+                  <Button
+                    onClick={() => updatePipelineMutation.mutate()}
+                    disabled={updatePipelineMutation.isPending}
+                    className="h-10 px-4 bg-[#0F766E] hover:bg-[#115E59] text-white font-bold text-xs shrink-0 rounded-lg"
+                  >
+                    {updatePipelineMutation.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : 'Save Note'}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Modern Soft-Tint Informational Banners */}
       {isLocked && (
         <div className="rounded-xl border border-rose-200/60 bg-rose-50/80 p-4 flex gap-3 text-xs font-semibold text-rose-600 leading-relaxed shadow-none animate-in slide-in-from-top-2 duration-300">
@@ -189,7 +359,7 @@ export default function CandidateProfile() {
       )}
 
       {/* Primary Data Columns Split View Grid Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 no-print">
         
         {/* Basic Details Container */}
         <Card className="border border-slate-200/60 bg-white shadow-2xs dark:bg-slate-900 flex flex-col justify-between">
@@ -596,6 +766,194 @@ export default function CandidateProfile() {
             </CardContent>
           </Card>
         )}
+      </div>
+
+      {/* ------------------------------------------------------------- */}
+      {/* A4 PRINTABLE CANDIDATE BIODATA SHEET (Print-only for physical interview panel) */}
+      {/* ------------------------------------------------------------- */}
+      <div className="print-only font-sans text-black p-4 text-[12px] leading-relaxed max-w-[210mm] mx-auto bg-white">
+        {/* School Header */}
+        <div className="border-b-2 border-slate-900 pb-3 mb-3 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            {school?.logoUrl && (
+              <img src={school.logoUrl} alt="Logo" className="h-12 w-12 object-contain" />
+            )}
+            <div>
+              <h1 className="text-lg font-black uppercase tracking-tight text-slate-900">
+                {school?.schoolName || 'Recruitment Cell'}
+              </h1>
+              <p className="text-[11px] text-slate-600">
+                {school?.address ? `${school.address}, ` : ''}{school?.city || ''}{school?.state ? `, ${school.state}` : ''}
+              </p>
+              <p className="text-[10px] text-slate-500 font-mono">
+                {school?.schoolId ? `School Code: #${school.schoolId}` : ''}
+              </p>
+            </div>
+          </div>
+          <div className="text-right">
+            <span className="inline-block border border-slate-900 px-2 py-0.5 text-[11px] font-extrabold uppercase tracking-wider">
+              Interview Biodata Sheet
+            </span>
+            <p className="text-[10px] text-slate-600 mt-0.5">Date: {new Date().toLocaleDateString('en-IN')}</p>
+          </div>
+        </div>
+
+        {/* Candidate Top Box */}
+        <div className="flex gap-4 border border-slate-300 rounded p-2.5 mb-3 bg-slate-50/30">
+          <div className="w-24 h-28 border border-slate-300 bg-white flex items-center justify-center shrink-0 overflow-hidden rounded">
+            {candidate.profilePhoto ? (
+              <img src={candidate.profilePhoto} alt={candidate.fullName} className="h-full w-full object-cover" />
+            ) : (
+              <div className="text-center p-1 text-slate-400">
+                <User className="h-6 w-6 mx-auto mb-0.5 text-slate-300" />
+                <span className="text-[9px] uppercase font-bold">Affix Photo</span>
+              </div>
+            )}
+          </div>
+          <div className="flex-1 grid grid-cols-2 gap-x-4 gap-y-1 text-[11px]">
+            <div>
+              <span className="text-[9px] font-bold text-slate-500 uppercase block">Candidate Name</span>
+              <strong className="text-xs font-black text-slate-900">{candidate.fullName}</strong>
+            </div>
+            <div>
+              <span className="text-[9px] font-bold text-slate-500 uppercase block">Applied Role</span>
+              <strong className="text-xs font-black text-slate-900">{candidate.position}</strong>
+            </div>
+            <div>
+              <span className="text-[9px] font-bold text-slate-500 uppercase block">Contact Mobile</span>
+              <span className="font-bold">{candidate.mobile || '—'}</span>
+            </div>
+            <div>
+              <span className="text-[9px] font-bold text-slate-500 uppercase block">WhatsApp Number</span>
+              <span>{candidate.whatsappNumber || candidate.mobile || '—'}</span>
+            </div>
+            <div>
+              <span className="text-[9px] font-bold text-slate-500 uppercase block">Email Address</span>
+              <span>{candidate.email || '—'}</span>
+            </div>
+            <div>
+              <span className="text-[9px] font-bold text-slate-500 uppercase block">Gender & Age</span>
+              <span>{candidate.gender || '—'}</span>
+            </div>
+            <div className="col-span-2">
+              <span className="text-[9px] font-bold text-slate-500 uppercase block">Residential Address</span>
+              <span>{[candidate.address, candidate.area, candidate.city, candidate.state].filter(Boolean).join(', ') || '—'}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Professional Qualifications & Experience Table */}
+        <div className="mb-3">
+          <h3 className="text-[11px] font-black uppercase tracking-wider text-slate-900 border-b border-slate-300 pb-0.5 mb-1.5">
+            Academic & Professional Qualifications
+          </h3>
+          <table className="w-full text-[11px] border border-slate-300">
+            <tbody>
+              <tr className="border-b border-slate-200">
+                <td className="w-1/3 p-1.5 bg-slate-100 font-bold border-r border-slate-200">Highest Qualifications</td>
+                <td className="p-1.5">{candidate.qualifications?.join(', ') || '—'}</td>
+              </tr>
+              <tr className="border-b border-slate-200">
+                <td className="p-1.5 bg-slate-100 font-bold border-r border-slate-200">B.Ed / Teacher Training</td>
+                <td className="p-1.5">{candidate.bEd ? 'Yes (B.Ed Qualified)' : 'No'} {candidate.mEd ? ', M.Ed Qualified' : ''}</td>
+              </tr>
+              <tr className="border-b border-slate-200">
+                <td className="p-1.5 bg-slate-100 font-bold border-r border-slate-200">Teaching Subjects</td>
+                <td className="p-1.5">{candidate.subjects?.join(', ') || '—'}</td>
+              </tr>
+              <tr className="border-b border-slate-200">
+                <td className="p-1.5 bg-slate-100 font-bold border-r border-slate-200">Classes Can Teach</td>
+                <td className="p-1.5">{candidate.classesCanTeach?.join(', ') || '—'}</td>
+              </tr>
+              <tr className="border-b border-slate-200">
+                <td className="p-1.5 bg-slate-100 font-bold border-r border-slate-200">Medium of Instruction</td>
+                <td className="p-1.5">{candidate.medium || 'English / Hindi'}</td>
+              </tr>
+              <tr className="border-b border-slate-200">
+                <td className="p-1.5 bg-slate-100 font-bold border-r border-slate-200">Total Experience</td>
+                <td className="p-1.5 font-bold">{candidate.experienceYears ? `${candidate.experienceYears} Years` : 'Fresher (0 Years)'}</td>
+              </tr>
+              <tr className="border-b border-slate-200">
+                <td className="p-1.5 bg-slate-100 font-bold border-r border-slate-200">Board Experience</td>
+                <td className="p-1.5">{candidate.boardExperience?.join(', ') || '—'}</td>
+              </tr>
+              <tr>
+                <td className="p-1.5 bg-slate-100 font-bold border-r border-slate-200">Expected Salary</td>
+                <td className="p-1.5">{candidate.expectedSalary ? `₹${candidate.expectedSalary.toLocaleString()} / Month` : 'Negotiable as per school norms'}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        {/* Physical Interview Committee Assessment Rubric */}
+        <div className="border border-slate-900 rounded p-2.5 mt-3">
+          <h3 className="text-[11px] font-black uppercase tracking-wider text-slate-900 border-b border-slate-900 pb-0.5 mb-1.5">
+            Interview Panel Assessment & Evaluation Rubric (Official Panel Use Only)
+          </h3>
+          <table className="w-full text-[11px] border border-slate-300 mb-2">
+            <thead>
+              <tr className="bg-slate-100 border-b border-slate-300">
+                <th className="p-1 text-left border-r border-slate-300">Assessment Parameter</th>
+                <th className="p-1 text-center w-20 border-r border-slate-300">Max Marks</th>
+                <th className="p-1 text-center w-24 border-r border-slate-300">Score</th>
+                <th className="p-1 text-left">Remarks / Panel Observations</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="border-b border-slate-200">
+                <td className="p-1 border-r border-slate-300">1. Subject Mastery & Content Clarity</td>
+                <td className="p-1 text-center border-r border-slate-300">10</td>
+                <td className="p-1 text-center border-r border-slate-300 font-bold">/ 10</td>
+                <td className="p-1"></td>
+              </tr>
+              <tr className="border-b border-slate-200">
+                <td className="p-1 border-r border-slate-300">2. English Fluency & Communication</td>
+                <td className="p-1 text-center border-r border-slate-300">10</td>
+                <td className="p-1 text-center border-r border-slate-300 font-bold">/ 10</td>
+                <td className="p-1"></td>
+              </tr>
+              <tr className="border-b border-slate-200">
+                <td className="p-1 border-r border-slate-300">3. Blackboard Writing & Teaching Aids</td>
+                <td className="p-1 text-center border-r border-slate-300">10</td>
+                <td className="p-1 text-center border-r border-slate-300 font-bold">/ 10</td>
+                <td className="p-1"></td>
+              </tr>
+              <tr className="border-b border-slate-200">
+                <td className="p-1 border-r border-slate-300">4. Classroom Presence & Student Control</td>
+                <td className="p-1 text-center border-r border-slate-300">10</td>
+                <td className="p-1 text-center border-r border-slate-300 font-bold">/ 10</td>
+                <td className="p-1"></td>
+              </tr>
+              <tr>
+                <td className="p-1 border-r border-slate-300 font-bold">Total Score</td>
+                <td className="p-1 text-center border-r border-slate-300 font-bold">40</td>
+                <td className="p-1 text-center border-r border-slate-300 font-bold">/ 40</td>
+                <td className="p-1"></td>
+              </tr>
+            </tbody>
+          </table>
+
+          {/* Final Decision Box */}
+          <div className="grid grid-cols-2 gap-4 text-[11px] pt-1.5">
+            <div>
+              <p className="font-bold text-slate-800 mb-0.5">Committee Recommendation:</p>
+              <div className="flex gap-3 items-center">
+                <span>[ &nbsp; ] Selected</span>
+                <span>[ &nbsp; ] Demo 2</span>
+                <span>[ &nbsp; ] Rejected</span>
+              </div>
+              <p className="mt-2 font-medium">Offered Salary: ₹ _________________ / month</p>
+            </div>
+            <div className="text-right flex flex-col justify-between">
+              <div>
+                <p className="font-bold text-slate-800">Interviewer Signature(s):</p>
+                <div className="mt-6 border-t border-slate-400 w-44 ml-auto text-center text-[9px] text-slate-500">
+                  Principal / Head of Department
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

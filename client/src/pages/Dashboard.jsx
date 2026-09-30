@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { 
-  Users, Coins, Plus, List, Search, ArrowRight, Sparkles, Loader2, 
+  Users, Plus, List, ArrowRight, Sparkles, Loader2, 
   Briefcase, Eye, MapPin, GraduationCap, Phone, UserCheck, TrendingUp,
   PieChart, BarChart3, Target, ShieldCheck, CheckCircle2, Award, Zap,
-  Share2, Send, Clock, Flame, Activity
+  Share2, Send, Clock, Flame, Activity, QrCode, BookmarkCheck, Calendar
 } from 'lucide-react';
 import { getDashboardStats } from '@/lib/api';
 import { Button } from '@/components/ui/button';
@@ -27,24 +27,23 @@ export default function Dashboard() {
           <div className="absolute inset-0 bg-[#0F766E]/10 rounded-full blur-xl animate-pulse scale-150" />
         </div>
         <p className="text-slate-500 font-bold tracking-wide text-sm">
-          Assembling recruitment control center...
+          Loading school recruitment dashboard...
         </p>
       </div>
     );
   }
 
   const recentCandidates = data?.recentCandidates || [];
-  const recentTalentPool = data?.recentTalentPool || [];
   const positionBreakdown = data?.positionBreakdown || [];
-  const totalCandidates = data?.totalCandidates || 1;
+  const totalCandidates = data?.myCandidates || data?.totalCandidates || 1;
   const directApplications = data?.directApplications || 0;
   const bEdCount = data?.bEdCount || 0;
   const bEdPercentage = data?.bEdPercentage || 0;
   const newThisMonth = data?.newThisMonth || 0;
-  const interestSentCount = data?.interestSentCount || 0;
+  const shortlistedCount = data?.shortlistedCount || 0;
+  const manualWalkIns = Math.max(0, (data?.myCandidates || 0) - directApplications);
   const experienceBreakdown = data?.experienceBreakdown || [];
   const topLocations = data?.topLocations || [];
-  const recentUnlocks = data?.recentUnlocks || [];
 
   // Colors for Position Analytics Bars
   const BAR_COLORS = [
@@ -66,8 +65,8 @@ export default function Dashboard() {
             <Sparkles className="h-3.5 w-3.5" />
           </div>
           <div>
-            <h1 className="text-base font-bold tracking-tight text-slate-900 dark:text-white">Recruitment Dashboard</h1>
-            <p className="text-[11px] text-slate-400 font-medium">Real-time Pipeline Analytics & Candidate Management</p>
+            <h1 className="text-base font-bold tracking-tight text-slate-900 dark:text-white">School Biodata Dashboard</h1>
+            <p className="text-[11px] text-slate-400 font-medium">Manage teacher applications, walk-in biodatas & interview pipeline</p>
           </div>
         </div>
         
@@ -75,12 +74,12 @@ export default function Dashboard() {
         <div className="flex items-center gap-2">
           <Button asChild className="h-8 rounded-lg bg-[#0F766E] hover:bg-[#115E59] text-white font-bold shadow-2xs transition-all text-xs px-3">
             <Link to="/candidates/new">
-              <Plus className="mr-1 h-3.5 w-3.5" /> Add Candidate
+              <Plus className="mr-1 h-3.5 w-3.5" /> Add Biodata
             </Link>
           </Button>
           <Button variant="outline" asChild className="h-8 rounded-lg border-[#E2EAE7] bg-white text-slate-700 hover:bg-[#F0FDFA] hover:text-[#0F766E] hover:border-[#0F766E]/40 transition-all text-xs px-3">
-            <Link to="/talent-pool">
-              <Search className="mr-1 h-3.5 w-3.5 text-[#14B8A6]" /> Browse Pool
+            <Link to="/application-links">
+              <QrCode className="mr-1.5 h-3.5 w-3.5 text-[#0F766E]" /> QR & Apply Links
             </Link>
           </Button>
         </div>
@@ -89,17 +88,17 @@ export default function Dashboard() {
       {/* COMPACT Grid Matrix of Statistics Cards - Teal & Mint Palette 2 */}
       <div className="grid gap-3.5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         
-        {/* My Candidates - Teal Gradient Accent Card */}
+        {/* Total Biodatas - Teal Gradient Accent Card */}
         <div className="relative overflow-hidden rounded-lg bg-gradient-to-r from-[#0F766E] to-[#14B8A6] p-3.5 text-white shadow-2xs group">
           <div className="absolute right-0 bottom-0 translate-x-2 translate-y-2 opacity-15 pointer-events-none transition-transform duration-300 group-hover:scale-110">
             <Users className="h-16 w-16" />
           </div>
           <div className="relative flex items-center justify-between">
             <div className="space-y-0.5">
-              <span className="text-[10px] font-bold opacity-90 uppercase tracking-wider">My Candidates</span>
+              <span className="text-[10px] font-bold opacity-90 uppercase tracking-wider">Total Biodatas</span>
               <h3 className="text-2xl font-black tracking-tight">{data?.myCandidates || 0}</h3>
               <p className="text-[10px] opacity-90 font-semibold flex items-center gap-1">
-                <TrendingUp className="h-3 w-3" /> Active Pipeline Roster
+                <TrendingUp className="h-3 w-3" /> School Candidate Roster
               </p>
             </div>
             <div className="p-2 rounded-lg bg-white/20 backdrop-blur-xs">
@@ -108,30 +107,30 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Talent Pool Records - Crisp White Card with Top Teal Accent */}
+        {/* Direct Link Applications - Crisp White Card with Top Teal Accent */}
         <div className="relative overflow-hidden rounded-lg bg-white dark:bg-slate-900 border border-[#E2EAE7] border-t-3 border-t-[#0F766E] dark:border-slate-800 p-3.5 shadow-2xs group">
           <div className="relative flex items-center justify-between">
             <div className="space-y-0.5">
-              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Talent Pool Records</span>
-              <h3 className="text-2xl font-black text-slate-800 dark:text-white tracking-tight">{data?.talentPoolCount || 0}</h3>
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">QR & Link Applies</span>
+              <h3 className="text-2xl font-black text-slate-800 dark:text-white tracking-tight">{directApplications}</h3>
               <p className="text-[10px] text-[#0F766E] font-semibold flex items-center gap-1">
-                <Search className="h-3 w-3 text-[#14B8A6]" /> Discoverable Profiles
+                <QrCode className="h-3 w-3 text-[#14B8A6]" /> Self-Submitted by Teachers
               </p>
             </div>
             <div className="p-2 rounded-lg bg-[#0F766E]/10 text-[#0F766E]">
-              <List className="h-4 w-4" />
+              <Share2 className="h-4 w-4" />
             </div>
           </div>
         </div>
 
-        {/* Owned Candidates - Crisp White Card with Top Mint Accent */}
+        {/* Walk-in Entries - Crisp White Card with Top Mint Accent */}
         <div className="relative overflow-hidden rounded-lg bg-white dark:bg-slate-900 border border-[#E2EAE7] border-t-3 border-t-[#14B8A6] dark:border-slate-800 p-3.5 shadow-2xs group">
           <div className="relative flex items-center justify-between">
             <div className="space-y-0.5">
-              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Direct Applications</span>
-              <h3 className="text-2xl font-black text-slate-800 dark:text-white tracking-tight">{data?.ownedCandidates || 0}</h3>
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Walk-in & Manual</span>
+              <h3 className="text-2xl font-black text-slate-800 dark:text-white tracking-tight">{manualWalkIns}</h3>
               <p className="text-[10px] text-[#14B8A6] font-semibold flex items-center gap-1">
-                <UserCheck className="h-3 w-3" /> Direct Database Records
+                <UserCheck className="h-3 w-3" /> Added by School Staff
               </p>
             </div>
             <div className="p-2 rounded-lg bg-[#14B8A6]/15 text-[#0F766E]">
@@ -140,18 +139,18 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Available Credits - Warm Amber Alert Card */}
+        {/* Shortlisted Candidates - Warm Amber Alert Card */}
         <div className="relative overflow-hidden rounded-lg bg-[#FEF3C7]/90 dark:bg-amber-950/40 border border-[#FDE68A] dark:border-amber-900/60 p-3.5 shadow-2xs group">
           <div className="relative flex items-center justify-between">
             <div className="space-y-0.5">
-              <span className="text-[10px] font-bold text-amber-800 dark:text-amber-300 uppercase tracking-wider">Available Credits</span>
-              <h3 className="text-2xl font-black text-amber-950 dark:text-amber-200 tracking-tight">{data?.availableCredits || 0}</h3>
+              <span className="text-[10px] font-bold text-amber-800 dark:text-amber-300 uppercase tracking-wider">Shortlisted</span>
+              <h3 className="text-2xl font-black text-amber-950 dark:text-amber-200 tracking-tight">{shortlistedCount}</h3>
               <p className="text-[10px] text-amber-700 dark:text-amber-400 font-semibold flex items-center gap-1">
-                <Coins className="h-3 w-3" /> Profile Unlock Balance
+                <BookmarkCheck className="h-3 w-3" /> Ready for Interview / Demo
               </p>
             </div>
             <div className="p-2 rounded-lg bg-amber-500/20 text-amber-700 dark:text-amber-300">
-              <Coins className="h-4 w-4" />
+              <BookmarkCheck className="h-4 w-4" />
             </div>
           </div>
         </div>
@@ -269,53 +268,53 @@ export default function Dashboard() {
           </CardContent>
         </Card>
 
-        {/* Pipeline Health & Performance Widget (1 Col) */}
+        {/* Pipeline Health & Status Widget (1 Col) */}
         <Card className="border border-slate-200/80 shadow-sm rounded-xl overflow-hidden bg-white">
           <CardHeader className="p-5 border-b border-slate-100 bg-white">
             <CardTitle className="text-base font-bold tracking-wide text-slate-800 flex items-center gap-2">
-              <Target className="h-4 w-4 text-[#07cdae]" /> Pipeline Metrics
+              <Target className="h-4 w-4 text-[#07cdae]" /> School Pipeline Status
             </CardTitle>
-            <p className="text-xs text-slate-400 font-medium">Key indicators & account status</p>
+            <p className="text-xs text-slate-400 font-medium">Recruitment health & staff qualification metrics</p>
           </CardHeader>
           <CardContent className="p-5 space-y-4">
             
             <div className="flex items-center justify-between p-3 rounded-xl bg-teal-50/50 border border-teal-100">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-teal-500 text-white">
-                  <ShieldCheck className="h-4 w-4" />
+                <div className="p-2 rounded-lg bg-teal-600 text-white">
+                  <GraduationCap className="h-4 w-4" />
                 </div>
                 <div>
-                  <h4 className="text-xs font-bold text-slate-800">Unlocked Profiles</h4>
-                  <p className="text-[11px] text-slate-400">Total unlocked candidates</p>
+                  <h4 className="text-xs font-bold text-slate-800">B.Ed / Certified Ratio</h4>
+                  <p className="text-[11px] text-slate-400">{bEdCount} qualified candidates</p>
                 </div>
               </div>
-              <span className="text-lg font-bold text-teal-700">{data?.unlockedCount || 0}</span>
+              <span className="text-lg font-bold text-teal-700">{bEdPercentage}%</span>
             </div>
 
             <div className="flex items-center justify-between p-3 rounded-xl bg-purple-50/50 border border-purple-100">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg bg-[#0F766E] text-white">
-                  <Zap className="h-4 w-4" />
+                  <BookmarkCheck className="h-4 w-4" />
                 </div>
                 <div>
-                  <h4 className="text-xs font-bold text-slate-800">Search Radius</h4>
-                  <p className="text-[11px] text-slate-400">Nearby candidate radius</p>
+                  <h4 className="text-xs font-bold text-slate-800">Shortlisted for Demo</h4>
+                  <p className="text-[11px] text-slate-400">Ready for interview panel</p>
                 </div>
               </div>
-              <span className="text-sm font-bold text-purple-700">50 km</span>
+              <span className="text-sm font-bold text-teal-800">{shortlistedCount}</span>
             </div>
 
             <div className="flex items-center justify-between p-3 rounded-xl bg-blue-50/50 border border-blue-100">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg bg-blue-500 text-white">
-                  <Award className="h-4 w-4" />
+                  <QrCode className="h-4 w-4" />
                 </div>
                 <div>
-                  <h4 className="text-xs font-bold text-slate-800">Account Plan</h4>
-                  <p className="text-[11px] text-slate-400">Subscription Tier</p>
+                  <h4 className="text-xs font-bold text-slate-800">QR / Web Form Applies</h4>
+                  <p className="text-[11px] text-slate-400">Direct paperless entries</p>
                 </div>
               </div>
-              <span className="text-xs font-bold uppercase px-2 py-0.5 rounded-md bg-blue-600 text-white">Premium</span>
+              <span className="text-sm font-bold text-blue-700">{directApplications}</span>
             </div>
 
           </CardContent>
@@ -323,16 +322,16 @@ export default function Dashboard() {
 
       </div>
 
-      {/* SECONDARY ANALYTICS: EXPERIENCE & REGIONAL TALENT + RECENT ACTIVITY */}
+      {/* SECONDARY ANALYTICS: EXPERIENCE & REGIONAL TALENT + RECRUITMENT SHORTCUTS */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
         {/* Experience & Regional Distribution */}
         <Card className="border border-slate-200/80 shadow-sm rounded-xl overflow-hidden bg-white">
           <CardHeader className="p-5 border-b border-slate-100 bg-white space-y-0.5">
             <CardTitle className="text-base font-bold tracking-wide text-slate-800 flex items-center gap-2">
-              <PieChart className="h-4 w-4 text-[#FF9F1C]" /> Experience & Regional Talent
+              <PieChart className="h-4 w-4 text-[#FF9F1C]" /> Experience & Regional Distribution
             </CardTitle>
-            <p className="text-xs text-slate-400 font-medium">Candidate seniority brackets & top regional hubs</p>
+            <p className="text-xs text-slate-400 font-medium">Candidate seniority brackets & candidate locations</p>
           </CardHeader>
           <CardContent className="p-5 space-y-5">
             {/* Experience Buckets */}
@@ -357,15 +356,15 @@ export default function Dashboard() {
             {topLocations.length > 0 && (
               <div className="space-y-2 pt-2 border-t border-slate-100">
                 <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
-                  <MapPin className="h-3.5 w-3.5 text-[#3081e4]" /> Top Talent Locations
+                  <MapPin className="h-3.5 w-3.5 text-[#3081e4]" /> Top Candidate Locations
                 </h4>
                 <div className="flex flex-wrap gap-2">
                   {topLocations.map((loc) => (
                     <span 
                       key={loc.city} 
-                      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-blue-50/70 border border-blue-100 text-xs font-semibold text-blue-700"
+                      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-teal-50/70 border border-teal-100 text-xs font-semibold text-teal-800"
                     >
-                      <MapPin className="h-3 w-3 text-blue-500" />
+                      <MapPin className="h-3 w-3 text-[#0F766E]" />
                       {loc.city}: <strong className="font-bold">{loc.count}</strong>
                     </span>
                   ))}
@@ -375,52 +374,64 @@ export default function Dashboard() {
           </CardContent>
         </Card>
 
-        {/* Recent Unlocks & Candidate Outreach Timeline */}
+        {/* Recruitment Shortcuts & Tools */}
         <Card className="border border-slate-200/80 shadow-sm rounded-xl overflow-hidden bg-white">
           <CardHeader className="flex flex-row items-center justify-between p-5 border-b border-slate-100 bg-white space-y-0">
             <div className="space-y-0.5">
               <CardTitle className="text-base font-bold tracking-wide text-slate-800 flex items-center gap-2">
-                <Activity className="h-4 w-4 text-[#07cdae]" /> Recent Profile Unlocks & Activity
+                <Activity className="h-4 w-4 text-[#07cdae]" /> Quick Recruitment Tools
               </CardTitle>
-              <p className="text-xs text-slate-400 font-medium">Latest recruitment actions on your school account</p>
+              <p className="text-xs text-slate-400 font-medium">Fast access to everyday hiring tools</p>
             </div>
-            <Button variant="ghost" asChild className="h-7 text-xs font-bold text-[#0F766E] hover:bg-[#0F766E]/10 px-2.5 rounded-md">
-              <Link to="/talent-pool">Explore Pool</Link>
-            </Button>
           </CardHeader>
-          <CardContent className="p-5">
-            {recentUnlocks.length === 0 ? (
-              <div className="text-center py-6">
-                <ShieldCheck className="h-8 w-8 text-slate-300 mx-auto mb-2" />
-                <p className="text-xs font-bold text-slate-600">No unlocked profiles yet</p>
-                <p className="text-[11px] text-slate-400 mt-0.5">
-                  Unlocked candidate profiles from the talent pool will appear here.
-                </p>
+          <CardContent className="p-5 space-y-3">
+            <Link 
+              to="/candidates/new" 
+              className="flex items-center justify-between p-3 rounded-xl bg-slate-50/70 hover:bg-[#F0FDFA] border border-slate-100 hover:border-[#14B8A6]/40 transition-all group"
+            >
+              <div className="flex items-center gap-3">
+                <div className="h-9 w-9 rounded-lg bg-[#0F766E]/10 text-[#0F766E] flex items-center justify-center font-bold">
+                  <Plus className="h-4 w-4" />
+                </div>
+                <div>
+                  <h4 className="text-xs font-bold text-slate-800 group-hover:text-[#0F766E]">Add Walk-in Biodata</h4>
+                  <p className="text-[11px] text-slate-400 font-medium">Enter a physical resume received at reception</p>
+                </div>
               </div>
-            ) : (
-              <div className="space-y-3">
-                {recentUnlocks.map((u) => (
-                  <div 
-                    key={u.id} 
-                    className="flex items-center justify-between p-3 rounded-xl bg-slate-50/70 hover:bg-slate-50 border border-slate-100 transition-colors"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="h-8 w-8 rounded-lg bg-teal-100 text-teal-700 flex items-center justify-center font-bold text-xs">
-                        <CheckCircle2 className="h-4 w-4 text-teal-600" />
-                      </div>
-                      <div>
-                        <h4 className="text-xs font-bold text-slate-800">{u.candidateName}</h4>
-                        <p className="text-[11px] text-slate-400 font-medium">{u.position}</p>
-                      </div>
-                    </div>
-                    <span className="text-[10px] font-semibold text-slate-400 flex items-center gap-1">
-                      <Clock className="h-3 w-3" />
-                      {u.unlockedAt ? formatDate(u.unlockedAt) : 'Recent'}
-                    </span>
-                  </div>
-                ))}
+              <ArrowRight className="h-4 w-4 text-slate-400 group-hover:text-[#0F766E] group-hover:translate-x-0.5 transition-all" />
+            </Link>
+
+            <Link 
+              to="/application-links" 
+              className="flex items-center justify-between p-3 rounded-xl bg-slate-50/70 hover:bg-[#F0FDFA] border border-slate-100 hover:border-[#14B8A6]/40 transition-all group"
+            >
+              <div className="flex items-center gap-3">
+                <div className="h-9 w-9 rounded-lg bg-[#14B8A6]/15 text-[#0F766E] flex items-center justify-center font-bold">
+                  <QrCode className="h-4 w-4" />
+                </div>
+                <div>
+                  <h4 className="text-xs font-bold text-slate-800 group-hover:text-[#0F766E]">School QR Standee & Web Link</h4>
+                  <p className="text-[11px] text-slate-400 font-medium">Print reception QR standee or share direct form link</p>
+                </div>
               </div>
-            )}
+              <ArrowRight className="h-4 w-4 text-slate-400 group-hover:text-[#0F766E] group-hover:translate-x-0.5 transition-all" />
+            </Link>
+
+            <Link 
+              to="/my-candidates" 
+              className="flex items-center justify-between p-3 rounded-xl bg-slate-50/70 hover:bg-[#F0FDFA] border border-slate-100 hover:border-[#14B8A6]/40 transition-all group"
+            >
+              <div className="flex items-center gap-3">
+                <div className="h-9 w-9 rounded-lg bg-teal-100 text-teal-800 flex items-center justify-center font-bold">
+                  <List className="h-4 w-4" />
+                </div>
+                <div>
+                  <h4 className="text-xs font-bold text-slate-800 group-hover:text-[#0F766E]">Manage Candidates Roster</h4>
+                  <p className="text-[11px] text-slate-400 font-medium">Filter by subject, experience, call candidates or print sheets</p>
+                </div>
+              </div>
+              <ArrowRight className="h-4 w-4 text-slate-400 group-hover:text-[#0F766E] group-hover:translate-x-0.5 transition-all" />
+            </Link>
           </CardContent>
         </Card>
 
@@ -596,103 +607,6 @@ export default function Dashboard() {
           </div>
         </CardContent>
       </Card>
-
-      {/* SECONDARY RICH WIDGET: Recent Talent Pool Additions */}
-      {recentTalentPool.length > 0 && (
-        <Card className="w-full border border-slate-200/80 shadow-sm rounded-xl overflow-hidden bg-white">
-          <CardHeader className="flex flex-row items-center justify-between p-5 border-b border-slate-100 bg-white space-y-0">
-            <div className="space-y-0.5">
-              <CardTitle className="text-base font-bold tracking-wide text-slate-800 flex items-center gap-2">
-                <Search className="h-4 w-4 text-[#07cdae]" /> Latest Talent Pool Discoveries ({recentTalentPool.length} Shown)
-              </CardTitle>
-              <p className="text-xs text-slate-400 font-medium">Candidates looking for opportunities in the public pool</p>
-            </div>
-            <Button variant="ghost" asChild className="h-8 text-xs font-bold text-[#07cdae] hover:bg-[#07cdae]/10 rounded-md transition-all px-3">
-              <Link to="/talent-pool" className="flex items-center gap-1">
-                Explore Talent Pool <ArrowRight className="h-3.5 w-3.5" />
-              </Link>
-            </Button>
-          </CardHeader>
-          <CardContent className="p-0">
-            <div className="w-full overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow className="hover:bg-transparent border-b border-slate-100 bg-slate-50/50">
-                    <TableHead className="text-slate-700 font-bold text-[11px] uppercase tracking-wider pl-6 h-11">
-                      Candidate Name
-                    </TableHead>
-                    <TableHead className="text-slate-700 font-bold text-[11px] uppercase tracking-wider h-11">
-                      Position
-                    </TableHead>
-                    <TableHead className="text-slate-700 font-bold text-[11px] uppercase tracking-wider h-11">
-                      Location
-                    </TableHead>
-                    <TableHead className="text-slate-700 font-bold text-[11px] uppercase tracking-wider h-11">
-                      Qualification
-                    </TableHead>
-                    <TableHead className="text-slate-700 font-bold text-[11px] uppercase tracking-wider h-11">
-                      Experience
-                    </TableHead>
-                    <TableHead className="text-slate-700 font-bold text-[11px] uppercase tracking-wider pr-6 h-11 text-right">
-                      Status
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {recentTalentPool.map((c) => {
-                    const locationStr = formatCandidateLocation(c);
-                    const quals = Array.isArray(c.qualifications) && c.qualifications.length > 0 ? c.qualifications.join(', ') : '—';
-                    const expStr = c.experienceYears !== undefined && c.experienceYears !== null ? `${c.experienceYears} Yrs` : '0 Yrs';
-
-                    return (
-                      <TableRow key={c._id} className="hover:bg-slate-50/70 transition-all border-b border-slate-100 last:border-none">
-                        <TableCell className="pl-6 py-3">
-                          <div className="flex items-center gap-3">
-                            <div className="h-9 w-9 rounded-full bg-teal-50 text-[#07cdae] font-bold text-xs flex items-center justify-center border border-teal-200 shrink-0">
-                              {c.fullName ? c.fullName.charAt(0).toUpperCase() : 'T'}
-                            </div>
-                            <span className="font-bold text-slate-800 text-sm">
-                              {c.fullName}
-                            </span>
-                          </div>
-                        </TableCell>
-
-                        <TableCell className="py-3 text-xs font-semibold text-slate-700">
-                          {c.position || '—'}
-                        </TableCell>
-
-                        <TableCell className="py-3 text-xs font-medium text-slate-600">
-                          {locationStr}
-                        </TableCell>
-
-                        <TableCell className="py-3 text-xs font-medium text-slate-600">
-                          {quals}
-                        </TableCell>
-
-                        <TableCell className="py-3 text-xs font-semibold text-slate-700">
-                          {expStr}
-                        </TableCell>
-
-                        <TableCell className="py-3 pr-6 text-right">
-                          {c.isLocked ? (
-                            <span className="inline-block border border-amber-300 bg-amber-50 text-amber-700 font-bold text-[10px] uppercase px-2 py-0.5 rounded-full">
-                              Locked Profile
-                            </span>
-                          ) : (
-                            <span className="inline-block border border-emerald-300 bg-emerald-50 text-emerald-700 font-bold text-[10px] uppercase px-2 py-0.5 rounded-full">
-                              Unlocked
-                            </span>
-                          )}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            </div>
-          </CardContent>
-        </Card>
-      )}
     </div>
   );
 }

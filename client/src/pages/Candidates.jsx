@@ -37,6 +37,7 @@ export function CandidateList({
     name: '',
     mobile: '',
     position: '',
+    status: '',
     qualification: '',
     experience: '',
     state: '',
@@ -325,6 +326,28 @@ export function CandidateList({
           {showAdvancedFilters && (
             <div className="pt-3 border-t border-slate-100 dark:border-slate-800 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 animate-in fade-in-50 duration-200">
               
+              {/* Pipeline Status Filter */}
+              <div className="relative">
+                <Select
+                  value={filters.status || 'all'}
+                  onValueChange={(v) => updateFilter('status', v === 'all' ? '' : v)}
+                >
+                  <SelectTrigger className="h-9 border-slate-200 rounded-lg focus:ring-[#0F766E] dark:bg-slate-800 dark:border-slate-700 text-xs font-medium">
+                    <SelectValue placeholder="All Stages" />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-lg dark:bg-slate-800 max-h-64">
+                    <SelectItem value="all" className="text-xs font-medium text-slate-400">All Pipeline Stages</SelectItem>
+                    <SelectItem value="new" className="text-xs font-medium">New Application</SelectItem>
+                    <SelectItem value="shortlisted" className="text-xs font-medium">Shortlisted</SelectItem>
+                    <SelectItem value="interview_scheduled" className="text-xs font-medium">Interview Scheduled</SelectItem>
+                    <SelectItem value="demo_class" className="text-xs font-medium">Demo Class</SelectItem>
+                    <SelectItem value="offered" className="text-xs font-medium">Offered</SelectItem>
+                    <SelectItem value="hired" className="text-xs font-medium">Hired</SelectItem>
+                    <SelectItem value="rejected" className="text-xs font-medium">Rejected</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
               {section !== 'talent_pool' && (
                 <div className="relative">
                   <Input
@@ -579,8 +602,21 @@ export function CandidateList({
                               
                               {/* Name and Position */}
                               <div className="flex-1 min-w-0">
-                                <div className="flex items-center gap-2 mb-1">
+                                <div className="flex items-center gap-2 mb-1 flex-wrap">
                                   <span className="font-bold text-slate-800 dark:text-slate-200 text-sm truncate">{c.fullName}</span>
+                                  {c.status && c.status !== 'new' && (
+                                    <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider shrink-0 ${
+                                      c.status === 'shortlisted' ? 'bg-teal-50 text-teal-700 border border-teal-200' :
+                                      c.status === 'interview_scheduled' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
+                                      c.status === 'demo_class' ? 'bg-indigo-50 text-indigo-700 border border-indigo-200' :
+                                      c.status === 'offered' ? 'bg-purple-50 text-purple-700 border border-purple-200' :
+                                      c.status === 'hired' ? 'bg-emerald-50 text-emerald-800 border border-emerald-300 font-extrabold' :
+                                      c.status === 'rejected' ? 'bg-rose-50 text-rose-700 border border-rose-200' :
+                                      'bg-slate-100 text-slate-600'
+                                    }`}>
+                                      {c.status.replace(/_/g, ' ')}
+                                    </span>
+                                  )}
                                   {c.isLocked && (
                                     <Badge className="text-[10px] uppercase font-bold tracking-wider border-[#FE9496]/30 bg-[#FE9496]/5 text-[#FE9496] rounded-md px-1.5 py-0 shadow-none variant-outline shrink-0">
                                       Locked
@@ -729,8 +765,21 @@ export function CandidateList({
                               </TableCell>
                               
                               <TableCell className="font-bold text-slate-800 dark:text-slate-200 text-xs py-2.5 px-3">
-                                <div className="flex items-center gap-1.5">
+                                <div className="flex items-center gap-1.5 flex-wrap">
                                   <span className="group-hover:text-[#0F766E] transition-colors truncate">{c.fullName}</span>
+                                  {c.status && c.status !== 'new' && (
+                                    <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider shrink-0 ${
+                                      c.status === 'shortlisted' ? 'bg-teal-50 text-teal-700 border border-teal-200' :
+                                      c.status === 'interview_scheduled' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
+                                      c.status === 'demo_class' ? 'bg-indigo-50 text-indigo-700 border border-indigo-200' :
+                                      c.status === 'offered' ? 'bg-purple-50 text-purple-700 border border-purple-200' :
+                                      c.status === 'hired' ? 'bg-emerald-50 text-emerald-800 border border-emerald-300 font-extrabold' :
+                                      c.status === 'rejected' ? 'bg-rose-50 text-rose-700 border border-rose-200' :
+                                      'bg-slate-100 text-slate-600'
+                                    }`}>
+                                      {c.status.replace(/_/g, ' ')}
+                                    </span>
+                                  )}
                                   {c.isLocked && (
                                     <Badge className="text-[9px] uppercase font-bold tracking-wider border-[#FE9496]/30 bg-[#FE9496]/5 text-[#FE9496] rounded-md px-1 py-0 shadow-none variant-outline shrink-0">
                                       Locked
