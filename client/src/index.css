@@ -101,8 +101,19 @@
   animation: float-reverse 8.5s ease-in-out infinite;
 }
 
-.animate-pulse-glow {
-  animation: pulse-glow 5s ease-in-out infinite;
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 25s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
 }
 
 /* Ensure Leaflet map canvases and controls never leak above modals, dialogs or search palette */
