@@ -24,7 +24,8 @@ export function AuthProvider({ children }) {
         setSchool(res.data.school);
         localStorage.setItem('user', JSON.stringify(res.data.user));
       })
-      .catch(() => {
+      .catch((err) => {
+        console.warn('[Auth Initialization Note]: Session expired or no valid session:', err?.response?.data?.message || err?.message);
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         setUser(null);

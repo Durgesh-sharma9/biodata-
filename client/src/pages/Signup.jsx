@@ -188,7 +188,7 @@ export default function Signup() {
                 Register Your School on HireHub
               </h1>
               <p className="mt-1 text-xs font-medium text-slate-500">
-                Start your 14-day free trial. Includes your custom QR code &amp; talent pool access.
+                Start your 14-day free trial. Includes your custom QR code &amp; direct candidate recruitment.
               </p>
             </div>
 

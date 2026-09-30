@@ -148,6 +148,7 @@ export const addSchoolSettingItem = ({ field, value }) => api.post('/settings/ad
 export const bulkAddSchoolSettingItems = ({ field, values }) => api.post('/settings/bulk-add', { field, values });
 export const removeSchoolSettingItem = ({ field, value }) => api.post('/settings/remove', { field, value });
 export const resetSchoolSettingField = ({ field }) => api.post('/settings/reset', { field });
+export const setSchoolSettingField = ({ field, values }) => api.put('/settings/field', { field, values });
 export const updateSchoolPreferences = (data) => api.put('/settings/preferences', data);
 export const changeUserPassword = (data) => api.put('/auth/change-password', data);
 

@@ -147,7 +147,7 @@ export default function Login({ redirectTo, signupLink = '/signup', title = 'Sig
                 {title}
               </CardTitle>
               <CardDescription className="text-slate-500 font-medium text-xs mt-1">
-                Sign in to manage candidates, jobs, and recruitment credits
+                Sign in to manage candidate applications, job roles, and school recruitment
               </CardDescription>
             </CardHeader>
             

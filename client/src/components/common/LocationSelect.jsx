@@ -1,19 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { MapPin, Crosshair, ChevronDown, Check } from 'lucide-react';
+import { MapPin, ChevronDown, Check } from 'lucide-react';
 import { getStates, getCities } from '@/lib/api';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { SchoolLocationPicker } from '@/components/common/SchoolLocationPicker';
 
 export function LocationSelect({ value = {}, onChange, errors = {} }) {
   const [stateId, setStateId] = useState(value.stateId || '');
   const [cityId, setCityId] = useState(value.cityId || '');
   const [area, setArea] = useState(value.area || '');
   const [address, setAddress] = useState(value.address || '');
-  const [latitude, setLatitude] = useState(value.latitude ?? '');
-  const [longitude, setLongitude] = useState(value.longitude ?? '');
-  const [workingRadius, setWorkingRadius] = useState(value.workingRadius ?? '');
 
   // Searchable combobox states
   const [stateSearch, setStateSearch] = useState('');
@@ -52,48 +48,23 @@ export function LocationSelect({ value = {}, onChange, errors = {} }) {
   }, [cityId, cities]);
 
   useEffect(() => {
-    if (value.latitude !== undefined && value.latitude !== null && value.latitude !== '') setLatitude(value.latitude);
-    if (value.longitude !== undefined && value.longitude !== null && value.longitude !== '') setLongitude(value.longitude);
-    if (value.stateId) setStateId(value.stateId);
-    if (value.cityId) setCityId(value.cityId);
-    if (value.area) setArea(value.area);
-    if (value.address) setAddress(value.address);
-    if (value.workingRadius) setWorkingRadius(value.workingRadius);
-  }, [value.latitude, value.longitude, value.stateId, value.cityId, value.area, value.address, value.workingRadius]);
+    if (value.stateId !== undefined) setStateId(value.stateId || '');
+    if (value.cityId !== undefined) setCityId(value.cityId || '');
+    if (value.area !== undefined) setArea(value.area || '');
+    if (value.address !== undefined) setAddress(value.address || '');
+  }, [value.stateId, value.cityId, value.area, value.address]);
 
   useEffect(() => {
-    const normalizedLatitude = latitude === '' ? undefined : Number(latitude);
-    const normalizedLongitude = longitude === '' ? undefined : Number(longitude);
-    const normalizedWorkingRadius = workingRadius === '' ? undefined : Number(workingRadius);
     onChange?.({
       stateId,
       cityId,
       area,
       address,
-      latitude: Number.isNaN(normalizedLatitude) ? undefined : normalizedLatitude,
-      longitude: Number.isNaN(normalizedLongitude) ? undefined : normalizedLongitude,
-      workingRadius: Number.isNaN(normalizedWorkingRadius) ? undefined : normalizedWorkingRadius,
+      latitude: value?.latitude ?? undefined,
+      longitude: value?.longitude ?? undefined,
+      workingRadius: value?.workingRadius ?? undefined,
     });
-  }, [stateId, cityId, area, address, latitude, longitude, workingRadius, onChange]);
-
-  const handleMapLocationChange = ({ latitude: lat, longitude: lng }) => {
-    setLatitude(String(lat));
-    setLongitude(String(lng));
-  };
-
-  const handleMapAddressResolved = (details) => {
-    if (details) {
-      if (details.state) {
-        const matchedState = states.find((s) => s.name.toLowerCase().includes(details.state.toLowerCase()));
-        if (matchedState) {
-          setStateId(matchedState._id);
-          setStateSearch(matchedState.name);
-        }
-      }
-      if (details.area && !area) setArea(details.area);
-      if (details.address && !address) setAddress(details.address);
-    }
-  };
+  }, [stateId, cityId, area, address]);
 
   const filteredStates = states.filter((s) =>
     s.name.toLowerCase().includes(stateSearch.toLowerCase().trim())
@@ -104,11 +75,11 @@ export function LocationSelect({ value = {}, onChange, errors = {} }) {
   );
 
   return (
-    <div className="w-full space-y-4 antialiased">
+    <div className="w-full space-y-3.5 antialiased">
       {/* Header */}
       <div className="flex items-center gap-1.5 text-slate-700 dark:text-slate-300">
         <MapPin className="h-4 w-4 text-[#0F766E]" />
-        <span className="text-xs font-bold uppercase tracking-wider">Candidate Location & Map Pin</span>
+        <span className="text-xs font-bold uppercase tracking-wider">Candidate Location & Address</span>
       </div>
 
       <div className="grid gap-3.5 grid-cols-1 sm:grid-cols-2">
@@ -237,54 +208,6 @@ export function LocationSelect({ value = {}, onChange, errors = {} }) {
             placeholder="House/Apartment no, street, landmark..."
             className="rounded-lg h-9 border-slate-200 text-xs font-medium focus-visible:ring-[#0F766E]"
           />
-        </div>
-      </div>
-
-      {/* Interactive Map Picker Component */}
-      <div className="rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-3.5 space-y-3 shadow-xs">
-        <div className="flex items-center justify-between">
-          <Label className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
-            <Crosshair className="h-4 w-4 text-[#0F766E]" />
-            Pin Candidate Location on Map
-          </Label>
-          <span className="text-[11px] text-slate-400 font-medium hidden sm:inline-block">Search address or drag pin to adjust coordinates</span>
-        </div>
-
-        <SchoolLocationPicker
-          initialLocation={{ latitude, longitude, address }}
-          onLocationChange={handleMapLocationChange}
-          onAddressResolved={handleMapAddressResolved}
-        />
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
-          <div className="space-y-1">
-            <Label className="text-[11px] font-semibold text-slate-500">Latitude</Label>
-            <Input 
-              value={latitude} 
-              onChange={(e) => setLatitude(e.target.value)} 
-              placeholder="e.g. 28.6139" 
-              className="rounded-lg h-8 text-xs font-mono bg-slate-50 dark:bg-slate-950 border-slate-200" 
-            />
-          </div>
-          <div className="space-y-1">
-            <Label className="text-[11px] font-semibold text-slate-500">Longitude</Label>
-            <Input 
-              value={longitude} 
-              onChange={(e) => setLongitude(e.target.value)} 
-              placeholder="e.g. 77.2090" 
-              className="rounded-lg h-8 text-xs font-mono bg-slate-50 dark:bg-slate-950 border-slate-200" 
-            />
-          </div>
-          <div className="space-y-1">
-            <Label className="text-[11px] font-semibold text-slate-500">Working Radius (km)</Label>
-            <Input 
-              type="number" 
-              value={workingRadius} 
-              onChange={(e) => setWorkingRadius(e.target.value)} 
-              placeholder="e.g. 10" 
-              className="rounded-lg h-8 text-xs font-medium border-slate-200 focus-visible:ring-[#0F766E]" 
-            />
-          </div>
         </div>
       </div>
     </div>

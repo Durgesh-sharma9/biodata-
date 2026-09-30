@@ -58,7 +58,7 @@ const applicantLinks = [
   { to: '/applicant/notifications', label: 'Notifications', icon: Bell, color: '#FF4D4D' },
 ];
 
-export function Sidebar() {
+export function Sidebar({ onNavigate }) {
   const { user, school: authSchool, logout, isSuperAdmin, isApplicant } = useAuth();
   
   const { data: mySchoolData } = useQuery({
@@ -92,15 +92,16 @@ export function Sidebar() {
         </div>
       </div>
 
-      {/* Navigation Links - Balanced Medium */}
+      {/* Navigation Links - Touch-Friendly & Clean */}
       <nav className="flex-1 space-y-1 p-3 overflow-y-auto">
         {links.map(({ to, label, icon: Icon, color }) => (
           <NavLink
             key={to}
             to={to}
+            onClick={() => onNavigate?.()}
             className={({ isActive }) =>
               cn(
-                'flex items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] font-semibold tracking-normal transition-all duration-200 select-none group relative overflow-hidden',
+                'flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-[13px] font-semibold tracking-normal transition-all duration-200 select-none group relative overflow-hidden',
                 isActive 
                   ? 'bg-[#0F766E] text-white shadow-xs' 
                   : 'text-slate-600 dark:text-slate-400 hover:bg-[#F0FDFA] dark:hover:bg-slate-800/60 hover:text-[#0F766E] dark:hover:text-white'
@@ -112,7 +113,7 @@ export function Sidebar() {
                 {/* Icon Section */}
                 <Icon 
                   className={cn(
-                    "h-4 w-4 transition-transform duration-200 shrink-0",
+                    "h-4 w-4 transition-transform duration-200 shrink-0 group-hover:scale-110",
                     isActive ? "text-white" : ""
                   )} 
                   style={{ color: isActive ? '#ffffff' : color }} 

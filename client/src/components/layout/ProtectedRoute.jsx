@@ -40,11 +40,23 @@ export function ProtectedRoute({ children, role }) {
     );
   }
 
-  if (!user) return <Navigate to="/login" replace />;
+  if (!user) {
+    console.warn('[ProtectedRoute] No active user session found, redirecting to /login');
+    return <Navigate to="/login" replace />;
+  }
 
   if (role) {
     const allowed = Array.isArray(role) ? role : [role];
-    if (!allowed.includes(user.role)) return <Navigate to="/" replace />;
+    if (!allowed.includes(user.role)) {
+      console.warn(`[ProtectedRoute] Access denied for role "${user.role}". Required: [${allowed.join(', ')}]. Redirecting to default.`);
+      if (user.role === 'applicant' || user.role === 'self_applicant') {
+        return <Navigate to="/applicant/dashboard" replace />;
+      }
+      if (user.role === 'super_admin') {
+        return <Navigate to="/admin/dashboard" replace />;
+      }
+      return <Navigate to="/" replace />;
+    }
   }
 
   return children;

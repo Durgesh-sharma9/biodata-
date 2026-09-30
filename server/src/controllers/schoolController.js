@@ -68,16 +68,23 @@ export const updateMySchool = catchAsync(async (req, res) => {
 
   const locationPayload = await buildLocationPayload(req.body);
   const hasLocationUpdate = locationPayload.latitude !== undefined || locationPayload.longitude !== undefined;
-  
+
+  const { schoolId: _ignoredSchoolId, ...safeBody } = req.body;
+
   Object.assign(school, {
-    ...req.body,
+    ...safeBody,
     ...locationPayload,
   });
-  
+
+  if (!school.schoolId) {
+    school.schoolId =
+      'SCH-' + Date.now().toString().slice(-6) + Math.random().toString(36).substring(2, 6).toUpperCase();
+  }
+
   if (hasLocationUpdate) {
     school.locationUpdatedAt = new Date();
   }
-  
+
   await school.save();
 
   res.json({ success: true, data: school });

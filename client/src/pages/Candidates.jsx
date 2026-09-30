@@ -5,11 +5,13 @@ import {
   Plus, Search, Eye, Pencil, Trash2, ChevronLeft, ChevronRight, 
   MapPin, Briefcase, GraduationCap, Calendar, IndianRupee, 
   Users, ShieldAlert, SlidersHorizontal, ArrowUpDown, Loader2, List, Map as MapIcon, AlertCircle,
-  ChevronDown, ChevronUp, RotateCcw, Filter
+  ChevronDown, ChevronUp, RotateCcw, Filter, Phone, MessageSquare, Mail, Lock, FileText
 } from 'lucide-react';
 import { getCandidates, deleteCandidate, getSettings, getStates, getCities } from '@/lib/api';
 import { Badge } from '@/components/ui/badge';
 import { PageHeader } from '@/components/common/PageHeader';
+import WhatsAppIcon from '@/components/common/WhatsAppIcon';
+import { CandidateDocumentsModal } from '@/components/common/CandidateDocumentsModal';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
@@ -33,6 +35,7 @@ export function CandidateList({
   const queryClient = useQueryClient();
   const [page, setPage] = useState(1);
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  const [docsModalCandidate, setDocsModalCandidate] = useState(null);
   const [filters, setFilters] = useState({
     name: '',
     mobile: '',
@@ -154,24 +157,26 @@ export function CandidateList({
     }));
   };
 
+  const SOURCE_LABELS = {
+    ADMIN: { label: 'Walk-in', color: 'border-blue-200/60 bg-blue-50 text-blue-700 dark:bg-blue-950/30 dark:text-blue-400 dark:border-blue-800/50' },
+    SCHOOL_LINK: { label: 'QR Scan', color: 'border-emerald-200/60 bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-800/50' },
+    SELF_APPLICANT: { label: 'Self Applied', color: 'border-[#1BCFB4]/30 bg-[#1BCFB4]/5 text-teal-700 dark:text-teal-400' },
+    SUPER_ADMIN_IMPORT: { label: 'Imported', color: 'border-purple-200/60 bg-purple-50 text-purple-700 dark:bg-purple-950/30 dark:text-purple-400 dark:border-purple-800/50' },
+  };
+
   const getSourceBadge = (source) => {
-    const formatStr = (str) => str?.replace(/_/g, ' ') || '';
-    switch(source) {
-      case 'ADMIN':
-        return <Badge className="border-[#4BCBEB]/30 bg-[#4BCBEB]/5 text-[#4BCBEB] font-bold px-2.5 py-0.5 rounded-xl variant-outline shadow-none">{formatStr(source)}</Badge>;
-      case 'SCHOOL_LINK':
-        return <Badge className="border-[#0F766E]/30 bg-[#0F766E]/5 text-[#0F766E] font-bold px-2.5 py-0.5 rounded-xl variant-outline shadow-none">{formatStr(source)}</Badge>;
-      case 'SELF_APPLICANT':
-        return <Badge className="border-[#1BCFB4]/30 bg-[#1BCFB4]/5 text-[#1BCFB4] font-bold px-2.5 py-0.5 rounded-xl variant-outline shadow-none">{formatStr(source)}</Badge>;
-      case 'SUPER_ADMIN_IMPORT':
-        return <Badge className="border-[#14B8A6]/30 bg-[#14B8A6]/5 text-[#14B8A6] font-bold px-2.5 py-0.5 rounded-xl variant-outline shadow-none">{formatStr(source)}</Badge>;
-      default:
-        return <Badge className="border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800 text-slate-500 font-bold px-2.5 py-0.5 rounded-xl variant-outline shadow-none">Talent Pool</Badge>;
-    }
+    const info = SOURCE_LABELS[source];
+    if (!info) return null;
+    return (
+      <span className={`inline-flex items-center text-[9px] font-bold px-1.5 py-0.5 rounded border ${info.color} uppercase tracking-wide shrink-0`}>
+        {info.label}
+      </span>
+    );
   };
 
   const activeAdvancedCount = useMemo(() => {
     let count = 0;
+    if (filters.status && filters.status !== 'all') count++;
     if (filters.mobile) count++;
     if (filters.experience) count++;
     if (filters.stateId || filters.state) count++;
@@ -179,8 +184,13 @@ export function CandidateList({
     if (filters.area) count++;
     if (filters.expectedSalaryMin || filters.expectedSalaryMax) count++;
     if (filters.nearby) count++;
+    if (filters.source && filters.source !== 'all') count++;
+    if (isMobile) {
+      if (filters.position && filters.position !== 'all') count++;
+      if (filters.qualification && filters.qualification !== 'all') count++;
+    }
     return count;
-  }, [filters]);
+  }, [filters, isMobile]);
 
   const hasAnyActiveFilter = useMemo(() => {
     return !!(
@@ -237,95 +247,136 @@ export function CandidateList({
         <CardContent className="p-3.5 space-y-3">
           
           {/* Primary Quick Search Bar Row */}
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-2">
             {/* Search Input */}
-            <div className="relative flex-1 min-w-[220px]">
+            <div className="relative flex-1 min-w-0">
               <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
               <Input
                 placeholder="Search by candidate name, location..."
-                className="pl-9 h-9 border-slate-200 rounded-lg focus-visible:ring-[#0F766E] dark:bg-slate-800 dark:border-slate-700 text-xs font-medium"
+                className="pl-9 h-9 border-slate-200 rounded-xl focus-visible:ring-[#0F766E] dark:bg-slate-800 dark:border-slate-700 text-xs font-medium"
                 value={filters.name}
                 onChange={(e) => updateFilter('name', e.target.value)}
               />
             </div>
 
-            {/* Position Select */}
-            <div className="w-[170px] shrink-0">
-              <Select value={filters.position || 'all'} onValueChange={(v) => updateFilter('position', v === 'all' ? '' : v)}>
-                <SelectTrigger className="h-9 border-slate-200 rounded-lg focus:ring-[#0F766E] dark:bg-slate-800 dark:border-slate-700 text-xs font-medium">
-                  <SelectValue placeholder="All Positions" />
-                </SelectTrigger>
-                <SelectContent className="rounded-lg dark:bg-slate-800 max-h-64">
-                  <SelectItem value="all" className="text-xs font-medium text-slate-400">All Positions</SelectItem>
-                  {settings?.positions?.map((p) => (
-                    <SelectItem key={p} value={p} className="text-xs font-medium rounded-md">
-                      {p}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+            {/* Quick Selects - Desktop Only (hidden on mobile, inside filters on mobile) */}
+            <div className="hidden sm:flex items-center gap-2">
+              <div className="w-[155px]">
+                <Select value={filters.position || 'all'} onValueChange={(v) => updateFilter('position', v === 'all' ? '' : v)}>
+                  <SelectTrigger className="h-9 border-slate-200 rounded-xl focus:ring-[#0F766E] dark:bg-slate-800 dark:border-slate-700 text-xs font-medium">
+                    <SelectValue placeholder="All Positions" />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl dark:bg-slate-800 max-h-64">
+                    <SelectItem value="all" className="text-xs font-medium text-slate-400">All Positions</SelectItem>
+                    {settings?.positions?.map((p) => (
+                      <SelectItem key={p} value={p} className="text-xs font-medium rounded-md">
+                        {p}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-            {/* Qualification Select */}
-            <div className="w-[170px] shrink-0">
-              <Select
-                value={filters.qualification || 'all'}
-                onValueChange={(v) => updateFilter('qualification', v === 'all' ? '' : v)}
-              >
-                <SelectTrigger className="h-9 border-slate-200 rounded-lg focus:ring-[#0F766E] dark:bg-slate-800 dark:border-slate-700 text-xs font-medium">
-                  <SelectValue placeholder="All Qualifications" />
-                </SelectTrigger>
-                <SelectContent className="rounded-lg dark:bg-slate-800 max-h-64">
-                  <SelectItem value="all" className="text-xs font-medium text-slate-400">All Qualifications</SelectItem>
-                  {settings?.qualifications?.map((q) => (
-                    <SelectItem key={q} value={q} className="text-xs font-medium rounded-md">
-                      {q}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="w-[155px]">
+                <Select
+                  value={filters.qualification || 'all'}
+                  onValueChange={(v) => updateFilter('qualification', v === 'all' ? '' : v)}
+                >
+                  <SelectTrigger className="h-9 border-slate-200 rounded-xl focus:ring-[#0F766E] dark:bg-slate-800 dark:border-slate-700 text-xs font-medium">
+                    <SelectValue placeholder="All Qualifications" />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl dark:bg-slate-800 max-h-64">
+                    <SelectItem value="all" className="text-xs font-medium text-slate-400">All Qualifications</SelectItem>
+                    {settings?.qualifications?.map((q) => (
+                      <SelectItem key={q} value={q} className="text-xs font-medium rounded-md">
+                        {q}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             {/* Advanced Filters Toggle Button */}
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
-              className={`h-9 px-3 text-xs font-semibold rounded-lg border-slate-200 dark:border-slate-700 transition-all ${showAdvancedFilters ? 'bg-purple-50 text-[#0F766E] border-[#0F766E]/30' : 'bg-white text-slate-600 dark:bg-slate-800 dark:text-slate-300'}`}
-            >
-              <SlidersHorizontal className="h-3.5 w-3.5 mr-1.5 text-[#0F766E]" />
-              Filters
-              {activeAdvancedCount > 0 && (
-                <span className="ml-1.5 px-1.5 py-0.5 rounded-full bg-[#0F766E] text-white text-[10px] font-bold">
-                  {activeAdvancedCount}
-                </span>
-              )}
-              {showAdvancedFilters ? (
-                <ChevronUp className="h-3.5 w-3.5 ml-1.5 text-slate-400" />
-              ) : (
-                <ChevronDown className="h-3.5 w-3.5 ml-1.5 text-slate-400" />
-              )}
-            </Button>
-
-            {/* Reset Filters Button */}
-            {hasAnyActiveFilter && (
+            <div className="flex items-center gap-1.5 shrink-0">
               <Button
                 type="button"
-                variant="ghost"
+                variant="outline"
                 size="sm"
-                onClick={clearAllFilters}
-                className="h-9 px-2.5 text-xs text-slate-500 hover:text-slate-800 dark:text-slate-400 rounded-lg"
+                onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+                className={`h-9 px-3 text-xs font-semibold rounded-xl border-slate-200 dark:border-slate-700 transition-all ${showAdvancedFilters ? 'bg-teal-50 text-[#0F766E] border-[#0F766E]/40' : 'bg-white text-slate-600 dark:bg-slate-800 dark:text-slate-300'}`}
               >
-                <RotateCcw className="h-3.5 w-3.5 mr-1" /> Clear
+                <SlidersHorizontal className="h-3.5 w-3.5 mr-1.5 text-[#0F766E]" />
+                Filters
+                {activeAdvancedCount > 0 && (
+                  <span className="ml-1.5 px-1.5 py-0.5 rounded-full bg-[#0F766E] text-white text-[10px] font-bold">
+                    {activeAdvancedCount}
+                  </span>
+                )}
+                {showAdvancedFilters ? (
+                  <ChevronUp className="h-3.5 w-3.5 ml-1.5 text-slate-400" />
+                ) : (
+                  <ChevronDown className="h-3.5 w-3.5 ml-1.5 text-slate-400" />
+                )}
               </Button>
-            )}
+
+              {/* Reset Filters Button (Desktop) */}
+              {hasAnyActiveFilter && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={clearAllFilters}
+                  className="hidden sm:inline-flex h-9 px-2.5 text-xs text-slate-500 hover:text-slate-800 dark:text-slate-400 rounded-xl"
+                  title="Clear all filters"
+                >
+                  <RotateCcw className="h-3.5 w-3.5 mr-1" /> Clear
+                </Button>
+              )}
+            </div>
           </div>
 
-          {/* Collapsible Advanced Filters Drawer */}
+          {/* Collapsible Advanced Filters Drawer - 2 Columns on Mobile, 4 Columns on Desktop */}
           {showAdvancedFilters && (
-            <div className="pt-3 border-t border-slate-100 dark:border-slate-800 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 animate-in fade-in-50 duration-200">
+            <div className="pt-3 border-t border-slate-100 dark:border-slate-800 grid grid-cols-2 md:grid-cols-4 gap-2.5 animate-in fade-in-50 duration-200">
               
+              {/* Position Filter - Mobile Only (inside drawer) */}
+              <div className="sm:hidden relative">
+                <Select value={filters.position || 'all'} onValueChange={(v) => updateFilter('position', v === 'all' ? '' : v)}>
+                  <SelectTrigger className="h-9 border-slate-200 rounded-lg focus:ring-[#0F766E] dark:bg-slate-800 dark:border-slate-700 text-xs font-medium">
+                    <SelectValue placeholder="All Positions" />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-lg dark:bg-slate-800 max-h-64">
+                    <SelectItem value="all" className="text-xs font-medium text-slate-400">All Positions</SelectItem>
+                    {settings?.positions?.map((p) => (
+                      <SelectItem key={p} value={p} className="text-xs font-medium rounded-md">
+                        {p}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Qualification Filter - Mobile Only (inside drawer) */}
+              <div className="sm:hidden relative">
+                <Select
+                  value={filters.qualification || 'all'}
+                  onValueChange={(v) => updateFilter('qualification', v === 'all' ? '' : v)}
+                >
+                  <SelectTrigger className="h-9 border-slate-200 rounded-lg focus:ring-[#0F766E] dark:bg-slate-800 dark:border-slate-700 text-xs font-medium">
+                    <SelectValue placeholder="All Qualifications" />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-lg dark:bg-slate-800 max-h-64">
+                    <SelectItem value="all" className="text-xs font-medium text-slate-400">All Qualifications</SelectItem>
+                    {settings?.qualifications?.map((q) => (
+                      <SelectItem key={q} value={q} className="text-xs font-medium rounded-md">
+                        {q}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
               {/* Pipeline Status Filter */}
               <div className="relative">
                 <Select
@@ -348,10 +399,32 @@ export function CandidateList({
                 </Select>
               </div>
 
+              {/* Source / Entry Type Filter */}
+              {sourceFilterOptions.length > 0 && (
+                <div className="relative">
+                  <Select
+                    value={filters.source || 'all'}
+                    onValueChange={(v) => updateFilter('source', v === 'all' ? '' : v)}
+                  >
+                    <SelectTrigger className="h-9 border-slate-200 rounded-lg focus:ring-[#0F766E] dark:bg-slate-800 dark:border-slate-700 text-xs font-medium">
+                      <SelectValue placeholder="All Sources" />
+                    </SelectTrigger>
+                    <SelectContent className="rounded-lg dark:bg-slate-800">
+                      <SelectItem value="all" className="text-xs font-medium text-slate-400">All Sources</SelectItem>
+                      <SelectItem value="ADMIN" className="text-xs font-medium">Walk-in (Admin)</SelectItem>
+                      <SelectItem value="SCHOOL_LINK" className="text-xs font-medium">QR Scan / School Link</SelectItem>
+                      <SelectItem value="SELF_APPLICANT" className="text-xs font-medium">Self Applied</SelectItem>
+                      <SelectItem value="SUPER_ADMIN_IMPORT" className="text-xs font-medium">Imported</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+
+              {/* Mobile Search */}
               {section !== 'talent_pool' && (
                 <div className="relative">
                   <Input
-                    placeholder="Search by mobile..."
+                    placeholder="Search mobile..."
                     className="h-9 border-slate-200 rounded-lg focus-visible:ring-[#0F766E] dark:bg-slate-800 dark:border-slate-700 text-xs font-medium"
                     value={filters.mobile}
                     onChange={(e) => updateFilter('mobile', e.target.value)}
@@ -359,16 +432,7 @@ export function CandidateList({
                 </div>
               )}
 
-              <div className="relative">
-                <Input
-                  type="number"
-                  placeholder="Experience (years)"
-                  className="h-9 border-slate-200 rounded-lg focus-visible:ring-[#0F766E] dark:bg-slate-800 dark:border-slate-700 text-xs font-medium"
-                  value={filters.experience}
-                  onChange={(e) => updateFilter('experience', e.target.value)}
-                />
-              </div>
-
+              {/* State Filter */}
               <SearchableSelect
                 options={stateOptions}
                 value={filters.stateId || ''}
@@ -381,6 +445,7 @@ export function CandidateList({
                 limit={Infinity}
               />
 
+              {/* City Filter */}
               <SearchableSelect
                 options={cityOptions}
                 value={filters.cityId || ''}
@@ -393,6 +458,18 @@ export function CandidateList({
                 limit={100}
               />
 
+              {/* Experience Filter */}
+              <div className="relative">
+                <Input
+                  type="number"
+                  placeholder="Experience (years)"
+                  className="h-9 border-slate-200 rounded-lg focus-visible:ring-[#0F766E] dark:bg-slate-800 dark:border-slate-700 text-xs font-medium"
+                  value={filters.experience}
+                  onChange={(e) => updateFilter('experience', e.target.value)}
+                />
+              </div>
+
+              {/* Area Filter */}
               <div className="relative">
                 <Input
                   placeholder="All Areas"
@@ -402,72 +479,59 @@ export function CandidateList({
                 />
               </div>
 
+              {/* Min Salary Filter */}
               <div className="relative">
                 <Input
                   type="number"
-                  placeholder="Min Monthly Salary"
+                  placeholder="Min Monthly ₹"
                   className="h-9 border-slate-200 rounded-lg focus-visible:ring-[#0F766E] dark:bg-slate-800 dark:border-slate-700 text-xs font-medium"
                   value={filters.expectedSalaryMin}
                   onChange={(e) => updateFilter('expectedSalaryMin', e.target.value)}
                 />
               </div>
 
+              {/* Max Salary Filter */}
               <div className="relative">
                 <Input
                   type="number"
-                  placeholder="Max Monthly Salary"
+                  placeholder="Max Monthly ₹"
                   className="h-9 border-slate-200 rounded-lg focus-visible:ring-[#0F766E] dark:bg-slate-800 dark:border-slate-700 text-xs font-medium"
                   value={filters.expectedSalaryMax}
                   onChange={(e) => updateFilter('expectedSalaryMax', e.target.value)}
                 />
               </div>
 
-              {section !== 'talent_pool' && (
-                <div className="flex items-center gap-2">
-                  <label className={`flex items-center gap-2 rounded-lg border px-3 h-9 text-xs font-semibold flex-1 ${!data?.schoolLocation ? 'border-slate-200 bg-slate-50 text-slate-400 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-500 cursor-not-allowed' : 'border-slate-200 bg-slate-50 text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300'}`}>
-                    <input
-                      type="checkbox"
-                      checked={!!filters.nearby}
-                      onChange={(e) => updateFilter('nearby', e.target.checked)}
-                      disabled={!data?.schoolLocation}
-                      className="h-3.5 w-3.5 rounded border-slate-300 text-[#0F766E] disabled:opacity-50"
-                    />
-                    Nearby only
-                  </label>
-
-                  <Input
-                    type="number"
-                    placeholder="Radius (km)"
-                    className={`h-9 w-24 border-slate-200 rounded-lg focus-visible:ring-[#0F766E] dark:bg-slate-800 dark:border-slate-700 text-xs font-medium ${!data?.schoolLocation ? 'opacity-50 cursor-not-allowed' : ''}`}
-                    value={filters.radiusKm}
-                    onChange={(e) => updateFilter('radiusKm', e.target.value)}
-                    disabled={!filters.nearby || !data?.schoolLocation}
-                  />
-                </div>
-              )}
+              {/* Bottom Drawer Actions */}
+              <div className="col-span-2 md:col-span-4 flex items-center justify-between pt-2.5 border-t border-slate-100 dark:border-slate-800">
+                {hasAnyActiveFilter ? (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={clearAllFilters}
+                    className="h-8 px-2.5 text-xs text-rose-600 hover:text-rose-700 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-lg font-bold flex items-center gap-1.5"
+                  >
+                    <RotateCcw className="h-3.5 w-3.5" /> Reset Filters
+                  </Button>
+                ) : (
+                  <span className="text-[11px] text-slate-400 font-medium">Select options to filter</span>
+                )}
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowAdvancedFilters(false)}
+                  className="h-8 px-3 text-xs font-bold rounded-lg border-slate-200 text-slate-700 dark:text-slate-300 dark:border-slate-700 hover:bg-slate-100"
+                >
+                  Done
+                </Button>
+              </div>
 
             </div>
           )}
 
         </CardContent>
       </Card>
-
-      {/* School Location Warning */}
-      {section !== 'talent_pool' && !data?.schoolLocation && (
-        <Card className="border-amber-200 bg-amber-50 dark:border-amber-900/30 dark:bg-amber-950/20">
-          <CardContent className="p-4 flex items-start gap-3">
-            <AlertCircle className="h-5 w-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
-            <div className="flex-1">
-              <p className="text-sm font-semibold text-amber-800 dark:text-amber-200">
-                School location not configured
-              </p>
-              <p className="text-xs text-amber-700 dark:text-amber-300 mt-1">
-                Complete your School Location in <Link to="/school-profile" className="font-bold underline hover:text-amber-900 dark:hover:text-amber-100">School Profile</Link> to enable Nearby Search and Map View.
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-      )}
 
       {/* Main Listing View Table Interface */}
       <Card>
@@ -476,28 +540,30 @@ export function CandidateList({
             <div className="text-xs font-semibold text-slate-500">
               Showing <span className="font-bold text-slate-800 dark:text-slate-200">{filteredCandidates.length}</span> candidates
             </div>
-            <div className="flex items-center gap-2">
-              <Button
-                type="button"
-                size="sm"
-                variant={viewMode === 'list' ? 'default' : 'outline'}
-                className={viewMode === 'list' ? 'bg-[#0F766E] text-white h-9 rounded-xl text-xs font-bold' : 'border-slate-200 bg-white text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 h-9 rounded-xl text-xs font-bold'}
-                onClick={() => setViewMode('list')}
-              >
-                <List className="mr-1.5 h-3.5 w-3.5" />
-                List View
-              </Button>
-              <Button
-                type="button"
-                size="sm"
-                variant={viewMode === 'map' ? 'default' : 'outline'}
-                className={viewMode === 'map' ? 'bg-[#0F766E] text-white h-9 rounded-xl text-xs font-bold shadow-md shadow-[#0F766E]/25' : 'border-slate-200 bg-white text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 h-9 rounded-xl text-xs font-bold'}
-                onClick={() => setViewMode('map')}
-              >
-                <MapIcon className="mr-1.5 h-3.5 w-3.5" />
-                Interactive Map View
-              </Button>
-            </div>
+            {section === 'talent_pool' && (
+              <div className="flex items-center gap-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant={viewMode === 'list' ? 'default' : 'outline'}
+                  className={viewMode === 'list' ? 'bg-[#0F766E] text-white h-9 rounded-xl text-xs font-bold' : 'border-slate-200 bg-white text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 h-9 rounded-xl text-xs font-bold'}
+                  onClick={() => setViewMode('list')}
+                >
+                  <List className="mr-1.5 h-3.5 w-3.5" />
+                  List View
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant={viewMode === 'map' ? 'default' : 'outline'}
+                  className={viewMode === 'map' ? 'bg-[#0F766E] text-white h-9 rounded-xl text-xs font-bold shadow-md shadow-[#0F766E]/25' : 'border-slate-200 bg-white text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 h-9 rounded-xl text-xs font-bold'}
+                  onClick={() => setViewMode('map')}
+                >
+                  <MapIcon className="mr-1.5 h-3.5 w-3.5" />
+                  Interactive Map View
+                </Button>
+              </div>
+            )}
           </div>
 
           {isLoading ? (
@@ -580,30 +646,32 @@ export function CandidateList({
                       </div>
                     ) : (
                       filteredCandidates.map((c) => (
-                        <Card key={c._id} className="border border-slate-200/60 bg-white shadow-sm dark:bg-slate-900 dark:border-slate-800">
-                          <CardContent className="p-4">
-                            <div className="flex items-center gap-4">
+                        <Card key={c._id} className="border border-slate-200/80 bg-white shadow-2xs dark:bg-slate-900 dark:border-slate-800 rounded-2xl overflow-hidden hover:border-teal-500/50 transition-all">
+                          <CardContent className="p-3.5 space-y-2.5">
+                            {/* Top Section: Avatar + Name/Role */}
+                            <div className="flex items-start gap-3">
                               {/* Photo */}
-                              <div className="shrink-0">
+                              <div className="shrink-0 pt-0.5">
                                 {c.profilePhoto ? (
-                                  <div className="h-12 w-12 rounded-full p-0.5 border border-slate-100 dark:border-slate-800 overflow-hidden">
+                                  <div className="h-11 w-11 rounded-xl p-0.5 border border-slate-100 dark:border-slate-800 overflow-hidden shadow-2xs">
                                     <img
                                       src={c.profilePhoto}
                                       alt={c.fullName}
-                                      className="h-full w-full rounded-full object-cover"
+                                      className="h-full w-full rounded-lg object-cover"
                                     />
                                   </div>
                                 ) : (
-                                  <div className="h-12 w-12 rounded-full bg-slate-100 dark:bg-slate-950 text-slate-500 dark:text-slate-400 font-bold text-sm flex items-center justify-center border border-slate-200/40">
+                                  <div className="h-11 w-11 rounded-xl bg-teal-50 dark:bg-teal-950/60 text-[#0F766E] dark:text-[#2DD4BF] font-extrabold text-sm flex items-center justify-center border border-teal-200/60 shadow-2xs">
                                     {c.fullName?.charAt(0)?.toUpperCase() || '?'}
                                   </div>
                                 )}
                               </div>
                               
                               {/* Name and Position */}
-                              <div className="flex-1 min-w-0">
-                                <div className="flex items-center gap-2 mb-1 flex-wrap">
-                                  <span className="font-bold text-slate-800 dark:text-slate-200 text-sm truncate">{c.fullName}</span>
+                              <div className="min-w-0 flex-1">
+                                <div className="flex items-center gap-1.5 flex-wrap">
+                                  <span className="font-bold text-slate-900 dark:text-slate-100 text-sm truncate">{c.fullName}</span>
+                                  {getSourceBadge(c.source)}
                                   {c.status && c.status !== 'new' && (
                                     <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider shrink-0 ${
                                       c.status === 'shortlisted' ? 'bg-teal-50 text-teal-700 border border-teal-200' :
@@ -618,37 +686,88 @@ export function CandidateList({
                                     </span>
                                   )}
                                   {c.isLocked && (
-                                    <Badge className="text-[10px] uppercase font-bold tracking-wider border-[#FE9496]/30 bg-[#FE9496]/5 text-[#FE9496] rounded-md px-1.5 py-0 shadow-none variant-outline shrink-0">
+                                    <Badge className="text-[9px] uppercase font-bold tracking-wider border-[#FE9496]/30 bg-[#FE9496]/5 text-[#FE9496] rounded-md px-1 py-0 shadow-none variant-outline shrink-0">
                                       Locked
                                     </Badge>
                                   )}
                                 </div>
-                                <p className="text-slate-600 dark:text-slate-300 font-semibold text-xs truncate">{c.position}</p>
-                                <p className="text-slate-500 dark:text-slate-400 font-semibold text-[11px] truncate mt-1">
-                                  {formatCandidateLocation(c)}{Number.isFinite(c.distanceKm) ? ` • ${c.distanceKm.toFixed(1)} km` : ''}
+                                <p className="text-slate-600 dark:text-slate-300 font-semibold text-xs truncate mt-0.5">
+                                  {c.position}
+                                  {c.subjects?.length > 0 && (
+                                    <span className="text-[#0F766E] font-medium text-[11px]"> • {c.subjects.join(', ')}</span>
+                                  )}
                                 </p>
+                                <div className="flex items-center gap-2 text-[11px] text-slate-400 dark:text-slate-500 font-medium mt-0.5">
+                                  <span>{c.experienceYears > 0 ? `${c.experienceYears} yrs exp` : 'Fresher'}</span>
+                                  {c.expectedSalary ? (
+                                    <>
+                                      <span>•</span>
+                                      <span className="font-semibold text-slate-600 dark:text-slate-300 font-mono">₹{c.expectedSalary.toLocaleString('en-IN')}</span>
+                                    </>
+                                  ) : null}
+                                </div>
                               </div>
-                              
-                              {/* Actions */}
-                              <div className="flex items-center gap-1 shrink-0">
-                                <Button variant="view" size="icon" asChild className="h-8 w-8">
-                                  <Link to={`/candidates/${c._id}`}>
-                                    <Eye className="h-4 w-4" />
-                                  </Link>
-                                </Button>
-                                
-                                {c.canEdit && (
+                            </div>
+
+                            {/* Bottom Communication & Action Bar - ALL 4 BUTTONS IN CLEAN UNIFORM BOXES IN ONE LINE */}
+                            <div className="flex items-center justify-between gap-2 pt-2.5 border-t border-slate-100 dark:border-slate-800">
+                              <span className="text-xs font-bold text-slate-800 dark:text-slate-200 font-mono truncate">
+                                {!c.isLocked && c.mobile ? c.mobile : (c.isLocked ? '••••••••••' : '—')}
+                              </span>
+                              <div className="flex items-center gap-1.5 shrink-0">
+                                {!c.isLocked && c.mobile && (
                                   <>
-                                    <Button variant="edit" size="icon" asChild className="h-8 w-8">
-                                      <Link to={`/candidates/${c._id}/edit`}>
-                                        <Pencil className="h-4 w-4" />
-                                      </Link>
-                                    </Button>
-                                    
-                                    <Button variant="delete" size="icon" onClick={() => setDeleteId(c._id)} className="h-8 w-8">
-                                      <Trash2 className="h-4 w-4" />
-                                    </Button>
+                                    <a
+                                      href={`tel:${c.mobile}`}
+                                      className="h-7 px-2 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-600 dark:bg-blue-950/40 dark:text-blue-400 text-xs font-bold flex items-center gap-1 border border-blue-200/70 shadow-2xs transition-colors"
+                                      title="Call Candidate"
+                                    >
+                                      <Phone className="h-3 w-3" />
+                                      <span>Call</span>
+                                    </a>
+                                    <a
+                                      href={`https://wa.me/91${String(c.whatsappNumber || c.mobile).replace(/\D/g, '').slice(-10)}`}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                      className="h-7 px-2 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400 text-xs font-bold flex items-center gap-1 border border-emerald-200/70 shadow-2xs transition-colors"
+                                      title="WhatsApp Candidate"
+                                    >
+                                      <WhatsAppIcon className="h-3 w-3 fill-emerald-600 dark:fill-emerald-400" />
+                                      <span>WhatsApp</span>
+                                    </a>
                                   </>
+                                )}
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setDocsModalCandidate(c);
+                                  }}
+                                  className="h-7 w-7 rounded-lg bg-purple-50 hover:bg-purple-100 text-purple-700 dark:bg-purple-950/40 dark:text-purple-300 flex items-center justify-center border border-purple-200/70 shadow-2xs transition-colors cursor-pointer relative"
+                                  title="View Documents"
+                                >
+                                  <FileText className="h-3.5 w-3.5 text-purple-600 dark:text-purple-400" />
+                                  {c.documents?.length > 0 && (
+                                    <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-purple-600 text-white text-[8px] font-extrabold flex items-center justify-center">
+                                      {c.documents.length}
+                                    </span>
+                                  )}
+                                </button>
+                                <Link
+                                  to={`/candidates/${c._id}`}
+                                  className="h-7 w-7 rounded-lg bg-teal-50 hover:bg-teal-100 text-[#0F766E] dark:bg-teal-950/40 dark:text-[#2DD4BF] flex items-center justify-center border border-teal-200/70 shadow-2xs transition-colors"
+                                  title="View Biodata"
+                                >
+                                  <Eye className="h-3.5 w-3.5" />
+                                </Link>
+                                {c.canEdit && (
+                                  <Link
+                                    to={`/candidates/${c._id}/edit`}
+                                    className="h-7 w-7 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400 flex items-center justify-center border border-amber-200/70 shadow-2xs transition-colors"
+                                    title="Edit Candidate"
+                                  >
+                                    <Pencil className="h-3.5 w-3.5" />
+                                  </Link>
                                 )}
                               </div>
                             </div>
@@ -685,8 +804,8 @@ export function CandidateList({
                             </div>
                           </TableHead>
                           
-                          <TableHead className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider py-3 px-3 hidden md:table-cell">
-                            <div className="flex items-center gap-1"><MapPin className="h-3 w-3" /> Location</div>
+                          <TableHead className="text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider py-2.5 px-3 hidden md:table-cell min-w-[120px]">
+                            <div className="flex items-center gap-1.5"><Phone className="h-3 w-3 text-[#0F766E]" /> Contact</div>
                           </TableHead>
 
                           <TableHead className={isTablet ? 'hidden' : 'text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider py-3 px-3 hidden lg:table-cell'}>
@@ -714,7 +833,7 @@ export function CandidateList({
                           </TableHead>
                           
                           <TableHead 
-                            className={isTablet ? 'hidden' : 'text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-violet-600 dark:hover:text-violet-400 transition-colors select-none py-3 px-3 hidden lg:table-cell'} 
+                            className={isTablet ? 'hidden' : 'text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-violet-600 dark:hover:text-violet-400 transition-colors select-none py-3 px-3 hidden lg:table-cell whitespace-nowrap min-w-[105px]'} 
                             onClick={() => handleSort('createdAt')}
                           >
                             <div className="flex items-center gap-1">
@@ -723,7 +842,7 @@ export function CandidateList({
                             </div>
                           </TableHead>
                           
-                          <TableHead className="text-right text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider pr-4 py-3 w-[80px]">Actions</TableHead>
+                          <TableHead className="text-right text-slate-700 dark:text-slate-300 font-bold text-[11px] uppercase tracking-wider pr-4 py-3 min-w-[135px] whitespace-nowrap">Actions</TableHead>
                         </TableRow>
                       </TableHeader>
                       
@@ -746,7 +865,7 @@ export function CandidateList({
                           filteredCandidates.map((c) => (
                             <TableRow 
                               key={c._id} 
-                              className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 border-b border-slate-100 dark:border-slate-800/60 last:border-none transition-all group"
+                              className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 border-b border-slate-100 dark:border-slate-800/60 last:border-none transition-colors group"
                             >
                               <TableCell className="pl-4 py-2.5">
                                 {c.profilePhoto ? (
@@ -767,6 +886,7 @@ export function CandidateList({
                               <TableCell className="font-bold text-slate-800 dark:text-slate-200 text-xs py-2.5 px-3">
                                 <div className="flex items-center gap-1.5 flex-wrap">
                                   <span className="group-hover:text-[#0F766E] transition-colors truncate">{c.fullName}</span>
+                                  {getSourceBadge(c.source)}
                                   {c.status && c.status !== 'new' && (
                                     <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider shrink-0 ${
                                       c.status === 'shortlisted' ? 'bg-teal-50 text-teal-700 border border-teal-200' :
@@ -788,56 +908,115 @@ export function CandidateList({
                                 </div>
                               </TableCell>
                               
-                              <TableCell className="text-slate-600 dark:text-slate-300 font-semibold text-xs py-2.5 px-3 truncate">{c.position}</TableCell>
+                              <TableCell className="text-slate-600 dark:text-slate-300 font-semibold text-xs py-2.5 px-3">
+                                <div className="truncate">{c.position}</div>
+                                {c.subjects?.length > 0 && (
+                                  <div className="text-[10px] text-[#0F766E] font-medium truncate max-w-[140px]" title={c.subjects.join(', ')}>
+                                    {c.subjects.join(', ')}
+                                  </div>
+                                )}
+                              </TableCell>
                               
-                              <TableCell className="text-slate-500 dark:text-slate-400 font-medium text-xs py-2.5 px-3 truncate hidden md:table-cell max-w-[150px]">
-                                {formatCandidateLocation(c)}{Number.isFinite(c.distanceKm) ? ` • ${c.distanceKm.toFixed(1)} km` : ''}
+                              <TableCell className="py-2.5 px-3 hidden md:table-cell">
+                                {!c.isLocked && c.mobile ? (
+                                  <div className="flex flex-col">
+                                    <span className="font-semibold text-slate-800 dark:text-slate-200 text-xs font-mono tracking-tight">
+                                      {c.mobile}
+                                    </span>
+                                    {c.email && (
+                                      <span className="text-[10px] text-slate-400 dark:text-slate-500 truncate max-w-[130px]" title={c.email}>
+                                        {c.email}
+                                      </span>
+                                    )}
+                                  </div>
+                                ) : c.isLocked ? (
+                                  <span className="text-[11px] font-semibold text-slate-400 flex items-center gap-1">
+                                    <Lock className="h-3 w-3" /> Locked
+                                  </span>
+                                ) : (
+                                  <span className="text-slate-400 font-normal">—</span>
+                                )}
                               </TableCell>
 
                               <TableCell className="text-slate-500 dark:text-slate-400 font-medium text-xs py-2.5 px-3 truncate hidden lg:table-cell max-w-[130px]">
                                 {c.qualifications?.join(', ') || '—'}
                               </TableCell>
                               
-                              <TableCell className="py-2.5 px-3 hidden md:table-cell">
-                                <Badge className="border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-lg text-[11px] font-bold px-2 py-0.5 variant-outline shadow-none">
-                                  {c.experienceYears} yrs
-                                </Badge>
+                              <TableCell className="py-2.5 px-3 hidden md:table-cell text-xs font-semibold text-slate-700 dark:text-slate-300">
+                                {c.experienceYears > 0 ? `${c.experienceYears} yrs` : <span className="text-slate-400 font-normal">Fresher</span>}
                               </TableCell>
                               
-                              <TableCell className="font-bold text-slate-800 dark:text-slate-200 text-xs py-2.5 px-3 hidden md:table-cell">
+                              <TableCell className="py-2.5 px-3 hidden md:table-cell text-xs font-bold text-slate-800 dark:text-slate-100 font-mono">
                                 {c.expectedSalary ? (
-                                  <Badge className="border-[#1BCFB4]/30 bg-[#1BCFB4]/5 text-[#1BCFB4] text-[11px] font-bold px-2 py-0.5 rounded-lg variant-outline shadow-none">
-                                    ₹{c.expectedSalary.toLocaleString('en-IN')}
-                                  </Badge>
+                                  `₹${c.expectedSalary.toLocaleString('en-IN')}`
                                 ) : (
-                                  <span className="text-slate-400 dark:text-slate-600 font-normal">—</span>
+                                  <span className="text-slate-400 font-normal font-sans">—</span>
                                 )}
                               </TableCell>
                               
-                              <TableCell className="text-slate-500 dark:text-slate-400 font-medium text-xs py-2.5 px-3 hidden lg:table-cell">
+                              <TableCell className="text-slate-500 dark:text-slate-400 font-medium text-xs py-2.5 px-3 hidden lg:table-cell whitespace-nowrap min-w-[105px]">
                                 {formatDate(c.createdAt)}
                               </TableCell>
                               
                               <TableCell className="text-right pr-4 py-2.5">
-                                <div className="flex justify-end items-center gap-1">
-                                  <Button variant="view" size="icon" asChild className="h-7 w-7">
-                                    <Link to={`/candidates/${c._id}`}>
-                                      <Eye className="h-3.5 w-3.5" />
-                                    </Link>
-                                  </Button>
+                                <div className="flex justify-end items-center gap-1.5">
+                                  {!c.isLocked && c.mobile && (
+                                    <a
+                                      href={`tel:${c.mobile}`}
+                                      onClick={(e) => e.stopPropagation()}
+                                      className="h-7 w-7 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-600 dark:bg-blue-950/40 dark:text-blue-400 flex items-center justify-center border border-blue-200/70 transition-all hover:scale-105 shadow-2xs"
+                                      title={`Call ${c.mobile}`}
+                                    >
+                                      <Phone className="h-3.5 w-3.5" />
+                                    </a>
+                                  )}
+
+                                  {!c.isLocked && (c.whatsappNumber || c.mobile) && (
+                                    <a
+                                      href={`https://wa.me/91${String(c.whatsappNumber || c.mobile).replace(/\D/g, '').slice(-10)}`}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                      onClick={(e) => e.stopPropagation()}
+                                      className="h-7 w-7 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400 flex items-center justify-center border border-emerald-200/70 transition-all hover:scale-105 shadow-2xs"
+                                      title="WhatsApp Chat"
+                                    >
+                                      <WhatsAppIcon className="h-3.5 w-3.5 fill-emerald-600 dark:fill-emerald-400" />
+                                    </a>
+                                  )}
+
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setDocsModalCandidate(c);
+                                    }}
+                                    className="h-7 w-7 rounded-lg bg-purple-50 hover:bg-purple-100 text-purple-700 dark:bg-purple-950/40 dark:text-purple-300 flex items-center justify-center border border-purple-200/70 transition-all hover:scale-105 shadow-2xs cursor-pointer relative"
+                                    title="View Attached Documents"
+                                  >
+                                    <FileText className="h-3.5 w-3.5 text-purple-600 dark:text-purple-400" />
+                                    {c.documents?.length > 0 && (
+                                      <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-purple-600 text-white text-[8px] font-extrabold flex items-center justify-center">
+                                        {c.documents.length}
+                                      </span>
+                                    )}
+                                  </button>
+
+                                  <Link
+                                    to={`/candidates/${c._id}`}
+                                    className="h-7 w-7 rounded-lg bg-teal-50 hover:bg-teal-100 text-[#0F766E] dark:bg-teal-950/40 dark:text-[#2DD4BF] flex items-center justify-center border border-teal-200/70 transition-all hover:scale-105 shadow-2xs"
+                                    title="View Biodata"
+                                  >
+                                    <Eye className="h-3.5 w-3.5" />
+                                  </Link>
                                   
                                   {c.canEdit && (
-                                    <>
-                                      <Button variant="edit" size="icon" asChild className="h-8 w-8">
-                                        <Link to={`/candidates/${c._id}/edit`}>
-                                          <Pencil className="h-4 w-4" />
-                                        </Link>
-                                      </Button>
-                                      
-                                      <Button variant="delete" size="icon" onClick={() => setDeleteId(c._id)} className="h-8 w-8">
-                                        <Trash2 className="h-4 w-4" />
-                                      </Button>
-                                    </>
+                                    <Link
+                                      to={`/candidates/${c._id}/edit`}
+                                      className="h-7 w-7 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400 flex items-center justify-center border border-amber-200/70 transition-all hover:scale-105 shadow-2xs"
+                                      title="Edit Candidate"
+                                    >
+                                      <Pencil className="h-3.5 w-3.5" />
+                                    </Link>
                                   )}
                                 </div>
                               </TableCell>
@@ -922,6 +1101,13 @@ export function CandidateList({
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Candidate Documents Modal */}
+      <CandidateDocumentsModal
+        isOpen={!!docsModalCandidate}
+        onClose={() => setDocsModalCandidate(null)}
+        candidate={docsModalCandidate}
+      />
     </div>
   );
 }
@@ -931,7 +1117,7 @@ export default function MyCandidates() {
     <CandidateList
       section="my_candidates"
       title="My Candidates"
-      description="Candidates added by your school (ADMIN) and via your application link (SCHOOL_LINK). Full access, no credit required."
+      description="Candidates added directly or received via school apply links."
       showAddButton
     />
   );
@@ -942,7 +1128,7 @@ export function TalentPool() {
     <CandidateList
       section="talent_pool"
       title="Talent Pool"
-      description="Browse platform candidates and profiles from other schools. Unlock profiles using credits."
+      description="Verified candidates from the shared educator talent pool."
       sourceFilterOptions={[]}
     />
   );

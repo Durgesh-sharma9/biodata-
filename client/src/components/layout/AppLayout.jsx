@@ -5,12 +5,14 @@ import { Sidebar } from './Sidebar';
 import { useAuth } from '@/context/AuthContext';
 import { getMySchool } from '@/lib/api';
 import { Badge } from '@/components/ui/badge';
-import { Menu, X, Briefcase, Coins, Building2 } from 'lucide-react';
+import { Menu, X, Briefcase, Coins, Building2, QrCode } from 'lucide-react';
 import { GlobalSearch } from '@/components/common/GlobalSearch';
+import { SchoolQRModal } from '@/components/common/SchoolQRModal';
 
 export function AppLayout() {
   const { school: authSchool, isSuperAdmin, isApplicant } = useAuth();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [qrModalOpen, setQrModalOpen] = useState(false);
 
   // Always keep school data in sync with React Query
   const { data: mySchoolData } = useQuery({
@@ -33,20 +35,21 @@ export function AppLayout() {
       {mobileNavOpen && (
         <div className="md:hidden fixed inset-0 z-50 flex no-print">
           <div 
-            className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity" 
+            className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm animate-in fade-in duration-200" 
             onClick={() => setMobileNavOpen(false)} 
           />
-          <div className="relative w-64 max-w-[85vw] h-full z-10 bg-white dark:bg-slate-900 shadow-2xl flex flex-col">
-            <div className="absolute top-3 right-3 z-20">
+          <div className="relative w-72 max-w-[85vw] h-full z-10 bg-white dark:bg-slate-900 shadow-2xl flex flex-col animate-in slide-in-from-left duration-200">
+            <div className="absolute top-3.5 right-3.5 z-20">
               <button 
                 onClick={() => setMobileNavOpen(false)} 
-                className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800"
+                className="h-8 w-8 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 hover:text-slate-800 transition-all cursor-pointer"
+                aria-label="Close navigation"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
-            <div className="h-full overflow-y-auto" onClick={() => setMobileNavOpen(false)}>
-              <Sidebar />
+            <div className="h-full overflow-y-auto">
+              <Sidebar onNavigate={() => setMobileNavOpen(false)} />
             </div>
           </div>
         </div>
@@ -54,20 +57,20 @@ export function AppLayout() {
 
       {/* Main Content Area */}
       <div className="flex flex-1 flex-col min-w-0 h-full overflow-hidden relative">
-        {/* Top Header Bar - Compact */}
-        <header className="flex h-13 sm:h-14 shrink-0 items-center justify-between border-b border-[#E2EAE7] dark:border-slate-800/60 bg-white dark:bg-slate-900 px-3 sm:px-5 z-20 shadow-2xs gap-2 sm:gap-4 no-print">
+        {/* Top Header Bar - Clean & Mobile-Optimized */}
+        <header className="flex h-14 shrink-0 items-center justify-between border-b border-[#E2EAE7] dark:border-slate-800/60 bg-white dark:bg-slate-900 px-3 sm:px-5 z-20 shadow-2xs gap-2 sm:gap-4 no-print">
           {/* Left: Mobile Hamburger & Brand */}
           <div className="flex items-center gap-2.5 shrink-0">
             <button
               onClick={() => setMobileNavOpen(true)}
-              className="md:hidden p-1.5 rounded-lg text-slate-600 hover:text-[#0F766E] hover:bg-teal-50 transition-colors dark:text-slate-300 dark:hover:bg-slate-800"
-              aria-label="Toggle navigation"
+              className="md:hidden h-9 w-9 flex items-center justify-center rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 hover:text-[#0F766E] hover:border-[#0F766E]/40 hover:bg-teal-50/50 transition-all shadow-2xs active:scale-95 cursor-pointer"
+              aria-label="Open navigation"
             >
-              <Menu className="w-5 h-5" />
+              <Menu className="w-4.5 h-4.5" />
             </button>
             
-            <div className="md:hidden flex items-center gap-2">
-              <div className="w-6 h-6 rounded-lg bg-gradient-to-tr from-[#0F766E] to-[#14B8A6] flex items-center justify-center text-white shadow-xs">
+            <div className="flex md:hidden items-center gap-1.5">
+              <div className="w-6 h-6 rounded-lg bg-gradient-to-tr from-[#0F766E] to-[#14B8A6] flex items-center justify-center text-white shadow-2xs">
                 <Briefcase className="w-3.5 h-3.5" />
               </div>
               <span className="font-extrabold text-sm tracking-tight text-slate-900 dark:text-white">
@@ -76,22 +79,38 @@ export function AppLayout() {
             </div>
           </div>
 
-          {/* Center: Global Search Bar */}
-          <div className="flex-1 max-w-md mx-1 sm:mx-4">
+          {/* Center: Global Search Bar (Desktop only, md and above) */}
+          <div className="hidden md:block flex-1 max-w-md mx-4 min-w-0">
             <GlobalSearch />
           </div>
 
-          {/* Right: School Name, School Logo & Credits Badge */}
-          <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
+          {/* Right: Actions Cluster (Search icon on mobile, QR Code button, School profile) */}
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+            {/* Mobile Search Icon Button */}
+            <div className="md:hidden">
+              <GlobalSearch triggerVariant="icon" />
+            </div>
+
             {!isSuperAdmin && !isApplicant && school && (
-              <div className="flex items-center gap-2 sm:gap-2.5">
+              <>
+                {/* Instant School QR Button */}
+                <button
+                  type="button"
+                  onClick={() => setQrModalOpen(true)}
+                  className="h-9 w-9 sm:h-9 sm:w-auto p-0 sm:px-2.5 sm:py-1.5 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 hover:text-[#0F766E] hover:border-[#0F766E]/40 hover:bg-teal-50/50 font-bold text-xs transition-all shadow-2xs group cursor-pointer flex items-center justify-center gap-1.5 active:scale-95"
+                  title="Open School Application QR Code for Walk-In Candidates"
+                >
+                  <QrCode className="w-4 h-4 text-[#0F766E] group-hover:scale-110 transition-transform shrink-0" />
+                  <span className="hidden sm:inline">School QR</span>
+                </button>
+
                 {/* School Name & Logo Link */}
                 <Link
                   to="/school-profile"
-                  className="flex items-center gap-2 px-2 py-1 rounded-lg border border-[#E2EAE7] dark:border-slate-800 bg-[#F4F7F6]/60 dark:bg-slate-800/60 hover:bg-[#F0FDFA] dark:hover:bg-slate-800 hover:border-[#0F766E]/40 transition-all group shadow-2xs"
-                  title="View / Edit School Profile & Logo"
+                  className="h-9 w-9 sm:h-auto sm:w-auto p-0 sm:px-2 sm:py-1 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-800/80 hover:bg-teal-50/50 hover:border-[#0F766E]/40 transition-all group shadow-2xs flex items-center justify-center gap-2 active:scale-95"
+                  title="View / Edit School Profile"
                 >
-                  <div className="h-7 w-7 rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 flex items-center justify-center overflow-hidden shrink-0 shadow-2xs group-hover:scale-105 transition-transform">
+                  <div className="h-6 w-6 rounded-lg bg-white dark:bg-slate-900 flex items-center justify-center overflow-hidden shrink-0 shadow-2xs group-hover:scale-105 transition-transform">
                     {school.logoUrl ? (
                       <img
                         src={school.logoUrl}
@@ -99,7 +118,7 @@ export function AppLayout() {
                         className="h-full w-full object-contain p-0.5"
                       />
                     ) : (
-                      <div className="h-full w-full bg-gradient-to-tr from-[#0F766E]/15 to-[#14B8A6]/15 text-[#0F766E] flex items-center justify-center font-bold text-xs">
+                      <div className="h-full w-full bg-gradient-to-tr from-[#0F766E]/15 to-[#14B8A6]/15 text-[#0F766E] flex items-center justify-center font-bold text-[10px]">
                         {school.schoolName ? school.schoolName.charAt(0).toUpperCase() : <Building2 className="w-3.5 h-3.5" />}
                       </div>
                     )}
@@ -108,37 +127,32 @@ export function AppLayout() {
                     <span className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate group-hover:text-[#0F766E] transition-colors">
                       {school.schoolName}
                     </span>
-                    <span className="text-[9px] font-mono font-medium text-slate-400 dark:text-slate-500 truncate">
-                      {school.schoolId ? `#${school.schoolId}` : 'Recruiter Account'}
+                    <span className="text-[9px] font-medium text-slate-400 dark:text-slate-500 truncate">
+                      School Portal
                     </span>
                   </div>
                 </Link>
-
-                {/* Milestone 2: Credits Badge (Disabled in Milestone 1) */}
-                {/* {school.credits != null && (
-                  <Link to="/credits">
-                    <Badge 
-                      variant="secondary" 
-                      className="text-xs font-bold px-2.5 py-1 rounded-lg border border-[#0F766E]/30 bg-[#0F766E]/10 text-[#0F766E] hover:bg-[#0F766E]/20 transition-all cursor-pointer flex items-center gap-1 shadow-2xs"
-                    >
-                      <Coins className="w-3.5 h-3.5 text-[#0F766E]" />
-                      <span>{school.credits}</span>
-                      <span className="hidden md:inline font-semibold text-[10px] opacity-80">Credits</span>
-                    </Badge>
-                  </Link>
-                )} */}
-              </div>
+              </>
             )}
           </div>
         </header>
         
-        {/* Main scrollable page container - Compact spacing */}
-        <main className="flex-1 overflow-y-auto p-3.5 sm:p-5 lg:p-6 printable-area">
+        {/* Main scrollable page container - Compact spacing on mobile */}
+        <main className="flex-1 overflow-y-auto p-3 sm:p-5 lg:p-6 printable-area">
           <div className="w-full max-w-[1400px] mx-auto space-y-5">
             <Outlet />
           </div>
         </main>
       </div>
+
+      {/* Global Navbar School QR Popup Modal */}
+      {!isSuperAdmin && !isApplicant && (
+        <SchoolQRModal 
+          isOpen={qrModalOpen} 
+          onClose={() => setQrModalOpen(false)} 
+          school={school} 
+        />
+      )}
     </div>
   );
 }

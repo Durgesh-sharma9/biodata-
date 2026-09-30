@@ -53,15 +53,6 @@ const STATIC_NAVIGATION = [
     keywords: ['candidates', 'applicants', 'applications', 'shortlist', 'teachers', 'hired']
   },
   {
-    title: 'Talent Pool',
-    description: 'Verified candidate database across India with proximity radar',
-    path: '/talent-pool',
-    category: 'Pages & Navigation',
-    icon: UserSquare2,
-    badge: 'Database',
-    keywords: ['talent pool', 'database', 'teachers', 'search candidates', 'resume', 'cv', 'proximity']
-  },
-  {
     title: 'Add New Candidate',
     description: 'Manually register a candidate biodata or walk-in application',
     path: '/candidates/new',
@@ -72,12 +63,12 @@ const STATIC_NAVIGATION = [
   },
   {
     title: 'School Profile & Logo',
-    description: 'School branding, official logo upload, contact numbers & GPS map pinpoint',
+    description: 'School branding, official logo upload, contact numbers & campus address',
     path: '/school-profile',
     category: 'Pages & Navigation',
     icon: Building2,
     badge: 'Branding',
-    keywords: ['school profile', 'logo', 'branding', 'address', 'map', 'gps', 'phone', 'contact']
+    keywords: ['school profile', 'logo', 'branding', 'address', 'campus', 'phone', 'contact']
   },
   {
     title: 'Application Links & QR Standee',
@@ -87,15 +78,6 @@ const STATIC_NAVIGATION = [
     icon: Share2,
     badge: 'Public Portal',
     keywords: ['application links', 'qr code', 'standee', 'flyer', 'apply link', 'walk-in url']
-  },
-  {
-    title: 'Credits & Packages',
-    description: 'Available unlock credits, credit packages, pricing & purchase history',
-    path: '/credits',
-    category: 'Pages & Navigation',
-    icon: PiggyBank,
-    badge: 'Billing',
-    keywords: ['credits', 'buy credits', 'packages', 'payment', 'balance', 'pricing']
   },
 
   // Settings Deep-Links
@@ -146,7 +128,7 @@ const STATIC_NAVIGATION = [
   },
 ];
 
-export function GlobalSearch() {
+export function GlobalSearch({ triggerVariant = 'full' } = {}) {
   const navigate = useNavigate();
   const { isSuperAdmin, isApplicant } = useAuth();
 
@@ -274,34 +256,46 @@ export function GlobalSearch() {
   };
 
   return (
-    <div className="relative w-full max-w-md mx-auto" ref={dropdownRef}>
+    <div className={triggerVariant === 'icon' ? 'inline-block' : 'relative w-full max-w-md mx-auto'} ref={dropdownRef}>
       
-      {/* Search Input Bar in Navbar */}
-      <div 
-        onClick={() => setIsOpen(true)}
-        className="w-full flex items-center justify-between h-9 sm:h-10 px-3 bg-slate-100/90 dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-700/80 rounded-xl cursor-pointer text-xs transition-all shadow-2xs group hover:border-[#0F766E]/40"
-      >
-        <div className="flex items-center gap-2 text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300">
-          <Search className="h-4 w-4 text-[#0F766E] shrink-0" />
-          <span className="truncate select-none font-medium">
-            Search candidates, pages, tabs, settings...
-          </span>
-        </div>
+      {triggerVariant === 'icon' ? (
+        <button
+          type="button"
+          onClick={() => setIsOpen(true)}
+          className="h-9 w-9 flex items-center justify-center rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 hover:text-[#0F766E] hover:border-[#0F766E]/40 hover:bg-teal-50/50 transition-all shadow-2xs active:scale-95 cursor-pointer"
+          aria-label="Search"
+          title="Search (Ctrl + K)"
+        >
+          <Search className="w-4 h-4 text-slate-600 dark:text-slate-300" />
+        </button>
+      ) : (
+        /* Search Input Bar in Navbar */
+        <div 
+          onClick={() => setIsOpen(true)}
+          className="w-full flex items-center justify-between h-9 sm:h-10 px-3 bg-slate-100/90 dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-700/80 rounded-xl cursor-pointer text-xs transition-all shadow-2xs group hover:border-[#0F766E]/40"
+        >
+          <div className="flex items-center gap-2 text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300 min-w-0">
+            <Search className="h-4 w-4 text-[#0F766E] shrink-0" />
+            <span className="truncate select-none font-medium">
+              Search candidates, pages, tabs, settings...
+            </span>
+          </div>
 
-        <div className="hidden md:flex items-center gap-1 font-mono text-[10px] font-semibold text-slate-400 dark:text-slate-500 bg-white dark:bg-slate-900 px-1.5 py-0.5 rounded-md border border-slate-200 dark:border-slate-700 shadow-2xs">
-          <span>Ctrl</span>
-          <span>K</span>
+          <div className="hidden md:flex items-center gap-1 font-mono text-[10px] font-semibold text-slate-400 dark:text-slate-500 bg-white dark:bg-slate-900 px-1.5 py-0.5 rounded-md border border-slate-200 dark:border-slate-700 shadow-2xs">
+            <span>Ctrl</span>
+            <span>K</span>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Global Command Palette Dropdown / Modal */}
       {isOpen && typeof document !== 'undefined' && createPortal(
         <div 
-          className="fixed inset-0 z-[99999] flex items-start justify-center pt-16 sm:pt-20 px-3 bg-slate-950/60 backdrop-blur-xs animate-in fade-in duration-150"
+          className="fixed inset-0 z-[99999] flex items-start justify-center pt-3 sm:pt-20 px-2 sm:px-3 bg-slate-950/60 backdrop-blur-sm animate-in fade-in duration-150"
           onClick={() => setIsOpen(false)}
         >
           <div 
-            className="w-full max-w-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[80vh] animate-in zoom-in-95 duration-150"
+            className="w-full max-w-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh] sm:max-h-[80vh] animate-in zoom-in-95 duration-150"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header Search Input */}

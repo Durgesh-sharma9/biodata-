@@ -160,7 +160,7 @@ export function DynamicCandidateForm({
       setProfilePhoto(photoUrl);
       setValue('profilePhoto', photoUrl);
     } catch (err) {
-      setUploadError(err.response?.data?.message || 'Profile photo upload failed');
+      setUploadError(err.response?.data?.message || 'Candidate photo upload failed');
     } finally {
       setUploading(false);
       e.target.value = '';
@@ -436,8 +436,8 @@ export function DynamicCandidateForm({
               </label>
             )}
             <div className="space-y-0.5 min-w-0">
-              <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200">Candidate Profile Photo</h4>
-              <p className="text-[11px] text-slate-400">Upload a clear portrait photo (JPG/PNG up to 5MB).</p>
+              <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200">Candidate Photo</h4>
+              <p className="text-[11px] text-slate-400">Upload a clear photo (JPG/PNG up to 5MB).</p>
             </div>
           </div>
 

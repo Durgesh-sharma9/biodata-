@@ -31,7 +31,9 @@ import {
   ShieldCheck,
   FileCheck,
   Clock,
-  Eye
+  Eye,
+  GraduationCap,
+  Briefcase
 } from 'lucide-react';
 import { getApplicationLink, getApplicationQR, getMySchool, getCandidates } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
@@ -39,6 +41,7 @@ import { PageHeader } from '@/components/common/PageHeader';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 
 export default function ApplicationLinks() {
   const { school: authSchool, isSuperAdmin, isApplicant } = useAuth();
@@ -47,7 +50,9 @@ export default function ApplicationLinks() {
   const [copiedImage, setCopiedImage] = useState(false);
   const [qrViewMode, setQrViewMode] = useState('standee'); // 'standee' | 'minimal'
   const [copiedBroadcast, setCopiedBroadcast] = useState(false);
-  const [broadcastTab, setBroadcastTab] = useState('whatsapp'); // 'whatsapp' | 'linkedin' | 'sms'
+  const [broadcastTab, setBroadcastTab] = useState('whatsapp'); // 'whatsapp' | 'walkin' | 'teachers' | 'non_teaching' | 'sms'
+  const [broadcastPreviewOpen, setBroadcastPreviewOpen] = useState(false);
+
 
   const { data: mySchoolData } = useQuery({
     queryKey: ['mySchool'],
@@ -521,36 +526,75 @@ export default function ApplicationLinks() {
 
   const getBroadcastMessage = (type) => {
     const cleanUrl = applyUrl || (typeof window !== 'undefined' ? `${window.location.origin}/apply` : '');
+    const hrLine = school?.hrContactPerson ? `👤 *Contact Person:* ${school.hrContactPerson}\n` : '';
+    const timingsLine = school?.walkInTimings ? `⏰ *Walk-In Timings:* ${school.walkInTimings}\n` : '';
+    const phoneLine = (schoolPhone || school?.altPhone) ? `📞 *Phone/WhatsApp:* ${[schoolPhone, school?.altPhone].filter(Boolean).join(' / ')}\n` : '';
+    const addressLine = schoolAddress ? `📍 *Campus Address:* ${schoolAddress}\n` : '';
+
     if (type === 'whatsapp') {
       return `📢 *TEACHING & STAFF VACANCIES — ${schoolName.toUpperCase()}* 🎓\n\n` +
         `We are inviting passionate, qualified teachers & administrative staff to join our vibrant academic team.\n\n` +
         `✨ *Open Positions:*\n` +
         `• PGT / TGT / PRT (All Subjects)\n` +
-        `• Pre-Primary & Kindergarten Teachers\n` +
+        `• Pre-Primary & Kindergarten Teachers (NTT)\n` +
         `• Activity, Sports, Art & Music Faculty\n` +
         `• Front Desk & Administrative Executives\n\n` +
         `📝 *Direct 2-Minute Application:* \n` +
         `👉 ${cleanUrl}\n\n` +
         `No password or complex registration needed. Simply tap the link above and submit your details!\n\n` +
-        (schoolAddress ? `📍 *Location:* ${schoolAddress}\n` : '') +
-        (schoolPhone ? `📞 *Contact:* ${schoolPhone}` : '');
+        addressLine +
+        phoneLine;
     }
 
-    if (type === 'linkedin') {
-      return `🌟 We are hiring at ${schoolName}!\n\n` +
-        `We are looking for dedicated educators and professional staff members to join our team for the upcoming academic session.\n\n` +
-        `🎯 Current Openings:\n` +
-        `• Senior Secondary & High School Teachers (PGT/TGT)\n` +
-        `• Primary & Foundational Stage Educators (PRT/NTT)\n` +
-        `• Physical Education, Arts, & Performing Arts Faculty\n` +
-        `• Academic Coordinators & Campus Operations\n\n` +
-        `Interested candidates can apply directly through our school's portal in under 2 minutes:\n` +
-        `🔗 ${cleanUrl}\n\n` +
-        `#TeachingJobs #SchoolRecruitment #HiringEducators #EducationJobs #FacultyVacancies`;
+    if (type === 'walkin') {
+      return `🚨 *URGENT WALK-IN INTERVIEW — ${schoolName.toUpperCase()}* 🚨\n\n` +
+        `We are conducting direct Walk-In Interviews for passionate educators and staff for the current / upcoming session.\n\n` +
+        `💼 *Positions Available:*\n` +
+        `• Senior & High School Faculty (PGT / TGT)\n` +
+        `• Primary & Mother Teachers (PRT / NTT)\n` +
+        `• Front Office & Campus Support Staff\n\n` +
+        (timingsLine || `⏰ *Timings:* 09:00 AM - 02:00 PM (Monday to Saturday)\n`) +
+        (addressLine || `📍 *Venue:* ${schoolName} Campus\n`) +
+        hrLine +
+        phoneLine +
+        `\n📲 *Fill your biodata in 2 mins before visiting:* \n` +
+        `👉 ${cleanUrl}\n\n` +
+        `Kindly carry your updated resume and recent photograph.`;
+    }
+
+    if (type === 'teachers') {
+      return `📚 *FACULTY RECRUITMENT — ${schoolName.toUpperCase()}* 🎓\n\n` +
+        `Inviting applications from qualified, dynamic teachers with strong subject knowledge and communication skills:\n\n` +
+        `🌟 *Subject Openings:*\n` +
+        `• *PGT:* Physics, Chemistry, Mathematics, Biology, English, Commerce, Economics, Computer Science\n` +
+        `• *TGT:* Science, Mathematics, English, Social Studies, Hindi, Sanskrit\n` +
+        `• *PRT / Primary:* All Subjects & Mother Teachers\n` +
+        `• *Special Faculty:* Physical Education (PTI), Art & Craft, Music & Dance\n\n` +
+        `💼 *Eligibility:* Relevant Degree with B.Ed / D.El.Ed & Teaching Experience.\n\n` +
+        `🔗 *Instant Direct Application:* \n` +
+        `👉 ${cleanUrl}\n\n` +
+        `Submit your biodata in 2 minutes for an immediate interview call!\n\n` +
+        phoneLine;
+    }
+
+    if (type === 'non_teaching') {
+      return `🏢 *NON-TEACHING & ADMINISTRATIVE VACANCIES — ${schoolName.toUpperCase()}*\n\n` +
+        `We are hiring responsible and competent staff members for campus operations:\n\n` +
+        `📋 *Available Roles:*\n` +
+        `• Receptionist / Front Desk Executive\n` +
+        `• School Accountant / Fee Clerk\n` +
+        `• Admissions Counselor / Coordinator\n` +
+        `• Computer & Science Lab Assistants\n` +
+        `• Transport Coordinator & Campus Caretaker\n\n` +
+        `📝 *Apply Online in 2 Minutes:* \n` +
+        `👉 ${cleanUrl}\n\n` +
+        `Selected candidates will be called directly for an interview at the campus.\n\n` +
+        addressLine +
+        phoneLine;
     }
 
     // sms / status
-    return `📢 Vacancies at ${schoolName}! We are hiring PGT, TGT, PRT & Admin staff. Apply directly online in 2 mins: ${cleanUrl} (Free / No login required)`;
+    return `📢 Vacancies at ${schoolName}! We are hiring Teachers (PGT/TGT/PRT) & Admin Staff. Apply online in 2 mins: ${cleanUrl} (Free / No login required)`;
   };
 
   const copyBroadcastMessage = () => {
@@ -673,20 +717,7 @@ export default function ApplicationLinks() {
                     )}
                   </Button>
 
-                  {/* Open / Preview Action Button */}
-                  {applyUrl && (
-                    <Button 
-                      type="button"
-                      variant="outline" 
-                      asChild
-                      className="h-11 px-3.5 rounded-xl shrink-0 font-semibold text-xs border-slate-200 dark:border-slate-700 hover:border-[#0F766E]/50 hover:bg-[#0F766E]/5 hover:text-[#0F766E] text-slate-700 dark:text-slate-300"
-                    >
-                      <a href={applyUrl} target="_blank" rel="noreferrer" title="Open candidate form in new tab">
-                        <ExternalLink className="h-4 w-4 mr-1.5" />
-                        <span>Preview</span>
-                      </a>
-                    </Button>
-                  )}
+
                 </div>
               </div>
 
@@ -728,7 +759,7 @@ export default function ApplicationLinks() {
                     Direct School Ownership Guarantee
                   </div>
                   <p className="text-slate-600 dark:text-slate-400 leading-relaxed font-normal">
-                    Candidates who register through this link or QR code will be designated with source <span className="bg-[#0F766E]/10 px-1.5 py-0.5 rounded text-[#0F766E] font-mono font-bold text-[11px]">SCHOOL_LINK</span> and assigned exclusively to your school at no credit deduction.
+                    Candidates who register through this link or QR code will be designated with source <span className="bg-[#0F766E]/10 px-1.5 py-0.5 rounded text-[#0F766E] font-mono font-bold text-[11px]">SCHOOL_LINK</span> and assigned exclusively with full access to your school.
                   </p>
                 </div>
               </div>
@@ -766,43 +797,32 @@ export default function ApplicationLinks() {
             <CardContent className="p-4 sm:p-5 space-y-4">
               {/* Segmented Channel Tabs */}
               <div className="flex flex-wrap items-center justify-between gap-2.5">
-                <div className="inline-flex items-center p-1 rounded-xl bg-slate-100 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700/80 text-xs font-semibold">
-                  <button
-                    type="button"
-                    onClick={() => setBroadcastTab('whatsapp')}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all ${
-                      broadcastTab === 'whatsapp'
-                        ? 'bg-white dark:bg-slate-900 text-emerald-600 dark:text-emerald-400 shadow-xs font-bold'
-                        : 'text-slate-500 hover:text-slate-800 dark:text-slate-400'
-                    }`}
-                  >
-                    <MessageCircle className="h-3.5 w-3.5 text-emerald-500" />
-                    <span>WhatsApp</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setBroadcastTab('linkedin')}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all ${
-                      broadcastTab === 'linkedin'
-                        ? 'bg-white dark:bg-slate-900 text-[#0077b5] dark:text-[#38bdf8] shadow-xs font-bold'
-                        : 'text-slate-500 hover:text-slate-800 dark:text-slate-400'
-                    }`}
-                  >
-                    <Share2 className="h-3.5 w-3.5 text-[#0077b5]" />
-                    <span>LinkedIn</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setBroadcastTab('sms')}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all ${
-                      broadcastTab === 'sms'
-                        ? 'bg-white dark:bg-slate-900 text-purple-600 dark:text-purple-400 shadow-xs font-bold'
-                        : 'text-slate-500 hover:text-slate-800 dark:text-slate-400'
-                    }`}
-                  >
-                    <Send className="h-3.5 w-3.5 text-purple-500" />
-                    <span>Short SMS</span>
-                  </button>
+                <div className="inline-flex flex-wrap items-center p-1 rounded-xl bg-slate-100 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700/80 text-xs font-semibold gap-1">
+                  {[
+                    { id: 'whatsapp', label: 'WhatsApp', icon: MessageCircle, color: 'text-emerald-600 dark:text-emerald-400' },
+                    { id: 'walkin', label: 'Walk-In Alert', icon: Clock, color: 'text-amber-600 dark:text-amber-400' },
+                    { id: 'teachers', label: 'Subject Teachers', icon: GraduationCap, color: 'text-[#0F766E] dark:text-[#14B8A6]' },
+                    { id: 'non_teaching', label: 'Admin & Staff', icon: Briefcase, color: 'text-blue-600 dark:text-blue-400' },
+                    { id: 'sms', label: 'Short SMS / Status', icon: Send, color: 'text-purple-600 dark:text-purple-400' },
+                  ].map((tab) => {
+                    const TabIcon = tab.icon;
+                    const isActive = broadcastTab === tab.id;
+                    return (
+                      <button
+                        key={tab.id}
+                        type="button"
+                        onClick={() => setBroadcastTab(tab.id)}
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+                          isActive
+                            ? `bg-white dark:bg-slate-900 ${tab.color} shadow-xs font-bold`
+                            : 'text-slate-500 hover:text-slate-800 dark:text-slate-400'
+                        }`}
+                      >
+                        <TabIcon className="h-3.5 w-3.5" />
+                        <span>{tab.label}</span>
+                      </button>
+                    );
+                  })}
                 </div>
 
                 <div className="flex items-center gap-2 text-[11px] text-slate-400">
@@ -810,56 +830,105 @@ export default function ApplicationLinks() {
                 </div>
               </div>
 
-              {/* Live Formatted Message Bubble Preview */}
-              <div className="relative rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/40 p-3.5 sm:p-4 transition-all">
-                <div className="flex items-center justify-between text-[11px] font-bold text-slate-500 dark:text-slate-400 pb-2 mb-2.5 border-b border-slate-200/60 dark:border-slate-800">
-                  <span className="flex items-center gap-1.5">
-                    {broadcastTab === 'whatsapp' ? (
-                      <>
-                        <MessageCircle className="h-3.5 w-3.5 text-emerald-500" />
-                        <span>WhatsApp Chat Bubble Preview</span>
-                      </>
-                    ) : broadcastTab === 'linkedin' ? (
-                      <>
-                        <Share2 className="h-3.5 w-3.5 text-[#0077b5]" />
-                        <span>LinkedIn Post Preview</span>
-                      </>
-                    ) : (
-                      <>
-                        <Send className="h-3.5 w-3.5 text-purple-500" />
-                        <span>SMS / Telegram Alert Preview</span>
-                      </>
-                    )}
-                  </span>
-                  <span className="text-[10px] text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 px-2 py-0.5 rounded-full font-medium border border-emerald-200/60">
-                    Live Formatted
-                  </span>
-                </div>
+              {/* Active Template Brief Summary Card */}
+              {(() => {
+                const templateConfig = {
+                  whatsapp: {
+                    title: 'WhatsApp Broadcast Announcement',
+                    tag: 'Most Popular',
+                    tagStyle: 'text-emerald-700 bg-emerald-100 dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-200/80',
+                    desc: 'Comprehensive notice covering PGT, TGT, PRT, activity teachers, and administrative staff with 2-minute apply link.',
+                  },
+                  walkin: {
+                    title: 'Urgent Walk-In Interview Notice',
+                    tag: 'Walk-In Drive',
+                    tagStyle: 'text-amber-700 bg-amber-100 dark:bg-amber-950/60 dark:text-amber-300 border-amber-200/80',
+                    desc: 'Features campus walk-in visiting timings, HR reception desk, campus venue, and quick online pre-registration.',
+                  },
+                  teachers: {
+                    title: 'Subject Teachers & Faculty Recruitment',
+                    tag: 'Academics',
+                    tagStyle: 'text-teal-700 bg-teal-100 dark:bg-teal-950/60 dark:text-teal-300 border-teal-200/80',
+                    desc: 'Targeted hiring notice for PGT, TGT, and PRT subject specialists across Maths, Science, English, SST, Hindi, and Computer.',
+                  },
+                  non_teaching: {
+                    title: 'Administrative & Campus Staff Vacancies',
+                    tag: 'Operations',
+                    tagStyle: 'text-blue-700 bg-blue-100 dark:bg-blue-950/60 dark:text-blue-300 border-blue-200/80',
+                    desc: 'Non-teaching openings for Receptionist / Front Desk, School Accountant, Admission Counselor, and Lab Assistants.',
+                  },
+                  sms: {
+                    title: 'Ultra-Short SMS & WhatsApp Status Alert',
+                    tag: 'Compact',
+                    tagStyle: 'text-purple-700 bg-purple-100 dark:bg-purple-950/60 dark:text-purple-300 border-purple-200/80',
+                    desc: 'Concise 1–2 line alert with direct apply link, optimized for SMS character limits and WhatsApp Status updates.',
+                  },
+                }[broadcastTab] || {
+                  title: 'Job Announcement Template',
+                  tag: 'Notice',
+                  tagStyle: 'text-slate-700 bg-slate-100 border-slate-200',
+                  desc: 'Pre-formatted message for school hiring.',
+                };
 
-                {/* Formatted Text Box with Custom Slim Scrollbar */}
-                <div className="rounded-xl p-3 bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-xs text-slate-700 dark:text-slate-300 font-sans leading-relaxed max-h-52 overflow-y-auto select-all shadow-2xs space-y-0.5 [scrollbar-width:thin]">
-                  {renderFormattedMessage(getBroadcastMessage(broadcastTab))}
+                const msg = getBroadcastMessage(broadcastTab);
+                const snippet = msg.split('\n').filter(Boolean).slice(0, 3).join(' ');
 
-                  {broadcastTab === 'whatsapp' && (
-                    <div className="flex items-center justify-end gap-1 text-[10px] text-slate-400 pt-2 select-none font-mono">
-                      <span>Just now</span>
-                      <CheckCheck className="h-3.5 w-3.5 text-sky-500" />
+                return (
+                  <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/40 p-4 space-y-3 transition-all">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-bold text-slate-900 dark:text-slate-100">
+                          {templateConfig.title}
+                        </span>
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${templateConfig.tagStyle}`}>
+                          {templateConfig.tag}
+                        </span>
+                      </div>
+
+                      <Button
+                        type="button"
+                        size="sm"
+                        onClick={() => setBroadcastPreviewOpen(true)}
+                        className="h-8 px-3 rounded-lg text-xs font-bold bg-[#0F766E] hover:bg-[#0D9488] text-white shadow-xs flex items-center gap-1.5 cursor-pointer"
+                      >
+                        <Eye className="h-3.5 w-3.5" />
+                        <span>Preview Message</span>
+                      </Button>
                     </div>
-                  )}
-                </div>
-              </div>
+
+                    <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed font-normal">
+                      {templateConfig.desc}
+                    </p>
+
+                    {/* Preview Snippet Box */}
+                    <div className="p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-[11px] text-slate-600 dark:text-slate-300 font-sans italic line-clamp-2 leading-relaxed shadow-2xs">
+                      &ldquo;{snippet}...&rdquo;
+                    </div>
+                  </div>
+                );
+              })()}
 
               {/* Action Buttons Row */}
               <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
                 <div className="flex flex-wrap items-center gap-2">
                   <Button
                     type="button"
+                    variant="outline"
+                    onClick={() => setBroadcastPreviewOpen(true)}
+                    className="h-9 px-3.5 rounded-xl text-xs font-bold border-[#0F766E]/30 bg-[#0F766E]/5 text-[#0F766E] hover:bg-[#0F766E]/10 dark:bg-[#0F766E]/15 dark:border-[#0F766E]/40 cursor-pointer"
+                  >
+                    <Eye className="h-4 w-4 mr-1.5" />
+                    <span>Preview Message</span>
+                  </Button>
+
+                  <Button
+                    type="button"
                     onClick={copyBroadcastMessage}
-                    className="h-9 px-4 rounded-xl text-xs font-semibold bg-[#0F766E] hover:bg-[#8e44eb] text-white shadow-sm transition-all"
+                    className="h-9 px-4 rounded-xl text-xs font-semibold bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 shadow-sm transition-all cursor-pointer"
                   >
                     {copiedBroadcast ? (
                       <>
-                        <CheckCheck className="h-4 w-4 mr-1.5 stroke-[2.5]" />
+                        <CheckCheck className="h-4 w-4 mr-1.5 stroke-[2.5] text-emerald-400" />
                         <span>Copied to Clipboard!</span>
                       </>
                     ) : (
@@ -874,7 +943,7 @@ export default function ApplicationLinks() {
                     type="button"
                     variant="outline"
                     onClick={shareBroadcastWhatsApp}
-                    className="h-9 px-3.5 rounded-xl text-xs font-semibold border-emerald-200 bg-emerald-50/50 text-emerald-700 hover:bg-emerald-100/70 hover:border-emerald-300 dark:bg-emerald-950/20 dark:border-emerald-800/60 dark:text-emerald-400 transition-colors"
+                    className="h-9 px-3.5 rounded-xl text-xs font-semibold border-emerald-200 bg-emerald-50/50 text-emerald-700 hover:bg-emerald-100/70 hover:border-emerald-300 dark:bg-emerald-950/20 dark:border-emerald-800/60 dark:text-emerald-400 transition-colors cursor-pointer"
                   >
                     <MessageCircle className="h-3.5 w-3.5 mr-1.5 text-emerald-600" />
                     <span>Send via WhatsApp</span>
@@ -1011,7 +1080,7 @@ export default function ApplicationLinks() {
 
                       {/* Standee Footer Note */}
                       <p className="relative z-10 text-center text-[10px] text-slate-500 mt-3 font-semibold">
-                        Direct school submission • No credit deduction
+                        Direct school submission • Instant biodata delivery
                       </p>
                     </div>
 
@@ -1136,220 +1205,83 @@ export default function ApplicationLinks() {
               )}
             </CardContent>
           </Card>
+        </div>
 
-          {/* Card 2: Walk-In Candidate Performance & Direct Portal Tracker */}
-          <Card className="shadow-md border-slate-200/80 dark:border-slate-800 overflow-hidden">
-            <CardHeader className="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800/60 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/50 dark:from-slate-900/60 dark:to-slate-900/20">
-              <div className="flex items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <div className="p-2.5 bg-gradient-to-tr from-[#0F766E]/15 to-[#7928CA]/20 text-[#0F766E] rounded-xl ring-1 ring-[#0F766E]/30 shadow-2xs shrink-0">
-                    <TrendingUp className="h-5 w-5 stroke-[2.2]" />
-                  </div>
-                  <div>
-                    <CardTitle className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100">
-                      Direct Walk-In Performance
-                    </CardTitle>
-                    <CardDescription className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-                      Real-time applicant reception from your QR Standee & portal link
-                    </CardDescription>
-                  </div>
+      </div>
+
+      {/* ─── MODAL 1: LIVE BROADCAST MESSAGE PREVIEW MODAL ─── */}
+      <Dialog open={broadcastPreviewOpen} onOpenChange={setBroadcastPreviewOpen}>
+        <DialogContent className="max-w-lg p-0 overflow-hidden rounded-2xl border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl">
+          <DialogHeader className="px-5 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/60">
+            <div className="flex items-center justify-between pr-6">
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 border border-emerald-200/80">
+                  <MessageSquare className="h-4 w-4" />
                 </div>
-
-                <span className="text-xs font-bold text-emerald-700 bg-emerald-100/90 dark:bg-emerald-950/40 dark:text-emerald-400 px-2.5 py-1 rounded-full border border-emerald-200 dark:border-emerald-800/60 shadow-2xs whitespace-nowrap shrink-0">
-                  0 Credits Deducted
-                </span>
-              </div>
-            </CardHeader>
-
-            <CardContent className="p-4 sm:p-5 space-y-4">
-              {/* 3 Metric Stats Tiles */}
-              <div className="grid grid-cols-3 gap-2.5">
-                
-                <div className="p-3 rounded-xl border border-purple-100 dark:border-slate-800 bg-gradient-to-b from-purple-50/60 to-white dark:from-slate-900 dark:to-slate-900/50 flex flex-col justify-between">
-                  <div className="flex items-center justify-between text-slate-500 dark:text-slate-400">
-                    <span className="text-[10px] font-bold uppercase tracking-wider">Walk-Ins</span>
-                    <Users className="h-3.5 w-3.5 text-[#0F766E]" />
-                  </div>
-                  <div className="mt-1.5">
-                    <div className="text-xl font-black text-slate-900 dark:text-white">
-                      {walkinCount}
-                    </div>
-                    <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">
-                      Applicants
-                    </span>
-                  </div>
-                </div>
-
-                <div className="p-3 rounded-xl border border-emerald-100 dark:border-slate-800 bg-gradient-to-b from-emerald-50/60 to-white dark:from-slate-900 dark:to-slate-900/50 flex flex-col justify-between">
-                  <div className="flex items-center justify-between text-slate-500 dark:text-slate-400">
-                    <span className="text-[10px] font-bold uppercase tracking-wider">Cost</span>
-                    <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
-                  </div>
-                  <div className="mt-1.5">
-                    <div className="text-xl font-black text-emerald-600 dark:text-emerald-400">
-                      100% Free
-                    </div>
-                    <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">
-                      Full Profiles
-                    </span>
-                  </div>
-                </div>
-
-                <div className="p-3 rounded-xl border border-sky-100 dark:border-slate-800 bg-gradient-to-b from-sky-50/60 to-white dark:from-slate-900 dark:to-slate-900/50 flex flex-col justify-between">
-                  <div className="flex items-center justify-between text-slate-500 dark:text-slate-400">
-                    <span className="text-[10px] font-bold uppercase tracking-wider">Speed</span>
-                    <Clock className="h-3.5 w-3.5 text-sky-600" />
-                  </div>
-                  <div className="mt-1.5">
-                    <div className="text-xl font-black text-sky-600 dark:text-sky-400">
-                      ~2 Mins
-                    </div>
-                    <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">
-                      Mobile Flow
-                    </span>
-                  </div>
-                </div>
-
-              </div>
-
-              {/* 4-Step Walk-In Workflow Checklist */}
-              <div className="w-full bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 rounded-xl p-3.5 space-y-2 text-left">
-                <span className="text-[11px] font-bold text-slate-700 dark:text-slate-200 block mb-1">
-                  Reception Standee Workflow:
-                </span>
-
-                <div className="space-y-1.5 text-[11px] text-slate-600 dark:text-slate-300">
-                  <div className="flex items-start gap-2">
-                    <div className="w-4 h-4 rounded-full bg-[#0F766E] text-white font-bold text-[9px] flex items-center justify-center shrink-0 mt-0.5">
-                      1
-                    </div>
-                    <div>
-                      <strong>Print ya Download karein:</strong> Upar &ldquo;Print Standee&rdquo; button se A4 sheet print karein.
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-2">
-                    <div className="w-4 h-4 rounded-full bg-[#0F766E] text-white font-bold text-[9px] flex items-center justify-center shrink-0 mt-0.5">
-                      2
-                    </div>
-                    <div>
-                      <strong>Reception Desk par lagayein:</strong> Frame me desk ya gate par lagayein.
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-2">
-                    <div className="w-4 h-4 rounded-full bg-[#0F766E] text-white font-bold text-[9px] flex items-center justify-center shrink-0 mt-0.5">
-                      3
-                    </div>
-                    <div>
-                      <strong>Candidate Phone se Scan karega:</strong> Google Lens ya camera se 2 minute me form bharega.
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-2">
-                    <div className="w-4 h-4 rounded-full bg-emerald-600 text-white font-bold text-[9px] flex items-center justify-center shrink-0 mt-0.5">
-                      4
-                    </div>
-                    <div>
-                      <strong>Instant Free Save:</strong> Form submit hote hi candidate bina credit kate save ho jayega.
-                    </div>
-                  </div>
+                <div>
+                  <DialogTitle className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                    Live Broadcast Preview
+                  </DialogTitle>
+                  <DialogDescription className="text-xs text-slate-500">
+                    Formatted text as candidates and groups will receive it.
+                  </DialogDescription>
                 </div>
               </div>
+              <span className="text-[10px] font-bold text-emerald-700 bg-emerald-100 dark:bg-emerald-950/60 dark:text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-200/80">
+                Live Chat
+              </span>
+            </div>
+          </DialogHeader>
 
-              {/* Bottom Quick Links Action Bar */}
-              <div className="pt-2 border-t border-slate-100 dark:border-slate-800/60 flex flex-wrap items-center justify-between gap-3">
-                <Button
-                  type="button"
-                  variant="default"
-                  asChild
-                  className="h-9 px-4 rounded-xl text-xs font-semibold bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 shadow-sm"
-                >
-                  <Link to="/candidates">
-                    <Users className="h-3.5 w-3.5 mr-1.5" />
-                    <span>View Walk-in Candidates</span>
-                    <ArrowRight className="h-3.5 w-3.5 ml-1.5" />
-                  </Link>
-                </Button>
+          <div className="p-5 max-h-[60vh] overflow-y-auto space-y-3 bg-slate-100/50 dark:bg-slate-950/50">
+            {/* WhatsApp Phone Chat Bubble Mockup */}
+            <div className="relative rounded-2xl p-4 bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-md text-xs text-slate-800 dark:text-slate-200 leading-relaxed font-sans space-y-1 select-all [scrollbar-width:thin]">
+              {renderFormattedMessage(getBroadcastMessage(broadcastTab))}
 
-                {applyUrl && (
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    asChild
-                    className="h-9 px-3 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-[#0F766E]"
-                  >
-                    <a href={applyUrl} target="_blank" rel="noreferrer">
-                      <ExternalLink className="h-3.5 w-3.5 mr-1.5" />
-                      <span>Test Candidate View Live</span>
-                    </a>
-                  </Button>
+              <div className="flex items-center justify-end gap-1 text-[10px] text-slate-400 pt-2 font-mono select-none">
+                <span>Just now</span>
+                <CheckCheck className="h-3.5 w-3.5 text-sky-500" />
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter className="px-5 py-3.5 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-center justify-between sm:justify-between gap-2">
+            <span className="text-[11px] font-mono text-slate-400">
+              {getBroadcastMessage(broadcastTab).length} characters
+            </span>
+            <div className="flex items-center gap-2">
+              <Button
+                type="button"
+                onClick={copyBroadcastMessage}
+                className="h-9 px-3.5 rounded-xl text-xs font-semibold bg-[#0F766E] hover:bg-[#0D9488] text-white cursor-pointer"
+              >
+                {copiedBroadcast ? (
+                  <>
+                    <CheckCheck className="h-3.5 w-3.5 mr-1.5" />
+                    <span>Copied!</span>
+                  </>
+                ) : (
+                  <>
+                    <Copy className="h-3.5 w-3.5 mr-1.5" />
+                    <span>Copy</span>
+                  </>
                 )}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-      </div>
-
-      {/* Recommended Best Practices Guide Section */}
-      <div className="pt-2">
-        <div className="mb-4">
-          <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-[#0F766E]" />
-            Best Ways to Distribute Your Application Link
-          </h2>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-            Collect verified candidate profiles smoothly across offline and online touchpoints.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          
-          <div className="p-4 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs flex items-start gap-3.5">
-            <div className="p-2.5 rounded-xl bg-purple-50 text-purple-600 dark:bg-purple-950/40 dark:text-purple-400 shrink-0">
-              <Printer className="h-5 w-5" />
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={shareBroadcastWhatsApp}
+                className="h-9 px-3.5 rounded-xl text-xs font-semibold border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800 cursor-pointer"
+              >
+                <MessageCircle className="h-3.5 w-3.5 mr-1.5 text-emerald-600" />
+                <span>WhatsApp</span>
+              </Button>
             </div>
-            <div>
-              <h3 className="text-xs font-bold text-slate-800 dark:text-slate-200">
-                1. Reception & Gate Standee
-              </h3>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
-                Click <strong>"Print Poster"</strong> to create a ready-to-print flyer for walk-in applicants visiting your campus.
-              </p>
-            </div>
-          </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
-          <div className="p-4 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs flex items-start gap-3.5">
-            <div className="p-2.5 rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400 shrink-0">
-              <MessageCircle className="h-5 w-5" />
-            </div>
-            <div>
-              <h3 className="text-xs font-bold text-slate-800 dark:text-slate-200">
-                2. WhatsApp Teacher Groups
-              </h3>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
-                Share directly into educator groups, alumni networks, and WhatsApp status with one click.
-              </p>
-            </div>
-          </div>
 
-          <div className="p-4 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs flex items-start gap-3.5">
-            <div className="p-2.5 rounded-xl bg-sky-50 text-sky-600 dark:bg-sky-950/40 dark:text-sky-400 shrink-0">
-              <Users className="h-5 w-5" />
-            </div>
-            <div>
-              <h3 className="text-xs font-bold text-slate-800 dark:text-slate-200">
-                3. Instant Candidate Tracking
-              </h3>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
-                Every submission immediately reflects in your <strong>"My Candidates"</strong> tab with full details & resumes.
-              </p>
-            </div>
-          </div>
-
-        </div>
-      </div>
 
     </div>
   );

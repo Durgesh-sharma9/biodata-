@@ -1,5 +1,6 @@
 import QRCode from 'qrcode';
 import School from '../models/School.js';
+import SchoolSettings from '../models/SchoolSettings.js';
 import Candidate from '../models/Candidate.js';
 import User from '../models/User.js';
 import { ApiError } from '../utils/ApiError.js';
@@ -52,10 +53,22 @@ export const getApplicationQR = catchAsync(async (req, res) => {
 
 export const getSchoolBySlug = catchAsync(async (req, res) => {
   const school = await School.findOne({ slug: req.params.slug, isActive: true }).select(
-    'schoolName slug schoolId logoUrl address city state phone email'
+    'schoolName slug schoolId logoUrl address city state phone email boardAffiliation schoolLevel website establishedYear aboutSchool hrContactPerson altPhone walkInTimings'
   );
   if (!school) throw new ApiError(404, 'Application link not found');
-  res.json({ success: true, data: school });
+
+  const settings = await SchoolSettings.findOne({ schoolId: school._id }).select(
+    'customWelcomeMessage autoAcknowledgeCandidates classes subjects positions qualifications'
+  );
+
+  res.json({
+    success: true,
+    data: {
+      ...school.toObject(),
+      customWelcomeMessage: settings?.customWelcomeMessage,
+      settings: settings || null,
+    },
+  });
 });
 
 export const submitApplication = catchAsync(async (req, res) => {

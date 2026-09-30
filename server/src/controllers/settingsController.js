@@ -117,6 +117,28 @@ export const resetField = catchAsync(async (req, res) => {
   res.json({ success: true, message: `${field} reset to defaults`, data: settings });
 });
 
+export const setFieldItems = catchAsync(async (req, res) => {
+  const { field, values } = req.body;
+
+  if (!ALLOWED_FIELDS.includes(field)) {
+    throw new ApiError(400, 'Invalid settings field');
+  }
+
+  if (!Array.isArray(values)) {
+    throw new ApiError(400, 'Values array is required');
+  }
+
+  let settings = await SchoolSettings.findOne({ schoolId: req.schoolId });
+  if (!settings) {
+    settings = await SchoolSettings.create({ schoolId: req.schoolId });
+  }
+
+  settings[field] = values.map((v) => String(v).trim()).filter(Boolean);
+  await settings.save();
+
+  res.json({ success: true, message: `${field} updated successfully`, data: settings });
+});
+
 export const updatePreferences = catchAsync(async (req, res) => {
   const {
     isActivelyHiring,

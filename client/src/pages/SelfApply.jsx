@@ -43,7 +43,7 @@ export default function SelfApply() {
             </div>
 
             <p className="text-xs text-slate-500 dark:text-slate-400 font-medium leading-relaxed">
-              Thank you for joining the School Recruitment Network. Schools can now discover your comprehensive profile portfolio dynamically inside the platform talent pool.
+              Thank you for joining the School Recruitment Network. Schools can now discover your comprehensive profile portfolio directly inside the verified candidate directory.
             </p>
           </CardContent>
         </Card>

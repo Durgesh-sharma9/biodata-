@@ -62,4 +62,7 @@ export const DEFAULT_CLASSES = [
   'Class 12',
 ];
 
-export { APPLICATION_POSITIONS } from './positionForms';
+import { APPLICATION_POSITIONS } from './positionForms';
+
+export { APPLICATION_POSITIONS };
+export const DEFAULT_POSITIONS = APPLICATION_POSITIONS;

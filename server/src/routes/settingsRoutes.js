@@ -5,6 +5,7 @@ import {
   bulkAddSettingItems,
   removeSettingItem,
   resetField,
+  setFieldItems,
   updatePreferences,
 } from '../controllers/settingsController.js';
 import { protect, authorize } from '../middleware/auth.js';
@@ -18,6 +19,7 @@ router.post('/add', addSettingItem);
 router.post('/bulk-add', bulkAddSettingItems);
 router.post('/remove', removeSettingItem);
 router.post('/reset', resetField);
+router.put('/field', setFieldItems);
 router.put('/preferences', updatePreferences);
 
 export default router;

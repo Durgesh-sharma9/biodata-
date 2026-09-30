@@ -386,63 +386,50 @@ export const getDashboardStats = catchAsync(async (req, res) => {
 
   const baseFilter = { isDeleted: false };
   const ownedFilter = { ...baseFilter, ownerSchoolId: schoolId };
-
-  const myCandidatesFilter = {
-    ...baseFilter,
-    ownerSchoolId: schoolId,
-    source: { $in: ['ADMIN', 'SCHOOL_LINK'] },
-  };
-  const talentPoolFilter = {
-    ...baseFilter,
-    $or: [
-      { source: { $in: ['SELF_APPLICANT', 'SUPER_ADMIN_IMPORT'] } },
-      {
-        $and: [
-          { ownerSchoolId: { $exists: true, $ne: null } },
-          { ownerSchoolId: { $ne: schoolId } },
-        ],
-      },
-    ],
-  };
+  const myCandidatesFilter = { ...baseFilter, ownerSchoolId: schoolId };
 
   const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
 
+  // Six months ago for real monthly inflow curve
+  const now = new Date();
+  const sixMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 5, 1, 0, 0, 0, 0);
+
   const [
     myCandidates,
-    talentPoolCount,
     ownedCandidates,
     recentCandidates,
-    recentTalentPool,
     positionBreakdown,
-    unlockedCount,
     directApplications,
     bEdCount,
     newThisMonth,
+    newCount,
     shortlistedCount,
+    demoInterviewCount,
+    hiredCount,
     experienceAgg,
-    genderAgg,
-    topLocationsAgg,
-    interestSentCount,
-    recentUnlocks,
+    monthlyInflowAgg,
   ] = await Promise.all([
     Candidate.countDocuments(myCandidatesFilter),
-    Candidate.countDocuments(talentPoolFilter),
     Candidate.countDocuments(ownedFilter),
     Candidate.find(myCandidatesFilter).sort({ createdAt: -1 }).limit(10),
-    Candidate.find(talentPoolFilter).sort({ createdAt: -1 }).limit(6),
     Candidate.aggregate([
-      { $match: { isDeleted: false } },
+      { $match: myCandidatesFilter },
       { $group: { _id: '$position', count: { $sum: 1 } } },
       { $sort: { count: -1 } },
-      { $limit: 6 },
+      { $limit: 8 },
     ]),
-    UnlockHistory.countDocuments({ schoolId }),
-    Candidate.countDocuments({ ...baseFilter, ownerSchoolId: schoolId, source: 'SCHOOL_LINK' }),
-    Candidate.countDocuments({ ...baseFilter, bEd: true }),
-    Candidate.countDocuments({ ...baseFilter, createdAt: { $gte: thirtyDaysAgo } }),
+    Candidate.countDocuments({ ...myCandidatesFilter, source: 'SCHOOL_LINK' }),
+    Candidate.countDocuments({ ...myCandidatesFilter, bEd: true }),
+    Candidate.countDocuments({ ...myCandidatesFilter, createdAt: { $gte: thirtyDaysAgo } }),
+    Candidate.countDocuments({ 
+      ...myCandidatesFilter, 
+      $or: [{ status: 'new' }, { status: { $exists: false } }, { status: null }, { status: '' }] 
+    }),
     Candidate.countDocuments({ ...myCandidatesFilter, status: 'shortlisted' }),
+    Candidate.countDocuments({ ...myCandidatesFilter, status: { $in: ['interview_scheduled', 'demo_class'] } }),
+    Candidate.countDocuments({ ...myCandidatesFilter, status: { $in: ['offered', 'hired'] } }),
     Candidate.aggregate([
-      { $match: { isDeleted: false } },
+      { $match: myCandidatesFilter },
       {
         $project: {
           bracket: {
@@ -469,56 +456,67 @@ export const getDashboardStats = catchAsync(async (req, res) => {
       { $group: { _id: '$bracket', count: { $sum: 1 } } },
     ]).catch(() => []),
     Candidate.aggregate([
-      { $match: { isDeleted: false, gender: { $exists: true, $ne: '' } } },
-      { $group: { _id: { $toLower: '$gender' }, count: { $sum: 1 } } },
+      {
+        $match: {
+          ...myCandidatesFilter,
+          createdAt: { $gte: sixMonthsAgo },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            year: { $year: '$createdAt' },
+            month: { $month: '$createdAt' },
+          },
+          count: { $sum: 1 },
+        },
+      },
+      { $sort: { '_id.year': 1, '_id.month': 1 } },
     ]).catch(() => []),
-    Candidate.aggregate([
-      { $match: { isDeleted: false, city: { $exists: true, $ne: '', $ne: null } } },
-      { $group: { _id: '$city', count: { $sum: 1 } } },
-      { $sort: { count: -1 } },
-      { $limit: 4 },
-    ]).catch(() => []),
-    InterestRequest.countDocuments({ schoolId }).catch(() => 0),
-    UnlockHistory.find({ schoolId })
-      .populate('candidateId', 'fullName position createdAt')
-      .sort({ createdAt: -1 })
-      .limit(4)
-      .catch(() => []),
   ]);
 
-  const [formattedRecent, formattedTalentPool] = await Promise.all([
-    Promise.all(recentCandidates.map((c) => formatCandidateForSchool(c, schoolId))),
-    Promise.all(recentTalentPool.map((c) => formatCandidateForSchool(c, schoolId))),
-  ]);
+  const formattedRecent = await Promise.all(
+    recentCandidates.map((c) => formatCandidateForSchool(c, schoolId))
+  );
 
-  const totalAllCandidates = myCandidates + talentPoolCount;
+  // Generate real 6-month array from database records
+  const monthlyInflow = [];
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const y = d.getFullYear();
+    const m = d.getMonth() + 1; // 1 to 12
+    const label = d.toLocaleString('en-US', { month: 'short' });
+    const match = (monthlyInflowAgg || []).find(
+      (item) => item._id && item._id.year === y && item._id.month === m
+    );
+    monthlyInflow.push({
+      label,
+      month: m,
+      year: y,
+      value: match ? match.count : 0,
+    });
+  }
 
   res.json({
     success: true,
     data: {
       myCandidates,
-      talentPoolCount,
-      totalCandidates: totalAllCandidates,
+      totalCandidates: myCandidates,
       ownedCandidates,
-      unlockedCount,
-      availableCredits: school?.credits || 0,
       directApplications,
       bEdCount,
-      bEdPercentage: totalAllCandidates > 0 ? Math.round((bEdCount / totalAllCandidates) * 100) : 0,
+      bEdPercentage: myCandidates > 0 ? Math.round((bEdCount / myCandidates) * 100) : 0,
       newThisMonth,
       shortlistedCount: shortlistedCount || 0,
-      interestSentCount,
+      pipeline: {
+        new: newCount || 0,
+        shortlisted: shortlistedCount || 0,
+        interview: demoInterviewCount || 0,
+        hired: hiredCount || 0,
+      },
+      monthlyInflow,
       experienceBreakdown: (experienceAgg || []).map((e) => ({ label: e._id, count: e.count })),
-      genderBreakdown: (genderAgg || []).map((g) => ({ gender: g._id, count: g.count })),
-      topLocations: (topLocationsAgg || []).map((l) => ({ city: l._id, count: l.count })),
-      recentUnlocks: (recentUnlocks || []).map((u) => ({
-        id: u._id,
-        candidateName: u.candidateId?.fullName || 'Candidate Profile',
-        position: u.candidateId?.position || 'Teacher',
-        unlockedAt: u.createdAt,
-      })),
       recentCandidates: formattedRecent,
-      recentTalentPool: formattedTalentPool,
       positionBreakdown: positionBreakdown.map((p) => ({ position: p._id || 'Other', count: p.count })),
     },
   });
