@@ -479,7 +479,7 @@ export default function ApplicantRequests() {
         <DialogContent className="sm:max-w-2xl max-h-[85vh] border border-slate-200/80 bg-white dark:bg-slate-900 shadow-2xl rounded-3xl p-6 overflow-y-auto">
           <DialogHeader className="mb-4">
             <DialogTitle className="text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-[#A05AFF]" />
+              <Sparkles className="h-5 w-5 text-[#0F766E]" />
               <span>Unlock School Contact Details</span>
             </DialogTitle>
             <DialogDescription className="text-xs text-slate-500 dark:text-slate-400">
@@ -528,16 +528,16 @@ export default function ApplicantRequests() {
                   {unlimitedPlans.map((plan) => (
                     <Card
                       key={plan._id}
-                      className="border border-purple-200 bg-purple-50/30 dark:bg-purple-950/20 dark:border-purple-800 p-4 rounded-2xl hover:border-[#A05AFF] transition-all"
+                      className="border border-purple-200 bg-purple-50/30 dark:bg-purple-950/20 dark:border-purple-800 p-4 rounded-2xl hover:border-[#0F766E] transition-all"
                     >
-                      <Badge className="bg-[#A05AFF] text-white text-[10px] font-bold mb-1">
+                      <Badge className="bg-[#0F766E] text-white text-[10px] font-bold mb-1">
                         RECOMMENDED
                       </Badge>
                       <h5 className="font-bold text-sm text-slate-900 dark:text-white">{plan.name}</h5>
                       <p className="text-2xl font-black text-slate-900 dark:text-white mt-1">₹{plan.price}</p>
                       <p className="text-xs text-slate-500 mt-0.5">{plan.durationDays} Days Unlimited Contact</p>
                       <Button
-                        className="mt-3 w-full rounded-xl bg-gradient-to-r from-[#A05AFF] to-[#7928CA] hover:from-[#8f47ec] hover:to-[#681fb0] text-white font-bold text-xs h-9 shadow-xs"
+                        className="mt-3 w-full rounded-xl bg-gradient-to-r from-[#0F766E] to-[#7928CA] hover:from-[#8f47ec] hover:to-[#681fb0] text-white font-bold text-xs h-9 shadow-xs"
                         onClick={() => handlePurchasePlan(plan)}
                         disabled={processingPlanId === plan._id}
                       >

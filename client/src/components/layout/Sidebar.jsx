@@ -28,8 +28,8 @@ import { cn } from '@/lib/utils';
 
 // हर एक लिंक के लिए एकदम सॉलिड और ब्राइट कलर (Hex Code) सेट किया है
 const schoolLinks = [
-  { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, color: '#A05AFF' }, // Purple
-  { to: '/school-profile', label: 'School Profile', icon: Building2, color: '#9E58FF' }, // Violet
+  { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, color: '#0F766E' }, // Purple
+  { to: '/school-profile', label: 'School Profile', icon: Building2, color: '#14B8A6' }, // Violet
   { to: '/my-candidates', label: 'My Candidates', icon: Users2, color: '#FF9F1C' }, // Orange
   { to: '/talent-pool', label: 'Talent Pool', icon: UserSquare2, color: '#3A86FF' }, // Blue
   { to: '/credits', label: 'Credits', icon: PiggyBank, color: '#1BCFB4' }, // Mint Teal
@@ -38,18 +38,18 @@ const schoolLinks = [
 ];
 
 const adminLinks = [
-  { to: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard, color: '#A05AFF' },
+  { to: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard, color: '#0F766E' },
   { to: '/admin/admins', label: 'Admins', icon: ShieldAlert, color: '#FF4D4D' }, // Red
   { to: '/admin/plans', label: 'Plans', icon: Layers, color: '#FF9F1C' }, // Orange
   { to: '/admin/credit-packages', label: 'Credit Packages', icon: Percent, color: '#1BCFB4' }, // Teal
   { to: '/admin/locations', label: 'Locations', icon: MapPin, color: '#FF007A' }, // Pink
   { to: '/admin/import', label: 'Candidate Import', icon: UploadCloud, color: '#3A86FF' }, // Blue
   { to: '/admin/applicant-plans', label: 'Applicant Plans', icon: FileCheck2, color: '#00F5D4' }, // Neon Green
-  { to: '/admin/master-data', label: 'Master Data', icon: FolderTree, color: '#9E58FF' }, // Violet
+  { to: '/admin/master-data', label: 'Master Data', icon: FolderTree, color: '#14B8A6' }, // Violet
 ];
 
 const applicantLinks = [
-  { to: '/applicant/dashboard', label: 'Dashboard', icon: LayoutDashboard, color: '#A05AFF' },
+  { to: '/applicant/dashboard', label: 'Dashboard', icon: LayoutDashboard, color: '#0F766E' },
   { to: '/applicant/profile', label: 'My Profile', icon: UserSquare2, color: '#FF9F1C' },
   { to: '/applicant/documents', label: 'Documents', icon: FileText, color: '#3A86FF' },
   { to: '/applicant/requests', label: 'Received Requests', icon: Inbox, color: '#1BCFB4' },
@@ -72,61 +72,56 @@ export function Sidebar() {
   const roleLabel = isSuperAdmin ? 'Super Admin' : isApplicant ? 'Applicant' : 'Recruiter';
 
   return (
-    <aside className="flex h-full w-full flex-col bg-white dark:bg-slate-900 border-r border-slate-100 dark:border-slate-800/80 z-30 shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
-      {/* Brand & Identity Segment */}
-      <div className="p-6 border-b border-slate-50 dark:border-slate-800/50 flex flex-col gap-3">
-        <div className="flex items-center gap-3">
-          {/* Logo with smooth pulse glow */}
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-[#1BCFB4] to-[#16b39c] text-white shadow-md shadow-[#1BCFB4]/30">
-            <Briefcase className="h-5 w-5 text-white" />
+    <aside className="flex h-full w-full flex-col bg-white dark:bg-slate-900 border-r border-[#E2EAE7] dark:border-slate-800/80 z-30 shadow-[2px_0_14px_rgba(0,0,0,0.02)]">
+      {/* Brand & Identity Segment - Balanced Medium */}
+      <div className="p-4 pb-3.5 border-b border-[#E2EAE7] dark:border-slate-800/50 flex flex-col gap-2">
+        <div className="flex items-center gap-2.5">
+          {/* Logo with teal-to-mint gradient */}
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-tr from-[#0F766E] to-[#14B8A6] text-white shadow-xs">
+            <Briefcase className="h-4.5 w-4.5 text-white" />
           </div>
           <div>
-            <h1 className="text-xl font-extrabold tracking-tight bg-gradient-to-r from-slate-800 to-slate-900 dark:from-white dark:to-slate-200 bg-clip-text text-transparent">
+            <h1 className="text-lg font-black tracking-tight text-slate-900 dark:text-white leading-tight">
               HireHub
             </h1>
-            <span className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full border border-[#A05AFF]/20 bg-[#A05AFF]/10 text-[#A05AFF] inline-block mt-1 shadow-sm">
+            <span className="text-[9.5px] font-bold uppercase tracking-wider px-2 py-0.2 rounded-md border border-[#0F766E]/20 bg-[#0F766E]/10 text-[#0F766E] dark:text-[#14B8A6] inline-block">
               {roleLabel}
             </span>
           </div>
         </div>
       </div>
 
-      {/* Navigation Links */}
-      <nav className="flex-1 space-y-1.5 p-4 overflow-y-auto">
+      {/* Navigation Links - Balanced Medium */}
+      <nav className="flex-1 space-y-1 p-3 overflow-y-auto">
         {links.map(({ to, label, icon: Icon, color }) => (
           <NavLink
             key={to}
             to={to}
             className={({ isActive }) =>
               cn(
-                'flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold tracking-wide transition-all duration-300 ease-out select-none group relative overflow-hidden',
+                'flex items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] font-semibold tracking-normal transition-all duration-200 select-none group relative overflow-hidden',
                 isActive 
-                  ? 'bg-[#A05AFF]/10 text-[#A05AFF] shadow-sm shadow-[#A05AFF]/5 translate-x-1.5' 
-                  : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:text-[#A05AFF] dark:hover:text-white hover:translate-x-1.5'
+                  ? 'bg-[#0F766E] text-white shadow-xs' 
+                  : 'text-slate-600 dark:text-slate-400 hover:bg-[#F0FDFA] dark:hover:bg-slate-800/60 hover:text-[#0F766E] dark:hover:text-white'
               )
             }
           >
             {({ isActive }) => (
               <>
-                {/* Active Left Neon Bar */}
-                {isActive && (
-                  <div className="absolute left-0 top-1/4 h-1/2 w-1 rounded-r-full bg-[#A05AFF] shadow-[0_0_8px_#A05AFF]" />
-                )}
-                
-                {/* Icon Section - Guaranteed Color Output */}
+                {/* Icon Section */}
                 <Icon 
                   className={cn(
-                    "h-4 w-4 transition-transform duration-300 group-hover:scale-115 shrink-0",
-                    isActive ? "drop-shadow-[0_2px_5px_rgba(160,90,255,0.4)]" : ""
+                    "h-4 w-4 transition-transform duration-200 shrink-0",
+                    isActive ? "text-white" : ""
                   )} 
-                  style={{ color: color }} 
+                  style={{ color: isActive ? '#ffffff' : color }} 
                 />
                 
-                <span className="transition-colors duration-200">{label}</span>
+                <span className="truncate">{label}</span>
                 
-                {/* Small Pulse Wave on Active Element */}
+                {/* Active Indicator Pip */}
                 {isActive && (
-                  <div className="absolute right-4 h-1.5 w-1.5 rounded-full bg-[#A05AFF]" />
+                  <div className="ml-auto h-1.5 w-1.5 rounded-full bg-[#14B8A6]" />
                 )}
               </>
             )}
@@ -134,10 +129,10 @@ export function Sidebar() {
         ))}
       </nav>
 
-      {/* Profile Footer & Logout */}
-      <div className="p-4 border-t border-slate-50 dark:border-slate-800/50 bg-slate-50/50 dark:bg-slate-900/50">
-        <div className="flex items-center gap-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700/50 p-2.5 mb-2 shadow-sm transition-all duration-300 hover:shadow-md">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl overflow-hidden bg-gradient-to-tr from-[#9E58FF] to-[#A05AFF] text-white font-bold text-sm shadow-md shadow-[#9E58FF]/20 border border-slate-200 dark:border-slate-700">
+      {/* Profile Footer & Logout - Balanced Medium */}
+      <div className="p-3 border-t border-[#E2EAE7] dark:border-slate-800/50 bg-[#F4F7F6]/50 dark:bg-slate-900/50">
+        <div className="flex items-center gap-2.5 rounded-lg bg-white dark:bg-slate-800 border border-[#E2EAE7] dark:border-slate-700/50 p-2 mb-1.5 shadow-2xs">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg overflow-hidden bg-gradient-to-tr from-[#0F766E] to-[#14B8A6] text-white font-bold text-xs shadow-xs">
             {school?.logoUrl ? (
               <img src={school.logoUrl} alt="Logo" className="h-full w-full object-contain p-0.5 bg-white" />
             ) : user?.name ? (
@@ -151,7 +146,7 @@ export function Sidebar() {
               {school?.schoolName || user?.name || 'School Principal'}
             </p>
             <p className="truncate text-[10px] font-semibold text-slate-400 dark:text-slate-500 mt-0.5 flex items-center gap-1">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#1BCFB4] inline-block animate-pulse" />
+              <span className="h-1.5 w-1.5 rounded-full bg-[#14B8A6] inline-block animate-pulse" />
               {user?.name || 'Secure Session'}
             </p>
           </div>
@@ -159,9 +154,9 @@ export function Sidebar() {
         
         <button
           onClick={logout}
-          className="flex w-full items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-500 dark:text-slate-400 transition-all duration-300 hover:bg-[#FE9496]/10 hover:text-[#FE9496] group"
+          className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-slate-500 dark:text-slate-400 transition-all duration-200 hover:bg-[#FE9496]/10 hover:text-[#FE9496] group"
         >
-          <LogOut className="h-4 w-4 text-slate-400 group-hover:text-[#FE9496] group-hover:translate-x-0.5 transition-all duration-300" />
+          <LogOut className="h-3.5 w-3.5 text-slate-400 group-hover:text-[#FE9496] group-hover:translate-x-0.5 transition-all duration-200" />
           Logout
         </button>
       </div>

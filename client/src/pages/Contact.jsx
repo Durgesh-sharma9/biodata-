@@ -4,32 +4,32 @@ import { Mail, Phone, MapPin, Clock, LifeBuoy, ArrowRight, Sparkles, Send } from
 
 export default function Contact() {
   return (
-    <div className="min-h-screen bg-[#f3f3f4] text-slate-800 font-sans antialiased dark:bg-slate-950 dark:text-slate-200">
+    <div className="min-h-screen bg-[#F4F7F6] text-slate-800 font-sans antialiased dark:bg-slate-950 dark:text-slate-200">
       {/* Premium Navbar */}
       <nav className="sticky top-0 z-50 bg-white border-b border-slate-100 shadow-sm dark:bg-slate-900 dark:border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-20">
             <div className="flex items-center">
               <Link to="/" className="text-2xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-1">
-                Hire<span className="text-[#A05AFF]">Hub</span>
+                Hire<span className="text-[#0F766E]">Hub</span>
               </Link>
             </div>
             <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-6">
-              <Link to="/features" className="text-sm font-semibold text-slate-600 hover:text-[#A05AFF] px-3 py-2 rounded-xl hover:bg-slate-50 transition-all dark:text-slate-400 dark:hover:bg-slate-800">
+              <Link to="/features" className="text-sm font-semibold text-slate-600 hover:text-[#0F766E] px-3 py-2 rounded-xl hover:bg-slate-50 transition-all dark:text-slate-400 dark:hover:bg-slate-800">
                 Features
               </Link>
-              <Link to="/pricing" className="text-sm font-semibold text-slate-600 hover:text-[#A05AFF] px-3 py-2 rounded-xl hover:bg-slate-50 transition-all dark:text-slate-400 dark:hover:bg-slate-800">
+              <Link to="/pricing" className="text-sm font-semibold text-slate-600 hover:text-[#0F766E] px-3 py-2 rounded-xl hover:bg-slate-50 transition-all dark:text-slate-400 dark:hover:bg-slate-800">
                 Pricing
               </Link>
-              <Link to="/contact" className="text-sm font-semibold text-[#A05AFF] bg-[#A05AFF]/10 px-3 py-2 rounded-xl transition-all">
+              <Link to="/contact" className="text-sm font-semibold text-[#0F766E] bg-[#0F766E]/10 px-3 py-2 rounded-xl transition-all">
                 Contact
               </Link>
               <span className="h-5 w-px bg-slate-200 mx-2 hidden sm:inline-block dark:bg-slate-800" />
               <Link to="/login" className="hidden sm:inline-block">
-                <Button variant="outline" className="h-10 rounded-xl border-slate-200 text-slate-600 font-semibold hover:bg-slate-50 hover:text-[#A05AFF] transition-all px-5 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-800">Login</Button>
+                <Button variant="outline" className="h-10 rounded-xl border-slate-200 text-slate-600 font-semibold hover:bg-slate-50 hover:text-[#0F766E] transition-all px-5 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-800">Login</Button>
               </Link>
               <Link to="/signup">
-                <Button className="h-10 rounded-xl bg-[#A05AFF] hover:bg-[#A05AFF]/90 text-white font-semibold shadow-sm transition-all px-5">Sign Up</Button>
+                <Button className="h-10 rounded-xl bg-[#0F766E] hover:bg-[#0F766E]/90 text-white font-semibold shadow-sm transition-all px-5">Sign Up</Button>
               </Link>
             </div>
           </div>
@@ -40,7 +40,7 @@ export default function Contact() {
         {/* Page Header Panel Layout */}
         <div className="mb-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border border-[#A05AFF]/30 bg-[#A05AFF]/5 text-[#A05AFF] text-[11px] font-bold uppercase tracking-wider mb-2">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border border-[#0F766E]/30 bg-[#0F766E]/5 text-[#0F766E] text-[11px] font-bold uppercase tracking-wider mb-2">
               <Sparkles className="h-3 w-3" /> Connect with us
             </div>
             <h1 className="text-xl font-bold tracking-tight text-slate-800 dark:text-white">
@@ -69,7 +69,7 @@ export default function Contact() {
                   <input
                     type="text"
                     id="name"
-                    className="w-full h-11 px-4 bg-white border border-slate-200 rounded-xl transition-all placeholder:text-slate-400 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 dark:bg-slate-950 dark:border-slate-800"
+                    className="w-full h-11 px-4 bg-white border border-slate-200 rounded-xl transition-all placeholder:text-slate-400 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0F766E] focus-visible:border-[#0F766E]/50 dark:bg-slate-950 dark:border-slate-800"
                     placeholder="Your name"
                   />
                 </div>
@@ -80,7 +80,7 @@ export default function Contact() {
                   <input
                     type="email"
                     id="email"
-                    className="w-full h-11 px-4 bg-white border border-slate-200 rounded-xl transition-all placeholder:text-slate-400 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 dark:bg-slate-950 dark:border-slate-800"
+                    className="w-full h-11 px-4 bg-white border border-slate-200 rounded-xl transition-all placeholder:text-slate-400 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0F766E] focus-visible:border-[#0F766E]/50 dark:bg-slate-950 dark:border-slate-800"
                     placeholder="your@email.com"
                   />
                 </div>
@@ -93,7 +93,7 @@ export default function Contact() {
                 <input
                   type="text"
                   id="subject"
-                  className="w-full h-11 px-4 bg-white border border-slate-200 rounded-xl transition-all placeholder:text-slate-400 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 dark:bg-slate-950 dark:border-slate-800"
+                  className="w-full h-11 px-4 bg-white border border-slate-200 rounded-xl transition-all placeholder:text-slate-400 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0F766E] focus-visible:border-[#0F766E]/50 dark:bg-slate-950 dark:border-slate-800"
                   placeholder="How can we help?"
                 />
               </div>
@@ -105,12 +105,12 @@ export default function Contact() {
                 <textarea
                   id="message"
                   rows={4}
-                  className="w-full p-4 bg-white border border-slate-200 rounded-xl transition-all placeholder:text-slate-400 text-sm font-medium resize-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF]/50 dark:bg-slate-950 dark:border-slate-800"
+                  className="w-full p-4 bg-white border border-slate-200 rounded-xl transition-all placeholder:text-slate-400 text-sm font-medium resize-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0F766E] focus-visible:border-[#0F766E]/50 dark:bg-slate-950 dark:border-slate-800"
                   placeholder="Write your brief message text here..."
                 />
               </div>
               
-              <Button type="submit" className="w-full h-11 rounded-xl bg-[#A05AFF] hover:bg-[#A05AFF]/90 text-white font-bold tracking-wide shadow-sm transition-all flex items-center justify-center gap-2">
+              <Button type="submit" className="w-full h-11 rounded-xl bg-[#0F766E] hover:bg-[#0F766E]/90 text-white font-bold tracking-wide shadow-sm transition-all flex items-center justify-center gap-2">
                 <span>Send Message</span>
                 <Send className="h-4 w-4 text-white/80" />
               </Button>
@@ -123,16 +123,16 @@ export default function Contact() {
             {/* Contact Information Cards */}
             <div className="bg-white p-5 rounded-xl border-none shadow-sm dark:bg-slate-900">
               <h3 className="text-sm font-bold tracking-wide text-slate-800 dark:text-slate-200 mb-5 flex items-center gap-2">
-                <span className="w-1 h-4 bg-[#A05AFF] rounded-full" /> Contact Information
+                <span className="w-1 h-4 bg-[#0F766E] rounded-full" /> Contact Information
               </h3>
               <div className="space-y-5">
                 <div className="flex items-start">
-                  <div className="p-2.5 rounded-lg border border-[#A05AFF]/30 bg-[#A05AFF]/5 text-[#A05AFF]">
+                  <div className="p-2.5 rounded-lg border border-[#0F766E]/30 bg-[#0F766E]/5 text-[#0F766E]">
                     <Mail className="w-4 h-4" />
                   </div>
                   <div className="ml-4">
                     <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-0.5">Email</p>
-                    <a href="mailto:support@biodatamanager.com" className="font-semibold text-slate-700 hover:text-[#A05AFF] transition-colors text-sm break-all dark:text-slate-300">
+                    <a href="mailto:support@biodatamanager.com" className="font-semibold text-slate-700 hover:text-[#0F766E] transition-colors text-sm break-all dark:text-slate-300">
                       support@biodatamanager.com
                     </a>
                   </div>
@@ -151,7 +151,7 @@ export default function Contact() {
                 </div>
 
                 <div className="flex items-start">
-                  <div className="p-2.5 rounded-lg border border-[#9E58FF]/30 bg-[#9E58FF]/5 text-[#9E58FF]">
+                  <div className="p-2.5 rounded-lg border border-[#14B8A6]/30 bg-[#14B8A6]/5 text-[#14B8A6]">
                     <MapPin className="w-4 h-4" />
                   </div>
                   <div className="ml-4">
@@ -190,15 +190,15 @@ export default function Contact() {
 
             {/* Support Metrics Information Box */}
             <div className="bg-white p-5 rounded-xl border-none shadow-sm dark:bg-slate-900 flex items-start">
-              <div className="p-2.5 rounded-lg border border-[#A05AFF]/30 bg-[#A05AFF]/5 text-[#A05AFF] mr-4 shrink-0">
+              <div className="p-2.5 rounded-lg border border-[#0F766E]/30 bg-[#0F766E]/5 text-[#0F766E] mr-4 shrink-0">
                 <LifeBuoy className="w-4 h-4" />
               </div>
               <div>
                 <h3 className="text-sm font-bold tracking-wide text-slate-800 dark:text-slate-200 mb-1">Technical Support</h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mb-3 leading-relaxed font-medium">
-                  Please remember to include your unique assigned <span className="text-[#A05AFF] font-bold">school ID</span> credentials along with a descriptive overview log of the anomaly encountered.
+                  Please remember to include your unique assigned <span className="text-[#0F766E] font-bold">school ID</span> credentials along with a descriptive overview log of the anomaly encountered.
                 </p>
-                <div className="flex items-center gap-1.5 text-[11px] text-[#A05AFF] font-bold uppercase tracking-wider">
+                <div className="flex items-center gap-1.5 text-[11px] text-[#0F766E] font-bold uppercase tracking-wider">
                   <span>Response timeframe: &lt; 24 business hours</span>
                   <ArrowRight className="h-3 w-3" />
                 </div>
@@ -214,8 +214,8 @@ export default function Contact() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
           <p className="text-xs font-medium text-slate-400">&copy; {new Date().getFullYear()} HireHub Technologies. All rights reserved.</p>
           <div className="flex gap-6 text-xs font-semibold">
-            <a href="#privacy" className="hover:text-[#A05AFF] text-slate-500 dark:text-slate-400 transition-colors">Privacy Policy</a>
-            <a href="#terms" className="hover:text-[#A05AFF] text-slate-500 dark:text-slate-400 transition-colors">Terms of Service</a>
+            <a href="#privacy" className="hover:text-[#0F766E] text-slate-500 dark:text-slate-400 transition-colors">Privacy Policy</a>
+            <a href="#terms" className="hover:text-[#0F766E] text-slate-500 dark:text-slate-400 transition-colors">Terms of Service</a>
           </div>
         </div>
       </footer>

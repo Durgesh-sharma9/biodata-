@@ -159,11 +159,11 @@ export function CandidateList({
       case 'ADMIN':
         return <Badge className="border-[#4BCBEB]/30 bg-[#4BCBEB]/5 text-[#4BCBEB] font-bold px-2.5 py-0.5 rounded-xl variant-outline shadow-none">{formatStr(source)}</Badge>;
       case 'SCHOOL_LINK':
-        return <Badge className="border-[#A05AFF]/30 bg-[#A05AFF]/5 text-[#A05AFF] font-bold px-2.5 py-0.5 rounded-xl variant-outline shadow-none">{formatStr(source)}</Badge>;
+        return <Badge className="border-[#0F766E]/30 bg-[#0F766E]/5 text-[#0F766E] font-bold px-2.5 py-0.5 rounded-xl variant-outline shadow-none">{formatStr(source)}</Badge>;
       case 'SELF_APPLICANT':
         return <Badge className="border-[#1BCFB4]/30 bg-[#1BCFB4]/5 text-[#1BCFB4] font-bold px-2.5 py-0.5 rounded-xl variant-outline shadow-none">{formatStr(source)}</Badge>;
       case 'SUPER_ADMIN_IMPORT':
-        return <Badge className="border-[#9E58FF]/30 bg-[#9E58FF]/5 text-[#9E58FF] font-bold px-2.5 py-0.5 rounded-xl variant-outline shadow-none">{formatStr(source)}</Badge>;
+        return <Badge className="border-[#14B8A6]/30 bg-[#14B8A6]/5 text-[#14B8A6] font-bold px-2.5 py-0.5 rounded-xl variant-outline shadow-none">{formatStr(source)}</Badge>;
       default:
         return <Badge className="border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800 text-slate-500 font-bold px-2.5 py-0.5 rounded-xl variant-outline shadow-none">Talent Pool</Badge>;
     }
@@ -221,7 +221,7 @@ export function CandidateList({
         description={description}
         action={
           showAddButton ? (
-            <Button asChild className="bg-gradient-to-r from-[#A05AFF] via-[#9E58FF] to-[#4BCBEB] hover:opacity-95 text-white font-bold rounded-xl transition-all duration-200 active:scale-95 shrink-0 shadow-md shadow-[#A05AFF]/20 h-9 text-xs px-4">
+            <Button asChild className="bg-gradient-to-r from-[#0F766E] via-[#14B8A6] to-[#4BCBEB] hover:opacity-95 text-white font-bold rounded-xl transition-all duration-200 active:scale-95 shrink-0 shadow-md shadow-[#0F766E]/20 h-9 text-xs px-4">
               <Link to="/candidates/new">
                 <Plus className="mr-1.5 h-3.5 w-3.5 stroke-[3]" />
                 Add Candidate
@@ -242,7 +242,7 @@ export function CandidateList({
               <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
               <Input
                 placeholder="Search by candidate name, location..."
-                className="pl-9 h-9 border-slate-200 rounded-lg focus-visible:ring-[#A05AFF] dark:bg-slate-800 dark:border-slate-700 text-xs font-medium"
+                className="pl-9 h-9 border-slate-200 rounded-lg focus-visible:ring-[#0F766E] dark:bg-slate-800 dark:border-slate-700 text-xs font-medium"
                 value={filters.name}
                 onChange={(e) => updateFilter('name', e.target.value)}
               />
@@ -251,7 +251,7 @@ export function CandidateList({
             {/* Position Select */}
             <div className="w-[170px] shrink-0">
               <Select value={filters.position || 'all'} onValueChange={(v) => updateFilter('position', v === 'all' ? '' : v)}>
-                <SelectTrigger className="h-9 border-slate-200 rounded-lg focus:ring-[#A05AFF] dark:bg-slate-800 dark:border-slate-700 text-xs font-medium">
+                <SelectTrigger className="h-9 border-slate-200 rounded-lg focus:ring-[#0F766E] dark:bg-slate-800 dark:border-slate-700 text-xs font-medium">
                   <SelectValue placeholder="All Positions" />
                 </SelectTrigger>
                 <SelectContent className="rounded-lg dark:bg-slate-800 max-h-64">
@@ -271,7 +271,7 @@ export function CandidateList({
                 value={filters.qualification || 'all'}
                 onValueChange={(v) => updateFilter('qualification', v === 'all' ? '' : v)}
               >
-                <SelectTrigger className="h-9 border-slate-200 rounded-lg focus:ring-[#A05AFF] dark:bg-slate-800 dark:border-slate-700 text-xs font-medium">
+                <SelectTrigger className="h-9 border-slate-200 rounded-lg focus:ring-[#0F766E] dark:bg-slate-800 dark:border-slate-700 text-xs font-medium">
                   <SelectValue placeholder="All Qualifications" />
                 </SelectTrigger>
                 <SelectContent className="rounded-lg dark:bg-slate-800 max-h-64">
@@ -291,12 +291,12 @@ export function CandidateList({
               variant="outline"
               size="sm"
               onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
-              className={`h-9 px-3 text-xs font-semibold rounded-lg border-slate-200 dark:border-slate-700 transition-all ${showAdvancedFilters ? 'bg-purple-50 text-[#A05AFF] border-[#A05AFF]/30' : 'bg-white text-slate-600 dark:bg-slate-800 dark:text-slate-300'}`}
+              className={`h-9 px-3 text-xs font-semibold rounded-lg border-slate-200 dark:border-slate-700 transition-all ${showAdvancedFilters ? 'bg-purple-50 text-[#0F766E] border-[#0F766E]/30' : 'bg-white text-slate-600 dark:bg-slate-800 dark:text-slate-300'}`}
             >
-              <SlidersHorizontal className="h-3.5 w-3.5 mr-1.5 text-[#A05AFF]" />
+              <SlidersHorizontal className="h-3.5 w-3.5 mr-1.5 text-[#0F766E]" />
               Filters
               {activeAdvancedCount > 0 && (
-                <span className="ml-1.5 px-1.5 py-0.5 rounded-full bg-[#A05AFF] text-white text-[10px] font-bold">
+                <span className="ml-1.5 px-1.5 py-0.5 rounded-full bg-[#0F766E] text-white text-[10px] font-bold">
                   {activeAdvancedCount}
                 </span>
               )}
@@ -329,7 +329,7 @@ export function CandidateList({
                 <div className="relative">
                   <Input
                     placeholder="Search by mobile..."
-                    className="h-9 border-slate-200 rounded-lg focus-visible:ring-[#A05AFF] dark:bg-slate-800 dark:border-slate-700 text-xs font-medium"
+                    className="h-9 border-slate-200 rounded-lg focus-visible:ring-[#0F766E] dark:bg-slate-800 dark:border-slate-700 text-xs font-medium"
                     value={filters.mobile}
                     onChange={(e) => updateFilter('mobile', e.target.value)}
                   />
@@ -340,7 +340,7 @@ export function CandidateList({
                 <Input
                   type="number"
                   placeholder="Experience (years)"
-                  className="h-9 border-slate-200 rounded-lg focus-visible:ring-[#A05AFF] dark:bg-slate-800 dark:border-slate-700 text-xs font-medium"
+                  className="h-9 border-slate-200 rounded-lg focus-visible:ring-[#0F766E] dark:bg-slate-800 dark:border-slate-700 text-xs font-medium"
                   value={filters.experience}
                   onChange={(e) => updateFilter('experience', e.target.value)}
                 />
@@ -373,7 +373,7 @@ export function CandidateList({
               <div className="relative">
                 <Input
                   placeholder="All Areas"
-                  className="h-9 border-slate-200 rounded-lg focus-visible:ring-[#A05AFF] dark:bg-slate-800 dark:border-slate-700 text-xs font-medium"
+                  className="h-9 border-slate-200 rounded-lg focus-visible:ring-[#0F766E] dark:bg-slate-800 dark:border-slate-700 text-xs font-medium"
                   value={filters.area}
                   onChange={(e) => updateFilter('area', e.target.value)}
                 />
@@ -383,7 +383,7 @@ export function CandidateList({
                 <Input
                   type="number"
                   placeholder="Min Monthly Salary"
-                  className="h-9 border-slate-200 rounded-lg focus-visible:ring-[#A05AFF] dark:bg-slate-800 dark:border-slate-700 text-xs font-medium"
+                  className="h-9 border-slate-200 rounded-lg focus-visible:ring-[#0F766E] dark:bg-slate-800 dark:border-slate-700 text-xs font-medium"
                   value={filters.expectedSalaryMin}
                   onChange={(e) => updateFilter('expectedSalaryMin', e.target.value)}
                 />
@@ -393,7 +393,7 @@ export function CandidateList({
                 <Input
                   type="number"
                   placeholder="Max Monthly Salary"
-                  className="h-9 border-slate-200 rounded-lg focus-visible:ring-[#A05AFF] dark:bg-slate-800 dark:border-slate-700 text-xs font-medium"
+                  className="h-9 border-slate-200 rounded-lg focus-visible:ring-[#0F766E] dark:bg-slate-800 dark:border-slate-700 text-xs font-medium"
                   value={filters.expectedSalaryMax}
                   onChange={(e) => updateFilter('expectedSalaryMax', e.target.value)}
                 />
@@ -407,7 +407,7 @@ export function CandidateList({
                       checked={!!filters.nearby}
                       onChange={(e) => updateFilter('nearby', e.target.checked)}
                       disabled={!data?.schoolLocation}
-                      className="h-3.5 w-3.5 rounded border-slate-300 text-[#A05AFF] disabled:opacity-50"
+                      className="h-3.5 w-3.5 rounded border-slate-300 text-[#0F766E] disabled:opacity-50"
                     />
                     Nearby only
                   </label>
@@ -415,7 +415,7 @@ export function CandidateList({
                   <Input
                     type="number"
                     placeholder="Radius (km)"
-                    className={`h-9 w-24 border-slate-200 rounded-lg focus-visible:ring-[#A05AFF] dark:bg-slate-800 dark:border-slate-700 text-xs font-medium ${!data?.schoolLocation ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    className={`h-9 w-24 border-slate-200 rounded-lg focus-visible:ring-[#0F766E] dark:bg-slate-800 dark:border-slate-700 text-xs font-medium ${!data?.schoolLocation ? 'opacity-50 cursor-not-allowed' : ''}`}
                     value={filters.radiusKm}
                     onChange={(e) => updateFilter('radiusKm', e.target.value)}
                     disabled={!filters.nearby || !data?.schoolLocation}
@@ -458,7 +458,7 @@ export function CandidateList({
                 type="button"
                 size="sm"
                 variant={viewMode === 'list' ? 'default' : 'outline'}
-                className={viewMode === 'list' ? 'bg-[#A05AFF] text-white h-9 rounded-xl text-xs font-bold' : 'border-slate-200 bg-white text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 h-9 rounded-xl text-xs font-bold'}
+                className={viewMode === 'list' ? 'bg-[#0F766E] text-white h-9 rounded-xl text-xs font-bold' : 'border-slate-200 bg-white text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 h-9 rounded-xl text-xs font-bold'}
                 onClick={() => setViewMode('list')}
               >
                 <List className="mr-1.5 h-3.5 w-3.5" />
@@ -468,7 +468,7 @@ export function CandidateList({
                 type="button"
                 size="sm"
                 variant={viewMode === 'map' ? 'default' : 'outline'}
-                className={viewMode === 'map' ? 'bg-[#A05AFF] text-white h-9 rounded-xl text-xs font-bold shadow-md shadow-[#A05AFF]/25' : 'border-slate-200 bg-white text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 h-9 rounded-xl text-xs font-bold'}
+                className={viewMode === 'map' ? 'bg-[#0F766E] text-white h-9 rounded-xl text-xs font-bold shadow-md shadow-[#0F766E]/25' : 'border-slate-200 bg-white text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 h-9 rounded-xl text-xs font-bold'}
                 onClick={() => setViewMode('map')}
               >
                 <MapIcon className="mr-1.5 h-3.5 w-3.5" />
@@ -479,7 +479,7 @@ export function CandidateList({
 
           {isLoading ? (
             <div className="py-24 flex flex-col items-center justify-center space-y-3">
-              <Loader2 className="h-5 w-5 text-[#A05AFF] animate-spin" />
+              <Loader2 className="h-5 w-5 text-[#0F766E] animate-spin" />
               <p className="text-sm font-semibold text-slate-500 dark:text-slate-400 tracking-wide animate-pulse">
                 Fetching candidate universe...
               </p>
@@ -492,13 +492,13 @@ export function CandidateList({
                     <div className="border-b border-slate-100 p-4 dark:border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                       <div>
                         <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
-                          <MapPin className="w-4 h-4 text-[#A05AFF]" /> Interactive Talent Search Map
+                          <MapPin className="w-4 h-4 text-[#0F766E]" /> Interactive Talent Search Map
                         </h3>
                         <p className="text-xs text-slate-500 dark:text-slate-400">
                           Search any area or city above, click anywhere on map, or use GPS to extract location and find candidates within radius.
                         </p>
                       </div>
-                      <span className="text-xs font-bold text-[#A05AFF] bg-[#A05AFF]/10 px-3 py-1 rounded-full border border-[#A05AFF]/20">
+                      <span className="text-xs font-bold text-[#0F766E] bg-[#0F766E]/10 px-3 py-1 rounded-full border border-[#0F766E]/20">
                         {filteredCandidates.length} Active Candidates
                       </span>
                     </div>
@@ -518,10 +518,10 @@ export function CandidateList({
                           <div className="flex items-start justify-between gap-3 mb-2">
                             <div>
                               <p className="text-sm font-bold text-slate-800 dark:text-slate-200">{c.fullName}</p>
-                              <p className="text-xs text-[#A05AFF] font-semibold">{c.position}</p>
+                              <p className="text-xs text-[#0F766E] font-semibold">{c.position}</p>
                             </div>
                             {Number.isFinite(c.distanceKm) ? (
-                              <Badge className="rounded-full border-[#A05AFF]/20 bg-[#A05AFF]/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-[#A05AFF]">
+                              <Badge className="rounded-full border-[#0F766E]/20 bg-[#0F766E]/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-[#0F766E]">
                                 {c.distanceKm.toFixed(1)} km away
                               </Badge>
                             ) : null}
@@ -531,7 +531,7 @@ export function CandidateList({
                         </div>
                         <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
                           <span className="text-slate-400 font-medium">Exp: {c.experience || 'N/A'}</span>
-                          <Link to={`/candidates/${c._id}`} className="text-[#A05AFF] hover:underline font-bold text-xs flex items-center gap-1">
+                          <Link to={`/candidates/${c._id}`} className="text-[#0F766E] hover:underline font-bold text-xs flex items-center gap-1">
                             <Eye className="w-3.5 h-3.5" /> View Profile
                           </Link>
                         </div>
@@ -730,7 +730,7 @@ export function CandidateList({
                               
                               <TableCell className="font-bold text-slate-800 dark:text-slate-200 text-xs py-2.5 px-3">
                                 <div className="flex items-center gap-1.5">
-                                  <span className="group-hover:text-[#A05AFF] transition-colors truncate">{c.fullName}</span>
+                                  <span className="group-hover:text-[#0F766E] transition-colors truncate">{c.fullName}</span>
                                   {c.isLocked && (
                                     <Badge className="text-[9px] uppercase font-bold tracking-wider border-[#FE9496]/30 bg-[#FE9496]/5 text-[#FE9496] rounded-md px-1 py-0 shadow-none variant-outline shrink-0">
                                       Locked

@@ -119,12 +119,12 @@ export default function Signup() {
         <div className="max-w-7xl mx-auto h-full px-4 sm:px-6 lg:px-8 flex justify-between items-center">
           
           <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#A05AFF] to-[#7928CA] flex items-center justify-center text-white shadow-md shadow-[#A05AFF]/25 group-hover:scale-105 transition-transform">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#0F766E] to-[#7928CA] flex items-center justify-center text-white shadow-md shadow-[#0F766E]/25 group-hover:scale-105 transition-transform">
               <Briefcase className="w-5 h-5 text-white" />
             </div>
             <div className="flex flex-col">
               <span className="text-2xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-1">
-                Hire<span className="text-[#A05AFF]">Hub</span>
+                Hire<span className="text-[#0F766E]">Hub</span>
               </span>
               <span className="text-[10px] font-semibold text-slate-400 tracking-wider uppercase -mt-1">
                 School Staff Recruitment
@@ -136,7 +136,7 @@ export default function Signup() {
             <button
               type="button"
               onClick={handleBack}
-              className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-[#A05AFF] px-2.5 py-1.5 rounded-lg hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800 transition-colors"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-[#0F766E] px-2.5 py-1.5 rounded-lg hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800 transition-colors"
             >
               <ArrowLeft className="w-4 h-4" /> Back
             </button>
@@ -157,7 +157,7 @@ export default function Signup() {
       {/* SIGNUP FORM */}
       <main className="flex-1 flex items-center justify-center px-4 py-12 relative overflow-hidden">
         {/* Background Colorful Ambient Glows */}
-        <div className="absolute top-10 left-1/4 w-80 h-80 bg-[#A05AFF]/20 rounded-full blur-3xl pointer-events-none -z-10 animate-pulse-glow" />
+        <div className="absolute top-10 left-1/4 w-80 h-80 bg-[#0F766E]/20 rounded-full blur-3xl pointer-events-none -z-10 animate-pulse-glow" />
         <div className="absolute bottom-10 right-1/4 w-80 h-80 bg-[#1BCFB4]/20 rounded-full blur-3xl pointer-events-none -z-10 animate-float-slow" />
         <div className="absolute top-1/2 left-10 w-72 h-72 bg-[#FE7096]/15 rounded-full blur-3xl pointer-events-none -z-10 animate-float-reverse" />
 
@@ -168,12 +168,12 @@ export default function Signup() {
             <button
               type="button"
               onClick={handleBack}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white/90 dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-[#A05AFF] hover:border-[#A05AFF]/50 text-xs font-bold shadow-xs transition-all group backdrop-blur-sm"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white/90 dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-[#0F766E] hover:border-[#0F766E]/50 text-xs font-bold shadow-xs transition-all group backdrop-blur-sm"
             >
-              <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform text-[#A05AFF]" />
+              <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform text-[#0F766E]" />
               <span>Back</span>
             </button>
-            <Link to="/" className="text-xs font-semibold text-slate-400 hover:text-[#A05AFF] transition-colors">
+            <Link to="/" className="text-xs font-semibold text-slate-400 hover:text-[#0F766E] transition-colors">
               Back to Home
             </Link>
           </div>
@@ -181,7 +181,7 @@ export default function Signup() {
           <div className="bg-white/95 backdrop-blur-xl p-6 sm:p-8 rounded-3xl border border-slate-200/90 shadow-2xl dark:bg-slate-900/95 dark:border-slate-800">
             
             <div className="text-center mb-6">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 mb-2 rounded-full border border-[#A05AFF]/30 bg-gradient-to-r from-[#A05AFF]/15 via-[#FE7096]/10 to-[#1BCFB4]/15 text-[#A05AFF] text-[11px] font-bold uppercase tracking-wider">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 mb-2 rounded-full border border-[#0F766E]/30 bg-gradient-to-r from-[#0F766E]/15 via-[#FE7096]/10 to-[#1BCFB4]/15 text-[#0F766E] text-[11px] font-bold uppercase tracking-wider">
                 <Sparkles className="h-3 w-3" /> School Registration
               </div>
               <h1 className="text-2xl font-black tracking-tight text-slate-900 dark:text-white">
@@ -217,7 +217,7 @@ export default function Signup() {
                       value={formData.schoolName}
                       onChange={handleChange}
                       required
-                      className="w-full h-11 pl-11 pr-4 bg-white border border-slate-200 rounded-xl text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A05AFF] dark:bg-slate-950 dark:border-slate-800"
+                      className="w-full h-11 pl-11 pr-4 bg-white border border-slate-200 rounded-xl text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0F766E] dark:bg-slate-950 dark:border-slate-800"
                       placeholder="e.g. Greenwood Public School"
                     />
                   </div>
@@ -238,7 +238,7 @@ export default function Signup() {
                       value={formData.adminName}
                       onChange={handleChange}
                       required
-                      className="w-full h-11 pl-11 pr-4 bg-white border border-slate-200 rounded-xl text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A05AFF] dark:bg-slate-950 dark:border-slate-800"
+                      className="w-full h-11 pl-11 pr-4 bg-white border border-slate-200 rounded-xl text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0F766E] dark:bg-slate-950 dark:border-slate-800"
                       placeholder="e.g. Dr. Rajesh Verma"
                     />
                   </div>
@@ -260,7 +260,7 @@ export default function Signup() {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full h-11 pl-11 pr-4 bg-white border border-slate-200 rounded-xl text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A05AFF] dark:bg-slate-950 dark:border-slate-800"
+                    className="w-full h-11 pl-11 pr-4 bg-white border border-slate-200 rounded-xl text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0F766E] dark:bg-slate-950 dark:border-slate-800"
                     placeholder="admin@greenwood.edu.in"
                   />
                 </div>
@@ -281,7 +281,7 @@ export default function Signup() {
                     value={formData.mobile}
                     onChange={handleChange}
                     required
-                    className="w-full h-11 pl-11 pr-4 bg-white border border-slate-200 rounded-xl text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A05AFF] dark:bg-slate-950 dark:border-slate-800"
+                    className="w-full h-11 pl-11 pr-4 bg-white border border-slate-200 rounded-xl text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0F766E] dark:bg-slate-950 dark:border-slate-800"
                     placeholder="+91 98765 43210"
                   />
                 </div>
@@ -304,7 +304,7 @@ export default function Signup() {
                         value={formData.password}
                         onChange={handleChange}
                         required
-                        className="w-full h-11 pl-11 pr-4 bg-white border border-slate-200 rounded-xl text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A05AFF] dark:bg-slate-950 dark:border-slate-800"
+                        className="w-full h-11 pl-11 pr-4 bg-white border border-slate-200 rounded-xl text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0F766E] dark:bg-slate-950 dark:border-slate-800"
                         placeholder="Min. 6 chars"
                       />
                     </div>
@@ -325,7 +325,7 @@ export default function Signup() {
                         value={formData.confirmPassword}
                         onChange={handleChange}
                         required
-                        className="w-full h-11 pl-11 pr-4 bg-white border border-slate-200 rounded-xl text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A05AFF] dark:bg-slate-950 dark:border-slate-800"
+                        className="w-full h-11 pl-11 pr-4 bg-white border border-slate-200 rounded-xl text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0F766E] dark:bg-slate-950 dark:border-slate-800"
                         placeholder="Re-enter password"
                       />
                     </div>
@@ -336,7 +336,7 @@ export default function Signup() {
               <Button
                 type="submit"
                 disabled={mutation.isPending}
-                className="w-full h-11 rounded-xl bg-[#A05AFF] hover:bg-[#8B3DFF] text-white font-bold text-sm shadow-md shadow-[#A05AFF]/25 transition-all mt-3"
+                className="w-full h-11 rounded-xl bg-[#0F766E] hover:bg-[#115E59] text-white font-bold text-sm shadow-md shadow-[#0F766E]/25 transition-all mt-3"
               >
                 {mutation.isPending ? 'Registering School...' : 'Create School Account'}
               </Button>
@@ -360,7 +360,7 @@ export default function Signup() {
             <div className="mt-6 pt-4 border-t border-slate-100 flex flex-col gap-2 text-center text-xs dark:border-slate-800">
               <p className="text-slate-500 font-medium">
                 Already registered your school?{' '}
-                <Link to="/login" className="text-[#A05AFF] hover:underline font-bold">
+                <Link to="/login" className="text-[#0F766E] hover:underline font-bold">
                   Sign in here
                 </Link>
               </p>

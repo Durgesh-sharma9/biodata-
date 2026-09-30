@@ -7,16 +7,16 @@ export function ProtectedRoute({ children, role }) {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen w-full flex-col items-center justify-center bg-[#f3f3f4] dark:bg-slate-950 antialiased relative">
+      <div className="flex min-h-screen w-full flex-col items-center justify-center bg-[#F4F7F6] dark:bg-slate-950 antialiased relative">
         
         <div className="relative flex flex-col items-center">
           {/* Flat Standardized Container aligned with the primary design system */}
           <div className="relative flex h-20 w-20 items-center justify-center rounded-xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/60 mb-5 shadow-sm">
-            <div className="absolute inset-0 rounded-xl bg-[#A05AFF]/5 opacity-100" />
-            <Briefcase className="h-8 w-8 text-[#A05AFF]" />
+            <div className="absolute inset-0 rounded-xl bg-[#0F766E]/5 opacity-100" />
+            <Briefcase className="h-8 w-8 text-[#0F766E]" />
             
             {/* Precision Micro Spinner Orbit Ring tied to primary accent hue */}
-            <div className="absolute -inset-1.5 animate-spin rounded-xl border-2 border-[#A05AFF] border-t-transparent border-r-transparent duration-700" />
+            <div className="absolute -inset-1.5 animate-spin rounded-xl border-2 border-[#0F766E] border-t-transparent border-r-transparent duration-700" />
           </div>
 
           {/* Core Branding Section Typography Headers */}
@@ -30,9 +30,9 @@ export function ProtectedRoute({ children, role }) {
               Verifying credentials
             </p>
             <span className="inline-flex gap-0.5 ml-0.5">
-              <span className="w-1 h-1 rounded-full bg-[#A05AFF] animate-bounce [animation-delay:-0.3s]" />
-              <span className="w-1 h-1 rounded-full bg-[#A05AFF] animate-bounce [animation-delay:-0.15s]" />
-              <span className="w-1 h-1 rounded-full bg-[#A05AFF] animate-bounce" />
+              <span className="w-1 h-1 rounded-full bg-[#0F766E] animate-bounce [animation-delay:-0.3s]" />
+              <span className="w-1 h-1 rounded-full bg-[#0F766E] animate-bounce [animation-delay:-0.15s]" />
+              <span className="w-1 h-1 rounded-full bg-[#0F766E] animate-bounce" />
             </span>
           </div>
         </div>

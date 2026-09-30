@@ -4,66 +4,66 @@
 
 @layer base {
   :root {
-    /* Global Canvas Custom Tints */
-    --background: 240 6% 95%; /* Corresponds to #f3f3f4 */
-    --foreground: 222.2 84% 4.9%;
+    /* Global Canvas Custom Tints - Option 2: Nordic Ice-Gray Light */
+    --background: 160 12% 96%; /* Corresponds to #F4F7F6 */
+    --foreground: 215 28% 17%; /* Dark slate text #1E293B */
 
     /* Standardized Card Tokens */
-    --card: 0 0% 100%; /* #ffffff flat standard panel */
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%; /* #ffffff flat clean panel */
+    --card-foreground: 215 28% 17%;
 
-    /* Brand Core Alignment Tokens */
-    --primary: 258 100% 68%; /* #A05AFF Vibrant Purple Primary */
+    /* Brand Core Alignment Tokens - Option 2: Deep Pine Teal & Mint */
+    --primary: 175 77% 26%; /* #0F766E Deep Pine Teal */
     --primary-foreground: 0 0% 100%;
     
-    --secondary: 265 100% 67%; /* #9E58FF Deep Purple Secondary */
+    --secondary: 173 80% 40%; /* #14B8A6 Mint Cyan */
     --secondary-foreground: 0 0% 100%;
 
     /* Metadata & Structural Context Layers */
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 160 15% 94%;
+    --muted-foreground: 215 16% 47%;
     
-    --accent: 258 100% 68%; /* Maps directly back to Primary #A05AFF */
+    --accent: 175 77% 26%; /* #0F766E */
     --accent-foreground: 0 0% 100%;
 
     /* Destructive Node Configuration */
-    --destructive: 359 99% 79%; /* #FE9496 Soft Danger Coral Pink */
-    --destructive-foreground: 222.2 84% 4.9%;
+    --destructive: 0 84% 60%; /* #EF4444 Danger Red */
+    --destructive-foreground: 0 0% 100%;
 
-    /* System Micro-Inputs & Border Tracks */
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 258 100% 68%; /* focus-ring matches primary #A05AFF */
+    /* System Micro-Inputs & Border Tracks - Soft Sage */
+    --border: 160 16% 89%; /* #E2EAE7 */
+    --input: 160 16% 89%;
+    --ring: 175 77% 26%; /* focus-ring matches primary #0F766E */
     
-    /* Layout Radius Adjustments */
-    --radius: 0.75rem; /* Upgraded uniformly to rounded-xl structural requirements */
+    /* Layout Radius Adjustments - Compact 0.5rem (8px) for sleek compact UI */
+    --radius: 0.5rem;
   }
 
   .dark {
-    --background: 224 71% 4%; /* Corresponds to dark slate bg-slate-950 */
+    --background: 180 25% 6%; /* Deep Spruce Dark #0A1414 */
     --foreground: 210 20% 98%;
     
-    --card: 222 47% 11%; /* Maps to dark slate card bg-slate-900 */
+    --card: 180 20% 9%; /* Dark Spruce Card #111E1E */
     --card-foreground: 210 20% 98%;
     
-    --primary: 258 100% 68%;
+    --primary: 173 80% 40%; /* #14B8A6 */
     --primary-foreground: 0 0% 100%;
     
-    --secondary: 265 100% 67%;
+    --secondary: 175 77% 26%; /* #0F766E */
     --secondary-foreground: 0 0% 100%;
     
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 180 15% 15%;
+    --muted-foreground: 215 20% 65%;
     
-    --accent: 258 100% 68%;
+    --accent: 173 80% 40%;
     --accent-foreground: 0 0% 100%;
     
-    --destructive: 359 99% 79%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 210 20% 98%;
     
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 258 100% 68%;
+    --border: 180 15% 16%;
+    --input: 180 15% 16%;
+    --ring: 173 80% 40%;
   }
 
   * {

@@ -218,7 +218,7 @@ export default function Credits() {
               packages.filter((p) => p.isActive !== false).map((pkg) => (
                 <div 
                   key={pkg._id} 
-                  className="flex items-center justify-between rounded-xl border border-slate-200/80 bg-white p-3.5 transition-all hover:border-[#A05AFF]/50 hover:shadow-xs dark:border-slate-800 dark:bg-slate-900"
+                  className="flex items-center justify-between rounded-xl border border-slate-200/80 bg-white p-3.5 transition-all hover:border-[#0F766E]/50 hover:shadow-xs dark:border-slate-800 dark:bg-slate-900"
                 >
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
@@ -229,7 +229,7 @@ export default function Credits() {
                         {pkg.credits} Credits
                       </span>
                     </div>
-                    <p className="text-xs font-extrabold text-[#A05AFF]">
+                    <p className="text-xs font-extrabold text-[#0F766E]">
                       ₹{pkg.price || Math.max(99, pkg.credits * 15)}
                     </p>
                   </div>
@@ -237,7 +237,7 @@ export default function Credits() {
                     size="sm" 
                     onClick={() => handlePurchaseWithRazorpay(pkg)} 
                     disabled={processingPackageId === pkg._id}
-                    className="h-9 rounded-xl bg-gradient-to-r from-[#A05AFF] to-[#7928CA] hover:from-[#8f47ec] hover:to-[#681fb0] text-white text-xs font-bold px-3.5 transition-all shadow-xs flex items-center gap-1.5"
+                    className="h-9 rounded-xl bg-gradient-to-r from-[#0F766E] to-[#7928CA] hover:from-[#8f47ec] hover:to-[#681fb0] text-white text-xs font-bold px-3.5 transition-all shadow-xs flex items-center gap-1.5"
                   >
                     {processingPackageId === pkg._id ? (
                       <>

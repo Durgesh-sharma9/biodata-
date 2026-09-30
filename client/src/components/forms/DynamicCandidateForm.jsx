@@ -260,7 +260,7 @@ export function DynamicCandidateForm({
               control={control}
               render={({ field }) => (
                 <Select value={field.value || ''} onValueChange={field.onChange}>
-                  <SelectTrigger className="rounded-lg h-9 border-slate-200 bg-white font-medium text-xs focus:ring-[#A05AFF]">
+                  <SelectTrigger className="rounded-lg h-9 border-slate-200 bg-white font-medium text-xs focus:ring-[#0F766E]">
                     <SelectValue placeholder={`Select ${label.toLowerCase()}`} />
                   </SelectTrigger>
                   <SelectContent className="rounded-lg text-xs">
@@ -291,7 +291,7 @@ export function DynamicCandidateForm({
               type="checkbox"
               id={fieldName}
               {...register(fieldName)}
-              className="h-3.5 w-3.5 rounded border-slate-300 text-[#A05AFF] focus:ring-[#A05AFF] accent-[#A05AFF] cursor-pointer"
+              className="h-3.5 w-3.5 rounded border-slate-300 text-[#0F766E] focus:ring-[#0F766E] accent-[#0F766E] cursor-pointer"
             />
             <Label htmlFor={fieldName} className="text-xs font-semibold text-slate-700 dark:text-slate-300 cursor-pointer select-none">
               {label}
@@ -308,7 +308,7 @@ export function DynamicCandidateForm({
               type="number" 
               min="0" 
               {...register(fieldName)} 
-              className="rounded-lg h-9 border-slate-200 text-xs font-medium focus-visible:ring-[#A05AFF]"
+              className="rounded-lg h-9 border-slate-200 text-xs font-medium focus-visible:ring-[#0F766E]"
             />
           </div>
         );
@@ -322,7 +322,7 @@ export function DynamicCandidateForm({
               type="text" 
               {...register(fieldName)} 
               placeholder={`Enter ${label.toLowerCase()}`}
-              className="rounded-lg h-9 border-slate-200 text-xs font-medium focus-visible:ring-[#A05AFF]"
+              className="rounded-lg h-9 border-slate-200 text-xs font-medium focus-visible:ring-[#0F766E]"
             />
           </div>
         );
@@ -337,7 +337,7 @@ export function DynamicCandidateForm({
               id={fieldName}
               {...register(fieldName)}
               placeholder={fieldConfig.placeholder || `Enter ${label.toLowerCase()}`}
-              className="rounded-lg border-slate-200 text-xs font-medium focus-visible:ring-[#A05AFF] min-h-[65px]"
+              className="rounded-lg border-slate-200 text-xs font-medium focus-visible:ring-[#0F766E] min-h-[65px]"
             />
           </div>
         );
@@ -352,7 +352,7 @@ export function DynamicCandidateForm({
               id={fieldName}
               type="date"
               {...register(fieldName)}
-              className="rounded-lg h-9 border-slate-200 text-xs font-medium focus-visible:ring-[#A05AFF]"
+              className="rounded-lg h-9 border-slate-200 text-xs font-medium focus-visible:ring-[#0F766E]"
             />
           </div>
         );
@@ -370,7 +370,7 @@ export function DynamicCandidateForm({
                     type="radio"
                     value={opt}
                     {...register(fieldName)}
-                    className="h-3.5 w-3.5 text-[#A05AFF] focus:ring-[#A05AFF] accent-[#A05AFF]"
+                    className="h-3.5 w-3.5 text-[#0F766E] focus:ring-[#0F766E] accent-[#0F766E]"
                   />
                   <span>{opt}</span>
                 </label>
@@ -410,7 +410,7 @@ export function DynamicCandidateForm({
                 <img
                   src={profilePhoto}
                   alt="Profile"
-                  className="h-14 w-14 rounded-full object-cover border-2 border-[#A05AFF] shadow-xs"
+                  className="h-14 w-14 rounded-full object-cover border-2 border-[#0F766E] shadow-xs"
                 />
                 <Button
                   type="button"
@@ -423,9 +423,9 @@ export function DynamicCandidateForm({
                 </Button>
               </div>
             ) : (
-              <label className="flex h-14 w-14 cursor-pointer flex-col items-center justify-center rounded-full border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-[#A05AFF] bg-white dark:bg-slate-900 hover:bg-[#A05AFF]/5 transition-all shadow-xs shrink-0 group">
-                <Camera className="h-4 w-4 text-slate-400 group-hover:text-[#A05AFF] transition-all" />
-                <span className="text-[8px] font-bold text-slate-400 mt-0.5 uppercase tracking-wider group-hover:text-[#A05AFF]">Photo</span>
+              <label className="flex h-14 w-14 cursor-pointer flex-col items-center justify-center rounded-full border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-[#0F766E] bg-white dark:bg-slate-900 hover:bg-[#0F766E]/5 transition-all shadow-xs shrink-0 group">
+                <Camera className="h-4 w-4 text-slate-400 group-hover:text-[#0F766E] transition-all" />
+                <span className="text-[8px] font-bold text-slate-400 mt-0.5 uppercase tracking-wider group-hover:text-[#0F766E]">Photo</span>
                 <input
                   type="file"
                   accept="image/*"
@@ -451,7 +451,7 @@ export function DynamicCandidateForm({
                   placeholder="e.g. John Doe"
                   {...register('fullName')} 
                   disabled={isFieldDisabled('fullName')} 
-                  className="rounded-lg h-9 pl-9 border-slate-200 focus-visible:ring-[#A05AFF] text-xs font-medium"
+                  className="rounded-lg h-9 pl-9 border-slate-200 focus-visible:ring-[#0F766E] text-xs font-medium"
                 />
                 <User className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
               </div>
@@ -467,7 +467,7 @@ export function DynamicCandidateForm({
                   placeholder="e.g. 9876543210"
                   {...register('mobile')}
                   disabled={isFieldDisabled('mobile')}
-                  className="rounded-lg h-9 pl-9 border-slate-200 focus-visible:ring-[#A05AFF] text-xs font-medium"
+                  className="rounded-lg h-9 pl-9 border-slate-200 focus-visible:ring-[#0F766E] text-xs font-medium"
                 />
                 <Phone className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
               </div>
@@ -484,7 +484,7 @@ export function DynamicCandidateForm({
                   placeholder="e.g. john@example.com"
                   {...register('email')} 
                   disabled={isFieldDisabled('email')} 
-                  className="rounded-lg h-9 pl-9 border-slate-200 focus-visible:ring-[#A05AFF] text-xs font-medium"
+                  className="rounded-lg h-9 pl-9 border-slate-200 focus-visible:ring-[#0F766E] text-xs font-medium"
                 />
                 <Mail className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
               </div>
@@ -499,7 +499,7 @@ export function DynamicCandidateForm({
                 control={control}
                 render={({ field }) => (
                   <Select value={field.value} onValueChange={field.onChange} disabled={isFieldDisabled('gender')}>
-                    <SelectTrigger className="rounded-lg h-9 border-slate-200 bg-white font-medium text-xs focus:ring-[#A05AFF]">
+                    <SelectTrigger className="rounded-lg h-9 border-slate-200 bg-white font-medium text-xs focus:ring-[#0F766E]">
                       <SelectValue placeholder="Select gender" />
                     </SelectTrigger>
                     <SelectContent className="rounded-lg text-xs">
@@ -520,7 +520,7 @@ export function DynamicCandidateForm({
                   type="date" 
                   {...register('dob')} 
                   disabled={isFieldDisabled('dob')} 
-                  className="rounded-lg h-9 pl-9 border-slate-200 focus-visible:ring-[#A05AFF] text-xs font-medium"
+                  className="rounded-lg h-9 pl-9 border-slate-200 focus-visible:ring-[#0F766E] text-xs font-medium"
                 />
                 <Calendar className="absolute left-3 top-2.5 h-4 w-4 text-slate-400 pointer-events-none" />
               </div>
@@ -538,7 +538,7 @@ export function DynamicCandidateForm({
       <Card>
         <CardHeader className="bg-white dark:bg-slate-900 py-3 px-4 sm:px-5">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 bg-[#9E58FF]/10 text-[#9E58FF] rounded-lg">
+            <div className="p-2 bg-[#14B8A6]/10 text-[#14B8A6] rounded-lg">
               <Briefcase className="h-4 w-4 stroke-[2.2]" />
             </div>
             <div>
@@ -560,7 +560,7 @@ export function DynamicCandidateForm({
                   onValueChange={field.onChange}
                   disabled={isFieldDisabled('position')}
                 >
-                  <SelectTrigger className="rounded-lg h-9 border-slate-200 bg-white font-medium text-xs focus:ring-[#A05AFF]">
+                  <SelectTrigger className="rounded-lg h-9 border-slate-200 bg-white font-medium text-xs focus:ring-[#0F766E]">
                     <SelectValue placeholder="Select position (e.g. Teacher, Driver, Accountant...)" />
                   </SelectTrigger>
                   <SelectContent className="rounded-lg max-h-[300px] text-xs">
@@ -583,10 +583,10 @@ export function DynamicCandidateForm({
 
       {/* 3. Conditional Dynamic Role Fields Card (Configured by Super Admin) */}
       {position && roleFields.length > 0 && (
-        <Card className="border-l-4 border-l-[#A05AFF] animate-in fade-in duration-300">
+        <Card className="border-l-4 border-l-[#0F766E] animate-in fade-in duration-300">
           <CardHeader className="bg-white dark:bg-slate-900 py-3 px-4 sm:px-5">
             <div className="flex items-center gap-2.5">
-              <div className="p-2 bg-[#A05AFF]/10 text-[#A05AFF] rounded-lg">
+              <div className="p-2 bg-[#0F766E]/10 text-[#0F766E] rounded-lg">
                 <FileUp className="h-4 w-4 stroke-[2.2]" />
               </div>
               <div>
@@ -652,7 +652,7 @@ export function DynamicCandidateForm({
                 placeholder="e.g. 3"
                 {...register('experienceYears')}
                 disabled={isFieldDisabled('experienceYears')}
-                className="rounded-lg h-9 pl-9 border-slate-200 focus-visible:ring-[#A05AFF] text-xs font-medium"
+                className="rounded-lg h-9 pl-9 border-slate-200 focus-visible:ring-[#0F766E] text-xs font-medium"
               />
               <Calendar className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
             </div>
@@ -669,7 +669,7 @@ export function DynamicCandidateForm({
                 placeholder="e.g. 35000"
                 {...register('expectedSalary')}
                 disabled={isFieldDisabled('expectedSalary')}
-                className="rounded-lg h-9 pl-9 border-slate-200 focus-visible:ring-[#A05AFF] text-xs font-medium"
+                className="rounded-lg h-9 pl-9 border-slate-200 focus-visible:ring-[#0F766E] text-xs font-medium"
               />
               <IndianRupee className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
             </div>
@@ -683,7 +683,7 @@ export function DynamicCandidateForm({
               placeholder="Highlight candidate strengths, achievements, or custom notes..."
               {...register('notes')} 
               disabled={isFieldDisabled('notes')} 
-              className="rounded-lg border-slate-200 focus-visible:ring-[#A05AFF] text-xs font-medium min-h-[65px]"
+              className="rounded-lg border-slate-200 focus-visible:ring-[#0F766E] text-xs font-medium min-h-[65px]"
             />
           </div>
         </CardContent>
@@ -720,8 +720,8 @@ export function DynamicCandidateForm({
             </div>
           )}
           <div>
-            <label className="flex flex-col items-center justify-center cursor-pointer gap-2 rounded-lg border-2 border-dashed border-slate-200 dark:border-slate-700 hover:border-[#A05AFF] p-4 text-center transition-all bg-slate-50/50 dark:bg-slate-900/10 hover:bg-[#A05AFF]/5 group">
-              <div className="p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-400 group-hover:text-[#A05AFF] transition-all shadow-xs">
+            <label className="flex flex-col items-center justify-center cursor-pointer gap-2 rounded-lg border-2 border-dashed border-slate-200 dark:border-slate-700 hover:border-[#0F766E] p-4 text-center transition-all bg-slate-50/50 dark:bg-slate-900/10 hover:bg-[#0F766E]/5 group">
+              <div className="p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-400 group-hover:text-[#0F766E] transition-all shadow-xs">
                 <Upload className="h-4 w-4" />
               </div>
               <div className="space-y-0.5">
@@ -749,7 +749,7 @@ export function DynamicCandidateForm({
               {documents.map((doc, i) => (
                 <div key={i} className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 rounded-lg border border-slate-200 dark:border-slate-800 p-2.5 bg-white dark:bg-slate-900 shadow-xs">
                   <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                    <div className="p-2 bg-[#A05AFF]/10 text-[#A05AFF] rounded-md shrink-0">
+                    <div className="p-2 bg-[#0F766E]/10 text-[#0F766E] rounded-md shrink-0">
                       <FileText className="h-4 w-4" />
                     </div>
                     <div className="min-w-0 flex-1 space-y-1">
@@ -757,7 +757,7 @@ export function DynamicCandidateForm({
                         href={doc.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-xs font-bold text-[#A05AFF] hover:underline truncate block"
+                        className="text-xs font-bold text-[#0F766E] hover:underline truncate block"
                       >
                         {doc.name}
                       </a>
@@ -767,7 +767,7 @@ export function DynamicCandidateForm({
                         onChange={(e) => handleDocNoteChange(i, e.target.value)}
                         placeholder="Add optional note (e.g. 10th Marksheet, B.Ed Degree, Experience Letter)..."
                         disabled={isFieldDisabled('documents')}
-                        className="w-full h-7 px-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded text-[11px] font-medium text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-1 focus:ring-[#A05AFF]"
+                        className="w-full h-7 px-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded text-[11px] font-medium text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-1 focus:ring-[#0F766E]"
                       />
                     </div>
                   </div>
@@ -792,7 +792,7 @@ export function DynamicCandidateForm({
       {showConsent && (
         <Card className="p-4 space-y-3">
           <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 flex items-center gap-2 pb-2 border-b border-slate-100 dark:border-slate-800">
-            <ClipboardCheck className="h-4 w-4 text-[#A05AFF]" />
+            <ClipboardCheck className="h-4 w-4 text-[#0F766E]" />
             Declaration & Data Consents
           </h4>
           
@@ -802,7 +802,7 @@ export function DynamicCandidateForm({
                 type="checkbox"
                 id="profileSharingConsent"
                 {...register('profileSharingConsent')}
-                className="mt-0.5 h-3.5 w-3.5 rounded border-slate-300 text-[#A05AFF] focus:ring-[#A05AFF] cursor-pointer accent-[#A05AFF]"
+                className="mt-0.5 h-3.5 w-3.5 rounded border-slate-300 text-[#0F766E] focus:ring-[#0F766E] cursor-pointer accent-[#0F766E]"
                 required
               />
               <span className="group-hover:text-slate-800 dark:group-hover:text-slate-200 transition-colors leading-relaxed">
@@ -815,7 +815,7 @@ export function DynamicCandidateForm({
                 type="checkbox"
                 id="contactConsent"
                 {...register('contactConsent')}
-                className="mt-0.5 h-3.5 w-3.5 rounded border-slate-300 text-[#A05AFF] focus:ring-[#A05AFF] cursor-pointer accent-[#A05AFF]"
+                className="mt-0.5 h-3.5 w-3.5 rounded border-slate-300 text-[#0F766E] focus:ring-[#0F766E] cursor-pointer accent-[#0F766E]"
                 required
               />
               <span className="group-hover:text-slate-800 dark:group-hover:text-slate-200 transition-colors leading-relaxed">
@@ -851,7 +851,7 @@ export function DynamicCandidateForm({
         <Button 
           type="submit" 
           disabled={isSubmitting || isLoading || uploading}
-          className="w-full sm:w-auto bg-gradient-to-r from-[#A05AFF] via-[#9E58FF] to-[#4BCBEB] hover:opacity-95 text-white font-bold h-9 px-6 rounded-lg shadow-md shadow-[#A05AFF]/20 transition-all text-xs"
+          className="w-full sm:w-auto bg-gradient-to-r from-[#0F766E] via-[#14B8A6] to-[#4BCBEB] hover:opacity-95 text-white font-bold h-9 px-6 rounded-lg shadow-md shadow-[#0F766E]/20 transition-all text-xs"
         >
           {isSubmitting || isLoading ? (
             <span className="flex items-center gap-1.5">

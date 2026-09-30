@@ -191,7 +191,7 @@ export default function ApplicationLinks() {
 
             .top-brand-bar { 
               height: 8px; 
-              background: linear-gradient(90deg, #A05AFF 0%, #7928CA 50%, #EC4899 100%); 
+              background: linear-gradient(90deg, #0F766E 0%, #7928CA 50%, #EC4899 100%); 
               border-radius: 9999px; 
               margin-bottom: 12px; 
             }
@@ -346,7 +346,7 @@ export default function ApplicationLinks() {
             .step-circle { 
               width: 24px; 
               height: 24px; 
-              background: #A05AFF; 
+              background: #0F766E; 
               color: white; 
               border-radius: 50%; 
               font-weight: 900; 
@@ -609,7 +609,7 @@ export default function ApplicationLinks() {
             <CardHeader className="p-5 border-b border-slate-100 dark:border-slate-800/60 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/50 dark:from-slate-900/40 dark:to-slate-900/10">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="p-2.5 bg-[#A05AFF]/10 text-[#A05AFF] rounded-xl ring-1 ring-[#A05AFF]/20">
+                  <div className="p-2.5 bg-[#0F766E]/10 text-[#0F766E] rounded-xl ring-1 ring-[#0F766E]/20">
                     <Link2 className="h-5 w-5 stroke-[2.2]" />
                   </div>
                   <div>
@@ -624,7 +624,7 @@ export default function ApplicationLinks() {
 
                 {linkData?.slug && (
                   <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-[11px] font-mono text-slate-600 dark:text-slate-300 font-semibold border border-slate-200/60 dark:border-slate-700">
-                    <School className="h-3 w-3 text-[#A05AFF]" />
+                    <School className="h-3 w-3 text-[#0F766E]" />
                     {linkData.slug}
                   </span>
                 )}
@@ -646,7 +646,7 @@ export default function ApplicationLinks() {
                       value={applyUrl} 
                       placeholder={isLinkLoading ? "Generating unique portal link..." : "No link configured"}
                       onClick={() => copyToClipboard(applyUrl, 'link')}
-                      className="h-11 pl-3.5 pr-8 border-slate-200/90 rounded-xl focus-visible:ring-[#A05AFF] focus-visible:border-[#A05AFF] dark:bg-slate-900 dark:border-slate-800 font-medium text-xs tracking-tight text-slate-700 dark:text-slate-200 cursor-pointer bg-slate-50/50 hover:bg-slate-50 dark:hover:bg-slate-800/80 transition-colors"
+                      className="h-11 pl-3.5 pr-8 border-slate-200/90 rounded-xl focus-visible:ring-[#0F766E] focus-visible:border-[#0F766E] dark:bg-slate-900 dark:border-slate-800 font-medium text-xs tracking-tight text-slate-700 dark:text-slate-200 cursor-pointer bg-slate-50/50 hover:bg-slate-50 dark:hover:bg-slate-800/80 transition-colors"
                     />
                   </div>
                   
@@ -657,7 +657,7 @@ export default function ApplicationLinks() {
                     className={`h-11 px-4 rounded-xl shrink-0 font-semibold text-xs transition-all duration-200 shadow-sm ${
                       copiedLink 
                         ? 'bg-emerald-600 hover:bg-emerald-700 text-white' 
-                        : 'bg-[#A05AFF] hover:bg-[#8e44ee] text-white'
+                        : 'bg-[#0F766E] hover:bg-[#0D9488] text-white'
                     }`}
                   >
                     {copiedLink ? (
@@ -679,7 +679,7 @@ export default function ApplicationLinks() {
                       type="button"
                       variant="outline" 
                       asChild
-                      className="h-11 px-3.5 rounded-xl shrink-0 font-semibold text-xs border-slate-200 dark:border-slate-700 hover:border-[#A05AFF]/50 hover:bg-[#A05AFF]/5 hover:text-[#A05AFF] text-slate-700 dark:text-slate-300"
+                      className="h-11 px-3.5 rounded-xl shrink-0 font-semibold text-xs border-slate-200 dark:border-slate-700 hover:border-[#0F766E]/50 hover:bg-[#0F766E]/5 hover:text-[#0F766E] text-slate-700 dark:text-slate-300"
                     >
                       <a href={applyUrl} target="_blank" rel="noreferrer" title="Open candidate form in new tab">
                         <ExternalLink className="h-4 w-4 mr-1.5" />
@@ -719,8 +719,8 @@ export default function ApplicationLinks() {
               </div>
 
               {/* Informational Callout Banner */}
-              <div className="p-4 rounded-xl border border-[#A05AFF]/25 bg-gradient-to-r from-[#A05AFF]/5 via-[#A05AFF]/[0.02] to-transparent flex items-start gap-3">
-                <div className="p-1.5 rounded-lg bg-[#A05AFF]/10 text-[#A05AFF] shrink-0 mt-0.5">
+              <div className="p-4 rounded-xl border border-[#0F766E]/25 bg-gradient-to-r from-[#0F766E]/5 via-[#0F766E]/[0.02] to-transparent flex items-start gap-3">
+                <div className="p-1.5 rounded-lg bg-[#0F766E]/10 text-[#0F766E] shrink-0 mt-0.5">
                   <Share2 className="h-4 w-4" />
                 </div>
                 <div className="space-y-1 text-xs">
@@ -728,7 +728,7 @@ export default function ApplicationLinks() {
                     Direct School Ownership Guarantee
                   </div>
                   <p className="text-slate-600 dark:text-slate-400 leading-relaxed font-normal">
-                    Candidates who register through this link or QR code will be designated with source <span className="bg-[#A05AFF]/10 px-1.5 py-0.5 rounded text-[#A05AFF] font-mono font-bold text-[11px]">SCHOOL_LINK</span> and assigned exclusively to your school at no credit deduction.
+                    Candidates who register through this link or QR code will be designated with source <span className="bg-[#0F766E]/10 px-1.5 py-0.5 rounded text-[#0F766E] font-mono font-bold text-[11px]">SCHOOL_LINK</span> and assigned exclusively to your school at no credit deduction.
                   </p>
                 </div>
               </div>
@@ -855,7 +855,7 @@ export default function ApplicationLinks() {
                   <Button
                     type="button"
                     onClick={copyBroadcastMessage}
-                    className="h-9 px-4 rounded-xl text-xs font-semibold bg-[#A05AFF] hover:bg-[#8e44eb] text-white shadow-sm transition-all"
+                    className="h-9 px-4 rounded-xl text-xs font-semibold bg-[#0F766E] hover:bg-[#8e44eb] text-white shadow-sm transition-all"
                   >
                     {copiedBroadcast ? (
                       <>
@@ -895,7 +895,7 @@ export default function ApplicationLinks() {
             <CardHeader className="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800/60 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/50 dark:from-slate-900/60 dark:to-slate-900/20">
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-3">
-                  <div className="p-2.5 bg-gradient-to-tr from-[#A05AFF]/15 to-[#7928CA]/20 text-[#A05AFF] rounded-xl ring-1 ring-[#A05AFF]/30 shadow-2xs">
+                  <div className="p-2.5 bg-gradient-to-tr from-[#0F766E]/15 to-[#7928CA]/20 text-[#0F766E] rounded-xl ring-1 ring-[#0F766E]/30 shadow-2xs">
                     <QrCode className="h-5 w-5 stroke-[2.2]" />
                   </div>
                   <div>
@@ -915,7 +915,7 @@ export default function ApplicationLinks() {
                     onClick={() => setQrViewMode('standee')}
                     className={`px-2.5 py-1 rounded-lg transition-all ${
                       qrViewMode === 'standee'
-                        ? 'bg-white dark:bg-slate-900 text-[#A05AFF] shadow-xs font-bold'
+                        ? 'bg-white dark:bg-slate-900 text-[#0F766E] shadow-xs font-bold'
                         : 'text-slate-500 hover:text-slate-800 dark:text-slate-400'
                     }`}
                   >
@@ -926,7 +926,7 @@ export default function ApplicationLinks() {
                     onClick={() => setQrViewMode('minimal')}
                     className={`px-2.5 py-1 rounded-lg transition-all ${
                       qrViewMode === 'minimal'
-                        ? 'bg-white dark:bg-slate-900 text-[#A05AFF] shadow-xs font-bold'
+                        ? 'bg-white dark:bg-slate-900 text-[#0F766E] shadow-xs font-bold'
                         : 'text-slate-500 hover:text-slate-800 dark:text-slate-400'
                     }`}
                   >
@@ -942,7 +942,7 @@ export default function ApplicationLinks() {
               {isQrLoading || !qrData ? (
                 <div className="flex flex-col items-center justify-center p-10 space-y-3">
                   <div className="h-52 w-52 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-dashed border-slate-300 dark:border-slate-800 flex items-center justify-center">
-                    <Loader2 className="h-8 w-8 text-[#A05AFF] animate-spin" />
+                    <Loader2 className="h-8 w-8 text-[#0F766E] animate-spin" />
                   </div>
                   <span className="text-xs font-bold text-slate-400 dark:text-slate-500 tracking-wider animate-pulse">
                     Rendering High-Res Matrix...
@@ -954,10 +954,10 @@ export default function ApplicationLinks() {
                   <div className="w-full flex flex-col items-center">
                     <div className="relative w-full max-w-[320px] rounded-3xl p-5 bg-gradient-to-b from-white via-purple-50/40 to-slate-50 text-slate-800 shadow-xl border-2 border-purple-200/90 overflow-hidden transition-all duration-300 hover:scale-[1.01]">
                       {/* Top Accent Gradient Line */}
-                      <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-[#A05AFF] via-[#c084fc] to-[#7928CA]" />
+                      <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-[#0F766E] via-[#c084fc] to-[#7928CA]" />
                       
                       {/* Ambient Glow */}
-                      <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-44 h-24 bg-[#A05AFF]/15 blur-2xl rounded-full pointer-events-none" />
+                      <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-44 h-24 bg-[#0F766E]/15 blur-2xl rounded-full pointer-events-none" />
 
                       {/* Standee Header */}
                       <div className="relative z-10 flex flex-col items-center text-center mb-3.5 space-y-1.5">
@@ -965,7 +965,7 @@ export default function ApplicationLinks() {
                           {logoUrl ? (
                             <img src={logoUrl} alt={schoolName} className="h-full w-full object-contain" />
                           ) : (
-                            <Building2 className="h-6 w-6 text-[#A05AFF]" />
+                            <Building2 className="h-6 w-6 text-[#0F766E]" />
                           )}
                         </div>
                         <h4 className="text-base font-extrabold tracking-tight text-slate-900 line-clamp-1 capitalize">
@@ -981,10 +981,10 @@ export default function ApplicationLinks() {
                       <div className="relative z-10 bg-white rounded-2xl p-3.5 shadow-md border-2 border-purple-100 flex flex-col items-center">
                         <div className="relative">
                           {/* Corner Markers */}
-                          <div className="absolute -top-1 -left-1 h-4 w-4 border-t-2 border-l-2 border-[#A05AFF] rounded-tl-md" />
-                          <div className="absolute -top-1 -right-1 h-4 w-4 border-t-2 border-r-2 border-[#A05AFF] rounded-tr-md" />
-                          <div className="absolute -bottom-1 -left-1 h-4 w-4 border-b-2 border-l-2 border-[#A05AFF] rounded-bl-md" />
-                          <div className="absolute -bottom-1 -right-1 h-4 w-4 border-b-2 border-r-2 border-[#A05AFF] rounded-br-md" />
+                          <div className="absolute -top-1 -left-1 h-4 w-4 border-t-2 border-l-2 border-[#0F766E] rounded-tl-md" />
+                          <div className="absolute -top-1 -right-1 h-4 w-4 border-t-2 border-r-2 border-[#0F766E] rounded-tr-md" />
+                          <div className="absolute -bottom-1 -left-1 h-4 w-4 border-b-2 border-l-2 border-[#0F766E] rounded-bl-md" />
+                          <div className="absolute -bottom-1 -right-1 h-4 w-4 border-b-2 border-r-2 border-[#0F766E] rounded-br-md" />
 
                           <img 
                             src={qrData.qrDataUrl} 
@@ -993,18 +993,18 @@ export default function ApplicationLinks() {
                           />
 
                           {/* Center Branded Badge */}
-                          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-9 w-9 rounded-full bg-white border-2 border-[#A05AFF] shadow-md flex items-center justify-center p-0.5 overflow-hidden">
+                          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-9 w-9 rounded-full bg-white border-2 border-[#0F766E] shadow-md flex items-center justify-center p-0.5 overflow-hidden">
                             {logoUrl ? (
                               <img src={logoUrl} alt="Logo" className="h-full w-full object-contain" />
                             ) : (
-                              <School className="h-4 w-4 text-[#A05AFF]" />
+                              <School className="h-4 w-4 text-[#0F766E]" />
                             )}
                           </div>
                         </div>
 
                         {/* Camera Scan Prompt */}
                         <div className="mt-2.5 flex items-center gap-1.5 text-xs font-bold text-slate-700">
-                          <Smartphone className="h-4 w-4 text-[#A05AFF]" />
+                          <Smartphone className="h-4 w-4 text-[#0F766E]" />
                           <span>Scan with Camera to Apply</span>
                         </div>
                       </div>
@@ -1022,10 +1022,10 @@ export default function ApplicationLinks() {
                   /* ─── CLEAN QR CODE VIEW ─── */
                   <div className="relative group p-5 rounded-2xl bg-white dark:bg-slate-950 border-2 border-slate-200/90 dark:border-slate-800 shadow-md transition-all duration-300 hover:shadow-xl">
                     {/* Modern Corner Focus Target Markers */}
-                    <div className="absolute -top-1.5 -left-1.5 h-6 w-6 border-t-3 border-l-3 border-[#A05AFF] rounded-tl-lg" />
-                    <div className="absolute -top-1.5 -right-1.5 h-6 w-6 border-t-3 border-r-3 border-[#A05AFF] rounded-tr-lg" />
-                    <div className="absolute -bottom-1.5 -left-1.5 h-6 w-6 border-b-3 border-l-3 border-[#A05AFF] rounded-bl-lg" />
-                    <div className="absolute -bottom-1.5 -right-1.5 h-6 w-6 border-b-3 border-r-3 border-[#A05AFF] rounded-br-lg" />
+                    <div className="absolute -top-1.5 -left-1.5 h-6 w-6 border-t-3 border-l-3 border-[#0F766E] rounded-tl-lg" />
+                    <div className="absolute -top-1.5 -right-1.5 h-6 w-6 border-t-3 border-r-3 border-[#0F766E] rounded-tr-lg" />
+                    <div className="absolute -bottom-1.5 -left-1.5 h-6 w-6 border-b-3 border-l-3 border-[#0F766E] rounded-bl-lg" />
+                    <div className="absolute -bottom-1.5 -right-1.5 h-6 w-6 border-b-3 border-r-3 border-[#0F766E] rounded-br-lg" />
                     
                     <div className="relative">
                       <img 
@@ -1035,11 +1035,11 @@ export default function ApplicationLinks() {
                       />
 
                       {/* Center Branded Badge */}
-                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-white border-2 border-[#A05AFF] shadow-md flex items-center justify-center p-1 overflow-hidden">
+                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-white border-2 border-[#0F766E] shadow-md flex items-center justify-center p-1 overflow-hidden">
                         {logoUrl ? (
                           <img src={logoUrl} alt="Logo" className="h-full w-full object-contain" />
                         ) : (
-                          <School className="h-4 w-4 text-[#A05AFF]" />
+                          <School className="h-4 w-4 text-[#0F766E]" />
                         )}
                       </div>
                     </div>
@@ -1064,7 +1064,7 @@ export default function ApplicationLinks() {
                     type="button"
                     onClick={downloadQRCode}
                     disabled={!qrData?.qrDataUrl}
-                    className="h-10 px-3 rounded-xl bg-[#A05AFF] hover:bg-[#8e44ee] text-white text-xs font-bold shadow-xs flex items-center justify-center gap-1.5"
+                    className="h-10 px-3 rounded-xl bg-[#0F766E] hover:bg-[#0D9488] text-white text-xs font-bold shadow-xs flex items-center justify-center gap-1.5"
                   >
                     <Download className="h-4 w-4 shrink-0" />
                     <span>Download PNG</span>
@@ -1075,9 +1075,9 @@ export default function ApplicationLinks() {
                     variant="outline"
                     onClick={printQRPoster}
                     disabled={!qrData?.qrDataUrl}
-                    className="h-10 px-3 rounded-xl border-slate-200 dark:border-slate-700 hover:border-[#A05AFF]/40 hover:bg-[#A05AFF]/5 hover:text-[#A05AFF] text-slate-700 dark:text-slate-300 text-xs font-bold shadow-xs flex items-center justify-center gap-1.5"
+                    className="h-10 px-3 rounded-xl border-slate-200 dark:border-slate-700 hover:border-[#0F766E]/40 hover:bg-[#0F766E]/5 hover:text-[#0F766E] text-slate-700 dark:text-slate-300 text-xs font-bold shadow-xs flex items-center justify-center gap-1.5"
                   >
-                    <Printer className="h-4 w-4 shrink-0 text-[#9E58FF]" />
+                    <Printer className="h-4 w-4 shrink-0 text-[#14B8A6]" />
                     <span>Print Standee</span>
                   </Button>
                 </div>
@@ -1125,7 +1125,7 @@ export default function ApplicationLinks() {
                   title="Click to copy link"
                 >
                   <span className="truncate flex-1">{applyUrl}</span>
-                  <span className="shrink-0 text-slate-400 group-hover:text-[#A05AFF] transition-colors flex items-center gap-1">
+                  <span className="shrink-0 text-slate-400 group-hover:text-[#0F766E] transition-colors flex items-center gap-1">
                     {copiedQrUrl ? (
                       <span className="text-emerald-600 font-sans font-bold text-[10px]">Copied!</span>
                     ) : (
@@ -1142,7 +1142,7 @@ export default function ApplicationLinks() {
             <CardHeader className="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800/60 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/50 dark:from-slate-900/60 dark:to-slate-900/20">
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
-                  <div className="p-2.5 bg-gradient-to-tr from-[#A05AFF]/15 to-[#7928CA]/20 text-[#A05AFF] rounded-xl ring-1 ring-[#A05AFF]/30 shadow-2xs shrink-0">
+                  <div className="p-2.5 bg-gradient-to-tr from-[#0F766E]/15 to-[#7928CA]/20 text-[#0F766E] rounded-xl ring-1 ring-[#0F766E]/30 shadow-2xs shrink-0">
                     <TrendingUp className="h-5 w-5 stroke-[2.2]" />
                   </div>
                   <div>
@@ -1168,7 +1168,7 @@ export default function ApplicationLinks() {
                 <div className="p-3 rounded-xl border border-purple-100 dark:border-slate-800 bg-gradient-to-b from-purple-50/60 to-white dark:from-slate-900 dark:to-slate-900/50 flex flex-col justify-between">
                   <div className="flex items-center justify-between text-slate-500 dark:text-slate-400">
                     <span className="text-[10px] font-bold uppercase tracking-wider">Walk-Ins</span>
-                    <Users className="h-3.5 w-3.5 text-[#A05AFF]" />
+                    <Users className="h-3.5 w-3.5 text-[#0F766E]" />
                   </div>
                   <div className="mt-1.5">
                     <div className="text-xl font-black text-slate-900 dark:text-white">
@@ -1220,7 +1220,7 @@ export default function ApplicationLinks() {
 
                 <div className="space-y-1.5 text-[11px] text-slate-600 dark:text-slate-300">
                   <div className="flex items-start gap-2">
-                    <div className="w-4 h-4 rounded-full bg-[#A05AFF] text-white font-bold text-[9px] flex items-center justify-center shrink-0 mt-0.5">
+                    <div className="w-4 h-4 rounded-full bg-[#0F766E] text-white font-bold text-[9px] flex items-center justify-center shrink-0 mt-0.5">
                       1
                     </div>
                     <div>
@@ -1229,7 +1229,7 @@ export default function ApplicationLinks() {
                   </div>
 
                   <div className="flex items-start gap-2">
-                    <div className="w-4 h-4 rounded-full bg-[#A05AFF] text-white font-bold text-[9px] flex items-center justify-center shrink-0 mt-0.5">
+                    <div className="w-4 h-4 rounded-full bg-[#0F766E] text-white font-bold text-[9px] flex items-center justify-center shrink-0 mt-0.5">
                       2
                     </div>
                     <div>
@@ -1238,7 +1238,7 @@ export default function ApplicationLinks() {
                   </div>
 
                   <div className="flex items-start gap-2">
-                    <div className="w-4 h-4 rounded-full bg-[#A05AFF] text-white font-bold text-[9px] flex items-center justify-center shrink-0 mt-0.5">
+                    <div className="w-4 h-4 rounded-full bg-[#0F766E] text-white font-bold text-[9px] flex items-center justify-center shrink-0 mt-0.5">
                       3
                     </div>
                     <div>
@@ -1277,7 +1277,7 @@ export default function ApplicationLinks() {
                     type="button"
                     variant="ghost"
                     asChild
-                    className="h-9 px-3 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-[#A05AFF]"
+                    className="h-9 px-3 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-[#0F766E]"
                   >
                     <a href={applyUrl} target="_blank" rel="noreferrer">
                       <ExternalLink className="h-3.5 w-3.5 mr-1.5" />
@@ -1296,7 +1296,7 @@ export default function ApplicationLinks() {
       <div className="pt-2">
         <div className="mb-4">
           <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-[#A05AFF]" />
+            <Sparkles className="h-4 w-4 text-[#0F766E]" />
             Best Ways to Distribute Your Application Link
           </h2>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">

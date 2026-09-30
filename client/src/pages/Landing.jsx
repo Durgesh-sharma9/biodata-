@@ -48,10 +48,10 @@ const CANDIDATES_DATA = [
     mobile: '+91 98450 12345',
     email: 'sunita.science@gmail.com',
     tags: ['B.Ed & CTET', 'CBSE Board', 'English Medium'],
-    color: 'from-[#A05AFF] to-[#C084FC]',
-    badgeBg: 'bg-[#A05AFF]/10',
-    badgeText: 'text-[#A05AFF]',
-    badgeBorder: 'border-[#A05AFF]/25',
+    color: 'from-[#0F766E] to-[#C084FC]',
+    badgeBg: 'bg-[#0F766E]/10',
+    badgeText: 'text-[#0F766E]',
+    badgeBorder: 'border-[#0F766E]/25',
   },
   {
     id: 2,
@@ -178,7 +178,7 @@ export default function Landing() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f8f9fc] text-slate-800 font-sans antialiased dark:bg-slate-950 dark:text-slate-100 selection:bg-[#A05AFF] selection:text-white">
+    <div className="min-h-screen bg-[#f8f9fc] text-slate-800 font-sans antialiased dark:bg-slate-950 dark:text-slate-100 selection:bg-[#0F766E] selection:text-white">
       
       {/* ─────────────────────────────────────────────────────────────
           1. NAVIGATION BAR
@@ -189,12 +189,12 @@ export default function Landing() {
             
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2.5 group">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#A05AFF] to-[#7928CA] flex items-center justify-center text-white shadow-md shadow-[#A05AFF]/25 group-hover:scale-105 transition-transform">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#0F766E] to-[#7928CA] flex items-center justify-center text-white shadow-md shadow-[#0F766E]/25 group-hover:scale-105 transition-transform">
                 <Briefcase className="w-5 h-5 text-white" />
               </div>
               <div className="flex flex-col">
                 <span className="text-2xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-1">
-                  Hire<span className="text-[#A05AFF]">Hub</span>
+                  Hire<span className="text-[#0F766E]">Hub</span>
                 </span>
                 <span className="text-[10px] font-semibold text-slate-400 tracking-wider uppercase -mt-1">
                   School Staff Recruitment
@@ -217,7 +217,7 @@ export default function Landing() {
                   key={item.target}
                   href={`#${item.target}`} 
                   onClick={(e) => handleScroll(e, item.target)}
-                  className="px-3.5 py-2 text-sm font-semibold text-slate-600 hover:text-[#A05AFF] rounded-xl hover:bg-slate-100/60 transition-all dark:text-slate-300 dark:hover:bg-slate-800"
+                  className="px-3.5 py-2 text-sm font-semibold text-slate-600 hover:text-[#0F766E] rounded-xl hover:bg-slate-100/60 transition-all dark:text-slate-300 dark:hover:bg-slate-800"
                 >
                   {item.label}
                 </a>
@@ -227,19 +227,19 @@ export default function Landing() {
             {/* CTA Portal Buttons */}
             <div className="hidden sm:flex items-center space-x-2.5">
               <Link to="/applicant/login">
-                <Button variant="ghost" className="text-slate-600 hover:text-[#A05AFF] hover:bg-slate-100/70 text-xs font-semibold px-3.5 py-2 rounded-xl dark:text-slate-300 dark:hover:bg-slate-800">
-                  <GraduationCap className="w-4 h-4 mr-1.5 text-[#A05AFF]" /> Candidate Login
+                <Button variant="ghost" className="text-slate-600 hover:text-[#0F766E] hover:bg-slate-100/70 text-xs font-semibold px-3.5 py-2 rounded-xl dark:text-slate-300 dark:hover:bg-slate-800">
+                  <GraduationCap className="w-4 h-4 mr-1.5 text-[#0F766E]" /> Candidate Login
                 </Button>
               </Link>
 
               <Link to="/login">
-                <Button variant="outline" className="border-slate-200 text-slate-700 hover:border-[#A05AFF] hover:text-[#A05AFF] hover:bg-slate-50 text-xs font-semibold px-3.5 py-2 rounded-xl dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">
+                <Button variant="outline" className="border-slate-200 text-slate-700 hover:border-[#0F766E] hover:text-[#0F766E] hover:bg-slate-50 text-xs font-semibold px-3.5 py-2 rounded-xl dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">
                   <Building2 className="w-4 h-4 mr-1.5 text-slate-500" /> School Login
                 </Button>
               </Link>
 
               <Link to="/signup">
-                <Button className="bg-[#A05AFF] hover:bg-[#8B3DFF] text-white text-xs font-bold px-4 py-2 rounded-xl shadow-md shadow-[#A05AFF]/20 transition-all">
+                <Button className="bg-[#0F766E] hover:bg-[#115E59] text-white text-xs font-bold px-4 py-2 rounded-xl shadow-md shadow-[#0F766E]/20 transition-all">
                   Register School
                 </Button>
               </Link>
@@ -249,7 +249,7 @@ export default function Landing() {
             <div className="lg:hidden flex items-center">
               <button 
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="p-2 text-slate-600 hover:text-[#A05AFF] hover:bg-slate-100 rounded-xl transition-colors dark:text-slate-300 dark:hover:bg-slate-800"
+                className="p-2 text-slate-600 hover:text-[#0F766E] hover:bg-slate-100 rounded-xl transition-colors dark:text-slate-300 dark:hover:bg-slate-800"
                 aria-label="Toggle Menu"
               >
                 {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -266,7 +266,7 @@ export default function Landing() {
                 key={target}
                 href={`#${target}`} 
                 onClick={(e) => handleScroll(e, target)}
-                className="block px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-700 hover:bg-slate-100 hover:text-[#A05AFF] transition-colors capitalize dark:text-slate-300 dark:hover:bg-slate-800"
+                className="block px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-700 hover:bg-slate-100 hover:text-[#0F766E] transition-colors capitalize dark:text-slate-300 dark:hover:bg-slate-800"
               >
                 {target.replace('-', ' ')}
               </a>
@@ -274,7 +274,7 @@ export default function Landing() {
             <div className="pt-4 border-t border-slate-100 flex flex-col gap-2.5 dark:border-slate-800">
               <Link to="/applicant/login" className="w-full">
                 <Button variant="outline" className="w-full justify-center text-slate-700 border-slate-200 rounded-xl py-2.5 text-xs font-bold">
-                  <GraduationCap className="w-4 h-4 mr-2 text-[#A05AFF]" /> Candidate Portal
+                  <GraduationCap className="w-4 h-4 mr-2 text-[#0F766E]" /> Candidate Portal
                 </Button>
               </Link>
               <Link to="/login" className="w-full">
@@ -283,7 +283,7 @@ export default function Landing() {
                 </Button>
               </Link>
               <Link to="/signup" className="w-full">
-                <Button className="w-full justify-center bg-[#A05AFF] hover:bg-[#8B3DFF] text-white rounded-xl py-2.5 text-xs font-bold shadow-md">
+                <Button className="w-full justify-center bg-[#0F766E] hover:bg-[#115E59] text-white rounded-xl py-2.5 text-xs font-bold shadow-md">
                   Get Started Free
                 </Button>
               </Link>
@@ -297,7 +297,7 @@ export default function Landing() {
       ───────────────────────────────────────────────────────────── */}
       <section id="overview" className="pt-24 pb-16 lg:pt-28 lg:pb-24 overflow-hidden relative">
         {/* Floating Ambient Colorful Mesh Orbs */}
-        <div className="absolute top-10 left-1/4 w-[500px] h-[350px] bg-gradient-to-tr from-[#A05AFF]/25 via-[#FE7096]/20 to-[#1BCFB4]/15 blur-3xl pointer-events-none -z-10 animate-pulse-glow" />
+        <div className="absolute top-10 left-1/4 w-[500px] h-[350px] bg-gradient-to-tr from-[#0F766E]/25 via-[#FE7096]/20 to-[#1BCFB4]/15 blur-3xl pointer-events-none -z-10 animate-pulse-glow" />
         <div className="absolute top-40 right-10 w-[420px] h-[400px] bg-gradient-to-br from-[#1BCFB4]/25 via-[#3081e4]/15 to-transparent blur-3xl pointer-events-none -z-10 animate-float-slow" />
         <div className="absolute bottom-10 left-10 w-[380px] h-[300px] bg-gradient-to-tr from-amber-400/20 to-[#FE7096]/15 blur-3xl pointer-events-none -z-10 animate-float-reverse" />
 
@@ -308,13 +308,13 @@ export default function Landing() {
             <div className="lg:col-span-7 text-center lg:text-left">
               
               {/* Animated Floating Pill Badge */}
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#A05AFF]/30 bg-gradient-to-r from-[#A05AFF]/15 via-[#FE7096]/10 to-[#1BCFB4]/15 text-slate-800 dark:text-white text-xs font-bold tracking-wide mb-6 shadow-xs backdrop-blur-md">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#0F766E]/30 bg-gradient-to-r from-[#0F766E]/15 via-[#FE7096]/10 to-[#1BCFB4]/15 text-slate-800 dark:text-white text-xs font-bold tracking-wide mb-6 shadow-xs backdrop-blur-md">
                 <span className="flex h-2 w-2 relative">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#1BCFB4] opacity-75" />
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-[#1BCFB4]" />
                 </span>
-                <Sparkles className="w-3.5 h-3.5 text-[#A05AFF]" />
-                <span className="font-extrabold text-[#A05AFF]">HireHub 2.0</span>
+                <Sparkles className="w-3.5 h-3.5 text-[#0F766E]" />
+                <span className="font-extrabold text-[#0F766E]">HireHub 2.0</span>
                 <span className="text-slate-400">•</span>
                 <span>India's Dedicated Education Staffing Platform</span>
               </div>
@@ -322,7 +322,7 @@ export default function Landing() {
               {/* Colorful Main Headline */}
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.12] mb-6">
                 Hire Top Teachers &amp; School Staff{' '}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#A05AFF] via-[#FE7096] to-[#07cdae]">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0F766E] via-[#FE7096] to-[#07cdae]">
                   in Minutes.
                 </span>
               </h1>
@@ -335,14 +335,14 @@ export default function Landing() {
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row gap-3.5 justify-center lg:justify-start mb-6">
                 <Link to="/signup" className="w-full sm:w-auto">
-                  <Button className="w-full sm:w-auto h-12 rounded-xl bg-gradient-to-r from-[#A05AFF] to-[#7928CA] hover:from-[#8B3DFF] hover:to-[#6820B0] text-white font-bold px-8 shadow-xl shadow-[#A05AFF]/30 transition-all text-sm flex items-center justify-center gap-2 group">
+                  <Button className="w-full sm:w-auto h-12 rounded-xl bg-gradient-to-r from-[#0F766E] to-[#7928CA] hover:from-[#115E59] hover:to-[#6820B0] text-white font-bold px-8 shadow-xl shadow-[#0F766E]/30 transition-all text-sm flex items-center justify-center gap-2 group">
                     <Building2 className="w-4 h-4" /> Start School Free Trial
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </Link>
 
                 <Link to="/join" className="w-full sm:w-auto">
-                  <Button variant="outline" className="w-full sm:w-auto h-12 border-slate-300 bg-white/90 backdrop-blur-sm text-slate-800 hover:border-[#A05AFF] hover:text-[#A05AFF] hover:bg-slate-50 px-7 rounded-xl font-bold transition-all text-sm flex items-center justify-center gap-2 shadow-sm dark:bg-slate-900 dark:border-slate-700 dark:text-slate-200">
+                  <Button variant="outline" className="w-full sm:w-auto h-12 border-slate-300 bg-white/90 backdrop-blur-sm text-slate-800 hover:border-[#0F766E] hover:text-[#0F766E] hover:bg-slate-50 px-7 rounded-xl font-bold transition-all text-sm flex items-center justify-center gap-2 shadow-sm dark:bg-slate-900 dark:border-slate-700 dark:text-slate-200">
                     <GraduationCap className="w-4 h-4 text-[#1BCFB4]" /> Join Free as Candidate
                   </Button>
                 </Link>
@@ -351,7 +351,7 @@ export default function Landing() {
               {/* Quick Interactive Role Search Chips */}
               <div className="mb-8 flex flex-wrap items-center justify-center lg:justify-start gap-2">
                 <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mr-1 flex items-center gap-1">
-                  <Search className="w-3 h-3 text-[#A05AFF]" /> Popular:
+                  <Search className="w-3 h-3 text-[#0F766E]" /> Popular:
                 </span>
                 {[
                   { label: '📐 PGT Maths', cat: 'teaching' },
@@ -367,7 +367,7 @@ export default function Landing() {
                       setPoolCategory(chip.cat);
                       handleScroll(e, 'talent-pool');
                     }}
-                    className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-white/90 border border-slate-200 hover:border-[#A05AFF] hover:text-[#A05AFF] text-slate-600 shadow-2xs transition-all dark:bg-slate-900 dark:border-slate-700 dark:text-slate-300"
+                    className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-white/90 border border-slate-200 hover:border-[#0F766E] hover:text-[#0F766E] text-slate-600 shadow-2xs transition-all dark:bg-slate-900 dark:border-slate-700 dark:text-slate-300"
                   >
                     {chip.label}
                   </button>
@@ -394,7 +394,7 @@ export default function Landing() {
               <div className="bg-white/90 backdrop-blur-xl rounded-3xl border border-white/60 dark:border-slate-800 shadow-2xl p-6 dark:bg-slate-900/90 relative overflow-hidden group">
                 
                 {/* Decorative corner glow */}
-                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[#A05AFF]/15 to-transparent rounded-bl-full pointer-events-none" />
+                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[#0F766E]/15 to-transparent rounded-bl-full pointer-events-none" />
 
                 {/* Header of Mockup */}
                 <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
@@ -403,7 +403,7 @@ export default function Landing() {
                     <div className="w-3 h-3 rounded-full bg-amber-400 shadow-xs" />
                     <div className="w-3 h-3 rounded-full bg-emerald-400 shadow-xs" />
                     <span className="ml-2 text-xs font-bold text-slate-700 dark:text-slate-200 flex items-center gap-1.5">
-                      <Sparkles className="w-3.5 h-3.5 text-[#A05AFF]" />
+                      <Sparkles className="w-3.5 h-3.5 text-[#0F766E]" />
                       HireHub Talent Intelligence
                     </span>
                   </div>
@@ -426,10 +426,10 @@ export default function Landing() {
                     <div className="text-[10px] text-[#1BCFB4] font-bold mt-0.5">Local campus</div>
                   </div>
 
-                  <div className="bg-gradient-to-br from-[#A05AFF]/15 via-[#A05AFF]/5 to-white border border-[#A05AFF]/30 rounded-2xl p-3 dark:from-[#A05AFF]/20 dark:to-slate-900">
+                  <div className="bg-gradient-to-br from-[#0F766E]/15 via-[#0F766E]/5 to-white border border-[#0F766E]/30 rounded-2xl p-3 dark:from-[#0F766E]/20 dark:to-slate-900">
                     <div className="text-[9px] uppercase font-bold text-slate-500">Hire Speed</div>
                     <div className="text-base sm:text-lg font-black text-slate-900 dark:text-white">2.5 Days</div>
-                    <div className="text-[10px] text-[#A05AFF] font-bold mt-0.5">70% faster</div>
+                    <div className="text-[10px] text-[#0F766E] font-bold mt-0.5">70% faster</div>
                   </div>
                 </div>
 
@@ -437,11 +437,11 @@ export default function Landing() {
                 <div className={`border rounded-2xl p-4 transition-all duration-300 mb-3 ${
                   heroUnlocked 
                     ? 'bg-gradient-to-br from-emerald-50/80 via-white to-purple-50/40 border-emerald-300 dark:bg-slate-800 dark:border-emerald-700 shadow-md'
-                    : 'bg-slate-50/80 border-slate-200 hover:border-[#A05AFF]/50 dark:bg-slate-800/60 dark:border-slate-700'
+                    : 'bg-slate-50/80 border-slate-200 hover:border-[#0F766E]/50 dark:bg-slate-800/60 dark:border-slate-700'
                 }`}>
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-3">
-                      <div className={`w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#A05AFF] to-[#FE7096] text-white flex items-center justify-center font-black text-base shadow-md ${
+                      <div className={`w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#0F766E] to-[#FE7096] text-white flex items-center justify-center font-black text-base shadow-md ${
                         heroUnlocked ? 'ring-2 ring-emerald-500' : ''
                       }`}>
                         AK
@@ -456,8 +456,8 @@ export default function Landing() {
                         <p className="text-xs text-slate-500 font-medium">PGT Mathematics • 7 Yrs Exp</p>
                       </div>
                     </div>
-                    <span className="text-[11px] font-bold text-[#A05AFF] bg-[#A05AFF]/10 border border-[#A05AFF]/25 px-2.5 py-1 rounded-xl flex items-center gap-1 shadow-2xs">
-                      <MapPin className="w-3 h-3 text-[#A05AFF]" /> 6.4 km away
+                    <span className="text-[11px] font-bold text-[#0F766E] bg-[#0F766E]/10 border border-[#0F766E]/25 px-2.5 py-1 rounded-xl flex items-center gap-1 shadow-2xs">
+                      <MapPin className="w-3 h-3 text-[#0F766E]" /> 6.4 km away
                     </span>
                   </div>
 
@@ -481,7 +481,7 @@ export default function Landing() {
                       </div>
                       <div className="flex items-center justify-between text-xs pt-1 border-t border-slate-100 dark:border-slate-800">
                         <span className="text-slate-500 font-medium">✉️ ananya.kapoor@edu.in</span>
-                        <span className="text-[10px] font-bold text-[#A05AFF] hover:underline cursor-pointer">
+                        <span className="text-[10px] font-bold text-[#0F766E] hover:underline cursor-pointer">
                           View Resume (PDF)
                         </span>
                       </div>
@@ -497,7 +497,7 @@ export default function Landing() {
                       className={`h-8 text-[11px] font-bold rounded-xl px-3 transition-all shadow-sm ${
                         heroUnlocked 
                           ? 'bg-emerald-600 hover:bg-emerald-700 text-white' 
-                          : 'bg-gradient-to-r from-[#A05AFF] to-[#FE7096] hover:from-[#8B3DFF] hover:to-[#e05b81] text-white shadow-md shadow-[#A05AFF]/25'
+                          : 'bg-gradient-to-r from-[#0F766E] to-[#FE7096] hover:from-[#115E59] hover:to-[#e05b81] text-white shadow-md shadow-[#0F766E]/25'
                       }`}
                     >
                       {heroUnlocked ? (
@@ -530,9 +530,9 @@ export default function Landing() {
                 </div>
 
                 {/* Floating QR Badge with Soft Purple Glow */}
-                <div className="mt-3 p-3 bg-gradient-to-r from-[#A05AFF]/15 via-purple-50/50 to-transparent border border-[#A05AFF]/30 rounded-2xl flex items-center justify-between dark:from-[#A05AFF]/20 dark:to-transparent">
+                <div className="mt-3 p-3 bg-gradient-to-r from-[#0F766E]/15 via-purple-50/50 to-transparent border border-[#0F766E]/30 rounded-2xl flex items-center justify-between dark:from-[#0F766E]/20 dark:to-transparent">
                   <div className="flex items-center gap-2.5">
-                    <div className="p-1.5 rounded-lg bg-white dark:bg-slate-800 shadow-2xs text-[#A05AFF]">
+                    <div className="p-1.5 rounded-lg bg-white dark:bg-slate-800 shadow-2xs text-[#0F766E]">
                       <QrCode className="w-4 h-4" />
                     </div>
                     <div>
@@ -542,7 +542,7 @@ export default function Landing() {
                       <span className="text-[10px] text-slate-400">hirehub.com/apply/your-school</span>
                     </div>
                   </div>
-                  <span className="text-[10px] text-[#A05AFF] font-bold bg-white dark:bg-slate-800 px-2 py-0.5 rounded-md border border-[#A05AFF]/20 shadow-2xs">
+                  <span className="text-[10px] text-[#0F766E] font-bold bg-white dark:bg-slate-800 px-2 py-0.5 rounded-md border border-[#0F766E]/20 shadow-2xs">
                     Auto Generated
                   </span>
                 </div>
@@ -561,11 +561,11 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
             
-            <div className="bg-white/90 backdrop-blur-sm border border-purple-100 rounded-2xl p-5 text-center shadow-xs hover:shadow-lg hover:border-[#A05AFF]/40 hover:-translate-y-1 transition-all duration-300 dark:bg-slate-900/90 dark:border-purple-950/40 group">
-              <div className="w-10 h-10 rounded-xl bg-[#A05AFF]/10 text-[#A05AFF] mx-auto flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+            <div className="bg-white/90 backdrop-blur-sm border border-purple-100 rounded-2xl p-5 text-center shadow-xs hover:shadow-lg hover:border-[#0F766E]/40 hover:-translate-y-1 transition-all duration-300 dark:bg-slate-900/90 dark:border-purple-950/40 group">
+              <div className="w-10 h-10 rounded-xl bg-[#0F766E]/10 text-[#0F766E] mx-auto flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                 <Building2 className="w-5 h-5" />
               </div>
-              <div className="text-3xl sm:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#A05AFF] to-[#7928CA] mb-1">
+              <div className="text-3xl sm:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#0F766E] to-[#7928CA] mb-1">
                 1,200+
               </div>
               <div className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
@@ -597,7 +597,7 @@ export default function Landing() {
               <div className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 Teaching &amp; Non-Teaching
               </div>
-              <span className="text-[10px] text-[#A05AFF] font-semibold mt-1 inline-block">PGT, TGT, Drivers, Accounts</span>
+              <span className="text-[10px] text-[#0F766E] font-semibold mt-1 inline-block">PGT, TGT, Drivers, Accounts</span>
             </div>
 
             <div className="bg-white/90 backdrop-blur-sm border border-amber-100 rounded-2xl p-5 text-center shadow-xs hover:shadow-lg hover:border-amber-400/40 hover:-translate-y-1 transition-all duration-300 dark:bg-slate-900/90 dark:border-amber-950/40 group">
@@ -622,16 +622,16 @@ export default function Landing() {
       ───────────────────────────────────────────────────────────── */}
       <section id="for-schools" className="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         {/* Subtle Ambient Glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-gradient-to-r from-[#A05AFF]/15 via-[#FE7096]/10 to-[#1BCFB4]/15 blur-3xl pointer-events-none -z-10 animate-pulse-glow" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-gradient-to-r from-[#0F766E]/15 via-[#FE7096]/10 to-[#1BCFB4]/15 blur-3xl pointer-events-none -z-10 animate-pulse-glow" />
 
         {/* Section Heading */}
         <div className="text-center max-w-3xl mx-auto mb-14">
-          <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-[#A05AFF]/30 bg-gradient-to-r from-[#A05AFF]/15 via-[#FE7096]/10 to-[#1BCFB4]/15 text-[#A05AFF] text-xs font-bold uppercase tracking-wider mb-4 shadow-2xs">
+          <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-[#0F766E]/30 bg-gradient-to-r from-[#0F766E]/15 via-[#FE7096]/10 to-[#1BCFB4]/15 text-[#0F766E] text-xs font-bold uppercase tracking-wider mb-4 shadow-2xs">
             <Sparkles className="w-3.5 h-3.5" /> Two Portals, One Seamless Ecosystem
           </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 dark:text-white mb-4">
             Built Specifically for{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#A05AFF] to-[#FE7096]">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0F766E] to-[#FE7096]">
               Schools
             </span>{' '}
             &amp;{' '}
@@ -649,7 +649,7 @@ export default function Landing() {
               onClick={() => setActivePersona('schools')}
               className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all duration-300 ${
                 activePersona === 'schools'
-                  ? 'bg-gradient-to-r from-[#A05AFF] to-[#7928CA] text-white shadow-lg shadow-[#A05AFF]/30 scale-102'
+                  ? 'bg-gradient-to-r from-[#0F766E] to-[#7928CA] text-white shadow-lg shadow-[#0F766E]/30 scale-102'
                   : 'text-slate-600 hover:text-slate-900 dark:text-slate-400'
               }`}
             >
@@ -672,12 +672,12 @@ export default function Landing() {
         {activePersona === 'schools' ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-7">
             
-            <div className="bg-white/90 backdrop-blur-md rounded-3xl p-7 border border-slate-200/90 shadow-sm hover:shadow-2xl hover:border-[#A05AFF]/40 hover:-translate-y-2 transition-all duration-300 dark:bg-slate-900/90 dark:border-slate-800 group relative overflow-hidden">
-              <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#A05AFF] to-[#C084FC]" />
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#A05AFF]/20 to-[#A05AFF]/5 text-[#A05AFF] flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-xs">
+            <div className="bg-white/90 backdrop-blur-md rounded-3xl p-7 border border-slate-200/90 shadow-sm hover:shadow-2xl hover:border-[#0F766E]/40 hover:-translate-y-2 transition-all duration-300 dark:bg-slate-900/90 dark:border-slate-800 group relative overflow-hidden">
+              <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#0F766E] to-[#C084FC]" />
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#0F766E]/20 to-[#0F766E]/5 text-[#0F766E] flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-xs">
                 <QrCode className="w-7 h-7" />
               </div>
-              <div className="inline-block text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-md bg-[#A05AFF]/10 text-[#A05AFF] mb-3">
+              <div className="inline-block text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-md bg-[#0F766E]/10 text-[#0F766E] mb-3">
                 Zero Friction Intake
               </div>
               <h3 className="text-xl font-black text-slate-900 dark:text-white mb-2.5">
@@ -693,9 +693,9 @@ export default function Landing() {
               </ul>
             </div>
 
-            <div className="bg-white/90 backdrop-blur-md rounded-3xl p-7 border-2 border-[#A05AFF]/50 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 relative dark:bg-slate-900/90 group overflow-hidden">
-              <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#A05AFF] via-[#FE7096] to-[#1BCFB4]" />
-              <div className="absolute top-5 right-5 bg-gradient-to-r from-[#A05AFF] to-[#FE7096] text-white text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full shadow-md">
+            <div className="bg-white/90 backdrop-blur-md rounded-3xl p-7 border-2 border-[#0F766E]/50 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 relative dark:bg-slate-900/90 group overflow-hidden">
+              <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#0F766E] via-[#FE7096] to-[#1BCFB4]" />
+              <div className="absolute top-5 right-5 bg-gradient-to-r from-[#0F766E] to-[#FE7096] text-white text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full shadow-md">
                 ⚡ Highest Retention
               </div>
               <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#1BCFB4]/20 to-[#1BCFB4]/5 text-[#1BCFB4] flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-xs">
@@ -764,14 +764,14 @@ export default function Landing() {
             </div>
 
             <div className="bg-white/90 backdrop-blur-md rounded-3xl p-7 border-2 border-[#1BCFB4]/50 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 relative dark:bg-slate-900/90 group overflow-hidden">
-              <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#1BCFB4] via-[#A05AFF] to-[#FE7096]" />
+              <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#1BCFB4] via-[#0F766E] to-[#FE7096]" />
               <div className="absolute top-5 right-5 bg-gradient-to-r from-[#1BCFB4] to-[#07cdae] text-white text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full shadow-md">
                 Direct Calls
               </div>
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#A05AFF]/20 to-[#A05AFF]/5 text-[#A05AFF] flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-xs">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#0F766E]/20 to-[#0F766E]/5 text-[#0F766E] flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-xs">
                 <PhoneCall className="w-7 h-7" />
               </div>
-              <div className="inline-block text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-md bg-[#A05AFF]/10 text-[#A05AFF] mb-3">
+              <div className="inline-block text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-md bg-[#0F766E]/10 text-[#0F766E] mb-3">
                 Zero Middlemen
               </div>
               <h3 className="text-xl font-black text-slate-900 dark:text-white mb-2.5">
@@ -788,7 +788,7 @@ export default function Landing() {
             </div>
 
             <div className="bg-white/90 backdrop-blur-md rounded-3xl p-7 border border-slate-200/90 shadow-sm hover:shadow-2xl hover:border-[#FE7096]/40 hover:-translate-y-2 transition-all duration-300 dark:bg-slate-900/90 dark:border-slate-800 group relative overflow-hidden">
-              <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#FE7096] to-[#A05AFF]" />
+              <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#FE7096] to-[#0F766E]" />
               <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#FE7096]/20 to-[#FE7096]/5 text-[#FE7096] flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-xs">
                 <ShieldCheck className="w-7 h-7" />
               </div>
@@ -820,7 +820,7 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
           <div className="text-center max-w-3xl mx-auto mb-10">
-            <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-[#A05AFF]/30 bg-gradient-to-r from-[#A05AFF]/15 via-[#FE7096]/10 to-[#1BCFB4]/15 text-[#A05AFF] text-xs font-bold uppercase tracking-wider mb-3">
+            <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-[#0F766E]/30 bg-gradient-to-r from-[#0F766E]/15 via-[#FE7096]/10 to-[#1BCFB4]/15 text-[#0F766E] text-xs font-bold uppercase tracking-wider mb-3">
               <Search className="w-3.5 h-3.5" /> Direct Access to 45,000+ Verified Profiles
             </div>
             <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 dark:text-white mb-3">
@@ -845,8 +845,8 @@ export default function Landing() {
                   onClick={() => setPoolCategory(tab.id)}
                   className={`px-4 py-2 rounded-xl text-xs font-bold transition-all duration-200 shadow-2xs ${
                     poolCategory === tab.id
-                      ? 'bg-[#A05AFF] text-white shadow-md shadow-[#A05AFF]/25 scale-105'
-                      : 'bg-white border border-slate-200 text-slate-700 hover:border-[#A05AFF] hover:text-[#A05AFF] dark:bg-slate-900 dark:border-slate-700 dark:text-slate-300'
+                      ? 'bg-[#0F766E] text-white shadow-md shadow-[#0F766E]/25 scale-105'
+                      : 'bg-white border border-slate-200 text-slate-700 hover:border-[#0F766E] hover:text-[#0F766E] dark:bg-slate-900 dark:border-slate-700 dark:text-slate-300'
                   }`}
                 >
                   {tab.label}
@@ -868,7 +868,7 @@ export default function Landing() {
                   className={`rounded-2xl p-5 border transition-all duration-300 flex flex-col justify-between ${
                     isUnlocked
                       ? 'bg-gradient-to-br from-emerald-50/70 via-white to-purple-50/30 border-emerald-300 shadow-lg dark:bg-slate-800 dark:border-emerald-700'
-                      : 'bg-white border-slate-200/90 shadow-sm hover:shadow-xl hover:border-[#A05AFF]/40 hover:-translate-y-1 dark:bg-slate-900 dark:border-slate-800'
+                      : 'bg-white border-slate-200/90 shadow-sm hover:shadow-xl hover:border-[#0F766E]/40 hover:-translate-y-1 dark:bg-slate-900 dark:border-slate-800'
                   }`}
                 >
                   <div>
@@ -909,7 +909,7 @@ export default function Landing() {
                           {tag}
                         </span>
                       ))}
-                      <span className="bg-purple-50 border border-purple-200 text-[#A05AFF] px-2 py-0.5 rounded-md font-bold">
+                      <span className="bg-purple-50 border border-purple-200 text-[#0F766E] px-2 py-0.5 rounded-md font-bold">
                         {cand.exp}
                       </span>
                     </div>
@@ -940,7 +940,7 @@ export default function Landing() {
                       className={`h-8 text-[11px] font-bold rounded-xl px-3 transition-all ${
                         isUnlocked
                           ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
-                          : 'bg-gradient-to-r from-[#A05AFF] to-[#FE7096] hover:from-[#8B3DFF] hover:to-[#e05b81] text-white shadow-md shadow-[#A05AFF]/20'
+                          : 'bg-gradient-to-r from-[#0F766E] to-[#FE7096] hover:from-[#115E59] hover:to-[#e05b81] text-white shadow-md shadow-[#0F766E]/20'
                       }`}
                     >
                       {isUnlocked ? (
@@ -960,7 +960,7 @@ export default function Landing() {
           </div>
 
           {/* Quick CTA Box below Talent Pool */}
-          <div className="mt-12 p-6 rounded-2xl bg-gradient-to-r from-[#A05AFF]/10 via-[#FE7096]/10 to-[#1BCFB4]/10 border border-[#A05AFF]/25 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+          <div className="mt-12 p-6 rounded-2xl bg-gradient-to-r from-[#0F766E]/10 via-[#FE7096]/10 to-[#1BCFB4]/10 border border-[#0F766E]/25 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
             <div>
               <h3 className="text-sm font-bold text-slate-900 dark:text-white">
                 Want to search candidates within 5km of your specific campus?
@@ -970,7 +970,7 @@ export default function Landing() {
               </p>
             </div>
             <Link to="/signup" className="shrink-0">
-              <Button className="h-10 px-5 rounded-xl bg-[#A05AFF] hover:bg-[#8B3DFF] text-white font-bold text-xs shadow-md shadow-[#A05AFF]/25">
+              <Button className="h-10 px-5 rounded-xl bg-[#0F766E] hover:bg-[#115E59] text-white font-bold text-xs shadow-md shadow-[#0F766E]/25">
                 Start 14-Day Free School Trial <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
               </Button>
             </Link>
@@ -986,12 +986,12 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
           <div className="text-center max-w-3xl mx-auto mb-14">
-            <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-[#A05AFF]/30 bg-[#A05AFF]/10 text-[#A05AFF] text-xs font-bold uppercase tracking-wider mb-4">
+            <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-[#0F766E]/30 bg-[#0F766E]/10 text-[#0F766E] text-xs font-bold uppercase tracking-wider mb-4">
               <Sparkles className="w-3.5 h-3.5" /> Comprehensive Campus Staffing
             </div>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 dark:text-white mb-4">
               One Hub For{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#A05AFF] via-[#FE7096] to-[#1BCFB4]">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0F766E] via-[#FE7096] to-[#1BCFB4]">
                 Every School Role
               </span>
             </h2>
@@ -1003,13 +1003,13 @@ export default function Landing() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
               {
-                icon: <BookOpen className="w-6 h-6 text-[#A05AFF]" />,
-                iconBg: "bg-[#A05AFF]/10",
+                icon: <BookOpen className="w-6 h-6 text-[#0F766E]" />,
+                iconBg: "bg-[#0F766E]/10",
                 count: "18,400+ Candidates",
                 role: "Teaching Faculty",
                 items: "PGT, TGT, PRT, Pre-Primary, Subject Specialists (Maths, Science, Languages), B.Ed/M.Ed, CTET qualified.",
-                gradient: "from-[#A05AFF]/10 via-transparent to-transparent",
-                borderHover: "hover:border-[#A05AFF]/50"
+                gradient: "from-[#0F766E]/10 via-transparent to-transparent",
+                borderHover: "hover:border-[#0F766E]/50"
               },
               {
                 icon: <Calculator className="w-6 h-6 text-[#1BCFB4]" />,
@@ -1066,13 +1066,13 @@ export default function Landing() {
                 borderHover: "hover:border-[#1BCFB4]/50"
               },
               {
-                icon: <ShieldCheck className="w-6 h-6 text-[#A05AFF]" />,
-                iconBg: "bg-[#A05AFF]/10",
+                icon: <ShieldCheck className="w-6 h-6 text-[#0F766E]" />,
+                iconBg: "bg-[#0F766E]/10",
                 count: "6,200+ Personnel",
                 role: "Campus Security & Staff",
                 items: "Ex-servicemen, Day/Night security guards, Peons, Housekeeping supervisors, and verified Caretakers.",
-                gradient: "from-[#A05AFF]/10 via-transparent to-transparent",
-                borderHover: "hover:border-[#A05AFF]/50"
+                gradient: "from-[#0F766E]/10 via-transparent to-transparent",
+                borderHover: "hover:border-[#0F766E]/50"
               }
             ].map((card, idx) => (
               <div 
@@ -1123,7 +1123,7 @@ export default function Landing() {
               step: "01",
               title: "Create School Profile",
               desc: "Register in under 2 minutes. Pin your campus location on the map and set your preferred hiring radius.",
-              gradient: "from-[#A05AFF] to-[#7928CA]"
+              gradient: "from-[#0F766E] to-[#7928CA]"
             },
             {
               step: "02",
@@ -1141,7 +1141,7 @@ export default function Landing() {
               step: "04",
               title: "Unlock & Interview",
               desc: "Use flexible credits to instantly reveal candidate contact details and schedule interviews in one click.",
-              gradient: "from-[#3081e4] to-[#A05AFF]"
+              gradient: "from-[#3081e4] to-[#0F766E]"
             }
           ].map((item, idx) => (
             <div 
@@ -1189,7 +1189,7 @@ export default function Landing() {
                 rating: 5,
                 tag: "Hired 14 Teachers",
                 avatar: "RS",
-                gradient: "from-[#A05AFF] to-[#FE7096]"
+                gradient: "from-[#0F766E] to-[#FE7096]"
               },
               {
                 quote: "The GPS distance filter is a lifesaver. We found a qualified PGT Physics and Chemistry teacher living just 4 km away. They joined within 3 days without commute issues!",
@@ -1256,7 +1256,7 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
           <div className="text-center max-w-2xl mx-auto mb-14">
-            <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-[#A05AFF]/30 bg-[#A05AFF]/10 text-[#A05AFF] text-xs font-bold uppercase tracking-wider mb-4">
+            <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-[#0F766E]/30 bg-[#0F766E]/10 text-[#0F766E] text-xs font-bold uppercase tracking-wider mb-4">
               <Coins className="w-3.5 h-3.5" /> Transparent &amp; Affordable
             </div>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 dark:text-white mb-4">
@@ -1273,7 +1273,7 @@ export default function Landing() {
                 onClick={() => setPricingPeriod('monthly')}
                 className={`px-5 py-2 rounded-xl text-xs font-bold transition-all ${
                   pricingPeriod === 'monthly'
-                    ? 'bg-[#A05AFF] text-white shadow-md shadow-[#A05AFF]/25'
+                    ? 'bg-[#0F766E] text-white shadow-md shadow-[#0F766E]/25'
                     : 'text-slate-600 hover:text-slate-900 dark:text-slate-400'
                 }`}
               >
@@ -1284,7 +1284,7 @@ export default function Landing() {
                 onClick={() => setPricingPeriod('yearly')}
                 className={`px-5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
                   pricingPeriod === 'yearly'
-                    ? 'bg-[#A05AFF] text-white shadow-md shadow-[#A05AFF]/25'
+                    ? 'bg-[#0F766E] text-white shadow-md shadow-[#0F766E]/25'
                     : 'text-slate-600 hover:text-slate-900 dark:text-slate-400'
                 }`}
               >
@@ -1327,20 +1327,20 @@ export default function Landing() {
               </div>
 
               <Link to="/signup" className="w-full">
-                <Button variant="outline" className="w-full h-12 border-slate-300 text-slate-700 hover:text-[#A05AFF] hover:border-[#A05AFF] rounded-xl font-bold text-xs">
+                <Button variant="outline" className="w-full h-12 border-slate-300 text-slate-700 hover:text-[#0F766E] hover:border-[#0F766E] rounded-xl font-bold text-xs">
                   Start Free 14-Day Trial
                 </Button>
               </Link>
             </div>
 
             {/* PLAN 2: School Pro (Popular - Glowing Card) */}
-            <div className="bg-white rounded-3xl border-2 border-[#A05AFF] p-8 shadow-2xl flex flex-col justify-between relative dark:bg-slate-900 ring-4 ring-[#A05AFF]/15 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
-              <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-[#A05AFF] to-[#FE7096] text-white text-[10px] font-black uppercase tracking-wider px-4 py-1.5 rounded-full shadow-lg flex items-center gap-1.5">
+            <div className="bg-white rounded-3xl border-2 border-[#0F766E] p-8 shadow-2xl flex flex-col justify-between relative dark:bg-slate-900 ring-4 ring-[#0F766E]/15 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
+              <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-[#0F766E] to-[#FE7096] text-white text-[10px] font-black uppercase tracking-wider px-4 py-1.5 rounded-full shadow-lg flex items-center gap-1.5">
                 <Sparkles className="w-3 h-3" /> Most Popular for Standalone Schools
               </div>
 
               <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-[#A05AFF]">School Pro</span>
+                <span className="text-xs font-bold uppercase tracking-wider text-[#0F766E]">School Pro</span>
                 <div className="mt-3 flex items-baseline gap-1">
                   <span className="text-5xl font-black text-slate-900 dark:text-white">
                     {pricingPeriod === 'yearly' ? '₹1,999' : '₹2,499'}
@@ -1372,7 +1372,7 @@ export default function Landing() {
               </div>
 
               <Link to="/signup" className="w-full">
-                <Button className="w-full h-12 bg-gradient-to-r from-[#A05AFF] to-[#7928CA] hover:from-[#8B3DFF] hover:to-[#6820B0] text-white rounded-xl font-bold text-xs shadow-xl shadow-[#A05AFF]/30 group flex items-center justify-center gap-2">
+                <Button className="w-full h-12 bg-gradient-to-r from-[#0F766E] to-[#7928CA] hover:from-[#115E59] hover:to-[#6820B0] text-white rounded-xl font-bold text-xs shadow-xl shadow-[#0F766E]/30 group flex items-center justify-center gap-2">
                   <span>Get Started with Pro</span>
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Button>
@@ -1409,7 +1409,7 @@ export default function Landing() {
               </div>
 
               <Link to="/contact" className="w-full">
-                <Button variant="outline" className="w-full h-12 border-slate-300 text-slate-700 hover:text-[#A05AFF] hover:border-[#A05AFF] rounded-xl font-bold text-xs">
+                <Button variant="outline" className="w-full h-12 border-slate-300 text-slate-700 hover:text-[#0F766E] hover:border-[#0F766E] rounded-xl font-bold text-xs">
                   Talk to Institutional Sales
                 </Button>
               </Link>
@@ -1444,7 +1444,7 @@ export default function Landing() {
       <section id="faq" className="py-24 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-14">
           <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-slate-200 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 text-xs font-bold uppercase tracking-wider mb-3 shadow-2xs">
-            <HelpCircle className="w-3.5 h-3.5 text-[#A05AFF]" /> Clear Answers
+            <HelpCircle className="w-3.5 h-3.5 text-[#0F766E]" /> Clear Answers
           </div>
           <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mb-3">
             Frequently Asked Questions
@@ -1487,12 +1487,12 @@ export default function Landing() {
             >
               <button
                 onClick={() => toggleFaq(idx)}
-                className="w-full px-6 py-4.5 text-left flex justify-between items-center text-sm sm:text-base font-bold text-slate-800 dark:text-slate-200 hover:text-[#A05AFF] transition-colors"
+                className="w-full px-6 py-4.5 text-left flex justify-between items-center text-sm sm:text-base font-bold text-slate-800 dark:text-slate-200 hover:text-[#0F766E] transition-colors"
               >
                 <span>{item.q}</span>
                 <ChevronRight 
                   className={`w-5 h-5 text-slate-400 shrink-0 transition-transform duration-200 ${
-                    openFaq === idx ? 'rotate-90 text-[#A05AFF]' : ''
+                    openFaq === idx ? 'rotate-90 text-[#0F766E]' : ''
                   }`} 
                 />
               </button>
@@ -1510,7 +1510,7 @@ export default function Landing() {
           9. HIGH IMPACT COLORFUL BOTTOM CTA BANNER
       ───────────────────────────────────────────────────────────── */}
       <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-        <div className="rounded-3xl bg-gradient-to-r from-[#A05AFF] via-[#FE7096] to-[#7928CA] p-10 sm:p-16 text-center text-white shadow-2xl relative overflow-hidden group">
+        <div className="rounded-3xl bg-gradient-to-r from-[#0F766E] via-[#FE7096] to-[#7928CA] p-10 sm:p-16 text-center text-white shadow-2xl relative overflow-hidden group">
           
           {/* Ambient Glowing Orbs */}
           <div className="absolute top-0 right-0 w-80 h-80 bg-white/10 rounded-full blur-2xl pointer-events-none -mr-20 -mt-20 animate-pulse-glow" />
@@ -1532,7 +1532,7 @@ export default function Landing() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
               <Link to="/signup" className="w-full sm:w-auto">
                 <Button className="w-full sm:w-auto h-13 bg-white text-slate-900 hover:bg-slate-100 font-black px-9 rounded-2xl text-sm shadow-xl hover:scale-105 transition-all">
-                  <Building2 className="w-4 h-4 mr-2 text-[#A05AFF]" /> Register Your School Free
+                  <Building2 className="w-4 h-4 mr-2 text-[#0F766E]" /> Register Your School Free
                 </Button>
               </Link>
               <Link to="/join" className="w-full sm:w-auto">
@@ -1570,11 +1570,11 @@ export default function Landing() {
             {/* Brand column */}
             <div className="md:col-span-4 space-y-3">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-[#A05AFF] to-[#7928CA] flex items-center justify-center text-white shadow-sm">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-[#0F766E] to-[#7928CA] flex items-center justify-center text-white shadow-sm">
                   <Briefcase className="w-4 h-4" />
                 </div>
                 <span className="text-xl font-black tracking-tight text-slate-900 dark:text-white">
-                  Hire<span className="text-[#A05AFF]">Hub</span>
+                  Hire<span className="text-[#0F766E]">Hub</span>
                 </span>
               </div>
               <p className="text-xs text-slate-500 leading-relaxed font-medium max-w-sm">
@@ -1585,19 +1585,19 @@ export default function Landing() {
             {/* Quick Links */}
             <div className="md:col-span-3 space-y-2.5 text-xs text-slate-600 dark:text-slate-400 font-semibold">
               <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">Platform Portals</div>
-              <div><Link to="/login" className="hover:text-[#A05AFF] transition-colors">School Admin Login</Link></div>
-              <div><Link to="/signup" className="hover:text-[#A05AFF] transition-colors">School Registration</Link></div>
-              <div><Link to="/applicant/login" className="hover:text-[#A05AFF] transition-colors">Candidate / Teacher Login</Link></div>
-              <div><Link to="/join" className="hover:text-[#A05AFF] transition-colors">Candidate Self-Registration</Link></div>
+              <div><Link to="/login" className="hover:text-[#0F766E] transition-colors">School Admin Login</Link></div>
+              <div><Link to="/signup" className="hover:text-[#0F766E] transition-colors">School Registration</Link></div>
+              <div><Link to="/applicant/login" className="hover:text-[#0F766E] transition-colors">Candidate / Teacher Login</Link></div>
+              <div><Link to="/join" className="hover:text-[#0F766E] transition-colors">Candidate Self-Registration</Link></div>
             </div>
 
             {/* Features */}
             <div className="md:col-span-2 space-y-2.5 text-xs text-slate-600 dark:text-slate-400 font-semibold">
               <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">Features</div>
-              <div><a href="#for-schools" className="hover:text-[#A05AFF] transition-colors">QR Application Links</a></div>
-              <div><a href="#for-schools" className="hover:text-[#A05AFF] transition-colors">Geo-Radius Search</a></div>
-              <div><a href="#roles" className="hover:text-[#A05AFF] transition-colors">10+ School Roles</a></div>
-              <div><a href="#pricing" className="hover:text-[#A05AFF] transition-colors">Plans &amp; Credits</a></div>
+              <div><a href="#for-schools" className="hover:text-[#0F766E] transition-colors">QR Application Links</a></div>
+              <div><a href="#for-schools" className="hover:text-[#0F766E] transition-colors">Geo-Radius Search</a></div>
+              <div><a href="#roles" className="hover:text-[#0F766E] transition-colors">10+ School Roles</a></div>
+              <div><a href="#pricing" className="hover:text-[#0F766E] transition-colors">Plans &amp; Credits</a></div>
             </div>
 
             {/* Contact Info */}
@@ -1617,9 +1617,9 @@ export default function Landing() {
           <div className="pt-8 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs font-medium text-slate-400 dark:border-slate-800">
             <div>&copy; {new Date().getFullYear()} HireHub Technologies. All rights reserved.</div>
             <div className="flex gap-6">
-              <Link to="/privacy" className="hover:text-[#A05AFF] transition-colors">Privacy Policy</Link>
-              <Link to="/terms" className="hover:text-[#A05AFF] transition-colors">Terms of Service</Link>
-              <Link to="/contact" className="hover:text-[#A05AFF] transition-colors">Contact Support</Link>
+              <Link to="/privacy" className="hover:text-[#0F766E] transition-colors">Privacy Policy</Link>
+              <Link to="/terms" className="hover:text-[#0F766E] transition-colors">Terms of Service</Link>
+              <Link to="/contact" className="hover:text-[#0F766E] transition-colors">Contact Support</Link>
             </div>
           </div>
         </div>

@@ -265,7 +265,7 @@ export default function CandidateProfile() {
                       {candidate.email && (
                         <a
                           href={`mailto:${candidate.email}`}
-                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-bold bg-purple-50 text-[#A05AFF] hover:bg-purple-100 dark:bg-purple-950/40 dark:text-purple-300 border border-purple-200/50 transition-colors"
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-bold bg-purple-50 text-[#0F766E] hover:bg-purple-100 dark:bg-purple-950/40 dark:text-purple-300 border border-purple-200/50 transition-colors"
                           title="Send Email"
                         >
                           <Mail className="h-3 w-3" />
@@ -425,7 +425,7 @@ export default function CandidateProfile() {
             <Card className="border border-slate-200/60 bg-white shadow-2xs dark:bg-slate-900 lg:col-span-2 overflow-hidden">
               <CardHeader className="p-5 border-b border-slate-200/60 dark:border-slate-800/60 bg-slate-50/70 dark:bg-slate-900/20">
                 <CardTitle className="text-sm font-bold tracking-wide text-slate-800 dark:text-slate-200 flex items-center gap-2">
-                  <Sparkles className="h-4 w-4 text-[#A05AFF]" />
+                  <Sparkles className="h-4 w-4 text-[#0F766E]" />
                   {candidate.position} Specific Details
                 </CardTitle>
               </CardHeader>

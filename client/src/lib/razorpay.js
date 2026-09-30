@@ -61,7 +61,7 @@ export const openRazorpayPayment = async ({
       contact: user.mobile || user.phone || '',
     },
     theme: {
-      color: '#A05AFF',
+      color: '#0F766E',
       backdrop_color: 'rgba(15, 23, 42, 0.65)',
     },
     handler: function (response) {

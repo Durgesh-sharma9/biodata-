@@ -11,7 +11,7 @@ const SelectTrigger = React.forwardRef(({ className, children, ...props }, ref) 
   <SelectPrimitive.Trigger
     ref={ref}
     className={cn(
-      'flex h-11 w-full items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 outline-none transition-all duration-200 placeholder:text-slate-400 data-[state=open]:border-[#A05AFF]/60 data-[state=open]:ring-4 data-[state=open]:ring-[#A05AFF]/10 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400 text-left [&>span]:line-clamp-1 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200',
+      'flex h-11 w-full items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 outline-none transition-all duration-200 placeholder:text-slate-400 data-[state=open]:border-[#0F766E]/60 data-[state=open]:ring-4 data-[state=open]:ring-[#0F766E]/10 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400 text-left [&>span]:line-clamp-1 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200',
       className
     )}
     {...props}
@@ -46,7 +46,7 @@ const SelectItem = React.forwardRef(({ className, children, ...props }, ref) => 
   <SelectPrimitive.Item
     ref={ref}
     className={cn(
-      'relative flex w-full cursor-pointer select-none items-center rounded-lg py-2.5 pl-4 pr-8 text-sm font-medium text-slate-700 dark:text-slate-300 outline-none transition-colors duration-150 focus:bg-[#A05AFF]/5 focus:text-[#A05AFF] dark:focus:bg-[#A05AFF]/10 data-[disabled]:pointer-events-none data-[disabled]:opacity-40 data-[state=checked]:text-[#A05AFF] dark:data-[state=checked]:text-[#A05AFF] data-[state=checked]:font-semibold',
+      'relative flex w-full cursor-pointer select-none items-center rounded-lg py-2.5 pl-4 pr-8 text-sm font-medium text-slate-700 dark:text-slate-300 outline-none transition-colors duration-150 focus:bg-[#0F766E]/5 focus:text-[#0F766E] dark:focus:bg-[#0F766E]/10 data-[disabled]:pointer-events-none data-[disabled]:opacity-40 data-[state=checked]:text-[#0F766E] dark:data-[state=checked]:text-[#0F766E] data-[state=checked]:font-semibold',
       className
     )}
     {...props}
@@ -54,7 +54,7 @@ const SelectItem = React.forwardRef(({ className, children, ...props }, ref) => 
     <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
     <span className="absolute right-3 flex h-3.5 w-3.5 items-center justify-center">
       <SelectPrimitive.ItemIndicator>
-        <Check className="h-4 w-4 text-[#A05AFF]" />
+        <Check className="h-4 w-4 text-[#0F766E]" />
       </SelectPrimitive.ItemIndicator>
     </span>
   </SelectPrimitive.Item>

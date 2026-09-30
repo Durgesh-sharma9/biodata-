@@ -39,12 +39,12 @@ export default function AdminDashboard() {
           size="icon"
           onClick={() => refetch()} 
           disabled={isFetching}
-          className="h-9 w-9 rounded-xl border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300 text-slate-500 hover:text-[#A05AFF] dark:bg-slate-900 dark:border-slate-800 shadow-xs group/btn active:scale-95 transition-all duration-200"
+          className="h-9 w-9 rounded-xl border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300 text-slate-500 hover:text-[#0F766E] dark:bg-slate-900 dark:border-slate-800 shadow-xs group/btn active:scale-95 transition-all duration-200"
           title="Refresh Data"
         >
           <RefreshCcw className={cn(
             "h-3.5 w-3.5 transition-transform ease-in-out duration-500 group-hover/btn:rotate-180", 
-            isFetching && "animate-spin text-[#A05AFF]"
+            isFetching && "animate-spin text-[#0F766E]"
           )} />
         </Button>
       </div>
@@ -92,7 +92,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Active Plans - Royal Purple Gradient */}
-        <div className="rounded-xl bg-gradient-to-r from-[#A05AFF] to-[#8644e3] p-6 shadow-md relative overflow-hidden group hover:-translate-y-1 transition-all duration-300 text-white">
+        <div className="rounded-xl bg-gradient-to-r from-[#0F766E] to-[#8644e3] p-6 shadow-md relative overflow-hidden group hover:-translate-y-1 transition-all duration-300 text-white">
           <div className="absolute right-[-20px] bottom-[-20px] w-24 h-24 rounded-full bg-white/10 group-hover:scale-110 transition-transform duration-300" />
           <div className="flex items-center justify-between relative z-10">
             <span className="text-xs font-semibold uppercase tracking-wider text-white/80">Active Plans</span>
@@ -110,7 +110,7 @@ export default function AdminDashboard() {
       <Card className="border border-none bg-white shadow-sm rounded-xl overflow-hidden mt-4 dark:bg-slate-900">
         <CardHeader className="p-5 flex flex-row items-center justify-between border-b border-slate-100 bg-white dark:bg-slate-900/50 dark:border-slate-800">
           <div className="flex items-center gap-2.5">
-            <div className="p-1.5 bg-[#A05AFF]/10 text-[#A05AFF] rounded-lg">
+            <div className="p-1.5 bg-[#0F766E]/10 text-[#0F766E] rounded-lg">
               <TrendingUp className="h-4 w-4" />
             </div>
             <CardTitle className="text-sm font-bold text-slate-800 dark:text-slate-200 tracking-wide">
@@ -149,12 +149,12 @@ export default function AdminDashboard() {
                         {/* Name Avatar Cell */}
                         <TableCell className="pl-6 py-3.5 font-medium text-sm">
                           <div className="flex items-center gap-3">
-                            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#9E58FF]/10 text-[#9E58FF] text-xs font-bold group-hover:bg-[#A05AFF] group-hover:text-white transition-all duration-200">
+                            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#14B8A6]/10 text-[#14B8A6] text-xs font-bold group-hover:bg-[#0F766E] group-hover:text-white transition-all duration-200">
                               {c.fullName ? c.fullName.charAt(0).toUpperCase() : 'C'}
                             </div>
                             <div className="flex items-center gap-1.5 min-w-0">
-                              <span className="truncate max-w-[180px] font-semibold text-slate-700 dark:text-slate-200 tracking-tight group-hover:text-[#A05AFF] dark:group-hover:text-indigo-400 transition-colors duration-200">{c.fullName}</span>
-                              <ArrowRight className="h-3 w-3 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 text-[#A05AFF] shrink-0 hidden sm:inline-block" />
+                              <span className="truncate max-w-[180px] font-semibold text-slate-700 dark:text-slate-200 tracking-tight group-hover:text-[#0F766E] dark:group-hover:text-indigo-400 transition-colors duration-200">{c.fullName}</span>
+                              <ArrowRight className="h-3 w-3 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 text-[#0F766E] shrink-0 hidden sm:inline-block" />
                             </div>
                           </div>
                         </TableCell>

@@ -110,7 +110,7 @@ export function SearchableSelect({
           disabled 
             ? 'border-slate-200 bg-slate-50 text-slate-400 cursor-not-allowed opacity-50 dark:bg-slate-900/50 dark:border-slate-800'
             : open 
-              ? 'border-[#A05AFF]/60 bg-white ring-4 ring-[#A05AFF]/10 text-slate-800' 
+              ? 'border-[#0F766E]/60 bg-white ring-4 ring-[#0F766E]/10 text-slate-800' 
               : 'border-slate-200 bg-white hover:border-slate-300 text-slate-700'
         )}
       >
@@ -128,7 +128,7 @@ export function SearchableSelect({
               onClick={handleClear}
             />
           )}
-          <ChevronDown className={cn("h-4 w-4 shrink-0 text-slate-400 transition-transform duration-300", open && "transform rotate-180 text-[#A05AFF]")} />
+          <ChevronDown className={cn("h-4 w-4 shrink-0 text-slate-400 transition-transform duration-300", open && "transform rotate-180 text-[#0F766E]")} />
         </div>
       </button>
 
@@ -149,7 +149,7 @@ export function SearchableSelect({
                 <Input
                   ref={searchInputRef}
                   placeholder="Search..."
-                  className="pl-9 h-10 rounded-lg bg-slate-50 dark:bg-slate-950 border-slate-200/60 focus:border-[#A05AFF]/60 focus:bg-white"
+                  className="pl-9 h-10 rounded-lg bg-slate-50 dark:bg-slate-950 border-slate-200/60 focus:border-[#0F766E]/60 focus:bg-white"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   onClick={(e) => e.stopPropagation()}
@@ -182,7 +182,7 @@ export function SearchableSelect({
                       className={cn(
                         'flex w-full items-center px-3 py-2.5 text-left text-sm font-medium rounded-lg transition-all duration-200',
                         isSelected
-                          ? 'bg-[#A05AFF]/5 text-[#A05AFF]'
+                          ? 'bg-[#0F766E]/5 text-[#0F766E]'
                           : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-slate-100'
                       )}
                     >

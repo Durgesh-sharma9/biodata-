@@ -109,7 +109,7 @@ export function CandidateApplicationForm({
       
       {/* Vibrant Gradient Header Block */}
       {(title || subtitle) && (
-        <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-[#A05AFF] via-[#9E58FF] to-[#4BCBEB] p-6 text-white shadow-md mb-2">
+        <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-[#0F766E] via-[#14B8A6] to-[#4BCBEB] p-6 text-white shadow-md mb-2">
           <div className="absolute right-[-10px] top-[-10px] w-32 h-32 rounded-full bg-white/10 blur-xl pointer-events-none" />
           <div className="flex items-start gap-4 relative z-10">
             <div className="p-2 bg-white/15 text-white rounded-xl shadow-xs mt-0.5">
@@ -126,7 +126,7 @@ export function CandidateApplicationForm({
       {/* Main Structural Form Fields Box */}
       <div className="rounded-xl border border-none bg-white p-6 md:p-8 shadow-sm space-y-6 dark:bg-slate-900">
         <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 pb-3 border-b border-slate-100 dark:border-slate-800 flex items-center gap-2">
-          <User className="h-4 w-4 text-[#A05AFF]" />
+          <User className="h-4 w-4 text-[#0F766E]" />
           Personal & Profile Details
         </h3>
         
@@ -138,7 +138,7 @@ export function CandidateApplicationForm({
                 value={form.fullName} 
                 onChange={(e) => updateForm('fullName', e.target.value)} 
                 placeholder="John Doe"
-                className="rounded-xl focus-visible:ring-[#A05AFF] h-11 pl-10 transition-all border-slate-200 bg-white"
+                className="rounded-xl focus-visible:ring-[#0F766E] h-11 pl-10 transition-all border-slate-200 bg-white"
                 required 
               />
               <User className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400" />
@@ -152,7 +152,7 @@ export function CandidateApplicationForm({
                 value={form.mobile} 
                 onChange={(e) => updateForm('mobile', e.target.value)} 
                 placeholder="9876543210"
-                className="rounded-xl focus-visible:ring-[#A05AFF] h-11 pl-10 transition-all border-slate-200 bg-white"
+                className="rounded-xl focus-visible:ring-[#0F766E] h-11 pl-10 transition-all border-slate-200 bg-white"
                 required 
               />
               <Phone className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400" />
@@ -167,7 +167,7 @@ export function CandidateApplicationForm({
                 value={form.email} 
                 onChange={(e) => updateForm('email', e.target.value)} 
                 placeholder="john@example.com"
-                className="rounded-xl focus-visible:ring-[#A05AFF] h-11 pl-10 transition-all border-slate-200 bg-white"
+                className="rounded-xl focus-visible:ring-[#0F766E] h-11 pl-10 transition-all border-slate-200 bg-white"
               />
               <Mail className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400" />
             </div>
@@ -180,7 +180,7 @@ export function CandidateApplicationForm({
                 value={form.address} 
                 onChange={(e) => updateForm('address', e.target.value)} 
                 placeholder="Apartment, Street Name, Block"
-                className="rounded-xl focus-visible:ring-[#A05AFF] h-11 pl-10 transition-all border-slate-200 bg-white"
+                className="rounded-xl focus-visible:ring-[#0F766E] h-11 pl-10 transition-all border-slate-200 bg-white"
               />
               <MapPin className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400" />
             </div>
@@ -193,7 +193,7 @@ export function CandidateApplicationForm({
           <div className="space-y-2">
             <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Position Applied For *</Label>
             <Select value={form.position} onValueChange={(v) => updateForm('position', v)}>
-              <SelectTrigger className="rounded-xl h-11 focus:ring-[#A05AFF] border-slate-200 font-medium bg-white">
+              <SelectTrigger className="rounded-xl h-11 focus:ring-[#0F766E] border-slate-200 font-medium bg-white">
                 <div className="flex items-center gap-2">
                   <Briefcase className="h-4 w-4 text-slate-400" />
                   <SelectValue placeholder="Select position" />
@@ -218,7 +218,7 @@ export function CandidateApplicationForm({
                 value={form.expectedSalary}
                 onChange={(e) => updateForm('expectedSalary', e.target.value)}
                 placeholder="e.g. 50000"
-                className="rounded-xl focus-visible:ring-[#A05AFF] h-11 pl-10 transition-all border-slate-200 bg-white"
+                className="rounded-xl focus-visible:ring-[#0F766E] h-11 pl-10 transition-all border-slate-200 bg-white"
               />
               <IndianRupee className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400" />
             </div>
@@ -243,7 +243,7 @@ export function CandidateApplicationForm({
                 min="0"
                 value={form.experienceYears}
                 onChange={(e) => updateForm('experienceYears', e.target.value)}
-                className="rounded-xl focus-visible:ring-[#A05AFF] h-11 pl-10 transition-all border-slate-200 bg-white"
+                className="rounded-xl focus-visible:ring-[#0F766E] h-11 pl-10 transition-all border-slate-200 bg-white"
               />
               <GraduationCap className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400" />
             </div>
@@ -266,13 +266,13 @@ export function CandidateApplicationForm({
       {/* Polish File Upload Area Block Section */}
       <div className="rounded-xl border border-none bg-white p-6 md:p-8 shadow-sm space-y-4 dark:bg-slate-900">
         <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 pb-3 border-b border-slate-100 dark:border-slate-800 flex items-center gap-2">
-          <FileText className="h-4 w-4 text-[#A05AFF]" />
+          <FileText className="h-4 w-4 text-[#0F766E]" />
           Supporting Credentials
         </h3>
         
         <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 block">Documents (Resume, Certificates)</Label>
-        <label className="flex flex-col items-center justify-center cursor-pointer gap-3 rounded-xl border-2 border-dashed border-slate-200 hover:border-[#A05AFF]/60 p-6 text-center transition-all bg-slate-50/50 dark:bg-slate-900/10 hover:bg-[#A05AFF]/5 group">
-          <div className="p-3 rounded-xl bg-white border border-slate-200 text-slate-400 group-hover:text-[#A05AFF] group-hover:scale-105 transition-all shadow-xs">
+        <label className="flex flex-col items-center justify-center cursor-pointer gap-3 rounded-xl border-2 border-dashed border-slate-200 hover:border-[#0F766E]/60 p-6 text-center transition-all bg-slate-50/50 dark:bg-slate-900/10 hover:bg-[#0F766E]/5 group">
+          <div className="p-3 rounded-xl bg-white border border-slate-200 text-slate-400 group-hover:text-[#0F766E] group-hover:scale-105 transition-all shadow-xs">
             <Upload className="h-5 w-5" />
           </div>
           <div className="space-y-1">
@@ -301,7 +301,7 @@ export function CandidateApplicationForm({
                     <FileText className="h-4 w-4" />
                   </div>
                   <div className="min-w-0 flex-1 space-y-1">
-                    <a href={doc.url} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-[#A05AFF] hover:underline truncate block">
+                    <a href={doc.url} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-[#0F766E] hover:underline truncate block">
                       {doc.name}
                     </a>
                     <input
@@ -309,7 +309,7 @@ export function CandidateApplicationForm({
                       value={doc.note || ''}
                       onChange={(e) => handleDocNoteChange(i, e.target.value)}
                       placeholder="Add optional note (e.g. 10th Marksheet, B.Ed Degree, Aadhar Card)..."
-                      className="w-full h-8 px-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg text-xs font-medium text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-1 focus:ring-[#A05AFF]"
+                      className="w-full h-8 px-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg text-xs font-medium text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-1 focus:ring-[#0F766E]"
                     />
                   </div>
                 </div>
@@ -332,7 +332,7 @@ export function CandidateApplicationForm({
       {requireConsent && (
         <div className="rounded-xl border border-none bg-white p-6 shadow-sm space-y-4 dark:bg-slate-900">
           <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-slate-800">
-            <ClipboardCheck className="h-4 w-4 text-[#A05AFF]" />
+            <ClipboardCheck className="h-4 w-4 text-[#0F766E]" />
             Declaration & System Consents
           </h4>
           
@@ -342,7 +342,7 @@ export function CandidateApplicationForm({
                 type="checkbox"
                 checked={form.profileSharingConsent}
                 onChange={(e) => updateForm('profileSharingConsent', e.target.checked)}
-                className="mt-1 h-4 w-4 rounded-md border-slate-300 text-[#A05AFF] focus:ring-[#A05AFF] cursor-pointer accent-[#A05AFF]"
+                className="mt-1 h-4 w-4 rounded-md border-slate-300 text-[#0F766E] focus:ring-[#0F766E] cursor-pointer accent-[#0F766E]"
                 required
               />
               <span className="group-hover:text-slate-800 dark:group-hover:text-slate-200 transition-colors leading-relaxed">
@@ -355,7 +355,7 @@ export function CandidateApplicationForm({
                 type="checkbox"
                 checked={form.contactConsent}
                 onChange={(e) => updateForm('contactConsent', e.target.checked)}
-                className="mt-1 h-4 w-4 rounded-md border-slate-300 text-[#A05AFF] focus:ring-[#A05AFF] cursor-pointer accent-[#A05AFF]"
+                className="mt-1 h-4 w-4 rounded-md border-slate-300 text-[#0F766E] focus:ring-[#0F766E] cursor-pointer accent-[#0F766E]"
                 required
               />
               <span className="group-hover:text-slate-800 dark:group-hover:text-slate-200 transition-colors leading-relaxed">
@@ -378,7 +378,7 @@ export function CandidateApplicationForm({
       <Button 
         type="submit" 
         disabled={isSubmitting || uploading} 
-        className="w-full bg-gradient-to-r from-[#A05AFF] via-[#9E58FF] to-[#4BCBEB] hover:opacity-95 text-white font-bold h-12 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 text-base border-none"
+        className="w-full bg-gradient-to-r from-[#0F766E] via-[#14B8A6] to-[#4BCBEB] hover:opacity-95 text-white font-bold h-12 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 text-base border-none"
       >
         {isSubmitting ? 'Committing Application Pack...' : submitLabel}
       </Button>

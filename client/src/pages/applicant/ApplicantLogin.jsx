@@ -55,12 +55,12 @@ export default function ApplicantLogin() {
       <nav className="w-full h-20 border-b border-slate-200/80 bg-white/90 backdrop-blur-md shadow-sm dark:bg-slate-900/90 dark:border-slate-800">
         <div className="max-w-7xl mx-auto h-full px-4 sm:px-6 lg:px-8 flex justify-between items-center">
           <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#A05AFF] to-[#7928CA] flex items-center justify-center text-white shadow-md shadow-[#A05AFF]/25 group-hover:scale-105 transition-transform">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#0F766E] to-[#7928CA] flex items-center justify-center text-white shadow-md shadow-[#0F766E]/25 group-hover:scale-105 transition-transform">
               <Briefcase className="w-5 h-5 text-white" />
             </div>
             <div className="flex flex-col">
               <span className="text-2xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-1">
-                Hire<span className="text-[#A05AFF]">Hub</span>
+                Hire<span className="text-[#0F766E]">Hub</span>
               </span>
               <span className="text-[10px] font-semibold text-slate-400 tracking-wider uppercase -mt-1">
                 Candidate Portal

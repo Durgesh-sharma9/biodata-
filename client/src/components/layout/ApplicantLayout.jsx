@@ -56,7 +56,7 @@ export function ApplicantLayout() {
   };
 
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-[#f8fafc] dark:bg-slate-950 antialiased selection:bg-blue-600/20 selection:text-blue-600">
+    <div className="flex h-screen w-full overflow-hidden bg-[#F4F7F6] dark:bg-slate-950 antialiased selection:bg-[#0F766E]/20 selection:text-[#0F766E]">
       {/* Desktop Sidebar (Soft Light Modern Style) */}
       <div className="hidden md:block w-64 shrink-0 relative z-30 h-full">
         <ApplicantSidebar />

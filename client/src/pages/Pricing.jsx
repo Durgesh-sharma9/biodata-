@@ -4,7 +4,7 @@ import { Check, Sparkles, ShieldCheck, ArrowRight, GraduationCap } from 'lucide-
 
 export default function Pricing() {
   return (
-    <div className="min-h-screen bg-[#f3f3f4] text-slate-800 font-sans antialiased dark:bg-slate-950 dark:text-slate-200">
+    <div className="min-h-screen bg-[#F4F7F6] text-slate-800 font-sans antialiased dark:bg-slate-950 dark:text-slate-200">
       
       {/* Premium Navbar Sticky Module */}
       <nav className="sticky top-0 z-50 bg-white border-b border-slate-100 shadow-sm dark:bg-slate-900 dark:border-slate-800">
@@ -12,25 +12,25 @@ export default function Pricing() {
           <div className="flex justify-between h-20">
             <div className="flex items-center">
               <Link to="/" className="text-2xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-1">
-                Hire<span className="text-[#A05AFF]">Hub</span>
+                Hire<span className="text-[#0F766E]">Hub</span>
               </Link>
             </div>
             <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-6">
-              <Link to="/features" className="text-sm font-semibold text-slate-600 hover:text-[#A05AFF] px-3 py-2 rounded-xl hover:bg-slate-50 transition-all dark:text-slate-400 dark:hover:bg-slate-800">
+              <Link to="/features" className="text-sm font-semibold text-slate-600 hover:text-[#0F766E] px-3 py-2 rounded-xl hover:bg-slate-50 transition-all dark:text-slate-400 dark:hover:bg-slate-800">
                 Features
               </Link>
-              <Link to="/pricing" className="text-sm font-semibold text-[#A05AFF] bg-[#A05AFF]/10 px-4 py-2 rounded-xl transition-all">
+              <Link to="/pricing" className="text-sm font-semibold text-[#0F766E] bg-[#0F766E]/10 px-4 py-2 rounded-xl transition-all">
                 Pricing
               </Link>
-              <Link to="/contact" className="text-sm font-semibold text-slate-600 hover:text-[#A05AFF] px-3 py-2 rounded-xl hover:bg-slate-50 transition-all dark:text-slate-400 dark:hover:bg-slate-800">
+              <Link to="/contact" className="text-sm font-semibold text-slate-600 hover:text-[#0F766E] px-3 py-2 rounded-xl hover:bg-slate-50 transition-all dark:text-slate-400 dark:hover:bg-slate-800">
                 Contact
               </Link>
               <span className="h-5 w-px bg-slate-200 mx-2 hidden sm:inline-block dark:bg-slate-800" />
               <Link to="/login" className="hidden sm:inline-block">
-                <Button variant="outline" className="h-10 rounded-xl border-slate-200 text-slate-600 font-semibold hover:bg-slate-50 hover:text-[#A05AFF] transition-all px-5 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-800">Login</Button>
+                <Button variant="outline" className="h-10 rounded-xl border-slate-200 text-slate-600 font-semibold hover:bg-slate-50 hover:text-[#0F766E] transition-all px-5 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-800">Login</Button>
               </Link>
               <Link to="/signup">
-                <Button className="h-10 rounded-xl bg-[#A05AFF] hover:bg-[#A05AFF]/90 text-white font-semibold shadow-sm transition-all px-5">Sign Up</Button>
+                <Button className="h-10 rounded-xl bg-[#0F766E] hover:bg-[#0F766E]/90 text-white font-semibold shadow-sm transition-all px-5">Sign Up</Button>
               </Link>
             </div>
           </div>
@@ -43,7 +43,7 @@ export default function Pricing() {
         {/* Page Header Panel Layout */}
         <div className="mb-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border border-[#A05AFF]/30 bg-[#A05AFF]/5 text-[#A05AFF] text-[11px] font-bold uppercase tracking-wider mb-2">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border border-[#0F766E]/30 bg-[#0F766E]/5 text-[#0F766E] text-[11px] font-bold uppercase tracking-wider mb-2">
               <Sparkles className="h-3 w-3" /> Flexible Architecture
             </div>
             <h1 className="text-xl font-bold tracking-tight text-slate-800 dark:text-white">
@@ -73,39 +73,39 @@ export default function Pricing() {
               
               <ul className="space-y-3.5">
                 <li className="flex items-start text-xs font-semibold text-slate-600 dark:text-slate-400 gap-2.5">
-                  <Check className="w-4 h-4 text-[#A05AFF] flex-shrink-0" />
+                  <Check className="w-4 h-4 text-[#0F766E] flex-shrink-0" />
                   <span>Up to 100 candidates</span>
                 </li>
                 <li className="flex items-start text-xs font-semibold text-slate-600 dark:text-slate-400 gap-2.5">
-                  <Check className="w-4 h-4 text-[#A05AFF] flex-shrink-0" />
+                  <Check className="w-4 h-4 text-[#0F766E] flex-shrink-0" />
                   <span>Basic document storage</span>
                 </li>
                 <li className="flex items-start text-xs font-semibold text-slate-600 dark:text-slate-400 gap-2.5">
-                  <Check className="w-4 h-4 text-[#A05AFF] flex-shrink-0" />
+                  <Check className="w-4 h-4 text-[#0F766E] flex-shrink-0" />
                   <span>Email support</span>
                 </li>
               </ul>
             </div>
 
             <Link to="/signup" className="block w-full mt-6">
-              <Button variant="outline" className="w-full h-10 border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-[#A05AFF] font-bold rounded-xl text-xs transition-all shadow-sm dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-800">
+              <Button variant="outline" className="w-full h-10 border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-[#0F766E] font-bold rounded-xl text-xs transition-all shadow-sm dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-800">
                 Start Free Trial
               </Button>
             </Link>
           </div>
 
           {/* PLAN 2: Standard (Violet Code Highlighted Component) */}
-          <div className="rounded-xl border-2 border-[#A05AFF] bg-white shadow-sm p-6 dark:bg-slate-900 flex flex-col justify-between relative">
-            <div className="absolute top-0 right-0 bg-[#A05AFF] text-white px-3 py-1 rounded-bl-xl text-[9px] font-bold tracking-wider uppercase">
+          <div className="rounded-xl border-2 border-[#0F766E] bg-white shadow-sm p-6 dark:bg-slate-900 flex flex-col justify-between relative">
+            <div className="absolute top-0 right-0 bg-[#0F766E] text-white px-3 py-1 rounded-bl-xl text-[9px] font-bold tracking-wider uppercase">
               Popular
             </div>
             
             <div className="space-y-5">
               <div>
                 <h3 className="text-sm font-bold tracking-wide text-slate-800 dark:text-white mb-1 flex items-center gap-1.5">
-                  Standard <GraduationCap className="h-4 w-4 text-[#A05AFF]" />
+                  Standard <GraduationCap className="h-4 w-4 text-[#0F766E]" />
                 </h3>
-                <p className="text-xs text-[#A05AFF] font-bold">For growing schools</p>
+                <p className="text-xs text-[#0F766E] font-bold">For growing schools</p>
               </div>
               
               <div className="flex items-baseline gap-1 py-2 border-y border-slate-100 dark:border-slate-800">
@@ -134,7 +134,7 @@ export default function Pricing() {
             </div>
 
             <Link to="/signup" className="block w-full mt-6">
-              <Button className="w-full h-10 bg-[#A05AFF] hover:bg-[#A05AFF]/90 text-white font-bold rounded-xl text-xs shadow-sm transition-all">
+              <Button className="w-full h-10 bg-[#0F766E] hover:bg-[#0F766E]/90 text-white font-bold rounded-xl text-xs shadow-sm transition-all">
                 Start Free Trial
               </Button>
             </Link>
@@ -155,26 +155,26 @@ export default function Pricing() {
               
               <ul className="space-y-3.5">
                 <li className="flex items-start text-xs font-semibold text-slate-600 dark:text-slate-400 gap-2.5">
-                  <Check className="w-4 h-4 text-[#9E58FF] flex-shrink-0" />
+                  <Check className="w-4 h-4 text-[#14B8A6] flex-shrink-0" />
                   <span>Unlimited candidates</span>
                 </li>
                 <li className="flex items-start text-xs font-semibold text-slate-600 dark:text-slate-400 gap-2.5">
-                  <Check className="w-4 h-4 text-[#9E58FF] flex-shrink-0" />
+                  <Check className="w-4 h-4 text-[#14B8A6] flex-shrink-0" />
                   <span>Unlimited document storage</span>
                 </li>
                 <li className="flex items-start text-xs font-semibold text-slate-600 dark:text-slate-400 gap-2.5">
-                  <Check className="w-4 h-4 text-[#9E58FF] flex-shrink-0" />
+                  <Check className="w-4 h-4 text-[#14B8A6] flex-shrink-0" />
                   <span>24/7 phone support</span>
                 </li>
                 <li className="flex items-start text-xs font-semibold text-slate-600 dark:text-slate-400 gap-2.5">
-                  <Check className="w-4 h-4 text-[#9E58FF] flex-shrink-0" />
+                  <Check className="w-4 h-4 text-[#14B8A6] flex-shrink-0" />
                   <span>Dedicated account manager</span>
                 </li>
               </ul>
             </div>
 
             <Link to="/signup" className="block w-full mt-6">
-              <Button variant="outline" className="w-full h-10 border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-[#A05AFF] font-bold rounded-xl text-xs transition-all shadow-sm dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-800">
+              <Button variant="outline" className="w-full h-10 border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-[#0F766E] font-bold rounded-xl text-xs transition-all shadow-sm dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-800">
                 Start Free Trial
               </Button>
             </Link>
@@ -199,8 +199,8 @@ export default function Pricing() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
           <p className="text-xs font-medium text-slate-400">&copy; {new Date().getFullYear()} HireHub Technologies. All rights reserved.</p>
           <div className="flex gap-6 text-xs font-semibold">
-            <a href="#privacy" className="hover:text-[#A05AFF] text-slate-500 dark:text-slate-400 transition-colors">Privacy Policy</a>
-            <a href="#terms" className="hover:text-[#A05AFF] text-slate-500 dark:text-slate-400 transition-colors">Terms of Service</a>
+            <a href="#privacy" className="hover:text-[#0F766E] text-slate-500 dark:text-slate-400 transition-colors">Privacy Policy</a>
+            <a href="#terms" className="hover:text-[#0F766E] text-slate-500 dark:text-slate-400 transition-colors">Terms of Service</a>
           </div>
         </div>
       </footer>

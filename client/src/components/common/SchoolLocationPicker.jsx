@@ -14,7 +14,7 @@ L.Icon.Default.mergeOptions({
 
 const markerIcon = L.divIcon({
   className: 'custom-marker',
-  html: `<div style="background-color: #A05AFF; width: 28px; height: 28px; border-radius: 50%; border: 3px solid white; box-shadow: 0 4px 10px rgba(160,90,255,0.4); display: flex; align-items: center; justify-content: center; transform: translate(-2px, -2px);"><div style="width: 8px; height: 8px; background-color: white; border-radius: 50%; margin: auto;"></div></div>`,
+  html: `<div style="background-color: #0F766E; width: 28px; height: 28px; border-radius: 50%; border: 3px solid white; box-shadow: 0 4px 10px rgba(160,90,255,0.4); display: flex; align-items: center; justify-content: center; transform: translate(-2px, -2px);"><div style="width: 8px; height: 8px; background-color: white; border-radius: 50%; margin: auto;"></div></div>`,
   iconSize: [28, 28],
   iconAnchor: [14, 14],
 });
@@ -210,10 +210,10 @@ export function SchoolLocationPicker({ initialLocation, onLocationChange, onAddr
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             disabled={disabled}
-            className="w-full pl-9 pr-8 h-9 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#A05AFF]/50 text-slate-800 dark:text-slate-100"
+            className="w-full pl-9 pr-8 h-9 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#0F766E]/50 text-slate-800 dark:text-slate-100"
           />
           {isSearching ? (
-            <Loader2 className="absolute right-3 top-2.5 h-4 w-4 text-[#A05AFF] animate-spin" />
+            <Loader2 className="absolute right-3 top-2.5 h-4 w-4 text-[#0F766E] animate-spin" />
           ) : searchQuery ? (
             <button
               type="button"
@@ -228,7 +228,7 @@ export function SchoolLocationPicker({ initialLocation, onLocationChange, onAddr
           {searchResults.length > 0 && (
             <div className="absolute left-0 right-0 top-10 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-xl overflow-hidden max-h-60 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800 text-xs z-[2000]">
               <div className="p-1.5 bg-slate-50 dark:bg-slate-950 text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center justify-between px-3">
-                <span className="flex items-center gap-1"><Sparkles className="h-3 w-3 text-[#A05AFF]" /> Live Location Matches</span>
+                <span className="flex items-center gap-1"><Sparkles className="h-3 w-3 text-[#0F766E]" /> Live Location Matches</span>
                 <span>Select to pin</span>
               </div>
               {searchResults.map((item, idx) => (
@@ -238,7 +238,7 @@ export function SchoolLocationPicker({ initialLocation, onLocationChange, onAddr
                   onClick={() => selectSearchResult(item)}
                   className="w-full text-left px-3 py-2.5 hover:bg-purple-50 dark:hover:bg-slate-800/80 flex items-start gap-2.5 transition-colors group"
                 >
-                  <MapPin className="h-4 w-4 text-[#A05AFF] shrink-0 mt-0.5 group-hover:scale-110 transition-transform" />
+                  <MapPin className="h-4 w-4 text-[#0F766E] shrink-0 mt-0.5 group-hover:scale-110 transition-transform" />
                   <div className="min-w-0 flex-1">
                     <p className="text-slate-800 dark:text-slate-100 font-semibold truncate leading-tight">{item.name || item.display_name.split(',')[0]}</p>
                     <p className="text-[11px] text-slate-500 truncate leading-normal mt-0.5">{item.display_name}</p>
@@ -255,21 +255,21 @@ export function SchoolLocationPicker({ initialLocation, onLocationChange, onAddr
             <button
               type="button"
               onClick={() => setMapType('google_roadmap')}
-              className={`px-2 sm:px-2.5 py-1 rounded-md text-[10px] sm:text-[11px] font-bold transition-all ${mapType === 'google_roadmap' ? 'bg-white dark:bg-slate-900 text-[#A05AFF] shadow-xs' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}`}
+              className={`px-2 sm:px-2.5 py-1 rounded-md text-[10px] sm:text-[11px] font-bold transition-all ${mapType === 'google_roadmap' ? 'bg-white dark:bg-slate-900 text-[#0F766E] shadow-xs' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}`}
             >
               <span className="hidden sm:inline">Google </span>Map
             </button>
             <button
               type="button"
               onClick={() => setMapType('google_satellite')}
-              className={`px-2 sm:px-2.5 py-1 rounded-md text-[10px] sm:text-[11px] font-bold transition-all ${mapType === 'google_satellite' ? 'bg-white dark:bg-slate-900 text-[#A05AFF] shadow-xs' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}`}
+              className={`px-2 sm:px-2.5 py-1 rounded-md text-[10px] sm:text-[11px] font-bold transition-all ${mapType === 'google_satellite' ? 'bg-white dark:bg-slate-900 text-[#0F766E] shadow-xs' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}`}
             >
               Satellite
             </button>
             <button
               type="button"
               onClick={() => setMapType('osm')}
-              className={`px-2 sm:px-2.5 py-1 rounded-md text-[10px] sm:text-[11px] font-bold transition-all ${mapType === 'osm' ? 'bg-white dark:bg-slate-900 text-[#A05AFF] shadow-xs' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}`}
+              className={`px-2 sm:px-2.5 py-1 rounded-md text-[10px] sm:text-[11px] font-bold transition-all ${mapType === 'osm' ? 'bg-white dark:bg-slate-900 text-[#0F766E] shadow-xs' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}`}
             >
               OSM
             </button>
@@ -284,12 +284,12 @@ export function SchoolLocationPicker({ initialLocation, onLocationChange, onAddr
           >
             {isLocating ? (
               <>
-                <Loader2 className="h-3.5 w-3.5 text-[#A05AFF] animate-spin" />
+                <Loader2 className="h-3.5 w-3.5 text-[#0F766E] animate-spin" />
                 <span className="hidden xs:inline">Locating...</span>
               </>
             ) : (
               <>
-                <Navigation className="h-3.5 w-3.5 text-[#A05AFF]" />
+                <Navigation className="h-3.5 w-3.5 text-[#0F766E]" />
                 <span>GPS</span>
               </>
             )}
@@ -350,10 +350,10 @@ export function SchoolLocationPicker({ initialLocation, onLocationChange, onAddr
         {/* Floating Instruction Overlay Badge */}
         <div className="absolute bottom-3 left-3 right-3 bg-white/95 dark:bg-slate-900/95 backdrop-blur-sm p-2.5 rounded-lg border border-slate-200/80 dark:border-slate-800 shadow-md flex items-center justify-between text-xs gap-2 z-[1000]">
           <div className="flex items-center gap-2 min-w-0">
-            <div className="h-2 w-2 rounded-full bg-[#A05AFF] animate-ping shrink-0" />
+            <div className="h-2 w-2 rounded-full bg-[#0F766E] animate-ping shrink-0" />
             <span className="text-slate-600 dark:text-slate-300 font-medium truncate">
               {isGeocoding ? (
-                <span className="flex items-center gap-1"><Loader2 className="h-3 w-3 animate-spin text-[#A05AFF]" /> Resolving address...</span>
+                <span className="flex items-center gap-1"><Loader2 className="h-3 w-3 animate-spin text-[#0F766E]" /> Resolving address...</span>
               ) : resolvedAddress ? (
                 <span className="font-semibold text-slate-800 dark:text-white truncate">{resolvedAddress}</span>
               ) : (
@@ -363,7 +363,7 @@ export function SchoolLocationPicker({ initialLocation, onLocationChange, onAddr
           </div>
 
           <div className="flex items-center gap-1.5 shrink-0 text-[11px]">
-            <span className="bg-purple-50 text-[#A05AFF] border border-[#A05AFF]/30 px-2 py-0.5 rounded-md font-bold hidden sm:inline-block">
+            <span className="bg-purple-50 text-[#0F766E] border border-[#0F766E]/30 px-2 py-0.5 rounded-md font-bold hidden sm:inline-block">
               Drag Pin or Click Map
             </span>
           </div>
@@ -373,7 +373,7 @@ export function SchoolLocationPicker({ initialLocation, onLocationChange, onAddr
       {/* Lat/Lng Technical Indicator footer */}
       <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 font-mono px-1">
         <div className="flex items-center gap-1.5">
-          <MapPin className="h-3.5 w-3.5 text-[#A05AFF]" />
+          <MapPin className="h-3.5 w-3.5 text-[#0F766E]" />
           <span>Coordinates: <strong>{location.lat}</strong>, <strong>{location.lng}</strong></span>
         </div>
         <span>Click or Drag marker to adjust exact coordinates</span>

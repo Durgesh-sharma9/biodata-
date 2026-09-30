@@ -13,31 +13,31 @@ import {
 
 export default function Features() {
   return (
-    <div className="min-h-screen bg-[#f3f3f4] text-slate-800 font-sans antialiased dark:bg-slate-950 dark:text-slate-200">
+    <div className="min-h-screen bg-[#F4F7F6] text-slate-800 font-sans antialiased dark:bg-slate-950 dark:text-slate-200">
       
       {/* Premium Navbar Sticky Module */}
       <nav className="sticky top-0 z-50 bg-white border-b border-slate-100 shadow-sm dark:bg-slate-900 dark:border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-20">
               <Link to="/" className="text-2xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-1">
-                Hire<span className="text-[#A05AFF]">Hub</span>
+                Hire<span className="text-[#0F766E]">Hub</span>
               </Link>
             <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-6">
-              <Link to="/features" className="text-sm font-semibold text-[#A05AFF] bg-[#A05AFF]/10 px-4 py-2 rounded-xl transition-all">
+              <Link to="/features" className="text-sm font-semibold text-[#0F766E] bg-[#0F766E]/10 px-4 py-2 rounded-xl transition-all">
                 Features
               </Link>
-              <Link to="/pricing" className="text-sm font-semibold text-slate-600 hover:text-[#A05AFF] px-3 py-2 rounded-xl hover:bg-slate-50 transition-all dark:text-slate-400 dark:hover:bg-slate-800">
+              <Link to="/pricing" className="text-sm font-semibold text-slate-600 hover:text-[#0F766E] px-3 py-2 rounded-xl hover:bg-slate-50 transition-all dark:text-slate-400 dark:hover:bg-slate-800">
                 Pricing
               </Link>
-              <Link to="/contact" className="text-sm font-semibold text-slate-600 hover:text-[#A05AFF] px-3 py-2 rounded-xl hover:bg-slate-50 transition-all dark:text-slate-400 dark:hover:bg-slate-800">
+              <Link to="/contact" className="text-sm font-semibold text-slate-600 hover:text-[#0F766E] px-3 py-2 rounded-xl hover:bg-slate-50 transition-all dark:text-slate-400 dark:hover:bg-slate-800">
                 Contact
               </Link>
               <span className="h-5 w-px bg-slate-200 mx-2 hidden sm:inline-block dark:bg-slate-800" />
               <Link to="/login" className="hidden sm:inline-block">
-                <Button variant="outline" className="h-10 rounded-xl border-slate-200 text-slate-600 font-semibold hover:bg-slate-50 hover:text-[#A05AFF] transition-all px-5 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-800">Login</Button>
+                <Button variant="outline" className="h-10 rounded-xl border-slate-200 text-slate-600 font-semibold hover:bg-slate-50 hover:text-[#0F766E] transition-all px-5 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-800">Login</Button>
               </Link>
               <Link to="/signup">
-                <Button className="h-10 rounded-xl bg-[#A05AFF] hover:bg-[#A05AFF]/90 text-white font-semibold shadow-sm transition-all px-5">Sign Up</Button>
+                <Button className="h-10 rounded-xl bg-[#0F766E] hover:bg-[#0F766E]/90 text-white font-semibold shadow-sm transition-all px-5">Sign Up</Button>
               </Link>
             </div>
           </div>
@@ -50,7 +50,7 @@ export default function Features() {
         {/* Page Header Panel Layout */}
         <div className="mb-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border border-[#A05AFF]/30 bg-[#A05AFF]/5 text-[#A05AFF] text-[11px] font-bold uppercase tracking-wider mb-2">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border border-[#0F766E]/30 bg-[#0F766E]/5 text-[#0F766E] text-[11px] font-bold uppercase tracking-wider mb-2">
               <Sparkles className="h-3 w-3" /> Core Capabilities
             </div>
             <h1 className="text-xl font-bold tracking-tight text-slate-800 dark:text-white">
@@ -78,7 +78,7 @@ export default function Features() {
 
           {/* Card 2: Document Upload */}
           <div className="rounded-xl border-none bg-white shadow-sm p-5 dark:bg-slate-900 transition-all hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
-            <div className="p-2.5 border border-[#9E58FF]/30 bg-[#9E58FF]/5 text-[#9E58FF] rounded-xl w-fit mb-4">
+            <div className="p-2.5 border border-[#14B8A6]/30 bg-[#14B8A6]/5 text-[#14B8A6] rounded-xl w-fit mb-4">
               <FileText className="w-5 h-5" />
             </div>
             <h3 className="text-sm font-bold tracking-wide text-slate-800 dark:text-slate-200 mb-2">Document Upload</h3>
@@ -100,7 +100,7 @@ export default function Features() {
 
           {/* Card 4: Customizable Settings */}
           <div className="rounded-xl border-none bg-white shadow-sm p-5 dark:bg-slate-900 transition-all hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
-            <div className="p-2.5 border border-[#A05AFF]/30 bg-[#A05AFF]/5 text-[#A05AFF] rounded-xl w-fit mb-4">
+            <div className="p-2.5 border border-[#0F766E]/30 bg-[#0F766E]/5 text-[#0F766E] rounded-xl w-fit mb-4">
               <Sliders className="w-5 h-5" />
             </div>
             <h3 className="text-sm font-bold tracking-wide text-slate-800 dark:text-slate-200 mb-2">Customizable Settings</h3>
@@ -136,7 +136,7 @@ export default function Features() {
         {/* Action Bottom Section Wrapper */}
         <div className="mt-12 text-center">
           <Link to="/signup">
-            <Button size="lg" className="h-11 rounded-xl bg-[#A05AFF] hover:bg-[#A05AFF]/90 text-white font-bold tracking-wide px-8 shadow-sm transition-all flex items-center mx-auto gap-2">
+            <Button size="lg" className="h-11 rounded-xl bg-[#0F766E] hover:bg-[#0F766E]/90 text-white font-bold tracking-wide px-8 shadow-sm transition-all flex items-center mx-auto gap-2">
               <span>Get Started Today</span>
               <ArrowRight className="h-4 w-4" />
             </Button>
@@ -149,8 +149,8 @@ export default function Features() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
           <p className="text-xs font-medium text-slate-400">&copy; {new Date().getFullYear()} HireHub Technologies. All rights reserved.</p>
           <div className="flex gap-6 text-xs font-semibold">
-            <a href="#privacy" className="hover:text-[#A05AFF] text-slate-500 dark:text-slate-400 transition-colors">Privacy Policy</a>
-            <a href="#terms" className="hover:text-[#A05AFF] text-slate-500 dark:text-slate-400 transition-colors">Terms of Service</a>
+            <a href="#privacy" className="hover:text-[#0F766E] text-slate-500 dark:text-slate-400 transition-colors">Privacy Policy</a>
+            <a href="#terms" className="hover:text-[#0F766E] text-slate-500 dark:text-slate-400 transition-colors">Terms of Service</a>
           </div>
         </div>
       </footer>

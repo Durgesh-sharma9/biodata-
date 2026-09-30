@@ -187,7 +187,7 @@ export default function SchoolProfile() {
       {/* Compact Header Bar */}
       <div className="bg-white dark:bg-slate-900 px-4 py-3.5 sm:px-5 sm:py-4 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <div className="h-11 w-11 rounded-xl bg-purple-50 dark:bg-purple-950/40 text-[#A05AFF] flex items-center justify-center border border-[#A05AFF]/20 shrink-0 overflow-hidden shadow-2xs">
+          <div className="h-11 w-11 rounded-xl bg-purple-50 dark:bg-purple-950/40 text-[#0F766E] flex items-center justify-center border border-[#0F766E]/20 shrink-0 overflow-hidden shadow-2xs">
             {formData.logoUrl ? (
               <img src={formData.logoUrl} alt="School Logo" className="h-full w-full object-contain p-1" />
             ) : (
@@ -219,7 +219,7 @@ export default function SchoolProfile() {
           <Button
             onClick={handleSave}
             disabled={updateMutation.isPending}
-            className="h-9 px-4 bg-gradient-to-r from-[#A05AFF] via-[#9E58FF] to-[#4BCBEB] hover:opacity-95 text-white text-xs font-bold rounded-lg shadow-sm transition-all active:scale-95 disabled:opacity-50"
+            className="h-9 px-4 bg-gradient-to-r from-[#0F766E] via-[#14B8A6] to-[#4BCBEB] hover:opacity-95 text-white text-xs font-bold rounded-lg shadow-sm transition-all active:scale-95 disabled:opacity-50"
           >
             {updateMutation.isPending ? (
               <>
@@ -280,7 +280,7 @@ export default function SchoolProfile() {
           <Card className="border border-slate-200/80 dark:border-slate-800 shadow-xs">
             <CardHeader className="px-4 py-3 sm:px-5 sm:py-3.5 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
               <CardTitle className="text-xs sm:text-sm font-bold tracking-tight text-slate-800 dark:text-slate-200 flex items-center gap-2">
-                <Building2 className="h-4 w-4 text-[#A05AFF]" />
+                <Building2 className="h-4 w-4 text-[#0F766E]" />
                 Basic Information & Branding
               </CardTitle>
             </CardHeader>
@@ -342,7 +342,7 @@ export default function SchoolProfile() {
                       size="sm"
                       disabled={isUploadingLogo}
                       onClick={() => fileInputRef.current?.click()}
-                      className="h-8 px-3 text-xs font-bold bg-[#A05AFF] hover:bg-[#8e44ee] text-white rounded-lg shadow-2xs"
+                      className="h-8 px-3 text-xs font-bold bg-[#0F766E] hover:bg-[#0D9488] text-white rounded-lg shadow-2xs"
                     >
                       {isUploadingLogo ? (
                         <>
@@ -381,7 +381,7 @@ export default function SchoolProfile() {
                   value={formData.schoolName}
                   onChange={(e) => setFormData({ ...formData, schoolName: e.target.value })}
                   placeholder="Enter school name"
-                  className="h-9 px-3 text-xs bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 font-medium focus:border-[#A05AFF]"
+                  className="h-9 px-3 text-xs bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 font-medium focus:border-[#0F766E]"
                 />
               </div>
 
@@ -411,7 +411,7 @@ export default function SchoolProfile() {
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   placeholder="Enter contact phone number"
-                  className="h-9 px-3 text-xs border-slate-200 dark:border-slate-800 focus:border-[#A05AFF]/60 font-medium"
+                  className="h-9 px-3 text-xs border-slate-200 dark:border-slate-800 focus:border-[#0F766E]/60 font-medium"
                 />
               </div>
             </CardContent>
@@ -421,7 +421,7 @@ export default function SchoolProfile() {
           <Card className="border border-slate-200/80 dark:border-slate-800 shadow-xs">
             <CardHeader className="px-4 py-3 sm:px-5 sm:py-3.5 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
               <CardTitle className="text-xs sm:text-sm font-bold tracking-tight text-slate-800 dark:text-slate-200 flex items-center gap-2">
-                <MapPin className="h-4 w-4 text-[#A05AFF]" />
+                <MapPin className="h-4 w-4 text-[#0F766E]" />
                 Location & Coverage
               </CardTitle>
             </CardHeader>
@@ -492,7 +492,7 @@ export default function SchoolProfile() {
               {/* Coordinates Indicator */}
               <div className="pt-1 flex items-center justify-between text-[11px] text-slate-400 border-t border-slate-100 dark:border-slate-800">
                 <span className="flex items-center gap-1 font-mono text-[10px]">
-                  <Compass className="h-3 w-3 text-[#A05AFF]" />
+                  <Compass className="h-3 w-3 text-[#0F766E]" />
                   {lat && lng ? `${Number(lat).toFixed(4)}, ${Number(lng).toFixed(4)}` : 'No coordinates pinned'}
                 </span>
                 <span className="text-[10px] text-slate-400">
@@ -509,10 +509,10 @@ export default function SchoolProfile() {
           <Card className="border border-slate-200/80 dark:border-slate-800 shadow-xs h-full flex flex-col">
             <CardHeader className="px-4 py-3 sm:px-5 sm:py-3.5 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 flex flex-row items-center justify-between">
               <CardTitle className="text-xs sm:text-sm font-bold tracking-tight text-slate-800 dark:text-slate-200 flex items-center gap-2">
-                <Navigation className="h-4 w-4 text-[#A05AFF]" />
+                <Navigation className="h-4 w-4 text-[#0F766E]" />
                 Interactive Map Pinpoint
               </CardTitle>
-              <span className="text-[11px] text-[#A05AFF] font-medium bg-[#A05AFF]/10 px-2 py-0.5 rounded-full border border-[#A05AFF]/20">
+              <span className="text-[11px] text-[#0F766E] font-medium bg-[#0F766E]/10 px-2 py-0.5 rounded-full border border-[#0F766E]/20">
                 Click map or drag pin
               </span>
             </CardHeader>
@@ -534,7 +534,7 @@ export default function SchoolProfile() {
         <Button
           onClick={handleSave}
           disabled={updateMutation.isPending}
-          className="h-11 px-5 bg-gradient-to-r from-[#A05AFF] to-[#4BCBEB] text-white text-xs font-bold rounded-full shadow-lg flex items-center gap-2"
+          className="h-11 px-5 bg-gradient-to-r from-[#0F766E] to-[#4BCBEB] text-white text-xs font-bold rounded-full shadow-lg flex items-center gap-2"
         >
           {updateMutation.isPending ? (
             <>

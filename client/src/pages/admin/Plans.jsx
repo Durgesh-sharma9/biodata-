@@ -55,7 +55,7 @@ export default function Plans() {
     <div className="space-y-6 w-full antialiased text-slate-800 dark:text-white">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-100 pb-5">
         <PageHeader title="Subscription Plans" description="Manage system token bundles and plan nodes." />
-        <Button onClick={openCreate} className="bg-[#A05AFF] hover:bg-[#A05AFF]/90 text-white font-bold rounded-xl gap-2">
+        <Button onClick={openCreate} className="bg-[#0F766E] hover:bg-[#0F766E]/90 text-white font-bold rounded-xl gap-2">
           <Plus className="h-4 w-4" /> Add Plan
         </Button>
       </div>
@@ -64,7 +64,7 @@ export default function Plans() {
       <Card className="min-h-[500px] flex flex-col">
         <CardHeader className="p-5 border-b border-slate-100">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 bg-[#A05AFF]/10 text-[#A05AFF] rounded-xl"><Sparkles className="h-4 w-4" /></div>
+            <div className="p-2.5 bg-[#0F766E]/10 text-[#0F766E] rounded-xl"><Sparkles className="h-4 w-4" /></div>
             <div>
               <CardTitle className="text-sm font-bold text-slate-800">Available Packages</CardTitle>
               <CardDescription className="text-xs text-slate-400">Overview of active tiers.</CardDescription>
@@ -88,7 +88,7 @@ export default function Plans() {
                 <TableRow key={plan._id}>
                   <TableCell className="pl-6 font-bold">{plan.name}</TableCell>
                   <TableCell><div className="inline-flex items-center gap-1.5 text-xs font-bold border border-[#4BCBEB]/30 bg-[#4BCBEB]/5 text-[#4BCBEB] px-2.5 py-1 rounded-xl"><Coins className="h-3.5 w-3.5"/> {plan.credits} Tokens</div></TableCell>
-                  <TableCell><div className="inline-flex items-center gap-1.5 text-xs font-bold border border-[#A05AFF]/30 bg-[#A05AFF]/5 text-[#A05AFF] px-2.5 py-1 rounded-xl"><Calendar className="h-3.5 w-3.5"/> {plan.durationDays} Days</div></TableCell>
+                  <TableCell><div className="inline-flex items-center gap-1.5 text-xs font-bold border border-[#0F766E]/30 bg-[#0F766E]/5 text-[#0F766E] px-2.5 py-1 rounded-xl"><Calendar className="h-3.5 w-3.5"/> {plan.durationDays} Days</div></TableCell>
                   <TableCell><Badge className="text-[#1BCFB4] bg-[#1BCFB4]/5">Active</Badge></TableCell>
                   <TableCell className="pr-6 text-right">
                     <Button variant="edit" size="icon" onClick={() => openEdit(plan)} className="h-8 w-8 mr-1"><Pencil className="h-3.5 w-3.5" /></Button>

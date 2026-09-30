@@ -62,7 +62,7 @@ export function MultiSelect({ options = [], value = [], onChange, placeholder = 
         className={cn(
           'flex min-h-11 w-full items-center justify-between rounded-xl border bg-white px-4 py-2 text-sm font-medium transition-all duration-200 outline-none text-slate-700 placeholder:text-slate-400',
           open 
-            ? 'border-[#A05AFF]/60 ring-4 ring-[#A05AFF]/10' 
+            ? 'border-[#0F766E]/60 ring-4 ring-[#0F766E]/10' 
             : 'border-slate-200 hover:border-slate-300'
         )}
       >
@@ -74,11 +74,11 @@ export function MultiSelect({ options = [], value = [], onChange, placeholder = 
               <Badge 
                 key={v} 
                 variant="default" 
-                className="gap-1 px-2 py-0.5 border-[#A05AFF]/30 bg-[#A05AFF]/5 text-[#A05AFF] font-bold text-[10px] uppercase rounded-md transition-all duration-200 animate-in fade-in-0 zoom-in-95 normalized-badge"
+                className="gap-1 px-2 py-0.5 border-[#0F766E]/30 bg-[#0F766E]/5 text-[#0F766E] font-bold text-[10px] uppercase rounded-md transition-all duration-200 animate-in fade-in-0 zoom-in-95 normalized-badge"
               >
                 {v}
                 <X
-                  className="h-3 w-3 rounded-md text-[#A05AFF]/70 hover:text-[#A05AFF] hover:bg-[#A05AFF]/10 p-0.5 transition-colors cursor-pointer"
+                  className="h-3 w-3 rounded-md text-[#0F766E]/70 hover:text-[#0F766E] hover:bg-[#0F766E]/10 p-0.5 transition-colors cursor-pointer"
                   onClick={(e) => {
                     e.stopPropagation();
                     toggle(v);
@@ -88,7 +88,7 @@ export function MultiSelect({ options = [], value = [], onChange, placeholder = 
             ))
           )}
         </div>
-        <ChevronDown className={cn("h-4 w-4 shrink-0 text-slate-400 transition-transform duration-300", open && "transform rotate-180 text-[#A05AFF]")} />
+        <ChevronDown className={cn("h-4 w-4 shrink-0 text-slate-400 transition-transform duration-300", open && "transform rotate-180 text-[#0F766E]")} />
       </button>
 
       {open && coords && createPortal(
@@ -110,7 +110,7 @@ export function MultiSelect({ options = [], value = [], onChange, placeholder = 
                 <Search className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
                 <Input
                   placeholder="Search selections..."
-                  className="pl-9 h-10 rounded-lg bg-slate-50 dark:bg-slate-950 border-slate-200/60 focus:border-[#A05AFF]/60 focus:bg-white text-xs"
+                  className="pl-9 h-10 rounded-lg bg-slate-50 dark:bg-slate-950 border-slate-200/60 focus:border-[#0F766E]/60 focus:bg-white text-xs"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   onClick={(e) => e.stopPropagation()}
@@ -129,13 +129,13 @@ export function MultiSelect({ options = [], value = [], onChange, placeholder = 
                     className={cn(
                       'flex w-full items-center justify-between px-3 py-2 text-left text-xs font-semibold rounded-lg transition-all duration-150',
                       isSelected
-                        ? 'bg-[#A05AFF]/10 text-[#A05AFF]'
+                        ? 'bg-[#0F766E]/10 text-[#0F766E]'
                         : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
                     )}
                   >
                     <span>{option}</span>
                     {isSelected && (
-                      <div className="h-2 w-2 rounded-full bg-[#A05AFF]" />
+                      <div className="h-2 w-2 rounded-full bg-[#0F766E]" />
                     )}
                   </button>
                 );

@@ -21,10 +21,10 @@ export default function Dashboard() {
 
   if (isLoading) {
     return (
-      <div className="flex h-[70vh] flex-col items-center justify-center space-y-4 antialiased bg-[#f3f3f4]">
+      <div className="flex h-[70vh] flex-col items-center justify-center space-y-4 antialiased bg-[#F4F7F6]">
         <div className="relative flex items-center justify-center">
-          <Loader2 className="h-12 w-12 text-[#A05AFF] animate-spin relative z-10" />
-          <div className="absolute inset-0 bg-[#A05AFF]/10 rounded-full blur-xl animate-pulse scale-150" />
+          <Loader2 className="h-12 w-12 text-[#0F766E] animate-spin relative z-10" />
+          <div className="absolute inset-0 bg-[#0F766E]/10 rounded-full blur-xl animate-pulse scale-150" />
         </div>
         <p className="text-slate-500 font-bold tracking-wide text-sm">
           Assembling recruitment control center...
@@ -48,7 +48,7 @@ export default function Dashboard() {
 
   // Colors for Position Analytics Bars
   const BAR_COLORS = [
-    'bg-[#A05AFF]',
+    'bg-[#0F766E]',
     'bg-[#07cdae]',
     'bg-[#3081e4]',
     'bg-[#fe7096]',
@@ -57,110 +57,101 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="space-y-6 w-full antialiased text-[#343a40]">
+    <div className="space-y-4 w-full antialiased text-[#1E293B]">
       
-      {/* Top Header Row */}
-      <div className="flex items-center justify-between bg-white dark:bg-slate-900 px-5 py-3.5 rounded-xl shadow-sm border border-slate-200/80 dark:border-slate-800">
-        <div className="flex items-center gap-2.5">
-          <div className="p-2 bg-[#A05AFF] text-white rounded-lg shadow-sm">
-            <Sparkles className="h-4 w-4" />
+      {/* Top Header Row - Compact */}
+      <div className="flex items-center justify-between bg-white dark:bg-slate-900 px-4 py-2.5 rounded-lg shadow-2xs border border-[#E2EAE7] dark:border-slate-800">
+        <div className="flex items-center gap-2">
+          <div className="p-1.5 bg-[#0F766E] text-white rounded-md shadow-2xs">
+            <Sparkles className="h-3.5 w-3.5" />
           </div>
           <div>
-            <h1 className="text-lg font-bold tracking-tight text-slate-800">Recruitment Dashboard</h1>
-            <p className="text-xs text-slate-400 font-medium">Real-time Pipeline Analytics & Candidate Management</p>
+            <h1 className="text-base font-bold tracking-tight text-slate-900 dark:text-white">Recruitment Dashboard</h1>
+            <p className="text-[11px] text-slate-400 font-medium">Real-time Pipeline Analytics & Candidate Management</p>
           </div>
         </div>
         
         {/* Quick Action Group */}
-        <div className="flex items-center gap-3">
-          <Button asChild className="h-9 rounded-md bg-[#A05AFF] hover:bg-[#A05AFF]/90 text-white font-semibold shadow-sm transition-all text-xs px-4">
+        <div className="flex items-center gap-2">
+          <Button asChild className="h-8 rounded-lg bg-[#0F766E] hover:bg-[#115E59] text-white font-bold shadow-2xs transition-all text-xs px-3">
             <Link to="/candidates/new">
-              <Plus className="mr-1.5 h-3.5 w-3.5" /> Add Candidate
+              <Plus className="mr-1 h-3.5 w-3.5" /> Add Candidate
             </Link>
           </Button>
-          <Button variant="outline" asChild className="h-9 rounded-md border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:text-[#A05AFF] transition-all text-xs px-4">
+          <Button variant="outline" asChild className="h-8 rounded-lg border-[#E2EAE7] bg-white text-slate-700 hover:bg-[#F0FDFA] hover:text-[#0F766E] hover:border-[#0F766E]/40 transition-all text-xs px-3">
             <Link to="/talent-pool">
-              <Search className="mr-1.5 h-3.5 w-3.5 text-[#4BCBEB]" /> Browse Pool
+              <Search className="mr-1 h-3.5 w-3.5 text-[#14B8A6]" /> Browse Pool
             </Link>
           </Button>
         </div>
       </div>
 
-      {/* COMPACT Grid Matrix of Statistics Cards */}
-      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+      {/* COMPACT Grid Matrix of Statistics Cards - Teal & Mint Palette 2 */}
+      <div className="grid gap-3.5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         
-        {/* My Candidates */}
-        <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-[#ffbf96] to-[#fe7096] p-4 text-white shadow-sm group">
+        {/* My Candidates - Teal Gradient Accent Card */}
+        <div className="relative overflow-hidden rounded-lg bg-gradient-to-r from-[#0F766E] to-[#14B8A6] p-3.5 text-white shadow-2xs group">
           <div className="absolute right-0 bottom-0 translate-x-2 translate-y-2 opacity-15 pointer-events-none transition-transform duration-300 group-hover:scale-110">
-            <Users className="h-20 w-20" />
+            <Users className="h-16 w-16" />
           </div>
           <div className="relative flex items-center justify-between">
-            <div className="space-y-1">
-              <span className="text-xs font-semibold opacity-90 uppercase tracking-wider">My Candidates</span>
-              <h3 className="text-2xl font-bold tracking-tight">{data?.myCandidates || 0}</h3>
-              <p className="text-[11px] opacity-80 font-medium flex items-center gap-1">
+            <div className="space-y-0.5">
+              <span className="text-[10px] font-bold opacity-90 uppercase tracking-wider">My Candidates</span>
+              <h3 className="text-2xl font-black tracking-tight">{data?.myCandidates || 0}</h3>
+              <p className="text-[10px] opacity-90 font-semibold flex items-center gap-1">
                 <TrendingUp className="h-3 w-3" /> Active Pipeline Roster
               </p>
             </div>
-            <div className="p-2.5 rounded-lg bg-white/20 backdrop-blur-sm">
-              <Users className="h-5 w-5 text-white" />
+            <div className="p-2 rounded-lg bg-white/20 backdrop-blur-xs">
+              <Users className="h-4 w-4 text-white" />
             </div>
           </div>
         </div>
 
-        {/* Talent Pool Records */}
-        <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-[#84d9d2] to-[#07cdae] p-4 text-white shadow-sm group">
-          <div className="absolute right-0 bottom-0 translate-x-2 translate-y-2 opacity-15 pointer-events-none transition-transform duration-300 group-hover:scale-110">
-            <List className="h-20 w-20" />
-          </div>
+        {/* Talent Pool Records - Crisp White Card with Top Teal Accent */}
+        <div className="relative overflow-hidden rounded-lg bg-white dark:bg-slate-900 border border-[#E2EAE7] border-t-3 border-t-[#0F766E] dark:border-slate-800 p-3.5 shadow-2xs group">
           <div className="relative flex items-center justify-between">
-            <div className="space-y-1">
-              <span className="text-xs font-semibold opacity-90 uppercase tracking-wider">Talent Pool Records</span>
-              <h3 className="text-2xl font-bold tracking-tight">{data?.talentPoolCount || 0}</h3>
-              <p className="text-[11px] opacity-80 font-medium flex items-center gap-1">
-                <Search className="h-3 w-3" /> Discoverable Profiles
+            <div className="space-y-0.5">
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Talent Pool Records</span>
+              <h3 className="text-2xl font-black text-slate-800 dark:text-white tracking-tight">{data?.talentPoolCount || 0}</h3>
+              <p className="text-[10px] text-[#0F766E] font-semibold flex items-center gap-1">
+                <Search className="h-3 w-3 text-[#14B8A6]" /> Discoverable Profiles
               </p>
             </div>
-            <div className="p-2.5 rounded-lg bg-white/20 backdrop-blur-sm">
-              <List className="h-5 w-5 text-white" />
+            <div className="p-2 rounded-lg bg-[#0F766E]/10 text-[#0F766E]">
+              <List className="h-4 w-4" />
             </div>
           </div>
         </div>
 
-        {/* Owned Candidates */}
-        <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-[#90caf9] via-[#64b5f6] to-[#3081e4] p-4 text-white shadow-sm group">
-          <div className="absolute right-0 bottom-0 translate-x-2 translate-y-2 opacity-15 pointer-events-none transition-transform duration-300 group-hover:scale-110">
-            <Briefcase className="h-20 w-20" />
-          </div>
+        {/* Owned Candidates - Crisp White Card with Top Mint Accent */}
+        <div className="relative overflow-hidden rounded-lg bg-white dark:bg-slate-900 border border-[#E2EAE7] border-t-3 border-t-[#14B8A6] dark:border-slate-800 p-3.5 shadow-2xs group">
           <div className="relative flex items-center justify-between">
-            <div className="space-y-1">
-              <span className="text-xs font-semibold opacity-90 uppercase tracking-wider">Owned Candidates</span>
-              <h3 className="text-2xl font-bold tracking-tight">{data?.ownedCandidates || 0}</h3>
-              <p className="text-[11px] opacity-80 font-medium flex items-center gap-1">
+            <div className="space-y-0.5">
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Direct Applications</span>
+              <h3 className="text-2xl font-black text-slate-800 dark:text-white tracking-tight">{data?.ownedCandidates || 0}</h3>
+              <p className="text-[10px] text-[#14B8A6] font-semibold flex items-center gap-1">
                 <UserCheck className="h-3 w-3" /> Direct Database Records
               </p>
             </div>
-            <div className="p-2.5 rounded-lg bg-white/20 backdrop-blur-sm">
-              <Briefcase className="h-5 w-5 text-white" />
+            <div className="p-2 rounded-lg bg-[#14B8A6]/15 text-[#0F766E]">
+              <Briefcase className="h-4 w-4" />
             </div>
           </div>
         </div>
 
-        {/* Available Credits */}
-        <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-[#da8eff] to-[#9e58ff] p-4 text-white shadow-sm group">
-          <div className="absolute right-0 bottom-0 translate-x-2 translate-y-2 opacity-15 pointer-events-none transition-transform duration-300 group-hover:scale-110">
-            <Coins className="h-20 w-20" />
-          </div>
+        {/* Available Credits - Warm Amber Alert Card */}
+        <div className="relative overflow-hidden rounded-lg bg-[#FEF3C7]/90 dark:bg-amber-950/40 border border-[#FDE68A] dark:border-amber-900/60 p-3.5 shadow-2xs group">
           <div className="relative flex items-center justify-between">
-            <div className="space-y-1">
-              <span className="text-xs font-semibold opacity-90 uppercase tracking-wider">Available Credits</span>
-              <h3 className="text-2xl font-bold tracking-tight">{data?.availableCredits || 0}</h3>
-              <p className="text-[11px] opacity-80 font-medium flex items-center gap-1">
+            <div className="space-y-0.5">
+              <span className="text-[10px] font-bold text-amber-800 dark:text-amber-300 uppercase tracking-wider">Available Credits</span>
+              <h3 className="text-2xl font-black text-amber-950 dark:text-amber-200 tracking-tight">{data?.availableCredits || 0}</h3>
+              <p className="text-[10px] text-amber-700 dark:text-amber-400 font-semibold flex items-center gap-1">
                 <Coins className="h-3 w-3" /> Profile Unlock Balance
               </p>
             </div>
-            <div className="p-2.5 rounded-lg bg-white/20 backdrop-blur-sm">
-              <Coins className="h-5 w-5 text-white" />
+            <div className="p-2 rounded-lg bg-amber-500/20 text-amber-700 dark:text-amber-300">
+              <Coins className="h-4 w-4" />
             </div>
           </div>
         </div>
@@ -243,7 +234,7 @@ export default function Dashboard() {
           <CardHeader className="flex flex-row items-center justify-between p-5 border-b border-slate-100 bg-white space-y-0">
             <div className="space-y-0.5">
               <CardTitle className="text-base font-bold tracking-wide text-slate-800 flex items-center gap-2">
-                <BarChart3 className="h-4 w-4 text-[#A05AFF]" /> Candidate Distribution by Role
+                <BarChart3 className="h-4 w-4 text-[#0F766E]" /> Candidate Distribution by Role
               </CardTitle>
               <p className="text-xs text-slate-400 font-medium">Breakdown of active talent across position categories</p>
             </div>
@@ -303,7 +294,7 @@ export default function Dashboard() {
 
             <div className="flex items-center justify-between p-3 rounded-xl bg-purple-50/50 border border-purple-100">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-[#A05AFF] text-white">
+                <div className="p-2 rounded-lg bg-[#0F766E] text-white">
                   <Zap className="h-4 w-4" />
                 </div>
                 <div>
@@ -393,7 +384,7 @@ export default function Dashboard() {
               </CardTitle>
               <p className="text-xs text-slate-400 font-medium">Latest recruitment actions on your school account</p>
             </div>
-            <Button variant="ghost" asChild className="h-7 text-xs font-bold text-[#A05AFF] hover:bg-[#A05AFF]/10 px-2.5 rounded-md">
+            <Button variant="ghost" asChild className="h-7 text-xs font-bold text-[#0F766E] hover:bg-[#0F766E]/10 px-2.5 rounded-md">
               <Link to="/talent-pool">Explore Pool</Link>
             </Button>
           </CardHeader>
@@ -440,11 +431,11 @@ export default function Dashboard() {
         <CardHeader className="flex flex-row items-center justify-between p-5 border-b border-slate-100 bg-white space-y-0">
           <div className="space-y-0.5">
             <CardTitle className="text-base font-bold tracking-wide text-slate-800 flex items-center gap-2">
-              <Users className="h-4 w-4 text-[#A05AFF]" /> My Candidates Pipeline ({recentCandidates.length} Shown)
+              <Users className="h-4 w-4 text-[#0F766E]" /> My Candidates Pipeline ({recentCandidates.length} Shown)
             </CardTitle>
             <p className="text-xs text-slate-400 font-medium">Full details of candidates in your school roster</p>
           </div>
-          <Button variant="ghost" asChild className="h-8 text-xs font-bold text-[#A05AFF] hover:bg-[#A05AFF]/10 rounded-md transition-all px-3">
+          <Button variant="ghost" asChild className="h-8 text-xs font-bold text-[#0F766E] hover:bg-[#0F766E]/10 rounded-md transition-all px-3">
             <Link to="/my-candidates" className="flex items-center gap-1">
               View all candidates <ArrowRight className="h-3.5 w-3.5" />
             </Link>
@@ -487,7 +478,7 @@ export default function Dashboard() {
                     <TableCell colSpan={8} className="py-14 text-center">
                       <div className="max-w-sm mx-auto flex flex-col items-center justify-center space-y-2">
                         <div className="p-3 border border-slate-200 bg-slate-50 rounded-xl text-slate-400">
-                          <Users className="h-6 w-6 text-[#A05AFF]" />
+                          <Users className="h-6 w-6 text-[#0F766E]" />
                         </div>
                         <div className="space-y-0.5">
                           <h4 className="text-sm font-bold text-slate-700">No candidates logged yet</h4>
@@ -495,7 +486,7 @@ export default function Dashboard() {
                             Add candidate profiles to track and manage your recruitment pipeline.
                           </p>
                         </div>
-                        <Button size="sm" asChild className="rounded-md bg-[#A05AFF] hover:bg-[#A05AFF]/90 text-white font-semibold px-4 h-8 text-xs">
+                        <Button size="sm" asChild className="rounded-md bg-[#0F766E] hover:bg-[#0F766E]/90 text-white font-semibold px-4 h-8 text-xs">
                           <Link to="/candidates/new">Add First Candidate</Link>
                         </Button>
                       </div>
@@ -513,13 +504,13 @@ export default function Dashboard() {
                         {/* Candidate Name */}
                         <TableCell className="pl-6 py-3">
                           <div className="flex items-center gap-3">
-                            <div className="h-9 w-9 rounded-full bg-gradient-to-br from-[#A05AFF]/20 to-purple-500/20 text-[#A05AFF] font-bold text-xs flex items-center justify-center border border-[#A05AFF]/30 shrink-0">
+                            <div className="h-9 w-9 rounded-full bg-gradient-to-br from-[#0F766E]/20 to-purple-500/20 text-[#0F766E] font-bold text-xs flex items-center justify-center border border-[#0F766E]/30 shrink-0">
                               {c.fullName ? c.fullName.charAt(0).toUpperCase() : 'C'}
                             </div>
                             <div>
                               <Link 
                                 to={`/candidates/${c._id}`} 
-                                className="font-bold text-slate-800 text-sm hover:text-[#A05AFF] transition-colors focus:outline-none hover:underline"
+                                className="font-bold text-slate-800 text-sm hover:text-[#0F766E] transition-colors focus:outline-none hover:underline"
                               >
                                 {c.fullName}
                               </Link>
@@ -573,7 +564,7 @@ export default function Dashboard() {
                         {/* Source */}
                         <TableCell className="py-3">
                           {c.source ? (
-                            <span className="inline-block border border-[#A05AFF]/30 bg-[#A05AFF]/5 text-[#A05AFF] font-semibold rounded-md px-2 py-0.5 text-[11px]">
+                            <span className="inline-block border border-[#0F766E]/30 bg-[#0F766E]/5 text-[#0F766E] font-semibold rounded-md px-2 py-0.5 text-[11px]">
                               {c.source.replace(/_/g, ' ')}
                             </span>
                           ) : (
@@ -590,7 +581,7 @@ export default function Dashboard() {
 
                         {/* Action */}
                         <TableCell className="py-3 pr-6 text-right">
-                          <Button variant="ghost" size="icon" asChild className="h-8 w-8 rounded-lg text-slate-500 hover:text-[#A05AFF] hover:bg-[#A05AFF]/10">
+                          <Button variant="ghost" size="icon" asChild className="h-8 w-8 rounded-lg text-slate-500 hover:text-[#0F766E] hover:bg-[#0F766E]/10">
                             <Link to={`/candidates/${c._id}`} title="View Candidate Details">
                               <Eye className="h-4 w-4" />
                             </Link>

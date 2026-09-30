@@ -80,12 +80,12 @@ export default function Login({ redirectTo, signupLink = '/signup', title = 'Sig
           
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#A05AFF] to-[#7928CA] flex items-center justify-center text-white shadow-md shadow-[#A05AFF]/25 group-hover:scale-105 transition-transform">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#0F766E] to-[#7928CA] flex items-center justify-center text-white shadow-md shadow-[#0F766E]/25 group-hover:scale-105 transition-transform">
               <Briefcase className="w-5 h-5 text-white" />
             </div>
             <div className="flex flex-col">
               <span className="text-2xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-1">
-                Hire<span className="text-[#A05AFF]">Hub</span>
+                Hire<span className="text-[#0F766E]">Hub</span>
               </span>
               <span className="text-[10px] font-semibold text-slate-400 tracking-wider uppercase -mt-1">
                 School Staff Recruitment
@@ -97,17 +97,17 @@ export default function Login({ redirectTo, signupLink = '/signup', title = 'Sig
             <button
               type="button"
               onClick={handleBack}
-              className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-[#A05AFF] px-2.5 py-1.5 rounded-lg hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800 transition-colors"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-[#0F766E] px-2.5 py-1.5 rounded-lg hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800 transition-colors"
             >
               <ArrowLeft className="w-4 h-4" /> Back
             </button>
             <Link to="/applicant/login">
-              <Button variant="ghost" className="text-xs font-bold text-slate-600 hover:text-[#A05AFF] dark:text-slate-300">
-                <GraduationCap className="w-4 h-4 mr-1 text-[#A05AFF]" /> Candidate Login
+              <Button variant="ghost" className="text-xs font-bold text-slate-600 hover:text-[#0F766E] dark:text-slate-300">
+                <GraduationCap className="w-4 h-4 mr-1 text-[#0F766E]" /> Candidate Login
               </Button>
             </Link>
             <Link to="/signup">
-              <Button className="h-9 rounded-xl bg-[#A05AFF] hover:bg-[#8B3DFF] text-white font-bold text-xs px-4 shadow-sm">
+              <Button className="h-9 rounded-xl bg-[#0F766E] hover:bg-[#115E59] text-white font-bold text-xs px-4 shadow-sm">
                 Register School
               </Button>
             </Link>
@@ -118,8 +118,8 @@ export default function Login({ redirectTo, signupLink = '/signup', title = 'Sig
       {/* LOGIN CARD */}
       <main className="flex-1 flex items-center justify-center px-4 py-12 relative overflow-hidden">
         {/* Animated Background Glow Orbs */}
-        <div className="absolute top-1/4 -left-20 w-80 h-80 bg-gradient-to-tr from-[#A05AFF]/25 to-[#FE7096]/20 rounded-full blur-3xl pointer-events-none animate-pulse" />
-        <div className="absolute bottom-1/4 -right-20 w-80 h-80 bg-gradient-to-br from-[#1BCFB4]/25 to-[#A05AFF]/20 rounded-full blur-3xl pointer-events-none animate-pulse" />
+        <div className="absolute top-1/4 -left-20 w-80 h-80 bg-gradient-to-tr from-[#0F766E]/25 to-[#FE7096]/20 rounded-full blur-3xl pointer-events-none animate-pulse" />
+        <div className="absolute bottom-1/4 -right-20 w-80 h-80 bg-gradient-to-br from-[#1BCFB4]/25 to-[#0F766E]/20 rounded-full blur-3xl pointer-events-none animate-pulse" />
 
         <div className="w-full max-w-md relative z-10">
           
@@ -128,19 +128,19 @@ export default function Login({ redirectTo, signupLink = '/signup', title = 'Sig
             <button
               type="button"
               onClick={handleBack}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/90 dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-[#A05AFF] hover:border-[#A05AFF]/50 text-xs font-bold shadow-xs transition-all group backdrop-blur-sm"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/90 dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-[#0F766E] hover:border-[#0F766E]/50 text-xs font-bold shadow-xs transition-all group backdrop-blur-sm"
             >
-              <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform text-[#A05AFF]" />
+              <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform text-[#0F766E]" />
               <span>Back</span>
             </button>
-            <Link to="/" className="text-xs font-semibold text-slate-400 hover:text-[#A05AFF] transition-colors">
+            <Link to="/" className="text-xs font-semibold text-slate-400 hover:text-[#0F766E] transition-colors">
               Back to Home
             </Link>
           </div>
 
           <Card className="rounded-2xl border border-slate-200/90 bg-white/95 backdrop-blur-xl shadow-2xl dark:bg-slate-900/95 dark:border-slate-800 overflow-hidden">
             <CardHeader className="text-center p-6 pb-2">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-[#A05AFF]/30 bg-[#A05AFF]/10 text-[#A05AFF] text-[11px] font-bold uppercase tracking-wider mb-2 self-center">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-[#0F766E]/30 bg-[#0F766E]/10 text-[#0F766E] text-[11px] font-bold uppercase tracking-wider mb-2 self-center">
                 <Building2 className="w-3.5 h-3.5" /> School &amp; Admin Portal
               </div>
               <CardTitle className="text-2xl font-black tracking-tight text-slate-900 dark:text-white">
@@ -156,27 +156,27 @@ export default function Login({ redirectTo, signupLink = '/signup', title = 'Sig
               {/* DEMO CREDENTIALS QUICK FILL CHIPS */}
               <div className="mb-5 p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs dark:bg-slate-800/50 dark:border-slate-700">
                 <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5 flex items-center gap-1">
-                  <Sparkles className="w-3 h-3 text-[#A05AFF]" /> Quick Demo Logins (Click to autofill):
+                  <Sparkles className="w-3 h-3 text-[#0F766E]" /> Quick Demo Logins (Click to autofill):
                 </div>
                 <div className="flex flex-wrap gap-2">
                   <button
                     type="button"
                     onClick={() => fillCredentials('admin@gmail.com', '123456')}
-                    className="px-2.5 py-1 rounded-lg bg-white border border-slate-200 hover:border-[#A05AFF] hover:text-[#A05AFF] text-[11px] font-bold text-slate-700 shadow-xs transition-all dark:bg-slate-900 dark:border-slate-700 dark:text-slate-200"
+                    className="px-2.5 py-1 rounded-lg bg-white border border-slate-200 hover:border-[#0F766E] hover:text-[#0F766E] text-[11px] font-bold text-slate-700 shadow-xs transition-all dark:bg-slate-900 dark:border-slate-700 dark:text-slate-200"
                   >
                     🏫 admin@gmail.com
                   </button>
                   <button
                     type="button"
                     onClick={() => fillCredentials('school@demo.com', 'School@123')}
-                    className="px-2.5 py-1 rounded-lg bg-white border border-slate-200 hover:border-[#A05AFF] hover:text-[#A05AFF] text-[11px] font-bold text-slate-700 shadow-xs transition-all dark:bg-slate-900 dark:border-slate-700 dark:text-slate-200"
+                    className="px-2.5 py-1 rounded-lg bg-white border border-slate-200 hover:border-[#0F766E] hover:text-[#0F766E] text-[11px] font-bold text-slate-700 shadow-xs transition-all dark:bg-slate-900 dark:border-slate-700 dark:text-slate-200"
                   >
                     🏫 Demo School
                   </button>
                   <button
                     type="button"
                     onClick={() => fillCredentials('admin@platform.com', 'Admin@123')}
-                    className="px-2.5 py-1 rounded-lg bg-white border border-slate-200 hover:border-[#A05AFF] hover:text-[#A05AFF] text-[11px] font-bold text-slate-700 shadow-xs transition-all dark:bg-slate-900 dark:border-slate-700 dark:text-slate-200"
+                    className="px-2.5 py-1 rounded-lg bg-white border border-slate-200 hover:border-[#0F766E] hover:text-[#0F766E] text-[11px] font-bold text-slate-700 shadow-xs transition-all dark:bg-slate-900 dark:border-slate-700 dark:text-slate-200"
                   >
                     👑 Super Admin
                   </button>
@@ -205,7 +205,7 @@ export default function Login({ redirectTo, signupLink = '/signup', title = 'Sig
                       id="email" 
                       type="email" 
                       placeholder="admin@school.com" 
-                      className="w-full h-11 pl-11 pr-4 bg-white border-slate-200 rounded-xl text-sm font-medium focus-visible:ring-[#A05AFF] dark:bg-slate-950 dark:border-slate-800"
+                      className="w-full h-11 pl-11 pr-4 bg-white border-slate-200 rounded-xl text-sm font-medium focus-visible:ring-[#0F766E] dark:bg-slate-950 dark:border-slate-800"
                       {...register('email')} 
                     />
                   </div>
@@ -227,7 +227,7 @@ export default function Login({ redirectTo, signupLink = '/signup', title = 'Sig
                       id="password" 
                       type={showPassword ? "text" : "password"} 
                       placeholder="••••••••" 
-                      className="w-full h-11 pl-11 pr-11 bg-white border-slate-200 rounded-xl text-sm font-medium focus-visible:ring-[#A05AFF] dark:bg-slate-950 dark:border-slate-800"
+                      className="w-full h-11 pl-11 pr-11 bg-white border-slate-200 rounded-xl text-sm font-medium focus-visible:ring-[#0F766E] dark:bg-slate-950 dark:border-slate-800"
                       {...register('password')} 
                     />
                     <button
@@ -244,7 +244,7 @@ export default function Login({ redirectTo, signupLink = '/signup', title = 'Sig
                 {/* Submit Action */}
                 <Button 
                   type="submit" 
-                  className="w-full h-11 bg-gradient-to-r from-[#A05AFF] to-[#7928CA] hover:from-[#8B3DFF] hover:to-[#6820B0] text-white font-bold rounded-xl shadow-lg shadow-[#A05AFF]/25 transition-all text-sm mt-2" 
+                  className="w-full h-11 bg-gradient-to-r from-[#0F766E] to-[#7928CA] hover:from-[#115E59] hover:to-[#6820B0] text-white font-bold rounded-xl shadow-lg shadow-[#0F766E]/25 transition-all text-sm mt-2" 
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? (
@@ -270,7 +270,7 @@ export default function Login({ redirectTo, signupLink = '/signup', title = 'Sig
               <div className="mt-6 pt-4 border-t border-slate-100 flex flex-col gap-2.5 text-center text-xs dark:border-slate-800">
                 <p className="text-slate-500 font-medium">
                   New school registering for HireHub?{' '}
-                  <Link to={signupLink} className="text-[#A05AFF] hover:underline font-bold">
+                  <Link to={signupLink} className="text-[#0F766E] hover:underline font-bold">
                     Start Free Trial
                   </Link>
                 </p>

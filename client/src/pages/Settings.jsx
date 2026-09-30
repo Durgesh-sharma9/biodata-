@@ -422,7 +422,7 @@ export default function Settings() {
                 <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" /> Settings Saved!
               </span>
             )}
-            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#A05AFF]/30 bg-[#A05AFF]/5 text-[#A05AFF] text-xs font-bold shadow-2xs">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#0F766E]/30 bg-[#0F766E]/5 text-[#0F766E] text-xs font-bold shadow-2xs">
               <Building2 className="h-3.5 w-3.5" />
               <span>{school?.schoolName || 'School Portal'}</span>
             </div>
@@ -434,7 +434,7 @@ export default function Settings() {
       <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full space-y-6">
         <TabsList className="bg-slate-100 dark:bg-slate-900 p-1 rounded-xl h-auto border border-slate-200/80 dark:border-slate-800 grid grid-cols-2 sm:grid-cols-5 gap-1">
           <TabsTrigger value="hiring" className="flex items-center gap-1.5 py-2.5 text-xs font-bold rounded-lg">
-            <Settings2 className="h-4 w-4 shrink-0 text-[#A05AFF]" />
+            <Settings2 className="h-4 w-4 shrink-0 text-[#0F766E]" />
             <span className="truncate">Hiring Workflow</span>
           </TabsTrigger>
 
@@ -452,7 +452,7 @@ export default function Settings() {
             <Sliders className="h-4 w-4 shrink-0 text-indigo-500" />
             <span className="truncate">Criteria & Catalog</span>
             {myRequests.length > 0 && (
-              <span className="ml-1 px-1.5 py-0.2 rounded-full text-[10px] bg-[#A05AFF]/15 text-[#A05AFF] font-bold">
+              <span className="ml-1 px-1.5 py-0.2 rounded-full text-[10px] bg-[#0F766E]/15 text-[#0F766E] font-bold">
                 {myRequests.length}
               </span>
             )}
@@ -473,7 +473,7 @@ export default function Settings() {
                 <Card className="border border-slate-200/80 dark:border-slate-800 shadow-sm">
                   <CardHeader className="p-5 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/30">
                     <CardTitle className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                      <Settings2 className="h-4 w-4 text-[#A05AFF]" />
+                      <Settings2 className="h-4 w-4 text-[#0F766E]" />
                       Candidate Application & Hiring Rules
                     </CardTitle>
                     <CardDescription className="text-xs text-slate-500 dark:text-slate-400">
@@ -512,7 +512,7 @@ export default function Settings() {
                     <div className="flex items-center justify-between p-4 rounded-xl border border-slate-200/70 dark:border-slate-800 bg-slate-50/40 dark:bg-slate-900/20">
                       <div className="space-y-1">
                         <div className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
-                          <CheckSquare className="h-3.5 w-3.5 text-[#A05AFF]" />
+                          <CheckSquare className="h-3.5 w-3.5 text-[#0F766E]" />
                           Accept Walk-In & QR Code Submissions
                         </div>
                         <p className="text-[11px] text-slate-500 dark:text-slate-400">
@@ -523,7 +523,7 @@ export default function Settings() {
                         type="button"
                         onClick={() => handlePreferenceChange('allowWalkInApplications', !currentPreferences.allowWalkInApplications)}
                         className={`w-12 h-6 flex items-center rounded-full p-1 transition-colors ${
-                          currentPreferences.allowWalkInApplications ? 'bg-[#A05AFF]' : 'bg-slate-300 dark:bg-slate-700'
+                          currentPreferences.allowWalkInApplications ? 'bg-[#0F766E]' : 'bg-slate-300 dark:bg-slate-700'
                         }`}
                       >
                         <div
@@ -549,7 +549,7 @@ export default function Settings() {
                         type="button"
                         onClick={() => handlePreferenceChange('autoAcknowledgeCandidates', !currentPreferences.autoAcknowledgeCandidates)}
                         className={`w-12 h-6 flex items-center rounded-full p-1 transition-colors ${
-                          currentPreferences.autoAcknowledgeCandidates ? 'bg-[#A05AFF]' : 'bg-slate-300 dark:bg-slate-700'
+                          currentPreferences.autoAcknowledgeCandidates ? 'bg-[#0F766E]' : 'bg-slate-300 dark:bg-slate-700'
                         }`}
                       >
                         <div
@@ -566,13 +566,13 @@ export default function Settings() {
                       {/* Board Affiliation */}
                       <div className="space-y-1.5">
                         <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-                          <Globe className="h-3.5 w-3.5 text-[#A05AFF]" />
+                          <Globe className="h-3.5 w-3.5 text-[#0F766E]" />
                           School Education Board / Affiliation
                         </label>
                         <select
                           value={currentPreferences.boardAffiliation}
                           onChange={(e) => handlePreferenceChange('boardAffiliation', e.target.value)}
-                          className="w-full h-10 px-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#A05AFF]"
+                          className="w-full h-10 px-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#0F766E]"
                         >
                           <option value="CBSE">CBSE (Central Board of Secondary Education)</option>
                           <option value="ICSE">ICSE / ISC Board</option>
@@ -592,7 +592,7 @@ export default function Settings() {
                         <select
                           value={currentPreferences.preferredExperienceMin}
                           onChange={(e) => handlePreferenceChange('preferredExperienceMin', Number(e.target.value))}
-                          className="w-full h-10 px-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#A05AFF]"
+                          className="w-full h-10 px-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#0F766E]"
                         >
                           <option value={0}>Any Experience Level / Freshers Welcome</option>
                           <option value={1}>Minimum 1 Year Teaching / Relevant Exp.</option>
@@ -611,7 +611,7 @@ export default function Settings() {
                         <select
                           value={currentPreferences.interviewMode}
                           onChange={(e) => handlePreferenceChange('interviewMode', e.target.value)}
-                          className="w-full h-10 px-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#A05AFF]"
+                          className="w-full h-10 px-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#0F766E]"
                         >
                           <option value="In-Person & Online">Hybrid (In-Person & Online Video Rounds)</option>
                           <option value="In-Person Only">In-Person Campus Interview Only</option>
@@ -628,7 +628,7 @@ export default function Settings() {
                         <select
                           value={currentPreferences.salaryVisibility}
                           onChange={(e) => handlePreferenceChange('salaryVisibility', e.target.value)}
-                          className="w-full h-10 px-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#A05AFF]"
+                          className="w-full h-10 px-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#0F766E]"
                         >
                           <option value="Negotiable / Competitive">Negotiable / Competitive (Based on merit)</option>
                           <option value="As Per 7th Pay / School Norms">As Per School Pay Scale & Norms</option>
@@ -641,7 +641,7 @@ export default function Settings() {
                     {/* Contact Working Hours */}
                     <div className="space-y-1.5">
                       <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-                        <Clock className="h-3.5 w-3.5 text-[#A05AFF]" />
+                        <Clock className="h-3.5 w-3.5 text-[#0F766E]" />
                         School Recruitment & Interview Office Hours
                       </label>
                       <Input
@@ -658,7 +658,7 @@ export default function Settings() {
                     {/* Custom Candidate Welcome & Acknowledgement Message */}
                     <div className="space-y-1.5">
                       <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-                        <MessageSquare className="h-3.5 w-3.5 text-[#A05AFF]" />
+                        <MessageSquare className="h-3.5 w-3.5 text-[#0F766E]" />
                         Candidate Success Confirmation Message
                       </label>
                       <textarea
@@ -666,7 +666,7 @@ export default function Settings() {
                         value={currentPreferences.customWelcomeMessage}
                         onChange={(e) => handlePreferenceChange('customWelcomeMessage', e.target.value)}
                         placeholder="Enter message displayed after candidate submits their application..."
-                        className="w-full p-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#A05AFF]"
+                        className="w-full p-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#0F766E]"
                       />
                       <p className="text-[11px] text-slate-400">
                         This custom greeting appears on the thank-you screen after an applicant finishes submission.
@@ -680,7 +680,7 @@ export default function Settings() {
                 <Card className="border border-slate-200/80 dark:border-slate-800 shadow-sm">
                   <CardHeader className="p-5 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/30">
                     <CardTitle className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                      <User className="h-4 w-4 text-[#A05AFF]" />
+                      <User className="h-4 w-4 text-[#0F766E]" />
                       Recruiter / HR Contact Person (Optional Display)
                     </CardTitle>
                     <CardDescription className="text-xs text-slate-500 dark:text-slate-400">
@@ -735,7 +735,7 @@ export default function Settings() {
                 <Card className="border border-slate-200/80 dark:border-slate-800 shadow-sm bg-gradient-to-br from-slate-50 to-purple-50/20 dark:from-slate-900/40 dark:to-slate-900/20">
                   <CardContent className="p-5 space-y-4">
                     <div className="flex items-center gap-2.5">
-                      <div className="p-2 rounded-xl bg-[#A05AFF]/10 text-[#A05AFF]">
+                      <div className="p-2 rounded-xl bg-[#0F766E]/10 text-[#0F766E]">
                         <Save className="h-5 w-5" />
                       </div>
                       <div>
@@ -754,7 +754,7 @@ export default function Settings() {
                     <Button
                       type="submit"
                       disabled={preferencesMutation.isPending}
-                      className="w-full h-10 bg-[#A05AFF] hover:bg-[#8e44ee] text-white font-bold text-xs rounded-xl shadow-md transition-all active:scale-98"
+                      className="w-full h-10 bg-[#0F766E] hover:bg-[#0D9488] text-white font-bold text-xs rounded-xl shadow-md transition-all active:scale-98"
                     >
                       {preferencesMutation.isPending ? (
                         <>
@@ -775,7 +775,7 @@ export default function Settings() {
                 <Card className="border border-slate-200/80 dark:border-slate-800 shadow-sm">
                   <CardHeader className="p-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30">
                     <CardTitle className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
-                      <Share2 className="h-4 w-4 text-[#A05AFF]" />
+                      <Share2 className="h-4 w-4 text-[#0F766E]" />
                       Public Links & Standee
                     </CardTitle>
                   </CardHeader>
@@ -805,7 +805,7 @@ export default function Settings() {
                     <button
                       type="button"
                       onClick={() => handleTabChange('security')}
-                      className="inline-flex items-center gap-1.5 text-xs font-bold text-[#A05AFF] hover:underline"
+                      className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0F766E] hover:underline"
                     >
                       Jump to Password Settings →
                     </button>
@@ -837,7 +837,7 @@ export default function Settings() {
                   type="button"
                   onClick={handleSavePreferences}
                   disabled={preferencesMutation.isPending}
-                  className="h-9 px-4 bg-[#A05AFF] hover:bg-[#8e44ee] text-white text-xs font-bold rounded-xl shrink-0"
+                  className="h-9 px-4 bg-[#0F766E] hover:bg-[#0D9488] text-white text-xs font-bold rounded-xl shrink-0"
                 >
                   {preferencesMutation.isPending ? (
                     <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" />
@@ -873,12 +873,12 @@ export default function Settings() {
                           onClick={() => handleTogglePerk(perk)}
                           className={`p-3 rounded-xl text-left text-xs font-semibold flex items-start gap-2.5 transition-all border ${
                             isSelected
-                              ? 'bg-purple-50/80 dark:bg-purple-950/40 border-[#A05AFF]/60 text-purple-900 dark:text-purple-200 shadow-2xs'
+                              ? 'bg-purple-50/80 dark:bg-purple-950/40 border-[#0F766E]/60 text-purple-900 dark:text-purple-200 shadow-2xs'
                               : 'bg-white dark:bg-slate-900 border-slate-200/80 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-50'
                           }`}
                         >
                           <div className={`mt-0.5 h-4 w-4 rounded-md flex items-center justify-center shrink-0 border ${
-                            isSelected ? 'bg-[#A05AFF] border-[#A05AFF] text-white' : 'border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950'
+                            isSelected ? 'bg-[#0F766E] border-[#0F766E] text-white' : 'border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950'
                           }`}>
                             {isSelected && <Check className="h-3 w-3 stroke-[3]" />}
                           </div>
@@ -901,7 +901,7 @@ export default function Settings() {
                         .map((customPerk) => (
                           <span
                             key={customPerk}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#A05AFF]/10 text-[#A05AFF] border border-[#A05AFF]/30 text-xs font-semibold"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#0F766E]/10 text-[#0F766E] border border-[#0F766E]/30 text-xs font-semibold"
                           >
                             <span>{customPerk}</span>
                             <button
@@ -951,7 +951,7 @@ export default function Settings() {
             <Card className="border border-slate-200/80 dark:border-slate-800 shadow-sm">
               <CardHeader className="p-5 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/30">
                 <CardTitle className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                  <Bell className="h-4 w-4 text-[#A05AFF]" />
+                  <Bell className="h-4 w-4 text-[#0F766E]" />
                   Recruitment Alert Channels & Schedule
                 </CardTitle>
                 <CardDescription className="text-xs text-slate-500 dark:text-slate-400">
@@ -991,7 +991,7 @@ export default function Settings() {
                       preferencesMutation.mutate({ ...currentPreferences, emailNotifications: nextVal });
                     }}
                     className={`w-12 h-6 flex items-center rounded-full p-1 transition-colors ${
-                      currentPreferences.emailNotifications ? 'bg-[#A05AFF]' : 'bg-slate-300 dark:bg-slate-700'
+                      currentPreferences.emailNotifications ? 'bg-[#0F766E]' : 'bg-slate-300 dark:bg-slate-700'
                     }`}
                   >
                     <div
@@ -1025,7 +1025,7 @@ export default function Settings() {
                       preferencesMutation.mutate({ ...currentPreferences, dailyDigest: nextVal });
                     }}
                     className={`w-12 h-6 flex items-center rounded-full p-1 transition-colors ${
-                      currentPreferences.dailyDigest ? 'bg-[#A05AFF]' : 'bg-slate-300 dark:bg-slate-700'
+                      currentPreferences.dailyDigest ? 'bg-[#0F766E]' : 'bg-slate-300 dark:bg-slate-700'
                     }`}
                   >
                     <div
@@ -1059,7 +1059,7 @@ export default function Settings() {
                       preferencesMutation.mutate({ ...currentPreferences, weeklyReport: nextVal });
                     }}
                     className={`w-12 h-6 flex items-center rounded-full p-1 transition-colors ${
-                      currentPreferences.weeklyReport ? 'bg-[#A05AFF]' : 'bg-slate-300 dark:bg-slate-700'
+                      currentPreferences.weeklyReport ? 'bg-[#0F766E]' : 'bg-slate-300 dark:bg-slate-700'
                     }`}
                   >
                     <div
@@ -1127,7 +1127,7 @@ export default function Settings() {
                       preferencesMutation.mutate({ ...currentPreferences, smsAlerts: nextVal });
                     }}
                     className={`w-12 h-6 flex items-center rounded-full p-1 transition-colors ${
-                      currentPreferences.smsAlerts ? 'bg-[#A05AFF]' : 'bg-slate-300 dark:bg-slate-700'
+                      currentPreferences.smsAlerts ? 'bg-[#0F766E]' : 'bg-slate-300 dark:bg-slate-700'
                     }`}
                   >
                     <div
@@ -1141,7 +1141,7 @@ export default function Settings() {
                 {/* Interview Reminder Schedule */}
                 <div className="p-4 rounded-xl border border-slate-200/70 dark:border-slate-800 bg-slate-50/40 dark:bg-slate-900/20 space-y-2">
                   <label className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
-                    <Clock className="h-3.5 w-3.5 text-[#A05AFF]" />
+                    <Clock className="h-3.5 w-3.5 text-[#0F766E]" />
                     Candidate Interview Auto-Reminder Schedule
                   </label>
                   <select
@@ -1151,7 +1151,7 @@ export default function Settings() {
                       handlePreferenceChange('interviewReminderHours', val);
                       preferencesMutation.mutate({ ...currentPreferences, interviewReminderHours: val });
                     }}
-                    className="w-full h-10 px-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#A05AFF]"
+                    className="w-full h-10 px-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#0F766E]"
                   >
                     <option value={12}>Send reminder 12 Hours before scheduled interview</option>
                     <option value={24}>Send reminder 24 Hours (1 Day) before interview (Recommended)</option>
@@ -1169,7 +1169,7 @@ export default function Settings() {
           <Card className="border border-slate-200/80 dark:border-slate-800 shadow-sm">
             <CardHeader className="p-5 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/30">
               <CardTitle className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                <Sliders className="h-4 w-4 text-[#A05AFF]" />
+                <Sliders className="h-4 w-4 text-[#0F766E]" />
                 Standard Platform Recruitment Taxonomies
               </CardTitle>
               <CardDescription className="text-xs text-slate-500 dark:text-slate-400">
@@ -1246,7 +1246,7 @@ export default function Settings() {
                   className="w-full p-3.5 bg-slate-50/70 dark:bg-slate-900/50 hover:bg-slate-100 dark:hover:bg-slate-900 flex items-center justify-between text-xs font-bold text-slate-700 dark:text-slate-300 transition-colors"
                 >
                   <span className="flex items-center gap-2">
-                    <Search className="h-3.5 w-3.5 text-[#A05AFF]" />
+                    <Search className="h-3.5 w-3.5 text-[#0F766E]" />
                     <span>Browse or Search Supported Platform Catalog</span>
                   </span>
                   <div className="flex items-center gap-1.5 text-slate-400 text-[11px] font-medium">
@@ -1267,7 +1267,7 @@ export default function Settings() {
                             onClick={() => setSelectedCatalogCategory(cat.key)}
                             className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors ${
                               selectedCatalogCategory === cat.key
-                                ? 'bg-[#A05AFF] text-white shadow-2xs'
+                                ? 'bg-[#0F766E] text-white shadow-2xs'
                                 : 'bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-slate-200'
                             }`}
                           >
@@ -1314,7 +1314,7 @@ export default function Settings() {
             <CardHeader className="p-5 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/30 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <div>
                 <CardTitle className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                  <HelpCircle className="h-4 w-4 text-[#A05AFF]" />
+                  <HelpCircle className="h-4 w-4 text-[#0F766E]" />
                   My Custom Requested Taxonomies
                 </CardTitle>
                 <CardDescription className="text-xs text-slate-500 dark:text-slate-400">
@@ -1325,7 +1325,7 @@ export default function Settings() {
               <Button
                 type="button"
                 onClick={() => handleOpenRequestModal('position')}
-                className="h-9 px-3.5 rounded-xl bg-[#A05AFF] hover:bg-[#8e44ee] text-white text-xs font-semibold self-start sm:self-auto"
+                className="h-9 px-3.5 rounded-xl bg-[#0F766E] hover:bg-[#0D9488] text-white text-xs font-semibold self-start sm:self-auto"
               >
                 <Plus className="h-3.5 w-3.5 mr-1" />
                 Submit New Request
@@ -1335,7 +1335,7 @@ export default function Settings() {
             <CardContent className="p-0">
               {myRequests.length === 0 ? (
                 <div className="py-12 px-4 text-center space-y-3">
-                  <div className="h-10 w-10 rounded-2xl bg-purple-50 dark:bg-purple-950/40 text-[#A05AFF] flex items-center justify-center mx-auto">
+                  <div className="h-10 w-10 rounded-2xl bg-purple-50 dark:bg-purple-950/40 text-[#0F766E] flex items-center justify-center mx-auto">
                     <Send className="h-5 w-5 stroke-[1.8]" />
                   </div>
                   <h4 className="text-xs font-bold text-slate-700 dark:text-slate-300">
@@ -1416,14 +1416,14 @@ export default function Settings() {
             {/* Change Password Card (7 cols on lg) */}
             <div className="lg:col-span-7 space-y-6">
               <Card className="border border-slate-200/80 dark:border-slate-800 shadow-sm relative overflow-hidden">
-                <div className="h-1 bg-gradient-to-r from-[#A05AFF] via-[#4BCBEB] to-emerald-400" />
+                <div className="h-1 bg-gradient-to-r from-[#0F766E] via-[#4BCBEB] to-emerald-400" />
                 <CardHeader className="p-5 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/30">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                      <KeyRound className="h-4 w-4 text-[#A05AFF]" />
+                      <KeyRound className="h-4 w-4 text-[#0F766E]" />
                       Change Account Password
                     </CardTitle>
-                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#A05AFF]/10 text-[#A05AFF] border border-[#A05AFF]/20">
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#0F766E]/10 text-[#0F766E] border border-[#0F766E]/20">
                       School Recruiter Access
                     </span>
                   </div>
@@ -1565,7 +1565,7 @@ export default function Settings() {
                       <Button
                         type="submit"
                         disabled={passwordMutation.isPending}
-                        className="w-full h-11 bg-gradient-to-r from-[#A05AFF] via-[#9E58FF] to-[#4BCBEB] hover:opacity-95 text-white font-bold text-xs rounded-xl shadow-md transition-all active:scale-98"
+                        className="w-full h-11 bg-gradient-to-r from-[#0F766E] via-[#14B8A6] to-[#4BCBEB] hover:opacity-95 text-white font-bold text-xs rounded-xl shadow-md transition-all active:scale-98"
                       >
                         {passwordMutation.isPending ? (
                           <>
@@ -1589,7 +1589,7 @@ export default function Settings() {
               <Card className="border border-slate-200/80 dark:border-slate-800 shadow-sm">
                 <CardHeader className="p-5 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/30">
                   <CardTitle className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                    <Download className="h-4 w-4 text-[#A05AFF]" />
+                    <Download className="h-4 w-4 text-[#0F766E]" />
                     School Settings & Configuration Backup
                   </CardTitle>
                   <CardDescription className="text-xs text-slate-500 dark:text-slate-400">
@@ -1606,7 +1606,7 @@ export default function Settings() {
                     onClick={handleExportBackup}
                     className="h-9 px-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 text-slate-700 dark:text-slate-200 text-xs font-semibold shadow-2xs shrink-0"
                   >
-                    <Download className="h-3.5 w-3.5 mr-1.5 text-[#A05AFF]" />
+                    <Download className="h-3.5 w-3.5 mr-1.5 text-[#0F766E]" />
                     Export Backup (JSON)
                   </Button>
                 </CardContent>
@@ -1621,7 +1621,7 @@ export default function Settings() {
               <Card className="border border-slate-200/80 dark:border-slate-800 shadow-sm">
                 <CardHeader className="p-5 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/30">
                   <CardTitle className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                    <ShieldCheck className="h-4 w-4 text-[#A05AFF]" />
+                    <ShieldCheck className="h-4 w-4 text-[#0F766E]" />
                     Administrator Profile Details
                   </CardTitle>
                   <CardDescription className="text-xs text-slate-500 dark:text-slate-400">
@@ -1642,7 +1642,7 @@ export default function Settings() {
 
                   <div className="p-3.5 rounded-xl border border-slate-200/70 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40 flex items-center justify-between">
                     <span className="text-xs font-medium text-slate-500">School ID Code</span>
-                    <span className="text-xs font-mono font-bold text-[#A05AFF]">{school?.schoolId || 'SCH-ACTIVE'}</span>
+                    <span className="text-xs font-mono font-bold text-[#0F766E]">{school?.schoolId || 'SCH-ACTIVE'}</span>
                   </div>
 
                   <div className="p-3.5 rounded-xl border border-slate-200/70 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40 flex items-center justify-between">
@@ -1702,7 +1702,7 @@ export default function Settings() {
         <DialogContent className="max-w-md p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl">
           <DialogHeader className="space-y-1 text-left">
             <DialogTitle className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-              <Send className="h-4 w-4 text-[#A05AFF]" />
+              <Send className="h-4 w-4 text-[#0F766E]" />
               Request New Master Option
             </DialogTitle>
             <DialogDescription className="text-xs text-slate-500 dark:text-slate-400">
@@ -1730,7 +1730,7 @@ export default function Settings() {
               <select
                 value={requestCategory}
                 onChange={(e) => setRequestCategory(e.target.value)}
-                className="w-full h-10 px-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#A05AFF]"
+                className="w-full h-10 px-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#0F766E]"
               >
                 <option value="position">Position (e.g. Robotics Instructor, Coding Teacher)</option>
                 <option value="subject">Subject (e.g. Artificial Intelligence, French)</option>
@@ -1757,7 +1757,7 @@ export default function Settings() {
                 value={requestDescription}
                 onChange={(e) => setRequestDescription(e.target.value)}
                 placeholder="Why should this be added to the platform catalog?"
-                className="w-full p-2.5 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#A05AFF]"
+                className="w-full p-2.5 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#0F766E]"
               />
             </div>
 
@@ -1773,7 +1773,7 @@ export default function Settings() {
               <Button
                 type="submit"
                 disabled={requestMutation.isPending}
-                className="h-10 px-5 rounded-xl bg-[#A05AFF] hover:bg-[#8e44ee] text-white text-xs font-semibold"
+                className="h-10 px-5 rounded-xl bg-[#0F766E] hover:bg-[#0D9488] text-white text-xs font-semibold"
               >
                 {requestMutation.isPending ? (
                   <>

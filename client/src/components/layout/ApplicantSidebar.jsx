@@ -29,16 +29,16 @@ export function ApplicantSidebar() {
   return (
     <aside className="flex h-full w-full flex-col bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 border-r border-slate-200/80 dark:border-slate-800 z-30 select-none shadow-xs">
       {/* Brand Header */}
-      <div className="p-5 border-b border-slate-100 dark:border-slate-800">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 shadow-sm shadow-blue-500/20">
-            <Briefcase className="h-5 w-5 text-white" />
+      <div className="p-4 border-b border-[#E2EAE7] dark:border-slate-800">
+        <div className="flex items-center gap-2.5">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-tr from-[#0F766E] to-[#14B8A6] shadow-xs">
+            <Briefcase className="h-4 w-4 text-white" />
           </div>
           <div className="flex flex-col">
-            <h1 className="text-xl font-black tracking-tight text-slate-900 dark:text-white leading-tight">
-              Hire<span className="text-blue-600">Hub</span>
+            <h1 className="text-lg font-black tracking-tight text-slate-900 dark:text-white leading-tight">
+              Hire<span className="text-[#0F766E]">Hub</span>
             </h1>
-            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+            <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400">
               Candidate Portal
             </span>
           </div>
@@ -46,8 +46,8 @@ export function ApplicantSidebar() {
       </div>
 
       {/* Navigation Links */}
-      <nav className="flex-1 space-y-1.5 p-4 overflow-y-auto">
-        <p className="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">
+      <nav className="flex-1 space-y-1 p-3 overflow-y-auto">
+        <p className="px-2.5 text-[9px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">
           Navigation
         </p>
         {applicantLinks.map(({ to, label, icon: Icon }) => (
@@ -56,10 +56,10 @@ export function ApplicantSidebar() {
             to={to}
             className={({ isActive }) =>
               cn(
-                'flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-semibold tracking-wide transition-all duration-150 group relative',
+                'flex items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-semibold tracking-wide transition-all duration-150 group relative',
                 isActive
-                  ? 'bg-blue-50 text-blue-700 font-bold border border-blue-200/70 shadow-xs dark:bg-blue-950/40 dark:text-blue-300 dark:border-blue-900/60'
-                  : 'text-slate-600 hover:bg-slate-100/70 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white'
+                  ? 'bg-[#0F766E] text-white font-bold shadow-xs'
+                  : 'text-slate-600 hover:bg-[#F0FDFA] hover:text-[#0F766E] dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white'
               )
             }
           >

@@ -279,10 +279,10 @@ export function GlobalSearch() {
       {/* Search Input Bar in Navbar */}
       <div 
         onClick={() => setIsOpen(true)}
-        className="w-full flex items-center justify-between h-9 sm:h-10 px-3 bg-slate-100/90 dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-700/80 rounded-xl cursor-pointer text-xs transition-all shadow-2xs group hover:border-[#A05AFF]/40"
+        className="w-full flex items-center justify-between h-9 sm:h-10 px-3 bg-slate-100/90 dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-700/80 rounded-xl cursor-pointer text-xs transition-all shadow-2xs group hover:border-[#0F766E]/40"
       >
         <div className="flex items-center gap-2 text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300">
-          <Search className="h-4 w-4 text-[#A05AFF] shrink-0" />
+          <Search className="h-4 w-4 text-[#0F766E] shrink-0" />
           <span className="truncate select-none font-medium">
             Search candidates, pages, tabs, settings...
           </span>
@@ -306,7 +306,7 @@ export function GlobalSearch() {
           >
             {/* Header Search Input */}
             <div className="flex items-center gap-3 p-3.5 sm:p-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
-              <Search className="h-5 w-5 text-[#A05AFF] shrink-0" />
+              <Search className="h-5 w-5 text-[#0F766E] shrink-0" />
               <input
                 ref={searchInputRef}
                 value={searchTerm}
@@ -328,7 +328,7 @@ export function GlobalSearch() {
                 </button>
               )}
               {isSearchingCandidates && (
-                <Loader2 className="h-4 w-4 text-[#A05AFF] animate-spin shrink-0" />
+                <Loader2 className="h-4 w-4 text-[#0F766E] animate-spin shrink-0" />
               )}
               <button
                 type="button"
@@ -345,7 +345,7 @@ export function GlobalSearch() {
               {/* SECTION 1: Matching Candidates (if any) */}
               {candidateResults.length > 0 && (
                 <div className="space-y-1.5 pt-1">
-                  <div className="px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#A05AFF] flex items-center justify-between">
+                  <div className="px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#0F766E] flex items-center justify-between">
                     <span className="flex items-center gap-1.5">
                       <User className="h-3.5 w-3.5" />
                       Candidates Found ({candidateResults.length})
@@ -363,12 +363,12 @@ export function GlobalSearch() {
                           onClick={() => handleSelectItem({ type: 'candidate', data: cand })}
                           className={`flex items-center justify-between p-2.5 rounded-xl cursor-pointer transition-all ${
                             isSelected
-                              ? 'bg-purple-50 dark:bg-purple-950/40 border border-[#A05AFF]/30'
+                              ? 'bg-purple-50 dark:bg-purple-950/40 border border-[#0F766E]/30'
                               : 'hover:bg-slate-50 dark:hover:bg-slate-800/60 border border-transparent'
                           }`}
                         >
                           <div className="flex items-center gap-3 min-w-0">
-                            <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-[#A05AFF] to-[#7928CA] text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs">
+                            <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-[#0F766E] to-[#7928CA] text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs">
                               {cand.fullName?.charAt(0)?.toUpperCase() || 'C'}
                             </div>
                             <div className="min-w-0">
@@ -400,7 +400,7 @@ export function GlobalSearch() {
                           </div>
 
                           <div className="flex items-center gap-1.5 shrink-0 pl-2">
-                            <span className="text-[11px] font-bold text-[#A05AFF] flex items-center gap-1">
+                            <span className="text-[11px] font-bold text-[#0F766E] flex items-center gap-1">
                               View <ArrowRight className="h-3.5 w-3.5" />
                             </span>
                           </div>
@@ -414,7 +414,7 @@ export function GlobalSearch() {
               {/* Searching Candidates loader message */}
               {isSearchingCandidates && (
                 <div className="p-3 text-center text-xs text-slate-400 flex items-center justify-center gap-2">
-                  <Loader2 className="h-4 w-4 animate-spin text-[#A05AFF]" />
+                  <Loader2 className="h-4 w-4 animate-spin text-[#0F766E]" />
                   <span>Searching candidate database...</span>
                 </div>
               )}
@@ -447,11 +447,11 @@ export function GlobalSearch() {
                           onClick={() => handleSelectItem({ type: 'page', data: page })}
                           className={`flex items-start gap-3 p-2.5 rounded-xl cursor-pointer transition-all border ${
                             isSelected
-                              ? 'bg-purple-50/80 dark:bg-purple-950/40 border-[#A05AFF]/40 shadow-2xs'
+                              ? 'bg-purple-50/80 dark:bg-purple-950/40 border-[#0F766E]/40 shadow-2xs'
                               : 'bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50'
                           }`}
                         >
-                          <div className="p-2 rounded-xl bg-purple-50 text-[#A05AFF] dark:bg-purple-950/50 dark:text-[#A05AFF] shrink-0 mt-0.5">
+                          <div className="p-2 rounded-xl bg-purple-50 text-[#0F766E] dark:bg-purple-950/50 dark:text-[#0F766E] shrink-0 mt-0.5">
                             <Icon className="h-4 w-4" />
                           </div>
 
@@ -487,7 +487,7 @@ export function GlobalSearch() {
                   <span className="font-mono bg-white dark:bg-slate-900 border px-1 rounded text-[10px]">↵</span> to open
                 </span>
               </div>
-              <span className="font-medium text-[#A05AFF]">HireHub Universal Search</span>
+              <span className="font-medium text-[#0F766E]">HireHub Universal Search</span>
             </div>
 
           </div>

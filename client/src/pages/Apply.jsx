@@ -33,9 +33,9 @@ export default function Apply() {
   // Flat Micro-Spinner Page Loading State
   if (isLoading) {
     return (
-      <div className="flex min-h-screen w-full flex-col items-center justify-center p-5 bg-[#f3f3f4] dark:bg-slate-950 antialiased">
+      <div className="flex min-h-screen w-full flex-col items-center justify-center p-5 bg-[#F4F7F6] dark:bg-slate-950 antialiased">
         <div className="relative flex h-12 w-12 items-center justify-center rounded-xl bg-white dark:bg-slate-900 shadow-sm mb-3 animate-in fade-in duration-300">
-          <Loader2 className="h-5 w-5 text-[#A05AFF] animate-spin" />
+          <Loader2 className="h-5 w-5 text-[#0F766E] animate-spin" />
         </div>
         <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 animate-pulse">
           Loading application portal...
@@ -47,7 +47,7 @@ export default function Apply() {
   // Fallback Error Component State using Soft-Tint Badging layout constraints
   if (error || !school) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#f3f3f4] dark:bg-slate-950 p-5 antialiased">
+      <div className="flex min-h-screen items-center justify-center bg-[#F4F7F6] dark:bg-slate-950 p-5 antialiased">
         <Card className="max-w-md rounded-xl border-none bg-white shadow-sm dark:bg-slate-900 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
           <CardContent className="p-5 text-center space-y-4">
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl border border-[#FE9496]/30 bg-[#FE9496]/5 text-[#FE9496]">
@@ -68,7 +68,7 @@ export default function Apply() {
   // Success Confirmation State using Soft-Tint Success Badging specs
   if (submitted) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#f3f3f4] dark:bg-slate-950 p-5 antialiased">
+      <div className="flex min-h-screen items-center justify-center bg-[#F4F7F6] dark:bg-slate-950 p-5 antialiased">
         <Card className="max-w-md rounded-xl border-none bg-white shadow-sm dark:bg-slate-900 overflow-hidden animate-in fade-in zoom-in-95 duration-300">
           <CardContent className="p-6 text-center space-y-4">
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl border border-[#1BCFB4]/30 bg-[#1BCFB4]/5 text-[#1BCFB4]">
@@ -87,7 +87,7 @@ export default function Apply() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f3f3f4] dark:bg-slate-950 p-5 flex items-center justify-center antialiased">
+    <div className="min-h-screen bg-[#F4F7F6] dark:bg-slate-950 p-5 flex items-center justify-center antialiased">
       <div className="w-full max-w-4xl mx-auto space-y-6">
         
         {/* Main Application Base Profile Hub Container */}
@@ -103,12 +103,12 @@ export default function Apply() {
                       className="h-full w-full object-contain rounded-lg"
                       onError={(e) => {
                         e.currentTarget.style.display = 'none';
-                        e.currentTarget.parentElement.innerHTML = '<span class="text-xs font-black text-[#A05AFF]">SCH</span>';
+                        e.currentTarget.parentElement.innerHTML = '<span class="text-xs font-black text-[#0F766E]">SCH</span>';
                       }}
                     />
                   </div>
                 ) : (
-                  <div className="p-3 bg-[#A05AFF]/10 text-[#A05AFF] rounded-xl shrink-0">
+                  <div className="p-3 bg-[#0F766E]/10 text-[#0F766E] rounded-xl shrink-0">
                     <School className="h-5 w-5 stroke-[2.2]" />
                   </div>
                 )}
@@ -129,7 +129,7 @@ export default function Apply() {
 
               {/* Secure Channel Badge Pillar (Modern Soft-Tint) */}
               <div className="self-start sm:self-center shrink-0">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-[#A05AFF]/30 bg-[#A05AFF]/5 text-[#A05AFF] font-bold text-[11px] uppercase tracking-wider rounded-xl shadow-none">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-[#0F766E]/30 bg-[#0F766E]/5 text-[#0F766E] font-bold text-[11px] uppercase tracking-wider rounded-xl shadow-none">
                   <ShieldCheck className="h-3.5 w-3.5" />
                   <span>Verified School</span>
                 </div>
