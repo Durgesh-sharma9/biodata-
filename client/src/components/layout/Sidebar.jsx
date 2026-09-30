@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { getMySchool } from '@/lib/api';
 import {
@@ -73,27 +73,23 @@ export function Sidebar({ onNavigate }) {
   const roleLabel = isSuperAdmin ? 'Super Admin' : isApplicant ? 'Applicant' : 'Recruiter';
 
   return (
-    <aside className="flex h-full w-full flex-col bg-white dark:bg-slate-900 border-r border-[#E2EAE7] dark:border-slate-800/80 z-30 shadow-[2px_0_14px_rgba(0,0,0,0.02)]">
-      {/* Brand & Identity Segment - Balanced Medium */}
-      <div className="p-4 pb-3.5 border-b border-[#E2EAE7] dark:border-slate-800/50 flex flex-col gap-2">
-        <div className="flex items-center gap-2.5">
-          {/* Logo with teal-to-mint gradient */}
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-tr from-[#0F766E] to-[#14B8A6] text-white shadow-xs">
-            <Briefcase className="h-4.5 w-4.5 text-white" />
-          </div>
-          <div>
-            <h1 className="text-lg font-black tracking-tight text-slate-900 dark:text-white leading-tight">
-              HireHub
-            </h1>
-            <span className="text-[9.5px] font-bold uppercase tracking-wider px-2 py-0.2 rounded-md border border-[#0F766E]/20 bg-[#0F766E]/10 text-[#0F766E] dark:text-[#14B8A6] inline-block">
-              {roleLabel}
-            </span>
-          </div>
-        </div>
+    <aside className="flex h-full w-full flex-col bg-white dark:bg-slate-900 border-r border-[#E2EAE7] dark:border-slate-800/80 z-30 shadow-[2px_0_8px_rgba(0,0,0,0.04)]">
+      {/* Brand Header */}
+      <div className="h-14 px-4 border-b border-[#E2EAE7] dark:border-slate-800/50 flex items-center">
+        <Link to="/" className="flex items-center gap-2.5 group">
+          <img
+            src="/hirehub-logo-transparent.png"
+            alt="HireHub Logo"
+            className="h-8 w-8 object-contain shrink-0 group-hover:scale-105 transition-transform"
+          />
+          <h1 className="text-lg font-black tracking-tight text-slate-900 dark:text-white leading-tight font-sans">
+            Hire<span className="text-[#8A3BD4]">Hub</span>
+          </h1>
+        </Link>
       </div>
 
-      {/* Navigation Links - Touch-Friendly & Clean */}
-      <nav className="flex-1 space-y-1 p-3 overflow-y-auto">
+      {/* Navigation Links */}
+      <nav className="flex-1 space-y-0.5 p-3 overflow-y-auto">
         {links.map(({ to, label, icon: Icon, color }) => (
           <NavLink
             key={to}
@@ -101,29 +97,22 @@ export function Sidebar({ onNavigate }) {
             onClick={() => onNavigate?.()}
             className={({ isActive }) =>
               cn(
-                'flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-[13px] font-semibold tracking-normal transition-all duration-200 select-none group relative overflow-hidden',
-                isActive 
-                  ? 'bg-[#0F766E] text-white shadow-xs' 
-                  : 'text-slate-600 dark:text-slate-400 hover:bg-[#F0FDFA] dark:hover:bg-slate-800/60 hover:text-[#0F766E] dark:hover:text-white'
+                'flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13px] font-semibold tracking-normal transition-all duration-150 select-none group',
+                isActive
+                  ? 'bg-gradient-to-r from-[#7C3AED] via-[#9333EA] to-[#A855F7] text-white shadow-md shadow-purple-500/20'
+                  : 'text-slate-600 dark:text-slate-400 hover:bg-purple-50/70 dark:hover:bg-slate-800/60 hover:text-[#8A3BD4]'
               )
             }
           >
             {({ isActive }) => (
               <>
-                {/* Icon Section */}
-                <Icon 
-                  className={cn(
-                    "h-4 w-4 transition-transform duration-200 shrink-0 group-hover:scale-110",
-                    isActive ? "text-white" : ""
-                  )} 
-                  style={{ color: isActive ? '#ffffff' : color }} 
+                <Icon
+                  className="h-4 w-4 shrink-0 transition-transform duration-150 group-hover:scale-110"
+                  style={{ color: isActive ? '#ffffff' : color }}
                 />
-                
                 <span className="truncate">{label}</span>
-                
-                {/* Active Indicator Pip */}
                 {isActive && (
-                  <div className="ml-auto h-1.5 w-1.5 rounded-full bg-[#14B8A6]" />
+                  <div className="ml-auto h-1.5 w-1.5 rounded-full bg-purple-200" />
                 )}
               </>
             )}
@@ -131,10 +120,10 @@ export function Sidebar({ onNavigate }) {
         ))}
       </nav>
 
-      {/* Profile Footer & Logout - Balanced Medium */}
-      <div className="p-3 border-t border-[#E2EAE7] dark:border-slate-800/50 bg-[#F4F7F6]/50 dark:bg-slate-900/50">
-        <div className="flex items-center gap-2.5 rounded-lg bg-white dark:bg-slate-800 border border-[#E2EAE7] dark:border-slate-700/50 p-2 mb-1.5 shadow-2xs">
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg overflow-hidden bg-gradient-to-tr from-[#0F766E] to-[#14B8A6] text-white font-bold text-xs shadow-xs">
+      {/* Profile Footer */}
+      <div className="p-3 border-t border-[#E2EAE7] dark:border-slate-800/50 bg-slate-50/60 dark:bg-slate-900/50">
+        <div className="flex items-center gap-2.5 rounded-xl bg-white dark:bg-slate-800 border border-[#E2EAE7] dark:border-slate-700/50 p-2 mb-1.5 shadow-sm">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg overflow-hidden bg-gradient-to-tr from-[#8A3BD4] to-[#A855F7] text-white font-bold text-xs shadow-xs">
             {school?.logoUrl ? (
               <img src={school.logoUrl} alt="Logo" className="h-full w-full object-contain p-0.5 bg-white" />
             ) : user?.name ? (
@@ -148,17 +137,17 @@ export function Sidebar({ onNavigate }) {
               {school?.schoolName || user?.name || 'School Principal'}
             </p>
             <p className="truncate text-[10px] font-semibold text-slate-400 dark:text-slate-500 mt-0.5 flex items-center gap-1">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#14B8A6] inline-block animate-pulse" />
+              <span className="h-1.5 w-1.5 rounded-full bg-[#8A3BD4] inline-block animate-pulse" />
               {user?.name || 'Secure Session'}
             </p>
           </div>
         </div>
-        
+
         <button
           onClick={logout}
-          className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-slate-500 dark:text-slate-400 transition-all duration-200 hover:bg-[#FE9496]/10 hover:text-[#FE9496] group"
+          className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-slate-500 dark:text-slate-400 transition-all duration-200 hover:bg-rose-50 hover:text-rose-600 group"
         >
-          <LogOut className="h-3.5 w-3.5 text-slate-400 group-hover:text-[#FE9496] group-hover:translate-x-0.5 transition-all duration-200" />
+          <LogOut className="h-3.5 w-3.5 text-slate-400 group-hover:text-rose-500 group-hover:translate-x-0.5 transition-all duration-200" />
           Logout
         </button>
       </div>

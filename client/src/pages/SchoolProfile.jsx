@@ -184,10 +184,10 @@ export default function SchoolProfile() {
   return (
     <div className="space-y-4 sm:space-y-5 w-full max-w-7xl mx-auto antialiased text-slate-800 dark:text-slate-200 pb-24 sm:pb-12">
       
-      {/* Compact Header Bar */}
-      <div className="bg-white dark:bg-slate-900 px-3.5 py-3 sm:px-5 sm:py-3.5 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-xs flex items-center justify-between gap-3">
+      {/* Compact Header Bar with Reference Pastel Gradient */}
+      <div className="bg-gradient-to-r from-[#F0FCF5] via-[#EFF6FF] to-[#FAF5FF] dark:from-slate-800/90 dark:via-slate-800/70 dark:to-slate-800/90 px-3.5 py-3 sm:px-5 sm:py-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-2xs flex items-center justify-between gap-3">
         <div className="flex items-center gap-3 min-w-0">
-          <div className="h-10 w-10 sm:h-11 sm:w-11 rounded-xl bg-teal-50 dark:bg-teal-950/40 text-[#0F766E] flex items-center justify-center border border-[#0F766E]/20 shrink-0 overflow-hidden shadow-2xs">
+          <div className="h-10 w-10 sm:h-11 sm:w-11 rounded-xl bg-white dark:bg-slate-700 text-[#8A3BD4] flex items-center justify-center border border-slate-200/80 shrink-0 overflow-hidden shadow-2xs">
             {formData.logoUrl ? (
               <img src={formData.logoUrl} alt="School Logo" className="h-full w-full object-contain p-1" />
             ) : (
@@ -199,7 +199,7 @@ export default function SchoolProfile() {
               <h1 className="text-sm sm:text-base font-bold tracking-tight text-slate-900 dark:text-white truncate">
                 {formData.schoolName || 'School Profile'}
               </h1>
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200/70 dark:border-emerald-800 shrink-0">
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-purple-50 text-[#8A3BD4] dark:bg-purple-950/40 dark:text-purple-300 border border-purple-200/70 dark:border-purple-800 shrink-0">
                 Active Recruiter
               </span>
             </div>
@@ -316,7 +316,7 @@ export default function SchoolProfile() {
                       size="sm"
                       disabled={isUploadingLogo}
                       onClick={() => fileInputRef.current?.click()}
-                      className="h-8 px-3 text-xs font-semibold bg-gradient-to-r from-[#0F766E] to-[#14B8A6] hover:from-[#0D9488] hover:to-[#0F766E] text-white rounded-full shadow-xs hover:shadow transition-all flex items-center gap-1.5 cursor-pointer"
+                      className="h-8 px-3 text-xs font-semibold bg-gradient-to-r from-[#8A3BD4] to-[#A855F7] hover:from-[#7B2CBF] hover:to-[#8A3BD4] text-white rounded-lg shadow-xs hover:shadow transition-all flex items-center gap-1.5 cursor-pointer"
                     >
                       {isUploadingLogo ? (
                         <>
@@ -613,7 +613,7 @@ export default function SchoolProfile() {
       {/* Floating Bottom-Right Action Button */}
       <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 flex items-center gap-2 sm:gap-3">
         {saveSuccess && (
-          <div className="bg-emerald-600 text-white text-xs font-semibold px-3 py-2 rounded-full shadow-lg flex items-center gap-1.5 animate-in slide-in-from-bottom-2 fade-in">
+          <div className="bg-emerald-600 text-white text-xs font-semibold px-3 py-2 rounded-md shadow-md flex items-center gap-1.5 animate-in slide-in-from-bottom-2 fade-in">
             <CheckCircle2 className="h-4 w-4" />
             <span>Saved Successfully!</span>
           </div>
@@ -622,7 +622,7 @@ export default function SchoolProfile() {
         <Button
           onClick={handleSave}
           disabled={updateMutation.isPending}
-          className="h-12 px-5 bg-gradient-to-r from-[#0F766E] to-[#14B8A6] hover:from-[#0D9488] hover:to-[#0F766E] text-white text-xs font-bold rounded-full shadow-2xl hover:shadow-[#0F766E]/40 hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center gap-2 border border-white/20 ring-4 ring-[#0F766E]/15 cursor-pointer"
+          className="h-10 px-5 bg-gradient-to-r from-[#8A3BD4] to-[#A855F7] hover:from-[#7B2CBF] hover:to-[#8A3BD4] text-white text-xs font-bold rounded-lg shadow-md shadow-purple-500/20 active:translate-y-0 transition-all flex items-center gap-2 cursor-pointer border-none"
         >
           {updateMutation.isPending ? (
             <>

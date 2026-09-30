@@ -76,16 +76,16 @@ export function SchoolQRModal({ isOpen, onClose, school }) {
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent 
         overlayClassName="backdrop-blur-lg bg-slate-950/60"
-        className="sm:max-w-[500px] w-[95vw] p-0 overflow-hidden rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl"
+        className="sm:max-w-[480px] w-[95vw] p-0 overflow-hidden rounded-lg border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl"
       >
         {/* Modal Header */}
-        <div className="px-6 pt-5 pb-4 border-b border-slate-100 dark:border-slate-800/80 bg-gradient-to-b from-slate-50/90 via-white to-white dark:from-slate-900 dark:to-slate-900">
+        <div className="px-6 pt-5 pb-4 border-b border-slate-100 dark:border-slate-800/80 bg-gradient-to-r from-[#F0FCF5] via-[#EFF6FF] to-[#FAF5FF] dark:from-slate-900 dark:to-slate-900">
           <div className="flex items-center gap-3 pr-7">
-            <div className="h-11 w-11 rounded-xl border border-teal-200/80 dark:border-teal-800/60 bg-teal-50/60 dark:bg-teal-950/40 flex items-center justify-center p-1 shrink-0 shadow-2xs overflow-hidden">
+            <div className="h-10 w-10 rounded-lg border border-purple-200/80 dark:border-purple-800/60 bg-white dark:bg-purple-950/40 flex items-center justify-center p-1 shrink-0 shadow-2xs overflow-hidden">
               {logoUrl ? (
                 <img src={logoUrl} alt={schoolName} className="h-full w-full object-contain" />
               ) : (
-                <Building2 className="h-5 w-5 text-[#0F766E]" />
+                <Building2 className="h-5 w-5 text-[#8A3BD4]" />
               )}
             </div>
             <div className="min-w-0 flex-1">
@@ -104,32 +104,32 @@ export function SchoolQRModal({ isOpen, onClose, school }) {
         <div className="px-6 py-5 flex flex-col items-center space-y-4 bg-slate-50/50 dark:bg-slate-950/30">
           {/* QR Code Presentation Box */}
           {isQrLoading || !qrData ? (
-            <div className="h-56 w-56 rounded-2xl bg-white dark:bg-slate-900 border border-dashed border-slate-300 dark:border-slate-800 flex flex-col items-center justify-center space-y-2">
-              <Loader2 className="h-6 w-6 text-[#0F766E] animate-spin" />
+            <div className="h-56 w-56 rounded-lg bg-white dark:bg-slate-900 border border-dashed border-slate-300 dark:border-slate-800 flex flex-col items-center justify-center space-y-2">
+              <Loader2 className="h-6 w-6 text-[#8A3BD4] animate-spin" />
               <span className="text-xs font-medium text-slate-400">Generating QR Matrix...</span>
             </div>
           ) : qrData.qrDataUrl ? (
             <div className="w-full flex flex-col items-center">
-              <div className="relative p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-sm flex flex-col items-center transition-all">
+              <div className="relative p-4 rounded-lg bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-sm flex flex-col items-center transition-all">
                 <div className="relative">
                   <img
                     src={qrData.qrDataUrl}
                     alt="Application QR Code"
-                    className="h-52 w-52 sm:h-56 sm:w-56 object-contain rounded-lg"
+                    className="h-52 w-52 sm:h-56 sm:w-56 object-contain rounded-md"
                   />
 
                   {/* Centered School Crest Badge */}
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-11 w-11 rounded-full bg-white border-2 border-[#0F766E] shadow-sm flex items-center justify-center p-0.5 overflow-hidden">
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-11 w-11 rounded-lg bg-white border-2 border-[#8A3BD4] shadow-sm flex items-center justify-center p-0.5 overflow-hidden">
                     {logoUrl ? (
                       <img src={logoUrl} alt="Logo" className="h-full w-full object-contain" />
                     ) : (
-                      <SchoolIcon className="h-5 w-5 text-[#0F766E]" />
+                      <SchoolIcon className="h-5 w-5 text-[#8A3BD4]" />
                     )}
                   </div>
                 </div>
 
                 {/* Scan Instruction Chip */}
-                <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 dark:bg-teal-950/50 border border-teal-200/70 dark:border-teal-900/60 text-[#0F766E] dark:text-teal-300 text-xs font-semibold">
+                <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-purple-50 dark:bg-purple-950/50 border border-purple-200/70 dark:border-purple-900/60 text-[#8A3BD4] dark:text-purple-300 text-xs font-semibold">
                   <Smartphone className="h-3.5 w-3.5" />
                   <span>Scan with Camera or Google Lens to Apply</span>
                 </div>
@@ -140,7 +140,7 @@ export function SchoolQRModal({ isOpen, onClose, school }) {
           {/* Target URL Group: Properly Designed Action Buttons */}
           {applyUrl && (
             <div className="w-full">
-              <div className="flex items-center justify-between gap-2.5 p-1.5 pl-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-2xs">
+              <div className="flex items-center justify-between gap-2.5 p-1.5 pl-3 rounded-lg bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-2xs">
                 <div className="flex items-center gap-2 min-w-0 flex-1">
                   <Link2 className="h-4 w-4 text-slate-400 shrink-0" />
                   <span className="text-xs font-mono font-medium text-slate-600 dark:text-slate-300 truncate select-all">
@@ -152,7 +152,7 @@ export function SchoolQRModal({ isOpen, onClose, school }) {
                     type="button"
                     size="sm"
                     onClick={() => copyToClipboard(applyUrl)}
-                    className="h-8 px-3 rounded-lg text-xs font-semibold bg-[#0F766E] hover:bg-[#0D9488] text-white cursor-pointer shadow-2xs transition-all flex items-center gap-1.5"
+                    className="h-8 px-3 rounded-md text-xs font-semibold bg-gradient-to-r from-[#8A3BD4] to-[#A855F7] hover:from-[#7B2CBF] hover:to-[#8A3BD4] text-white cursor-pointer shadow-xs transition-all flex items-center gap-1.5 border-none"
                   >
                     {copiedLink ? (
                       <>
@@ -171,7 +171,7 @@ export function SchoolQRModal({ isOpen, onClose, school }) {
                     size="sm"
                     variant="outline"
                     asChild
-                    className="h-8 px-2.5 rounded-lg text-xs font-semibold border-slate-200 dark:border-slate-700 bg-slate-50/80 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 cursor-pointer shadow-2xs transition-all flex items-center gap-1"
+                    className="h-8 px-2.5 rounded-md text-xs font-semibold border-slate-200 dark:border-slate-700 bg-slate-50/80 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 cursor-pointer shadow-2xs transition-all flex items-center gap-1"
                     title="Open Form in New Tab"
                   >
                     <a href={applyUrl} target="_blank" rel="noreferrer">
@@ -191,7 +191,7 @@ export function SchoolQRModal({ isOpen, onClose, school }) {
             <Button
               type="button"
               onClick={downloadQRCode}
-              className="h-10 rounded-xl text-xs font-bold bg-[#0F766E] hover:bg-[#0D9488] text-white shadow-xs cursor-pointer flex items-center justify-center gap-2 transition-all hover:scale-[1.01]"
+              className="h-10 rounded-md text-xs font-bold bg-gradient-to-r from-[#8A3BD4] to-[#A855F7] hover:from-[#7B2CBF] hover:to-[#8A3BD4] text-white shadow-xs cursor-pointer flex items-center justify-center gap-2 transition-all border-none"
             >
               <Download className="h-4 w-4 shrink-0" />
               <span>Download PNG</span>
@@ -201,7 +201,7 @@ export function SchoolQRModal({ isOpen, onClose, school }) {
               type="button"
               variant="outline"
               onClick={copyQRImage}
-              className="h-10 rounded-xl text-xs font-semibold border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer flex items-center justify-center gap-2"
+              className="h-10 rounded-md text-xs font-semibold border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-purple-50 hover:text-[#8A3BD4] hover:border-purple-200 cursor-pointer flex items-center justify-center gap-2"
             >
               {copiedImage ? (
                 <>

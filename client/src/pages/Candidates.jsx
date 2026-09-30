@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { 
   Plus, Search, Eye, Pencil, Trash2, ChevronLeft, ChevronRight, 
   MapPin, Briefcase, GraduationCap, Calendar, IndianRupee, 
@@ -33,22 +33,23 @@ export function CandidateList({
   sourceFilterOptions = SOURCE_OPTIONS,
 }) {
   const queryClient = useQueryClient();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [page, setPage] = useState(1);
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [docsModalCandidate, setDocsModalCandidate] = useState(null);
   const [filters, setFilters] = useState({
-    name: '',
-    mobile: '',
-    position: '',
-    status: '',
-    qualification: '',
-    experience: '',
+    name: searchParams.get('name') || '',
+    mobile: searchParams.get('mobile') || '',
+    position: searchParams.get('position') || '',
+    status: searchParams.get('status') || '',
+    qualification: searchParams.get('qualification') || '',
+    experience: searchParams.get('experience') || '',
     state: '',
     stateId: '',
     city: '',
     cityId: '',
     area: '',
-    source: '',
+    source: searchParams.get('source') || '',
     expectedSalaryMin: '',
     expectedSalaryMax: '',
     nearby: false,
@@ -56,6 +57,25 @@ export function CandidateList({
     sortBy: 'createdAt',
     sortOrder: 'desc',
   });
+
+  // Sync URL search params with filter state
+  useEffect(() => {
+    const position = searchParams.get('position');
+    const status = searchParams.get('status');
+    const source = searchParams.get('source');
+    const name = searchParams.get('name');
+
+    if (position !== null || status !== null || source !== null || name !== null) {
+      setFilters((prev) => ({
+        ...prev,
+        position: position ?? prev.position,
+        status: status ?? prev.status,
+        source: source ?? prev.source,
+        name: name ?? prev.name,
+      }));
+      setPage(1);
+    }
+  }, [searchParams]);
   const [deleteId, setDeleteId] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
   const [isTablet, setIsTablet] = useState(false);
@@ -202,11 +222,13 @@ export function CandidateList({
   }, [filters, activeAdvancedCount]);
 
   const clearAllFilters = () => {
+    setSearchParams({});
     setPage(1);
     setFilters({
       name: '',
       mobile: '',
       position: '',
+      status: '',
       qualification: '',
       experience: '',
       state: '',
@@ -232,7 +254,7 @@ export function CandidateList({
         description={description}
         action={
           showAddButton ? (
-            <Button asChild className="bg-gradient-to-r from-[#0F766E] via-[#14B8A6] to-[#4BCBEB] hover:opacity-95 text-white font-bold rounded-xl transition-all duration-200 active:scale-95 shrink-0 shadow-md shadow-[#0F766E]/20 h-9 text-xs px-4">
+            <Button asChild className="bg-gradient-to-r from-[#8A3BD4] to-[#A855F7] hover:opacity-95 text-white font-bold rounded-xl transition-all duration-200 active:scale-95 shrink-0 shadow-md shadow-purple-500/20 h-9 text-xs px-4">
               <Link to="/candidates/new">
                 <Plus className="mr-1.5 h-3.5 w-3.5 stroke-[3]" />
                 Add Candidate
@@ -620,7 +642,7 @@ export function CandidateList({
                         </div>
                         <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
                           <span className="text-slate-400 font-medium">Exp: {c.experience || 'N/A'}</span>
-                          <Link to={`/candidates/${c._id}`} className="text-[#0F766E] hover:underline font-bold text-xs flex items-center gap-1">
+                          <Link to={`/candidates/${c._id}`} className="text-[#8A3BD4] hover:underline font-bold text-xs flex items-center gap-1">
                             <Eye className="w-3.5 h-3.5" /> View Profile
                           </Link>
                         </div>
@@ -671,7 +693,6 @@ export function CandidateList({
                               <div className="min-w-0 flex-1">
                                 <div className="flex items-center gap-1.5 flex-wrap">
                                   <span className="font-bold text-slate-900 dark:text-slate-100 text-sm truncate">{c.fullName}</span>
-                                  {getSourceBadge(c.source)}
                                   {c.status && c.status !== 'new' && (
                                     <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider shrink-0 ${
                                       c.status === 'shortlisted' ? 'bg-teal-50 text-teal-700 border border-teal-200' :
@@ -755,7 +776,7 @@ export function CandidateList({
                                 </button>
                                 <Link
                                   to={`/candidates/${c._id}`}
-                                  className="h-7 w-7 rounded-lg bg-teal-50 hover:bg-teal-100 text-[#0F766E] dark:bg-teal-950/40 dark:text-[#2DD4BF] flex items-center justify-center border border-teal-200/70 shadow-2xs transition-colors"
+                                  className="h-7 w-7 rounded-lg bg-purple-50 hover:bg-purple-100 text-[#8A3BD4] dark:bg-purple-950/40 dark:text-purple-300 flex items-center justify-center border border-purple-200/70 shadow-2xs transition-colors"
                                   title="View Biodata"
                                 >
                                   <Eye className="h-3.5 w-3.5" />
@@ -886,7 +907,6 @@ export function CandidateList({
                               <TableCell className="font-bold text-slate-800 dark:text-slate-200 text-xs py-2.5 px-3">
                                 <div className="flex items-center gap-1.5 flex-wrap">
                                   <span className="group-hover:text-[#0F766E] transition-colors truncate">{c.fullName}</span>
-                                  {getSourceBadge(c.source)}
                                   {c.status && c.status !== 'new' && (
                                     <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider shrink-0 ${
                                       c.status === 'shortlisted' ? 'bg-teal-50 text-teal-700 border border-teal-200' :
@@ -1003,7 +1023,7 @@ export function CandidateList({
 
                                   <Link
                                     to={`/candidates/${c._id}`}
-                                    className="h-7 w-7 rounded-lg bg-teal-50 hover:bg-teal-100 text-[#0F766E] dark:bg-teal-950/40 dark:text-[#2DD4BF] flex items-center justify-center border border-teal-200/70 transition-all hover:scale-105 shadow-2xs"
+                                    className="h-7 w-7 rounded-lg bg-purple-50 hover:bg-purple-100 text-[#8A3BD4] dark:bg-purple-950/40 dark:text-purple-300 flex items-center justify-center border border-purple-200/70 transition-all hover:scale-105 shadow-2xs"
                                     title="View Biodata"
                                   >
                                     <Eye className="h-3.5 w-3.5" />

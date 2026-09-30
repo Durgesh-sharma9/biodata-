@@ -1,69 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600;1,700;1,800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    /* Global Canvas Custom Tints - Option 2: Nordic Ice-Gray Light */
-    --background: 160 12% 96%; /* Corresponds to #F4F7F6 */
-    --foreground: 215 28% 17%; /* Dark slate text #1E293B */
+    /* Global Canvas - Pure White Canvas */
+    --background: 0 0% 100%; /* Pure white #FFFFFF */
+    --foreground: 222 47% 11%; /* #0F172A */
 
     /* Standardized Card Tokens */
     --card: 0 0% 100%; /* #ffffff flat clean panel */
-    --card-foreground: 215 28% 17%;
+    --card-foreground: 222 47% 11%;
 
-    /* Brand Core Alignment Tokens - Option 2: Deep Pine Teal & Mint */
-    --primary: 175 77% 26%; /* #0F766E Deep Pine Teal */
+    /* Brand Core Alignment Tokens - Codju Inspired Electric Purple & Soft Lavender */
+    --primary: 271 65% 53%; /* #8A3BD4 Codju Electric Purple */
     --primary-foreground: 0 0% 100%;
     
-    --secondary: 173 80% 40%; /* #14B8A6 Mint Cyan */
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 270 100% 98%; /* #FAF5FF Soft Lavender */
+    --secondary-foreground: 271 65% 45%;
 
     /* Metadata & Structural Context Layers */
-    --muted: 160 15% 94%;
+    --muted: 220 14% 96%;
     --muted-foreground: 215 16% 47%;
     
-    --accent: 175 77% 26%; /* #0F766E */
+    --accent: 271 65% 53%; /* #8A3BD4 */
     --accent-foreground: 0 0% 100%;
 
     /* Destructive Node Configuration */
     --destructive: 0 84% 60%; /* #EF4444 Danger Red */
     --destructive-foreground: 0 0% 100%;
 
-    /* System Micro-Inputs & Border Tracks - Soft Sage */
-    --border: 160 16% 89%; /* #E2EAE7 */
-    --input: 160 16% 89%;
-    --ring: 175 77% 26%; /* focus-ring matches primary #0F766E */
+    /* System Micro-Inputs & Border Tracks - Clean Slate */
+    --border: 220 13% 91%; /* #E2E8F0 */
+    --input: 220 13% 91%;
+    --ring: 271 65% 53%; /* focus-ring matches Codju purple #8A3BD4 */
     
-    /* Layout Radius Adjustments - Compact 0.5rem (8px) for sleek compact UI */
-    --radius: 0.5rem;
+    /* Layout Radius Adjustments */
+    --radius: 0.625rem;
   }
 
   .dark {
-    --background: 180 25% 6%; /* Deep Spruce Dark #0A1414 */
+    --background: 240 10% 4%;
     --foreground: 210 20% 98%;
     
-    --card: 180 20% 9%; /* Dark Spruce Card #111E1E */
+    --card: 240 10% 7%;
     --card-foreground: 210 20% 98%;
     
-    --primary: 173 80% 40%; /* #14B8A6 */
+    --primary: 271 65% 62%;
     --primary-foreground: 0 0% 100%;
     
-    --secondary: 175 77% 26%; /* #0F766E */
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 271 40% 15%;
+    --secondary-foreground: 271 65% 85%;
     
-    --muted: 180 15% 15%;
+    --muted: 240 6% 15%;
     --muted-foreground: 215 20% 65%;
     
-    --accent: 173 80% 40%;
+    --accent: 271 65% 62%;
     --accent-foreground: 0 0% 100%;
     
     --destructive: 0 84% 60%;
     --destructive-foreground: 210 20% 98%;
     
-    --border: 180 15% 16%;
-    --input: 180 15% 16%;
-    --ring: 173 80% 40%;
+    --border: 240 6% 16%;
+    --input: 240 6% 16%;
+    --ring: 271 65% 62%;
   }
 
   * {
@@ -72,6 +74,7 @@
 
   body {
     @apply bg-background text-foreground antialiased;
+    font-family: 'Nunito', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
 }
 

@@ -272,18 +272,17 @@ export function GlobalSearch({ triggerVariant = 'full' } = {}) {
         /* Search Input Bar in Navbar */
         <div 
           onClick={() => setIsOpen(true)}
-          className="w-full flex items-center justify-between h-9 sm:h-10 px-3 bg-slate-100/90 dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-700/80 rounded-xl cursor-pointer text-xs transition-all shadow-2xs group hover:border-[#0F766E]/40"
+          className="w-full flex items-center justify-between h-9 px-3 bg-slate-100/80 dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-700/80 rounded-xl cursor-pointer text-xs transition-all shadow-2xs group hover:border-[#8A3BD4]/40"
         >
           <div className="flex items-center gap-2 text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300 min-w-0">
-            <Search className="h-4 w-4 text-[#0F766E] shrink-0" />
-            <span className="truncate select-none font-medium">
-              Search candidates, pages, tabs, settings...
+            <Search className="h-4 w-4 text-slate-400 group-hover:text-[#8A3BD4] shrink-0 transition-colors" />
+            <span className="truncate select-none font-medium text-slate-400">
+              Search...
             </span>
           </div>
 
-          <div className="hidden md:flex items-center gap-1 font-mono text-[10px] font-semibold text-slate-400 dark:text-slate-500 bg-white dark:bg-slate-900 px-1.5 py-0.5 rounded-md border border-slate-200 dark:border-slate-700 shadow-2xs">
-            <span>Ctrl</span>
-            <span>K</span>
+          <div className="hidden md:flex items-center font-mono text-[10.5px] font-semibold text-slate-400 dark:text-slate-500 bg-white dark:bg-slate-900 px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-700 shadow-2xs">
+            <span>⌘ K</span>
           </div>
         </div>
       )}

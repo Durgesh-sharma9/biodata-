@@ -553,7 +553,7 @@ export default function Settings() {
                     type="button"
                     onClick={() => handlePreferenceChange('autoAcknowledgeCandidates', !currentPreferences.autoAcknowledgeCandidates)}
                     className={`w-11 h-6 flex items-center rounded-full p-1 transition-colors shrink-0 ${
-                      currentPreferences.autoAcknowledgeCandidates ? 'bg-[#0F766E]' : 'bg-slate-300 dark:bg-slate-700'
+                      currentPreferences.autoAcknowledgeCandidates ? 'bg-[#8A3BD4]' : 'bg-slate-300 dark:bg-slate-700'
                     }`}
                   >
                     <div
@@ -568,7 +568,7 @@ export default function Settings() {
                 <div className="space-y-1.5">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                     <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-                      <FileText className="h-3.5 w-3.5 text-[#0F766E]" />
+                      <FileText className="h-3.5 w-3.5 text-[#8A3BD4]" />
                       Confirmation Message Text
                     </label>
                     <span className="text-[11px] text-slate-400 font-medium">Shown on final submission screen</span>
@@ -578,7 +578,7 @@ export default function Settings() {
                     value={currentPreferences.customWelcomeMessage}
                     onChange={(e) => handlePreferenceChange('customWelcomeMessage', e.target.value)}
                     placeholder="Enter message displayed after candidate submits their application..."
-                    className="w-full p-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#0F766E] shadow-2xs leading-relaxed"
+                    className="w-full p-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg text-xs text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#8A3BD4] shadow-2xs leading-relaxed"
                   />
                   <p className="text-[11px] text-slate-400">
                     This greeting appears immediately on screen after an applicant completes submitting their biodata.
@@ -605,16 +605,16 @@ export default function Settings() {
                       variant="outline"
                       size="sm"
                       onClick={() => setIsPreviewModalOpen(true)}
-                      className="h-9 px-3.5 rounded-xl border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:text-[#0F766E] hover:border-[#0F766E]/40 hover:bg-slate-50 shadow-2xs gap-1.5 cursor-pointer"
+                      className="h-9 px-3.5 rounded-lg border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:text-[#8A3BD4] hover:border-purple-300 hover:bg-purple-50/50 shadow-2xs gap-1.5 cursor-pointer"
                     >
-                      <Eye className="h-3.5 w-3.5 text-[#0F766E]" />
+                      <Eye className="h-3.5 w-3.5 text-[#8A3BD4]" />
                       Preview
                     </Button>
 
                     <Button
                       type="submit"
                       disabled={preferencesMutation.isPending}
-                      className="h-9 px-4 bg-[#0F766E] hover:bg-[#115E59] text-white font-semibold text-xs rounded-xl shadow-xs transition-all active:scale-98 cursor-pointer flex items-center gap-1.5"
+                      className="h-9 px-4 bg-gradient-to-r from-[#8A3BD4] to-[#A855F7] hover:from-[#7B2CBF] hover:to-[#8A3BD4] text-white font-semibold text-xs rounded-lg shadow-sm transition-all active:scale-98 cursor-pointer flex items-center gap-1.5 border-none"
                     >
                       {preferencesMutation.isPending ? (
                         <>
@@ -642,7 +642,7 @@ export default function Settings() {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
                   <CardTitle className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                    <Sliders className="h-4 w-4 text-[#0F766E]" />
+                    <Sliders className="h-4 w-4 text-[#8A3BD4]" />
                     Application Criteria & Catalog
                   </CardTitle>
                   <CardDescription className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
@@ -653,7 +653,7 @@ export default function Settings() {
                 <Button
                   type="button"
                   onClick={() => handleOpenRequestModal(CATEGORIES.find((c) => c.key === selectedCatalogCategory)?.requestKey || 'position')}
-                  className="h-8 px-3 rounded-xl bg-[#0F766E] hover:bg-[#0D9488] text-white text-xs font-semibold self-start sm:self-auto shrink-0 shadow-2xs"
+                  className="h-8 px-3 rounded-lg bg-gradient-to-r from-[#8A3BD4] to-[#A855F7] hover:from-[#7B2CBF] hover:to-[#8A3BD4] text-white text-xs font-semibold self-start sm:self-auto shrink-0 shadow-2xs border-none"
                 >
                   <Plus className="h-3.5 w-3.5 mr-1" />
                   Request New Option
@@ -811,7 +811,7 @@ export default function Settings() {
                               handleToggleItem(selectedCatalogCategory, item);
                             }}
                             className={`w-8 h-4.5 flex items-center rounded-full p-0.5 transition-colors shrink-0 ${
-                              isActive ? 'bg-[#0F766E]' : 'bg-slate-300 dark:bg-slate-700'
+                              isActive ? 'bg-[#8A3BD4]' : 'bg-slate-300 dark:bg-slate-700'
                             }`}
                           >
                             <div
@@ -989,7 +989,7 @@ export default function Settings() {
                   <Button
                     type="submit"
                     disabled={passwordMutation.isPending}
-                    className="h-9 px-5 bg-[#0F766E] hover:bg-[#0D9488] text-white font-semibold text-xs rounded-xl shadow-2xs transition-all active:scale-98"
+                    className="h-9 px-5 bg-gradient-to-r from-[#8A3BD4] to-[#A855F7] hover:from-[#7B2CBF] hover:to-[#8A3BD4] text-white font-semibold text-xs rounded-lg shadow-sm transition-all active:scale-98 border-none"
                   >
                     {passwordMutation.isPending ? (
                       <>
@@ -1014,10 +1014,10 @@ export default function Settings() {
 
       {/* REQUEST NEW OPTION MODAL DIALOG */}
       <Dialog open={isRequestModalOpen} onOpenChange={setIsRequestModalOpen}>
-        <DialogContent className="max-w-md p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl">
+        <DialogContent className="max-w-md p-6 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl">
           <DialogHeader className="space-y-1 text-left">
             <DialogTitle className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-              <Send className="h-4 w-4 text-[#0F766E]" />
+              <Send className="h-4 w-4 text-[#8A3BD4]" />
               Request New Master Option
             </DialogTitle>
             <DialogDescription className="text-xs text-slate-500 dark:text-slate-400">
@@ -1027,14 +1027,14 @@ export default function Settings() {
 
           <form onSubmit={handleSubmitRequest} className="space-y-4 pt-2">
             {requestSuccess && (
-              <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400 text-xs font-semibold flex items-center gap-2">
+              <div className="p-3 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400 text-xs font-semibold flex items-center gap-2">
                 <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
                 <span>Request sent to Super Admin for approval!</span>
               </div>
             )}
 
             {requestError && (
-              <div className="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-400 text-xs font-semibold flex items-center gap-2">
+              <div className="p-3 rounded-lg bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-400 text-xs font-semibold flex items-center gap-2">
                 <AlertCircle className="h-4 w-4 shrink-0 text-rose-600" />
                 <span>{requestError}</span>
               </div>
@@ -1045,7 +1045,7 @@ export default function Settings() {
               <select
                 value={requestCategory}
                 onChange={(e) => setRequestCategory(e.target.value)}
-                className="w-full h-10 px-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#0F766E]"
+                className="w-full h-10 px-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#8A3BD4]"
               >
                 <option value="position">Position (e.g. Robotics Instructor, Coding Teacher)</option>
                 <option value="subject">Subject (e.g. Artificial Intelligence, French)</option>
@@ -1061,7 +1061,7 @@ export default function Settings() {
                 onChange={(e) => setRequestName(e.target.value)}
                 placeholder="e.g. STEAM Facilitator"
                 required
-                className="h-10 text-xs border-slate-200 dark:border-slate-800 rounded-xl font-medium"
+                className="h-10 text-xs border-slate-200 dark:border-slate-800 rounded-lg font-medium"
               />
             </div>
 
@@ -1072,7 +1072,7 @@ export default function Settings() {
                 value={requestDescription}
                 onChange={(e) => setRequestDescription(e.target.value)}
                 placeholder="Why should this be added to the platform catalog?"
-                className="w-full p-2.5 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#0F766E]"
+                className="w-full p-2.5 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg text-xs text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#8A3BD4]"
               />
             </div>
 
@@ -1081,14 +1081,14 @@ export default function Settings() {
                 type="button"
                 variant="outline"
                 onClick={() => setIsRequestModalOpen(false)}
-                className="h-10 rounded-xl text-xs font-semibold"
+                className="h-10 rounded-lg text-xs font-semibold"
               >
                 Cancel
               </Button>
               <Button
                 type="submit"
                 disabled={requestMutation.isPending}
-                className="h-10 px-5 rounded-xl bg-[#0F766E] hover:bg-[#0D9488] text-white text-xs font-semibold"
+                className="h-10 px-5 rounded-lg bg-gradient-to-r from-[#8A3BD4] to-[#A855F7] hover:from-[#7B2CBF] hover:to-[#8A3BD4] text-white text-xs font-semibold border-none"
               >
                 {requestMutation.isPending ? (
                   <>

@@ -323,7 +323,7 @@ export default function CandidateProfile() {
       {/* ------------------------------------------------------------- */}
       {/* 1. COMPACT HERO HEADER: IDENTITY + QUICK ACTIONS + PRINT/EDIT */}
       {/* ------------------------------------------------------------- */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 sm:p-5 shadow-xs no-print">
+      <div className="bg-gradient-to-r from-[#F0FCF5] via-[#EFF6FF] to-[#FAF5FF] dark:from-slate-800/90 dark:via-slate-800/70 dark:to-slate-800/90 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 sm:p-5 shadow-2xs no-print">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           
           {/* Left: Avatar + Candidate Core Info + Quick Communication */}
@@ -333,10 +333,10 @@ export default function CandidateProfile() {
                 <img
                   src={candidate.profilePhoto}
                   alt={candidate.fullName}
-                  className="h-16 w-16 sm:h-20 sm:w-20 rounded-2xl object-cover border-2 border-teal-600/20 shadow-xs"
+                  className="h-16 w-16 sm:h-20 sm:w-20 rounded-2xl object-cover border-2 border-purple-300/40 shadow-xs"
                 />
               ) : (
-                <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-2xl bg-gradient-to-br from-[#0F766E] to-teal-500 text-white flex items-center justify-center text-2xl font-black shadow-xs">
+                <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-2xl bg-gradient-to-tr from-[#8A3BD4] to-[#A855F7] text-white flex items-center justify-center text-2xl font-black shadow-xs">
                   {candidate.fullName?.charAt(0)?.toUpperCase() || '?'}
                 </div>
               )}
@@ -350,9 +350,14 @@ export default function CandidateProfile() {
                 <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight truncate">
                   {candidate.fullName}
                 </h1>
-                <Badge className="bg-teal-50 text-[#0F766E] border-teal-200 dark:bg-teal-950/40 dark:text-teal-300 dark:border-teal-800 font-bold text-xs px-2.5 py-0.5 rounded-full">
+                <Badge className="bg-purple-50 text-[#8A3BD4] border-purple-200 dark:bg-purple-950/40 dark:text-purple-300 dark:border-purple-800 font-bold text-xs px-2.5 py-0.5 rounded-full">
                   {candidate.position}
                 </Badge>
+                {candidate.source && (
+                  <span className="text-[11px] font-bold px-2 py-0.5 rounded-md border border-blue-200/70 bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300 dark:border-blue-800 uppercase tracking-wide">
+                    {candidate.source === 'ADMIN' ? 'Walk-in' : candidate.source === 'SCHOOL_LINK' ? 'QR Scan' : candidate.source === 'SELF_APPLICANT' ? 'Self Applied' : candidate.source}
+                  </span>
+                )}
                 {candidate.gender && (
                   <span className="text-[11px] font-semibold text-slate-600 dark:text-slate-400 px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200/50 dark:border-slate-700/50">
                     {candidate.gender}

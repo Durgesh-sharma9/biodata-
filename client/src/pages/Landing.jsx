@@ -189,12 +189,14 @@ export default function Landing() {
             
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2.5 group">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#0F766E] to-[#7928CA] flex items-center justify-center text-white shadow-md shadow-[#0F766E]/25 group-hover:scale-105 transition-transform">
-                <Briefcase className="w-5 h-5 text-white" />
-              </div>
+              <img
+                src="/hirehub-logo-transparent.png"
+                alt="HireHub Logo"
+                className="w-9 h-9 object-contain group-hover:scale-105 transition-transform"
+              />
               <div className="flex flex-col">
-                <span className="text-2xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-1">
-                  Hire<span className="text-[#0F766E]">Hub</span>
+                <span className="text-2xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-1 font-sans">
+                  Hire<span className="text-[#8A3BD4]">Hub</span>
                 </span>
                 <span className="text-[10px] font-semibold text-slate-400 tracking-wider uppercase -mt-1">
                   School Staff Recruitment
@@ -1569,12 +1571,14 @@ export default function Landing() {
             
             {/* Brand column */}
             <div className="md:col-span-4 space-y-3">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-[#0F766E] to-[#7928CA] flex items-center justify-center text-white shadow-sm">
-                  <Briefcase className="w-4 h-4" />
-                </div>
-                <span className="text-xl font-black tracking-tight text-slate-900 dark:text-white">
-                  Hire<span className="text-[#0F766E]">Hub</span>
+              <div className="flex items-center gap-2.5">
+                <img
+                  src="/hirehub-logo-transparent.png"
+                  alt="HireHub Logo"
+                  className="w-7 h-7 object-contain"
+                />
+                <span className="text-xl font-black tracking-tight text-slate-900 dark:text-white font-sans">
+                  Hire<span className="text-[#8A3BD4]">Hub</span>
                 </span>
               </div>
               <p className="text-xs text-slate-500 leading-relaxed font-medium max-w-sm">
