@@ -195,7 +195,7 @@ export const sendSignupOtp = catchAsync(async (req, res) => {
 });
 
 export const registerSchool = catchAsync(async (req, res) => {
-  let { schoolName, adminName, email, mobile, password, googleId, avatarUrl, otp } = req.body;
+  let { schoolName, adminName, email, mobile, password, googleId, googleCredential, avatarUrl, otp } = req.body;
 
   if (!adminName || !adminName.trim()) {
     adminName = schoolName ? `${schoolName} Admin` : 'School Admin';
@@ -207,6 +207,27 @@ export const registerSchool = catchAsync(async (req, res) => {
 
   if (!password && !googleId) {
     throw new ApiError(400, 'Password or Google sign-in is required');
+  }
+
+  // For Google signup: verify credential token for security
+  if (googleId) {
+    if (!googleCredential) {
+      throw new ApiError(400, 'Google credential token is required for verification');
+    }
+    try {
+      const ticket = await googleClient.verifyIdToken({
+        idToken: googleCredential,
+        audience: process.env.GOOGLE_CLIENT_ID,
+      });
+      const payload = ticket.getPayload();
+      // Ensure the token matches the provided email & googleId
+      if (payload.sub !== googleId || payload.email.toLowerCase() !== email.toLowerCase()) {
+        throw new ApiError(401, 'Google credential verification failed: data mismatch');
+      }
+    } catch (err) {
+      if (err instanceof ApiError) throw err;
+      throw new ApiError(401, 'Invalid Google credential token. Please try signing in with Google again.');
+    }
   }
 
   // Require and verify OTP for standard password registration

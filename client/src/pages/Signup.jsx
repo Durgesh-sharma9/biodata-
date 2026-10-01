@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
-import { GoogleLoginButton } from '@/components/common/GoogleLoginButton';
+import { GoogleSignupButton } from '@/components/common/GoogleSignupButton';
 import { registerSchool, sendSignupOtp } from '@/lib/api';
 import { 
   Building2, 
@@ -69,26 +69,21 @@ export default function Signup() {
     }
   };
 
-  const handleGoogleSuccess = (res) => {
-    if (res?.user?.schoolId || res?.user?.role === 'school_admin') {
-      navigate('/dashboard');
-      window.location.reload();
-      return;
-    }
-
-    if (res?.user?.email) {
-      setGoogleData({
-        email: res.user.email,
-        name: res.user.name,
-        avatarUrl: res.user.avatarUrl,
-        googleId: res.user.googleId,
-      });
-      setFormData((prev) => ({
-        ...prev,
-        email: res.user.email || prev.email,
-        adminName: res.user.name || prev.adminName,
-      }));
-    }
+  // Called by GoogleSignupButton — no backend call, just profile pre-fill
+  const handleGoogleProfile = (profile) => {
+    setGoogleData({
+      email: profile.email,
+      name: profile.name,
+      avatarUrl: profile.avatarUrl,
+      googleId: profile.googleId,
+      credential: profile.credential,
+    });
+    setFormData((prev) => ({
+      ...prev,
+      email: profile.email || prev.email,
+      adminName: profile.name || prev.adminName,
+    }));
+    setError('');
   };
 
   const mutation = useMutation({
@@ -123,12 +118,13 @@ export default function Signup() {
       return;
     }
 
-    // If signed up via Google, register directly
+    // If signed up via Google, register directly (no OTP needed)
     if (googleData) {
       mutation.mutate({
         ...formData,
         adminName: formData.adminName || (formData.schoolName ? `${formData.schoolName} Admin` : 'School Admin'),
         googleId: googleData.googleId,
+        googleCredential: googleData.credential, // for backend JWT verification
         avatarUrl: googleData.avatarUrl,
       });
       return;
@@ -606,10 +602,9 @@ export default function Signup() {
                 </div>
 
                 <div className="flex justify-center w-full">
-                  <GoogleLoginButton
-                    buttonText="Sign up with Google"
-                    onSuccess={handleGoogleSuccess}
-                    targetRole="school_admin"
+                  <GoogleSignupButton
+                    text="signup_with"
+                    onGoogleProfile={handleGoogleProfile}
                   />
                 </div>
               </div>
