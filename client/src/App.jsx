@@ -40,7 +40,7 @@ import ApplicantDocuments from '@/pages/applicant/ApplicantDocuments';
 import ApplicantNotifications from '@/pages/applicant/ApplicantNotifications';
 import ApplicantPlans from '@/pages/admin/ApplicantPlans';
 import PartnerMarquee from '@/pages/admin/PartnerMarquee';
-const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '556980788726-rjrudmqdntj9jevortkn62pb0hr5f4dv.apps.googleusercontent.com';
+const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '1009453564904-0g2e28s2uancvjeb0j26idg6upb1vomg.apps.googleusercontent.com';
 
 const queryClient = new QueryClient({
   defaultOptions: {
