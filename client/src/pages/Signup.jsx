@@ -208,9 +208,9 @@ export default function Signup() {
             {/* 1. Base Cobalt Blue Body with smooth inward slope and elegant flared bottom */}
             <path 
               d="M 0,0 
-                 L 430,0 
-                 L 430,195 
-                 C 425,360 405,500 390,640 
+                 L 460,0 
+                 C 455,65 425,140 415,200 
+                 C 407,260 398,500 390,640 
                  C 380,750 405,880 455,965 
                  C 468,985 475,1000 475,1000 
                  L 0,1000 Z" 
@@ -237,32 +237,21 @@ export default function Signup() {
               opacity="0.35" 
             />
 
-            {/* 4. Top Dark Royal Ribbon & Banner (Deeper so logo & badges are 100% inside dark section) */}
+            {/* 4. Top Dark Royal Header Wave (Smooth inward curve, seamless with base body) */}
             <path 
               d="M 0,0 
-                 L 475,0 
-                 C 488,0 495,8 495,20 
-                 L 495,140 
-                 C 495,175 470,195 435,195 
-                 L 430,195 
-                 C 350,200 240,175 140,185 
+                 L 460,0 
+                 C 455,65 425,140 415,200 
+                 C 335,205 240,175 140,185 
                  C 70,192 25,180 0,182 
                  L 0,0 Z" 
               fill="#20337E" 
-            />
-
-            {/* 5. Tucked Ribbon Under-fold Shadow */}
-            <path 
-              d="M 405,195 
-                 L 430,195 
-                 L 430,215 Z" 
-              fill="#141E4E" 
             />
           </svg>
         </div>
 
         {/* Top Header inside showcase: HireHub Logo & OS Brand */}
-        <div className="relative z-10 flex items-center justify-between pt-1 sm:pt-2">
+        <div className="relative z-10 flex items-center justify-between pt-1 sm:pt-2 pr-6 sm:pr-8">
           <Link to="/" className="flex items-center gap-2.5">
             <img 
               src="/hirehub-logo-transparent.png" 
@@ -278,7 +267,7 @@ export default function Signup() {
               </span>
             </div>
           </Link>
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-[11px] font-bold text-white border border-white/20">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-[11px] font-bold text-white border border-white/20 mr-2 sm:mr-3">
             <Building2 className="w-3.5 h-3.5 text-amber-300" /> 150+ Schools
           </span>
         </div>

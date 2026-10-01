@@ -15,7 +15,6 @@ import {
   KeyRound,
   GraduationCap,
   Building2,
-  Sparkles,
   Zap,
   ShieldCheck,
   CheckCircle2,
@@ -39,18 +38,16 @@ export default function Login({ redirectTo, signupLink = '/signup' }) {
   const navigate = useNavigate();
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [activePreset, setActivePreset] = useState('admin@gmail.com');
 
   const {
     register,
     handleSubmit,
-    setValue,
     watch,
     formState: { errors, isSubmitting },
   } = useForm({ 
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: 'admin@gmail.com',
+      email: '',
       password: '',
     }
   });
@@ -66,13 +63,6 @@ export default function Login({ redirectTo, signupLink = '/signup' }) {
     } catch (err) {
       setError(err.response?.data?.message || 'Authentication failed. Please verify your credentials.');
     }
-  };
-
-  const fillCredentials = (email, password) => {
-    setValue('email', email, { shouldValidate: true });
-    setValue('password', password, { shouldValidate: true });
-    setActivePreset(email);
-    setError('');
   };
 
 
@@ -100,9 +90,9 @@ export default function Login({ redirectTo, signupLink = '/signup' }) {
             {/* 1. Base Cobalt Blue Body with smooth inward slope and elegant flared bottom */}
             <path 
               d="M 0,0 
-                 L 430,0 
-                 L 430,195 
-                 C 425,360 405,500 390,640 
+                 L 460,0 
+                 C 455,65 425,140 415,200 
+                 C 407,260 398,500 390,640 
                  C 380,750 405,880 455,965 
                  C 468,985 475,1000 475,1000 
                  L 0,1000 Z" 
@@ -129,32 +119,21 @@ export default function Login({ redirectTo, signupLink = '/signup' }) {
               opacity="0.35" 
             />
 
-            {/* 4. Top Dark Royal Ribbon & Banner (Deeper so logo & badges are 100% inside dark section) */}
+            {/* 4. Top Dark Royal Header Wave (Smooth inward curve, seamless with base body) */}
             <path 
               d="M 0,0 
-                 L 475,0 
-                 C 488,0 495,8 495,20 
-                 L 495,140 
-                 C 495,175 470,195 435,195 
-                 L 430,195 
-                 C 350,200 240,175 140,185 
+                 L 460,0 
+                 C 455,65 425,140 415,200 
+                 C 335,205 240,175 140,185 
                  C 70,192 25,180 0,182 
                  L 0,0 Z" 
               fill="#20337E" 
-            />
-
-            {/* 5. Tucked Ribbon Under-fold Shadow */}
-            <path 
-              d="M 405,195 
-                 L 430,195 
-                 L 430,215 Z" 
-              fill="#141E4E" 
             />
           </svg>
         </div>
 
         {/* Top Header inside showcase: HireHub Logo & OS Brand */}
-        <div className="relative z-10 flex items-center justify-between pt-1 sm:pt-2">
+        <div className="relative z-10 flex items-center justify-between pt-1 sm:pt-2 pr-6 sm:pr-8">
           <Link to="/" className="flex items-center gap-2.5">
             <img 
               src="/hirehub-logo-transparent.png" 
@@ -170,7 +149,7 @@ export default function Login({ redirectTo, signupLink = '/signup' }) {
               </span>
             </div>
           </Link>
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-[11px] font-bold text-white border border-white/20">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-[11px] font-bold text-white border border-white/20 mr-2 sm:mr-3">
             <Building2 className="w-3.5 h-3.5 text-amber-300" /> 150+ Schools
           </span>
         </div>
@@ -299,21 +278,21 @@ export default function Login({ redirectTo, signupLink = '/signup' }) {
       <div className="flex-1 min-h-screen lg:h-screen lg:max-h-screen flex items-center justify-center p-3 sm:p-5 lg:py-2 lg:px-6 relative z-10">
         
         {/* The White Card / Box */}
-        <div className="w-full max-w-[460px] bg-white rounded-[26px] sm:rounded-[30px] shadow-2xl shadow-blue-950/15 p-5 sm:p-7 lg:py-5 lg:px-8 relative z-10 border border-white/80">
+        <div className="w-full max-w-[480px] bg-white rounded-[32px] shadow-2xl shadow-blue-950/15 p-6 sm:p-9 lg:p-9 relative z-10 border border-white/80">
           
           {/* Top Bar: Circular Back Button & Top Right Switch Link */}
-          <div className="flex items-center justify-between mb-4 sm:mb-5">
+          <div className="flex items-center justify-between mb-5 sm:mb-6">
             <button
               type="button"
               onClick={handleBack}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-slate-200/90 text-slate-500 hover:text-slate-800 hover:border-slate-300 text-xs font-semibold transition-all cursor-pointer bg-white hover:bg-slate-50 shadow-xs"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-slate-200/90 text-slate-500 hover:text-slate-800 hover:border-slate-300 text-xs font-semibold transition-all cursor-pointer bg-white hover:bg-slate-50 shadow-xs"
               aria-label="Back"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>Back</span>
             </button>
 
-            <div className="text-xs font-medium text-slate-400">
+            <div className="text-xs sm:text-[13px] font-medium text-slate-400">
               New school?{' '}
               <Link to={signupLink} className="text-[#4E66F8] font-semibold hover:underline">
                 Sign up
@@ -322,56 +301,13 @@ export default function Login({ redirectTo, signupLink = '/signup' }) {
           </div>
 
           {/* Title */}
-          <div className="mb-4">
-            <h1 className="text-2xl sm:text-[28px] font-black tracking-tight text-slate-900 leading-tight">
+          <div className="mb-6 sm:mb-7">
+            <h1 className="text-3xl font-black tracking-tight text-slate-900 leading-tight">
               Sign In
             </h1>
-            <p className="text-[11px] sm:text-xs text-slate-400 font-medium mt-0.5">
+            <p className="text-xs sm:text-[13px] text-slate-400 font-medium mt-1">
               Direct School Faculty &amp; Staff Recruitment Portal
             </p>
-          </div>
-
-          {/* Quick Demo Autofill Pills */}
-          <div className="mb-6 p-2.5 rounded-2xl bg-slate-50 border border-slate-100">
-            <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5 flex items-center gap-1.5 px-1">
-              <Sparkles className="w-3 h-3 text-[#4E66F8]" /> 
-              <span>1-Click Demo Accounts (Click to test):</span>
-            </div>
-            <div className="grid grid-cols-3 gap-1.5">
-              <button
-                type="button"
-                onClick={() => fillCredentials('admin@gmail.com', '123456')}
-                className={`px-2 py-1.5 rounded-xl border text-[11px] font-bold transition-all text-center flex flex-col items-center justify-center cursor-pointer ${
-                  activePreset === 'admin@gmail.com'
-                    ? 'bg-white border-[#4E66F8] text-[#4E66F8] shadow-xs'
-                    : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300'
-                }`}
-              >
-                <span className="truncate w-full">Admin School</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => fillCredentials('school@demo.com', 'School@123')}
-                className={`px-2 py-1.5 rounded-xl border text-[11px] font-bold transition-all text-center flex flex-col items-center justify-center cursor-pointer ${
-                  activePreset === 'school@demo.com'
-                    ? 'bg-white border-[#4E66F8] text-[#4E66F8] shadow-xs'
-                    : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300'
-                }`}
-              >
-                <span className="truncate w-full">Demo School</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => fillCredentials('admin@platform.com', 'Admin@123')}
-                className={`px-2 py-1.5 rounded-xl border text-[11px] font-bold transition-all text-center flex flex-col items-center justify-center cursor-pointer ${
-                  activePreset === 'admin@platform.com'
-                    ? 'bg-white border-[#4E66F8] text-[#4E66F8] shadow-xs'
-                    : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300'
-                }`}
-              >
-                <span className="truncate w-full">Super Admin</span>
-              </button>
-            </div>
           </div>
 
           {error && (
@@ -380,38 +316,38 @@ export default function Login({ redirectTo, signupLink = '/signup' }) {
             </div>
           )}
 
-          {/* FORM: Clean Border-bottom Underline Fields */}
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+          {/* FORM: Spacious, Clean Underline Fields */}
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 sm:space-y-7">
             
             {/* Email Underline Field */}
-            <div className="space-y-1">
-              <div className="relative flex items-center border-b border-slate-200 focus-within:border-[#4E66F8] transition-colors pb-2.5">
-                <Mail className="w-4 h-4 text-slate-400 mr-3 shrink-0" />
+            <div className="space-y-1.5">
+              <div className="relative flex items-center border-b-2 border-slate-200 focus-within:border-[#4E66F8] transition-colors pb-3">
+                <Mail className="w-5 h-5 text-slate-400 mr-3.5 shrink-0" />
                 <input
                   id="email"
                   type="email"
-                  placeholder="admin@school.com"
-                  className="w-full bg-transparent text-sm font-medium text-slate-800 placeholder:text-slate-400 focus:outline-none"
+                  placeholder="Official School Email"
+                  className="w-full bg-transparent text-base font-medium text-slate-800 placeholder:text-slate-400 focus:outline-none"
                   {...register('email')}
                 />
                 {isEmailValid && (
                   <div className="w-5 h-5 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center shrink-0">
-                    <Check className="w-3.5 h-3.5" />
+                    <Check className="w-4 h-4" />
                   </div>
                 )}
               </div>
-              {errors.email && <p className="text-[11px] font-semibold text-rose-500">{errors.email.message}</p>}
+              {errors.email && <p className="text-xs font-semibold text-rose-500">{errors.email.message}</p>}
             </div>
 
             {/* Password Underline Field */}
-            <div className="space-y-1">
-              <div className="relative flex items-center border-b border-slate-200 focus-within:border-[#4E66F8] transition-colors pb-2.5">
-                <Lock className="w-4 h-4 text-slate-400 mr-3 shrink-0" />
+            <div className="space-y-1.5">
+              <div className="relative flex items-center border-b-2 border-slate-200 focus-within:border-[#4E66F8] transition-colors pb-3">
+                <Lock className="w-5 h-5 text-slate-400 mr-3.5 shrink-0" />
                 <input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
-                  placeholder="Password"
-                  className="w-full bg-transparent text-sm font-medium text-slate-800 placeholder:text-slate-400 focus:outline-none"
+                  placeholder="Enter Password"
+                  className="w-full bg-transparent text-base font-medium text-slate-800 placeholder:text-slate-400 focus:outline-none"
                   {...register('password')}
                 />
                 <button
@@ -419,14 +355,14 @@ export default function Login({ redirectTo, signupLink = '/signup' }) {
                   onClick={() => setShowPassword(!showPassword)}
                   className="text-slate-400 hover:text-slate-600 transition-colors cursor-pointer ml-2"
                 >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
-              {errors.password && <p className="text-[11px] font-semibold text-rose-500">{errors.password.message}</p>}
+              {errors.password && <p className="text-xs font-semibold text-rose-500">{errors.password.message}</p>}
               <div className="flex justify-end pt-1">
                 <Link
                   to="/forgot-password"
-                  className="text-xs font-semibold text-[#4E66F8] hover:underline cursor-pointer"
+                  className="text-xs sm:text-[13px] font-semibold text-[#4E66F8] hover:underline cursor-pointer"
                 >
                   Forgot password?
                 </Link>
@@ -434,11 +370,11 @@ export default function Login({ redirectTo, signupLink = '/signup' }) {
             </div>
 
             {/* Submit & Social Auth */}
-            <div className="pt-3 space-y-3.5">
+            <div className="pt-2 sm:pt-3 space-y-4">
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full h-11 rounded-full bg-[#4E66F8] hover:bg-[#3D56EC] text-white font-semibold text-xs sm:text-sm shadow-lg shadow-[#4E66F8]/25 hover:shadow-[#4E66F8]/40 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
+                className="w-full h-12 rounded-full bg-[#4E66F8] hover:bg-[#3D56EC] text-white font-semibold text-sm sm:text-base shadow-lg shadow-[#4E66F8]/25 hover:shadow-[#4E66F8]/40 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
               >
                 {isSubmitting ? (
                   <span>Signing in...</span>
