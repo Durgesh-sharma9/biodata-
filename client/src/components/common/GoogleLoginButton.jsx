@@ -47,8 +47,8 @@ export function GoogleLoginButton({ targetRole, redirectTo, onSuccessCustom, tex
         </div>
       )}
       {loading ? (
-        <div className="flex items-center gap-2 text-xs font-bold text-[#0F766E] py-2">
-          <span className="w-4 h-4 border-2 border-[#0F766E] border-t-transparent rounded-full animate-spin" />
+        <div className="flex items-center gap-2 text-xs font-bold text-violet-600 py-2">
+          <span className="w-4 h-4 border-2 border-violet-600 border-t-transparent rounded-full animate-spin" />
           Authenticating with Google...
         </div>
       ) : (

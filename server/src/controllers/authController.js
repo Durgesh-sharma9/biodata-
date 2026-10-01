@@ -2,11 +2,13 @@ import User from '../models/User.js';
 import School from '../models/School.js';
 import SchoolSettings from '../models/SchoolSettings.js';
 import Plan from '../models/Plan.js';
+import Otp from '../models/Otp.js';
 import { ApiError } from '../utils/ApiError.js';
 import { generateToken } from '../utils/generateToken.js';
 import { catchAsync } from '../utils/catchAsync.js';
 import { generateSchoolSlug } from '../utils/slugify.js';
 import { OAuth2Client } from 'google-auth-library';
+import { sendEmail, sendOtpEmail, sendWelcomeEmail, verifySmtpConnection } from '../utils/emailService.js';
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -154,15 +156,78 @@ export const getMe = catchAsync(async (req, res) => {
   });
 });
 
-export const registerSchool = catchAsync(async (req, res) => {
-  const { schoolName, adminName, email, mobile, password, googleId, avatarUrl } = req.body;
+export const sendSignupOtp = catchAsync(async (req, res) => {
+  const { email, schoolName } = req.body;
+  if (!email) throw new ApiError(400, 'School email is required');
 
-  if (!schoolName || !adminName || !email || !mobile) {
-    throw new ApiError(400, 'School name, admin name, email, and mobile are required');
+  const existingSchool = await School.findOne({ email: email.toLowerCase() });
+  if (existingSchool) throw new ApiError(400, 'A school with this email already exists. Please sign in.');
+
+  const existingUser = await User.findOne({ email: email.toLowerCase() });
+  if (existingUser) throw new ApiError(400, 'This email is already registered. Please sign in.');
+
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 mins
+
+  await Otp.deleteMany({ email: email.toLowerCase(), purpose: 'email_verification' });
+  await Otp.create({
+    email: email.toLowerCase(),
+    otp,
+    purpose: 'email_verification',
+    expiresAt,
+  });
+
+  const sendResult = await sendOtpEmail({
+    to: email.toLowerCase(),
+    otp,
+    purpose: 'School Account Registration',
+    name: schoolName || 'School Admin',
+  });
+
+  if (!sendResult.success) {
+    throw new ApiError(500, `Failed to send verification OTP: ${sendResult.error}`);
+  }
+
+  res.json({
+    success: true,
+    message: 'Verification OTP has been sent to your email address.',
+  });
+});
+
+export const registerSchool = catchAsync(async (req, res) => {
+  let { schoolName, adminName, email, mobile, password, googleId, avatarUrl, otp } = req.body;
+
+  if (!adminName || !adminName.trim()) {
+    adminName = schoolName ? `${schoolName} Admin` : 'School Admin';
+  }
+
+  if (!schoolName || !email || !mobile) {
+    throw new ApiError(400, 'School name, email, and mobile are required');
   }
 
   if (!password && !googleId) {
     throw new ApiError(400, 'Password or Google sign-in is required');
+  }
+
+  // Require and verify OTP for standard password registration
+  if (!googleId) {
+    if (!otp) {
+      throw new ApiError(400, 'OTP code is required to verify your email address');
+    }
+
+    const validOtp = await Otp.findOne({
+      email: email.toLowerCase(),
+      otp: otp.toString().trim(),
+      purpose: 'email_verification',
+      expiresAt: { $gt: new Date() },
+    });
+
+    if (!validOtp) {
+      throw new ApiError(400, 'Invalid or expired verification OTP. Please request a new code.');
+    }
+
+    // Delete used OTP
+    await Otp.deleteMany({ email: email.toLowerCase(), purpose: 'email_verification' });
   }
 
   const existingSchool = await School.findOne({ email: email.toLowerCase() });
@@ -201,6 +266,14 @@ export const registerSchool = catchAsync(async (req, res) => {
   });
 
   await SchoolSettings.create({ schoolId: school._id });
+
+  // Send Welcome Email via SMTP
+  sendWelcomeEmail({
+    to: email.toLowerCase(),
+    name: adminName,
+    schoolName: school.schoolName,
+    schoolId: school.schoolId,
+  }).catch((err) => console.error('[REGISTER EMAIL ERROR]:', err.message));
 
   const token = generateToken(user._id);
 
@@ -249,6 +322,126 @@ export const changePassword = catchAsync(async (req, res) => {
   res.json({
     success: true,
     message: 'Password changed successfully',
+  });
+});
+
+export const forgotPassword = catchAsync(async (req, res) => {
+  const { email } = req.body;
+  if (!email) throw new ApiError(400, 'Email is required');
+
+  const user = await User.findOne({ email: email.toLowerCase() });
+  if (!user) {
+    return res.json({
+      success: true,
+      message: 'If an account exists with this email, an OTP has been sent.',
+    });
+  }
+
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+
+  await Otp.deleteMany({ email: email.toLowerCase(), purpose: 'password_reset' });
+  await Otp.create({
+    email: email.toLowerCase(),
+    otp,
+    purpose: 'password_reset',
+    expiresAt,
+  });
+
+  const sendResult = await sendOtpEmail({
+    to: email.toLowerCase(),
+    otp,
+    purpose: 'Password Reset',
+    name: user.name,
+  });
+
+  if (!sendResult.success) {
+    throw new ApiError(500, `Failed to send email: ${sendResult.error}`);
+  }
+
+  res.json({
+    success: true,
+    message: 'OTP sent successfully to your registered email address.',
+  });
+});
+
+export const verifyOtp = catchAsync(async (req, res) => {
+  const { email, otp, purpose = 'password_reset' } = req.body;
+  if (!email || !otp) throw new ApiError(400, 'Email and OTP are required');
+
+  const record = await Otp.findOne({
+    email: email.toLowerCase(),
+    otp,
+    purpose,
+    expiresAt: { $gt: new Date() },
+  });
+
+  if (!record) {
+    throw new ApiError(400, 'Invalid or expired OTP');
+  }
+
+  res.json({
+    success: true,
+    message: 'OTP verified successfully',
+  });
+});
+
+export const resetPasswordWithOtp = catchAsync(async (req, res) => {
+  const { email, otp, newPassword } = req.body;
+  if (!email || !otp || !newPassword) {
+    throw new ApiError(400, 'Email, OTP, and new password are required');
+  }
+
+  if (newPassword.length < 6) {
+    throw new ApiError(400, 'New password must be at least 6 characters');
+  }
+
+  const record = await Otp.findOne({
+    email: email.toLowerCase(),
+    otp,
+    purpose: 'password_reset',
+    expiresAt: { $gt: new Date() },
+  });
+
+  if (!record) {
+    throw new ApiError(400, 'Invalid or expired OTP');
+  }
+
+  const user = await User.findOne({ email: email.toLowerCase() });
+  if (!user) throw new ApiError(404, 'User not found');
+
+  user.password = newPassword;
+  await user.save();
+
+  await Otp.deleteMany({ email: email.toLowerCase(), purpose: 'password_reset' });
+
+  res.json({
+    success: true,
+    message: 'Password has been reset successfully. You can now log in.',
+  });
+});
+
+export const testSmtp = catchAsync(async (req, res) => {
+  const { toEmail } = req.body;
+  if (!toEmail) {
+    throw new ApiError(400, 'toEmail is required to test SMTP');
+  }
+
+  const testOtp = Math.floor(100000 + Math.random() * 900000).toString();
+  const sendResult = await sendOtpEmail({
+    to: toEmail,
+    otp: testOtp,
+    purpose: 'Live SMTP Test Verification',
+    name: 'HireHub Tester',
+  });
+
+  res.json({
+    success: sendResult.success,
+    recipient: toEmail,
+    generatedOtp: testOtp,
+    smtpHost: process.env.SMTP_HOST || 'mail.webncode.in',
+    smtpUser: process.env.SMTP_USER || 'hirehub@webncode.in',
+    details: sendResult,
   });
 });
 

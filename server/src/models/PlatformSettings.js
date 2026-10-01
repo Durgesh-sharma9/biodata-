@@ -1,16 +1,16 @@
 import mongoose from 'mongoose';
 
 export const DEFAULT_PARTNER_SCHOOLS = [
-  'Delhi Public School (DPS)',
-  'Cambridge International School',
-  'Ryan International Group',
-  "St. Xavier's Senior Secondary School",
-  'DAV Public School',
-  'Birla Public School',
-  'Heritage Global Academy',
-  'Army Public School',
-  'Podar International School',
-  'Mount Litera Zee School',
+  'Sunrise International School',
+  'Global Wisdom Public School',
+  'Bright Horizon Academy',
+  'Mayur Senior Secondary School',
+  'Springdale International School',
+  'Pragati Educational Academy',
+  'Gyan Sagar Public School',
+  'Greenwood Valley School',
+  'Vidyasthali Memorial School',
+  'Apex International Academy',
 ];
 
 const platformSettingsSchema = new mongoose.Schema(
@@ -40,7 +40,7 @@ const platformSettingsSchema = new mongoose.Schema(
     },
     heroTagline: {
       type: String,
-      default: 'eliminates paper biodatas and agency commissions. Generate a custom QR code for gate walk-ins, organize applicants into a searchable digital vault, and dispatch 1-click WhatsApp interview invitations.',
+      default: 'eliminates paper biodatas and agency commissions. Generate a custom QR code for gate walk-ins, organize applicants into a searchable digital vault, and streamline school staff recruitment.',
     },
     isActive: {
       type: Boolean,

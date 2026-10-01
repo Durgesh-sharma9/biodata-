@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import FloatingBubbles from '@/components/common/FloatingBubbles';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { getPublicMarqueeSettings } from '@/lib/api';
@@ -42,26 +43,42 @@ import {
   Send,
   Eye,
   Award,
-  BadgeCheck
+  BadgeCheck,
+  Quote,
+  Mail,
+  Phone,
+  Twitter,
+  Linkedin,
+  Facebook,
+  Instagram
 } from 'lucide-react';
 
 const PARTNER_SCHOOLS = [
-  'Delhi Public School (DPS)',
-  'Cambridge International School',
-  'Ryan International Group',
-  "St. Xavier's Senior Secondary School",
-  'DAV Public School',
-  'Birla Public School',
-  'Heritage Global Academy',
-  'Army Public School',
-  'Podar International School',
-  'Mount Litera Zee School'
+  'Sunrise International School',
+  'Global Wisdom Public School',
+  'Bright Horizon Academy',
+  'Mayur Senior Secondary School',
+  'Springdale International School',
+  'Pragati Educational Academy',
+  'Gyan Sagar Public School',
+  'Greenwood Valley School',
+  'Vidyasthali Memorial School',
+  'Apex International Academy'
 ];
 
 export default function Landing() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [heroUnlocked, setHeroUnlocked] = useState(false);
   const [openFaq, setOpenFaq] = useState(null);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleWindowScroll = () => {
+      setIsScrolled(window.scrollY > 15);
+    };
+    window.addEventListener('scroll', handleWindowScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleWindowScroll);
+  }, []);
 
   // Fetch dynamic marquee & hero settings configured by Super Admin
   const { data: marqueeSettings } = useQuery({
@@ -77,7 +94,11 @@ export default function Landing() {
   const marqueeSpeed = marqueeSettings?.marqueeSpeed || 25;
   const marqueeTitle = marqueeSettings?.marqueeTitle || 'Trusted by Reputed Schools & Educational Trusts Across India';
   const heroName = marqueeSettings?.heroName || 'HireHub';
-  const heroTagline = marqueeSettings?.heroTagline || 'eliminates paper biodatas and agency commissions. Generate a custom QR code for gate walk-ins, organize applicants into a searchable digital vault, and dispatch 1-click WhatsApp interview invitations.';
+  const rawTagline = marqueeSettings?.heroTagline || 'eliminates paper biodatas and agency commissions. Generate a custom QR code for gate walk-ins, organize applicants into a searchable digital vault, and streamline school staff recruitment.';
+  const heroTagline = rawTagline
+    .replace(/dispatch 1-click WhatsApp interview invitations\.?/gi, 'streamline school staff recruitment.')
+    .replace(/WhatsApp/gi, 'Direct')
+    .replace(/interview/gi, 'recruitment');
 
   // Smooth scroll handler
   const handleScroll = (e, id) => {
@@ -85,7 +106,7 @@ export default function Landing() {
     setMobileMenuOpen(false);
     const element = document.getElementById(id);
     if (element) {
-      const offset = 80;
+      const offset = 70;
       const bodyRect = document.body.getBoundingClientRect().top;
       const elementRect = element.getBoundingClientRect().top;
       const elementPosition = elementRect - bodyRect;
@@ -103,60 +124,40 @@ export default function Landing() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAFBFC] text-slate-800 font-sans antialiased selection:bg-violet-600 selection:text-white relative overflow-x-hidden">
+    <div className="min-h-screen text-slate-800 font-sans antialiased selection:bg-violet-600 selection:text-white relative overflow-x-hidden">
       
-      {/* ─────────────────────────────────────────────────────────────
-          FIXED AMBIENT GLOWING BUBBLES LAYER (PERSISTS ACROSS ENTIRE PAGE ON SCROLL)
-      ───────────────────────────────────────────────────────────── */}
-      <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden" aria-hidden="true">
-        {/* Top-Right Soft Cyan/Sky Bubble (Matches Hero Mockup Glow) */}
-        <div className="absolute -top-12 -right-12 w-[540px] h-[540px] rounded-full bg-gradient-to-bl from-sky-400/22 via-cyan-300/14 to-transparent blur-[110px] animate-float-drift" />
+      {/* RANDOMLY MOVING BUBBLE ORBS */}
+      <FloatingBubbles />
 
-        {/* Top-Left Violet / Indigo Bubble */}
-        <div className="absolute top-16 -left-16 w-[500px] h-[500px] rounded-full bg-gradient-to-tr from-violet-500/20 via-indigo-400/14 to-transparent blur-[110px] animate-float-slow" />
-
-        {/* Mid-Page Left Violet / Purple Bubble */}
-        <div className="absolute top-[38%] -left-28 w-[520px] h-[520px] rounded-full bg-gradient-to-r from-violet-400/18 via-purple-300/12 to-transparent blur-[120px] animate-float-wander" />
-
-        {/* Mid-Page Right Soft Cyan / Sky Bubble */}
-        <div className="absolute top-[50%] -right-24 w-[500px] h-[500px] rounded-full bg-gradient-to-l from-cyan-400/20 via-sky-300/12 to-transparent blur-[120px] animate-float-reverse" />
-
-        {/* Lower Page Left Indigo / Emerald Tint Bubble */}
-        <div className="absolute top-[72%] -left-16 w-[480px] h-[480px] rounded-full bg-gradient-to-tr from-indigo-500/16 via-emerald-300/10 to-transparent blur-[110px] animate-float-drift" />
-
-        {/* Bottom Page Right Soft Sky / Violet Bubble */}
-        <div className="absolute -bottom-16 right-12 w-[500px] h-[500px] rounded-full bg-gradient-to-tl from-sky-400/18 via-violet-400/12 to-transparent blur-[120px] animate-pulse-glow" />
-      </div>
+      {/* All page content sits ABOVE the bubbles layer */}
+      <div className="relative z-10">
 
       {/* ─────────────────────────────────────────────────────────────
-          1. NAVIGATION BAR (CLEAN, NO CANDIDATE LOGIN, NO PRICING)
+          1. NAVIGATION BAR (CLEAN, PROFESSIONAL & MODERN)
       ───────────────────────────────────────────────────────────── */}
-      <nav className="fixed top-0 left-0 right-0 z-50 w-full h-20 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.05)] transition-all">
-        <div className="max-w-7xl mx-auto h-full px-4 sm:px-6 lg:px-8">
+      <nav className="fixed top-0 left-0 right-0 z-50 w-full bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-[0_1px_10px_rgba(0,0,0,0.04)]">
+        <div className="max-w-7xl mx-auto h-16 sm:h-20 px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-full items-center">
             
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-2.5 group">
-              <div className="relative">
-                <img
-                  src="/hirehub-logo-transparent.png"
-                  alt="HireHub Logo"
-                  className="w-9 h-9 object-contain group-hover:scale-105 transition-transform"
-                />
-                <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-white ring-1 ring-emerald-400/40" />
-              </div>
+            <Link to="/" className="flex items-center gap-2.5 sm:gap-3 group">
+              <img
+                src="/hirehub-logo-transparent.png"
+                alt="HireHub Logo"
+                className="w-8 h-8 sm:w-10 sm:h-10 object-contain group-hover:scale-105 transition-transform"
+              />
               <div className="flex flex-col">
-                <span className="text-2xl font-black tracking-tight text-slate-900 flex items-center gap-1 font-sans">
-                  Hire<span className="bg-gradient-to-r from-violet-600 via-indigo-600 to-sky-500 bg-clip-text text-transparent">Hub</span>
+                <span className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 font-sans leading-tight">
+                  Hire<span className="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">Hub</span>
                 </span>
-                <span className="text-[10px] font-bold text-slate-400 tracking-wider uppercase -mt-1">
+                <span className="text-[9px] sm:text-[10px] font-bold text-slate-400 tracking-wider uppercase -mt-0.5">
                   School Staff Recruitment OS
                 </span>
               </div>
             </Link>
             
             {/* Desktop Navigation Links */}
-            <div className="hidden lg:flex items-center space-x-1">
+            <div className="hidden lg:flex items-center space-x-7">
               {[
                 { label: 'Overview', target: 'overview' },
                 { label: 'For Schools', target: 'for-schools' },
@@ -169,7 +170,7 @@ export default function Landing() {
                   key={item.target}
                   href={`#${item.target}`} 
                   onClick={(e) => handleScroll(e, item.target)}
-                  className="px-3.5 py-2 text-sm font-semibold text-slate-600 hover:text-violet-700 rounded-xl hover:bg-violet-50/70 transition-all cursor-pointer"
+                  className="text-sm font-semibold text-slate-600 hover:text-violet-700 transition-colors cursor-pointer py-1"
                 >
                   {item.label}
                 </a>
@@ -179,13 +180,17 @@ export default function Landing() {
             {/* CTA Portal Buttons (School Only) */}
             <div className="hidden sm:flex items-center space-x-3">
               <Link to="/login">
-                <Button variant="outline" className="border-slate-200 text-slate-700 hover:border-violet-400 hover:text-violet-700 hover:bg-violet-50/50 text-xs font-bold px-4 py-2 rounded-xl transition-all cursor-pointer shadow-xs">
-                  <Building2 className="w-4 h-4 mr-1.5 text-slate-500" /> School Login
+                <Button 
+                  variant="outline" 
+                  className="h-9 sm:h-10 px-3.5 sm:px-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 hover:text-violet-700 hover:border-violet-300 text-xs font-bold transition-all shadow-2xs cursor-pointer flex items-center gap-2"
+                >
+                  <Building2 className="w-4 h-4 text-slate-500" />
+                  <span>School Login</span>
                 </Button>
               </Link>
 
               <Link to="/signup">
-                <Button className="bg-gradient-to-r from-violet-600 via-indigo-600 to-sky-600 hover:from-violet-700 hover:via-indigo-700 hover:to-sky-700 text-white text-xs font-bold px-5 py-2 rounded-xl shadow-md shadow-violet-500/25 hover:shadow-lg hover:shadow-violet-500/35 transition-all cursor-pointer">
+                <Button className="h-9 sm:h-10 px-4 sm:px-5 rounded-xl bg-violet-600 hover:bg-violet-700 text-white text-xs font-bold shadow-md shadow-violet-500/25 hover:shadow-lg hover:shadow-violet-500/35 transition-all cursor-pointer">
                   Register School Free
                 </Button>
               </Link>
@@ -203,63 +208,127 @@ export default function Landing() {
             </div>
           </div>
         </div>
-
-        {/* Mobile Dropdown Menu */}
-        {mobileMenuOpen && (
-          <div className="lg:hidden absolute top-20 left-0 right-0 border-b border-slate-200 bg-white/98 backdrop-blur-xl px-6 py-6 space-y-2 shadow-2xl">
-            {['overview', 'for-schools', 'roles', 'how-it-works', 'testimonials', 'faq'].map((target) => (
-              <a 
-                key={target}
-                href={`#${target}`} 
-                onClick={(e) => handleScroll(e, target)}
-                className="block px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-700 hover:bg-violet-50 hover:text-violet-700 transition-colors capitalize"
-              >
-                {target.replace('-', ' ')}
-              </a>
-            ))}
-            <div className="pt-4 border-t border-slate-100 flex flex-col gap-2.5">
-              <Link to="/login" className="w-full">
-                <Button variant="outline" className="w-full justify-center text-slate-700 border-slate-200 rounded-xl py-2.5 text-xs font-bold">
-                  <Building2 className="w-4 h-4 mr-2" /> School Admin Login
-                </Button>
-              </Link>
-              <Link to="/signup" className="w-full">
-                <Button className="w-full justify-center bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-xl py-2.5 text-xs font-bold shadow-md shadow-violet-500/25">
-                  Register School Free
-                </Button>
-              </Link>
-            </div>
-          </div>
-        )}
       </nav>
+
+      {/* Mobile Backdrop Overlay (Click outside to close) */}
+      {mobileMenuOpen && (
+        <div 
+          className="fixed inset-0 h-screen h-[100dvh] w-screen bg-slate-900/60 backdrop-blur-xs z-[998] transition-opacity duration-300"
+          onClick={() => setMobileMenuOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
+      {/* Mobile Side Drawer (Slides in from the right, full viewport height) */}
+      <div 
+        className={`fixed top-0 right-0 h-screen h-[100dvh] w-[290px] sm:w-[320px] max-w-[85vw] bg-white z-[999] shadow-2xl flex flex-col justify-between transition-transform duration-300 ease-in-out border-l border-slate-200 ${
+          mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+        }`}
+      >
+        {/* Drawer Header */}
+        <div className="h-16 px-5 border-b border-slate-100 flex items-center justify-between bg-white shrink-0">
+          <Link to="/" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-2.5">
+            <img
+              src="/hirehub-logo-transparent.png"
+              alt="HireHub Logo"
+              className="w-7 h-7 object-contain"
+            />
+            <div className="flex flex-col">
+              <span className="text-lg font-black tracking-tight text-slate-900 leading-tight">
+                Hire<span className="bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">Hub</span>
+              </span>
+              <span className="text-[8px] font-bold text-slate-400 tracking-wider uppercase -mt-0.5">
+                Recruitment OS
+              </span>
+            </div>
+          </Link>
+          
+          <button 
+            onClick={() => setMobileMenuOpen(false)}
+            className="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 hover:text-slate-900 flex items-center justify-center transition-colors cursor-pointer"
+            aria-label="Close menu"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+
+        {/* Drawer Action Buttons TOP */}
+        <div className="p-4 border-b border-slate-100 bg-slate-50/80 space-y-2 shrink-0">
+          <Link to="/signup" className="w-full block" onClick={() => setMobileMenuOpen(false)}>
+            <Button className="w-full justify-center h-10 bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 hover:from-violet-700 hover:via-purple-700 hover:to-indigo-700 text-white rounded-xl text-xs font-bold shadow-md shadow-violet-500/25">
+              Register School Free
+            </Button>
+          </Link>
+          <Link to="/login" className="w-full block" onClick={() => setMobileMenuOpen(false)}>
+            <Button variant="outline" className="w-full justify-center h-10 bg-white text-slate-700 border-slate-200 hover:border-violet-300 hover:text-violet-700 rounded-xl text-xs font-bold shadow-2xs">
+              <Building2 className="w-4 h-4 mr-2 text-violet-600" /> School Login
+            </Button>
+          </Link>
+        </div>
+
+        {/* Drawer Navigation Links (All items fully visible) */}
+        <div className="p-4 space-y-1 overflow-y-auto flex-1 min-h-0 bg-white">
+          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-3 py-1.5 mb-1">
+            Menu Navigation
+          </div>
+          {[
+            { label: 'Overview', target: 'overview', icon: Globe },
+            { label: 'For Schools', target: 'for-schools', icon: Building2 },
+            { label: 'Roles Covered', target: 'roles', icon: Briefcase },
+            { label: 'How It Works', target: 'how-it-works', icon: Zap },
+            { label: 'Testimonials', target: 'testimonials', icon: Star },
+            { label: 'FAQ', target: 'faq', icon: HelpCircle }
+          ].map((item) => {
+            const IconComponent = item.icon;
+            return (
+              <a 
+                key={item.target}
+                href={`#${item.target}`} 
+                onClick={(e) => handleScroll(e, item.target)}
+                className="flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-bold text-slate-700 hover:bg-violet-50 hover:text-violet-700 transition-colors"
+              >
+                <IconComponent className="w-4 h-4 text-violet-600 shrink-0" />
+                <span>{item.label}</span>
+              </a>
+            );
+          })}
+        </div>
+
+        {/* Drawer Footer */}
+        <div className="px-4 py-3 border-t border-slate-100 bg-slate-50/50 text-center shrink-0">
+          <p className="text-[10px] font-medium text-slate-400">
+            &copy; {new Date().getFullYear()} HireHub OS
+          </p>
+        </div>
+      </div>
 
       {/* ─────────────────────────────────────────────────────────────
           2. HERO SECTION - VIBRANT, MODERN & SLEEK
       ───────────────────────────────────────────────────────────── */}
-      <section id="overview" className="pt-28 pb-16 lg:pt-36 lg:pb-24 relative">
+      <section id="overview" className="pt-20 pb-10 sm:pt-28 sm:pb-16 lg:pt-36 lg:pb-24 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             
             {/* HERO LEFT COLUMN */}
             <div className="lg:col-span-7 text-center lg:text-left">
               
               {/* Animated Floating Pill Badge */}
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-violet-200 bg-white/90 shadow-sm backdrop-blur-md mb-6 hover:border-violet-300 transition-colors">
-                <span className="flex h-2 w-2 relative">
+              <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full border border-violet-200 bg-white/90 shadow-2xs backdrop-blur-md mb-4 sm:mb-6 hover:border-violet-300 transition-colors max-w-full">
+                <span className="flex h-2 w-2 relative shrink-0">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
                 </span>
-                <span className="text-xs font-black bg-gradient-to-r from-violet-700 to-indigo-600 bg-clip-text text-transparent">
+                <span className="text-[11px] sm:text-xs font-black bg-gradient-to-r from-violet-700 to-indigo-600 bg-clip-text text-transparent truncate">
                   {heroName} Recruitment OS
                 </span>
-                <span className="text-slate-300">•</span>
-                <span className="text-xs font-semibold text-slate-600">
+                <span className="hidden sm:inline text-slate-300">•</span>
+                <span className="hidden sm:inline text-xs font-semibold text-slate-600">
                   India's Dedicated School Staffing Platform
                 </span>
               </div>
 
               {/* Colorful Main Headline */}
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 leading-[1.12] mb-6">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 leading-[1.14] mb-4 sm:mb-6">
                 Hire Top Teachers &amp; School Staff{' '}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 via-indigo-600 to-sky-500">
                   in Minutes.
@@ -267,34 +336,29 @@ export default function Landing() {
               </h1>
 
               {/* Sub-headline — controlled by Super Admin */}
-              <p className="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto lg:mx-0 mb-8 font-normal leading-relaxed">
+              <p className="text-sm sm:text-base lg:text-lg text-slate-600 max-w-2xl mx-auto lg:mx-0 mb-6 sm:mb-8 font-normal leading-relaxed">
                 <strong className="text-slate-900 font-bold">{heroName}</strong> {heroTagline}
               </p>
 
               {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row gap-3.5 justify-center lg:justify-start mb-6">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-3.5 justify-center lg:justify-start mb-6">
                 <Link to="/signup" className="w-full sm:w-auto">
-                  <Button className="w-full sm:w-auto h-12 rounded-xl bg-gradient-to-r from-violet-600 via-indigo-600 to-sky-600 hover:from-violet-700 hover:via-indigo-700 hover:to-sky-700 text-white font-bold px-8 shadow-xl shadow-violet-500/25 hover:shadow-violet-500/35 transition-all text-sm flex items-center justify-center gap-2 group cursor-pointer">
+                  <Button className="w-full sm:w-auto h-11 sm:h-12 rounded-xl bg-gradient-to-r from-violet-600 via-indigo-600 to-sky-600 hover:from-violet-700 hover:via-indigo-700 hover:to-sky-700 text-white font-bold px-7 sm:px-8 shadow-xl shadow-violet-500/25 hover:shadow-violet-500/35 transition-all text-xs sm:text-sm flex items-center justify-center gap-2 group cursor-pointer">
                     <Building2 className="w-4 h-4" /> Start School Free Trial
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </Link>
 
-                <a 
-                  href="https://wa.me/918288863132?text=Hello%20HireHub%2C%20we%20want%20to%20schedule%20a%20demo%20for%20our%20school." 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="w-full sm:w-auto"
-                >
-                  <Button variant="outline" className="w-full sm:w-auto h-12 border-slate-200 bg-white/90 backdrop-blur-sm text-slate-800 hover:border-emerald-500 hover:text-emerald-700 hover:bg-emerald-50/50 px-7 rounded-xl font-bold transition-all text-sm flex items-center justify-center gap-2 shadow-xs cursor-pointer">
-                    <MessageSquare className="w-4 h-4 text-emerald-600" /> Schedule Demo on WhatsApp
+                <Link to="/login" className="w-full sm:w-auto">
+                  <Button variant="outline" className="w-full sm:w-auto h-11 sm:h-12 border-slate-200 bg-white/90 backdrop-blur-sm text-slate-800 hover:border-violet-300 hover:text-violet-700 hover:bg-violet-50/50 px-6 sm:px-7 rounded-xl font-bold transition-all text-xs sm:text-sm flex items-center justify-center gap-2 shadow-xs cursor-pointer">
+                    <Building2 className="w-4 h-4 text-violet-600" /> School Admin Login
                   </Button>
-                </a>
+                </Link>
               </div>
 
               {/* Quick Interactive Role Search Chips */}
-              <div className="mb-8 flex flex-wrap items-center justify-center lg:justify-start gap-2">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mr-1 flex items-center gap-1">
+              <div className="mb-6 sm:mb-8 flex flex-wrap items-center justify-center lg:justify-start gap-1.5 sm:gap-2">
+                <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400 mr-1 flex items-center gap-1">
                   <Search className="w-3 h-3 text-violet-600" /> Quick Roles:
                 </span>
                 {[
@@ -302,13 +366,13 @@ export default function Landing() {
                   { label: '🧪 TGT Science', target: 'roles' },
                   { label: '🚌 Bus Driver', target: 'roles' },
                   { label: '💻 Computer / IT', target: 'roles' },
-                  { label: '📊 School Accountant', target: 'roles' },
+                  { label: '📊 Accountant', target: 'roles' },
                 ].map((chip, idx) => (
                   <button
                     key={idx}
                     type="button"
                     onClick={(e) => handleScroll(e, chip.target)}
-                    className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-white border border-slate-200 hover:border-violet-400 hover:text-violet-700 text-slate-600 shadow-2xs transition-all cursor-pointer"
+                    className="px-2 py-1 sm:px-2.5 sm:py-1 rounded-lg text-[10px] sm:text-[11px] font-bold bg-white border border-slate-200 hover:border-violet-400 hover:text-violet-700 text-slate-600 shadow-2xs transition-all cursor-pointer"
                   >
                     {chip.label}
                   </button>
@@ -316,185 +380,63 @@ export default function Landing() {
               </div>
 
               {/* Trust Badges */}
-              <div className="pt-6 border-t border-slate-200/80 flex flex-wrap items-center justify-center lg:justify-start gap-y-3 gap-x-8 text-xs font-semibold text-slate-600">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600" /> 100% Free School Access
+              <div className="pt-4 sm:pt-6 border-t border-slate-200/80 flex flex-wrap items-center justify-center lg:justify-start gap-y-2.5 gap-x-5 sm:gap-x-8 text-[11px] sm:text-xs font-semibold text-slate-600">
+                <div className="flex items-center gap-1.5 sm:gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-600 shrink-0" /> 100% Free School Access
                 </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600" /> Auto Custom Gate QR Code
+                <div className="flex items-center gap-1.5 sm:gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-600 shrink-0" /> Auto Gate QR Code
                 </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600" /> 100% Private to Your School
+                <div className="flex items-center gap-1.5 sm:gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-600 shrink-0" /> 100% Private to School
                 </div>
               </div>
 
             </div>
 
-            {/* HERO RIGHT COLUMN - COMPACT & REFINED MAC-STYLE PRODUCT MOCKUP */}
-            <div className="lg:col-span-5 relative max-w-md mx-auto lg:max-w-none w-full">
-              <div className="bg-white/95 backdrop-blur-2xl rounded-2xl border border-slate-200/90 shadow-[0_15px_40px_-5px_rgba(79,70,229,0.12)] p-4 sm:p-5 relative overflow-hidden group">
+            {/* HERO RIGHT COLUMN - CLEAN FLOATING CHARACTER ILLUSTRATION (NO BOX/CONTAINER) */}
+            <div className="lg:col-span-5 relative max-w-lg mx-auto lg:max-w-none w-full flex items-center justify-center">
+              <div className="relative w-full max-w-[420px] flex items-center justify-center py-4">
                 
-                {/* Decorative corner glow */}
-                <div className="absolute top-0 right-0 w-28 h-28 bg-gradient-to-bl from-violet-500/10 via-sky-400/10 to-transparent rounded-bl-full pointer-events-none" />
+                {/* Soft ambient colorful blur behind the character */}
+                <div className="absolute inset-0 bg-gradient-to-tr from-violet-500/25 via-indigo-500/20 to-sky-400/25 rounded-full blur-3xl pointer-events-none -z-10 animate-pulse-glow" />
 
-                {/* Header of Mockup */}
-                <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                  <div className="flex items-center gap-1.5">
-                    <div className="w-2.5 h-2.5 rounded-full bg-rose-400/90" />
-                    <div className="w-2.5 h-2.5 rounded-full bg-amber-400/90" />
-                    <div className="w-2.5 h-2.5 rounded-full bg-emerald-400/90" />
-                    <span className="ml-1.5 text-[11px] font-bold text-slate-700 flex items-center gap-1">
-                      <FolderLock className="w-3 h-3 text-violet-600" />
-                      Candidate Vault
-                    </span>
-                  </div>
-                  <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" /> Live System
-                  </span>
-                </div>
+                {/* The Transparent Character Illustration */}
+                <div className="relative w-full flex items-center justify-center group">
+                  <img 
+                    src="/hirehub-hiring-illustration.png" 
+                    alt="We Are Hiring School Staff" 
+                    className="w-full max-w-[340px] sm:max-w-[390px] h-auto object-contain drop-shadow-2xl transition-transform duration-500 group-hover:scale-105"
+                  />
 
-                {/* Simulated Compact Filter Bar */}
-                <div className="my-2.5 flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-50 border border-slate-200/80 text-[11px] text-slate-500">
-                  <Search className="w-3 h-3 text-slate-400 shrink-0" />
-                  <span className="text-slate-400 truncate text-[10px] sm:text-[11px]">Filter: "PGT Maths", CBSE, &gt;5 Yrs Exp</span>
-                  <span className="ml-auto text-[9px] font-bold text-violet-700 bg-violet-100/70 px-1.5 py-0.5 rounded">
-                    24 Matches
-                  </span>
-                </div>
-
-                {/* Compact Interactive Metrics Row */}
-                <div className="grid grid-cols-3 gap-2 my-2.5">
-                  <div className="bg-gradient-to-br from-violet-50/80 to-white border border-violet-100 rounded-xl p-2 text-center">
-                    <div className="text-[8px] uppercase font-bold text-slate-400 tracking-wider">Applicants</div>
-                    <div className="text-sm font-black text-slate-900 leading-tight">45,200+</div>
-                    <div className="text-[9px] text-emerald-600 font-bold">↑ 48% mo</div>
-                  </div>
-
-                  <div className="bg-gradient-to-br from-sky-50/80 to-white border border-sky-100 rounded-xl p-2 text-center">
-                    <div className="text-[8px] uppercase font-bold text-slate-400 tracking-wider">Distance</div>
-                    <div className="text-sm font-black text-slate-900 leading-tight">&lt; 8.5 km</div>
-                    <div className="text-[9px] text-sky-600 font-bold">Local</div>
-                  </div>
-
-                  <div className="bg-gradient-to-br from-emerald-50/80 to-white border border-emerald-100 rounded-xl p-2 text-center">
-                    <div className="text-[8px] uppercase font-bold text-slate-400 tracking-wider">Speed</div>
-                    <div className="text-sm font-black text-slate-900 leading-tight">2.5 Days</div>
-                    <div className="text-[9px] text-emerald-600 font-bold">70% faster</div>
-                  </div>
-                </div>
-
-                {/* Live Interactive Simulated Candidate Card */}
-                <div className={`border rounded-xl p-3 transition-all duration-300 mb-2.5 ${
-                  heroUnlocked 
-                    ? 'bg-gradient-to-br from-emerald-50/70 via-white to-violet-50/50 border-emerald-300 shadow-sm'
-                    : 'bg-white border-slate-200/90 hover:border-violet-300 shadow-2xs'
-                }`}>
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-2.5">
-                      <div className={`w-9 h-9 rounded-xl bg-gradient-to-tr from-violet-600 to-indigo-500 text-white flex items-center justify-center font-black text-xs shadow-xs ${
-                        heroUnlocked ? 'ring-2 ring-emerald-500' : ''
-                      }`}>
-                        AK
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-1.5">
-                          <h4 className="font-bold text-xs text-slate-900">Ananya Kapoor</h4>
-                          <span className="text-[9px] bg-emerald-50 text-emerald-700 font-bold px-1.5 py-0.2 rounded border border-emerald-200 flex items-center gap-0.5">
-                            <BadgeCheck className="w-2.5 h-2.5 text-emerald-600" /> CTET &amp; B.Ed
-                          </span>
-                        </div>
-                        <p className="text-[10px] text-slate-500 font-medium leading-tight">PGT Mathematics • 7 Yrs Exp</p>
-                      </div>
+                  {/* Floating Pill Badge 1: 100% Verified */}
+                  <div className="absolute top-2 -left-2 sm:left-0 bg-white/95 backdrop-blur-md border border-slate-200/90 shadow-lg rounded-2xl px-3 py-2 flex items-center gap-2.5 animate-float-slow hover:border-violet-300 transition-all">
+                    <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold shrink-0 shadow-2xs">
+                      <CheckCircle2 className="w-4 h-4" />
                     </div>
-                    <span className="text-[9px] font-bold text-violet-700 bg-violet-50 border border-violet-200/80 px-2 py-0.5 rounded-lg flex items-center gap-0.5 shrink-0">
-                      <MapPin className="w-2.5 h-2.5 text-violet-600" /> 6.4 km
-                    </span>
-                  </div>
-
-                  <div className="mt-2 flex flex-wrap gap-1">
-                    <span className="text-[9px] bg-slate-50 border border-slate-200/80 px-1.5 py-0.5 rounded font-medium text-slate-600">CBSE &amp; ICSE</span>
-                    <span className="text-[9px] bg-slate-50 border border-slate-200/80 px-1.5 py-0.5 rounded font-medium text-slate-600">Classes 9-12</span>
-                    <span className="text-[9px] bg-slate-50 border border-slate-200/80 px-1.5 py-0.5 rounded font-medium text-slate-600">English Medium</span>
-                    <span className="text-[9px] bg-slate-50 border border-slate-200/80 px-1.5 py-0.5 rounded font-medium text-slate-600">M.Sc Math</span>
-                  </div>
-
-                  {/* REVEALED WHATSAPP INVITATION DETAILS */}
-                  {heroUnlocked ? (
-                    <div className="mt-2 p-2 rounded-lg bg-emerald-50/50 border border-emerald-200 space-y-1 animate-in fade-in zoom-in-95 duration-150 text-[10px]">
-                      <div className="flex items-center justify-between">
-                        <span className="font-bold text-slate-700">
-                          📞 Mobile: <span className="text-emerald-700 font-extrabold">+91 98112 43210</span>
-                        </span>
-                        <span className="text-[9px] font-bold text-emerald-700 bg-emerald-100/70 px-1.5 py-0.2 rounded">
-                          WhatsApp Active
-                        </span>
-                      </div>
-                      <div className="flex items-center justify-between pt-1 border-t border-emerald-100 text-[10px]">
-                        <span className="text-slate-500">✉️ ananya.kapoor@edu.in</span>
-                        <span className="font-bold text-violet-700 hover:underline cursor-pointer">
-                          View Resume
-                        </span>
-                      </div>
-                    </div>
-                  ) : null}
-
-                  <div className="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
-                    <span className="text-slate-500 font-bold text-[10px]">Exp: ₹45k - ₹55k</span>
-                    <Button 
-                      type="button"
-                      size="sm" 
-                      onClick={() => setHeroUnlocked(!heroUnlocked)}
-                      className={`h-7 text-[10px] font-bold rounded-lg px-2.5 transition-all shadow-xs cursor-pointer ${
-                        heroUnlocked 
-                          ? 'bg-emerald-600 hover:bg-emerald-700 text-white' 
-                          : 'bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white shadow-xs'
-                      }`}
-                    >
-                      {heroUnlocked ? (
-                        <>
-                          <Check className="w-3 h-3 mr-1" /> Invite Dispatched
-                        </>
-                      ) : (
-                        <>
-                          <MessageSquare className="w-3 h-3 mr-1 text-emerald-300" /> 1-Click WhatsApp Invite
-                        </>
-                      )}
-                    </Button>
-                  </div>
-                </div>
-
-                {/* Secondary Simulated Non-Teaching Candidate */}
-                <div className="border border-slate-200/90 rounded-xl p-2.5 bg-slate-50/70 shadow-2xs flex items-center justify-between mb-2.5">
-                  <div className="flex items-center gap-2">
-                    <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-amber-500 to-orange-500 text-white flex items-center justify-center font-bold text-[10px] shadow-xs">
-                      RS
-                    </div>
-                    <div>
-                      <div className="font-bold text-[11px] text-slate-900 leading-tight">Rajesh Sharma</div>
-                      <p className="text-[10px] text-slate-400">School Bus Driver • Heavy Vehicle</p>
+                    <div className="text-left">
+                      <div className="text-xs font-bold text-slate-800 leading-tight">Teaching &amp; Staff</div>
+                      <div className="text-[10px] text-emerald-600 font-semibold">100% Verified</div>
                     </div>
                   </div>
-                  <span className="text-[9px] bg-amber-50 text-amber-700 border border-amber-200 font-bold px-1.5 py-0.5 rounded">
-                    Nearby (4.2 km)
-                  </span>
-                </div>
 
-                {/* Floating QR Badge with Soft Violet Accent */}
-                <div className="p-2.5 bg-gradient-to-r from-violet-50/80 via-sky-50/30 to-white border border-violet-100 rounded-xl flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="p-1 rounded-md bg-white shadow-2xs text-violet-700">
-                      <QrCode className="w-3.5 h-3.5" />
+                  {/* Floating Pill Badge 2: Gate QR Intake */}
+                  <div className="absolute -bottom-2 -right-2 sm:right-2 bg-white/95 backdrop-blur-md border border-slate-200/90 shadow-lg rounded-2xl px-3 py-2 flex items-center gap-2.5 shadow-violet-500/10 hover:border-violet-300 transition-all">
+                    <div className="w-8 h-8 rounded-xl bg-violet-100 text-violet-700 flex items-center justify-center shrink-0 shadow-2xs">
+                      <QrCode className="w-4 h-4" />
                     </div>
-                    <div>
-                      <span className="text-[11px] font-bold text-slate-800 block leading-tight">
-                        Your School Gate QR &amp; Career Page
-                      </span>
-                      <span className="text-[9px] text-slate-400">hirehub.in/apply/your-school</span>
+                    <div className="text-left">
+                      <div className="text-xs font-bold text-slate-800 leading-tight">Gate QR Standee</div>
+                      <div className="text-[10px] text-violet-600 font-semibold">Zero Paper Biodatas</div>
                     </div>
                   </div>
-                  <span className="text-[9px] text-violet-700 font-bold bg-white px-1.5 py-0.5 rounded border border-violet-200 shadow-2xs">
-                    Auto Generated
-                  </span>
+
+                  {/* Floating Pill Badge 3: Candidate Vault (top right) */}
+                  <div className="hidden sm:flex absolute top-10 -right-4 bg-white/95 backdrop-blur-md border border-slate-200/90 shadow-md rounded-xl px-2.5 py-1.5 items-center gap-1.5 text-slate-700 font-bold text-[11px] shadow-2xs">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+                    <span>Instant Candidate Vault</span>
+                  </div>
+
                 </div>
 
               </div>
@@ -507,60 +449,60 @@ export default function Landing() {
       {/* ─────────────────────────────────────────────────────────────
           3. REAL-WORLD STATS COUNTER STRIP
       ───────────────────────────────────────────────────────────── */}
-      <section className="bg-gradient-to-b from-white via-slate-50/60 to-white border-y border-slate-200/80 py-12 relative">
+      <section className="bg-gradient-to-b from-white via-slate-50/60 to-white border-y border-slate-200/80 py-8 sm:py-12 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6">
             
-            <div className="bg-white rounded-2xl p-5 text-center border border-slate-200/80 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-xl hover:border-violet-300 hover:-translate-y-1 transition-all duration-300 group">
-              <div className="w-10 h-10 rounded-xl bg-violet-100/70 text-violet-700 mx-auto flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                <Building2 className="w-5 h-5" />
+            <div className="bg-white rounded-xl sm:rounded-2xl p-3.5 sm:p-5 text-center border border-slate-200/80 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-xl hover:border-violet-300 hover:-translate-y-0.5 transition-all duration-300 group">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-violet-100/70 text-violet-700 mx-auto flex items-center justify-center mb-2 sm:mb-3 group-hover:scale-110 transition-transform">
+                <Building2 className="w-4 h-4 sm:w-5 sm:h-5" />
               </div>
-              <div className="text-3xl sm:text-4xl font-black bg-gradient-to-r from-violet-700 to-indigo-600 bg-clip-text text-transparent mb-1">
-                1,200+
+              <div className="text-2xl sm:text-3xl lg:text-4xl font-black bg-gradient-to-r from-violet-700 to-indigo-600 bg-clip-text text-transparent mb-0.5 sm:mb-1">
+                100%
               </div>
-              <div className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                Schools &amp; Institutes
+              <div className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-500">
+                Free For Schools
               </div>
-              <span className="text-[10px] text-emerald-600 font-semibold mt-1 inline-block">Across 28+ Cities</span>
+              <span className="text-[9px] sm:text-[10px] text-emerald-600 font-semibold mt-0.5 sm:mt-1 inline-block">No Hidden Charges</span>
             </div>
 
-            <div className="bg-white rounded-2xl p-5 text-center border border-slate-200/80 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-xl hover:border-sky-300 hover:-translate-y-1 transition-all duration-300 group">
-              <div className="w-10 h-10 rounded-xl bg-sky-100/70 text-sky-700 mx-auto flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                <GraduationCap className="w-5 h-5" />
+            <div className="bg-white rounded-xl sm:rounded-2xl p-3.5 sm:p-5 text-center border border-slate-200/80 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-xl hover:border-sky-300 hover:-translate-y-0.5 transition-all duration-300 group">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-sky-100/70 text-sky-700 mx-auto flex items-center justify-center mb-2 sm:mb-3 group-hover:scale-110 transition-transform">
+                <GraduationCap className="w-4 h-4 sm:w-5 sm:h-5" />
               </div>
-              <div className="text-3xl sm:text-4xl font-black bg-gradient-to-r from-sky-600 to-cyan-500 bg-clip-text text-transparent mb-1">
-                45,000+
+              <div className="text-2xl sm:text-3xl lg:text-4xl font-black bg-gradient-to-r from-sky-600 to-cyan-500 bg-clip-text text-transparent mb-0.5 sm:mb-1">
+                0 Paper
               </div>
-              <div className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                Teacher Biodatas Managed
+              <div className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-500">
+                Biodatas — Digital
               </div>
-              <span className="text-[10px] text-emerald-600 font-semibold mt-1 inline-block">100% Paperless</span>
+              <span className="text-[9px] sm:text-[10px] text-emerald-600 font-semibold mt-0.5 sm:mt-1 inline-block">QR → Mobile Form</span>
             </div>
 
-            <div className="bg-white rounded-2xl p-5 text-center border border-slate-200/80 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-xl hover:border-indigo-300 hover:-translate-y-1 transition-all duration-300 group">
-              <div className="w-10 h-10 rounded-xl bg-indigo-100/70 text-indigo-700 mx-auto flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                <Briefcase className="w-5 h-5" />
+            <div className="bg-white rounded-xl sm:rounded-2xl p-3.5 sm:p-5 text-center border border-slate-200/80 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-xl hover:border-indigo-300 hover:-translate-y-0.5 transition-all duration-300 group">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-indigo-100/70 text-indigo-700 mx-auto flex items-center justify-center mb-2 sm:mb-3 group-hover:scale-110 transition-transform">
+                <Briefcase className="w-4 h-4 sm:w-5 sm:h-5" />
               </div>
-              <div className="text-3xl sm:text-4xl font-black bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent mb-1">
-                10+ Roles
+              <div className="text-2xl sm:text-3xl lg:text-4xl font-black bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent mb-0.5 sm:mb-1">
+                8+ Roles
               </div>
-              <div className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                Teaching &amp; Non-Teaching
+              <div className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-500">
+                Staff &amp; Teachers
               </div>
-              <span className="text-[10px] text-violet-700 font-semibold mt-1 inline-block">PGT, TGT, Drivers, Accounts</span>
+              <span className="text-[9px] sm:text-[10px] text-violet-700 font-semibold mt-0.5 sm:mt-1 inline-block">PGT, TGT, Driver, Admin</span>
             </div>
 
-            <div className="bg-white rounded-2xl p-5 text-center border border-slate-200/80 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-xl hover:border-amber-300 hover:-translate-y-1 transition-all duration-300 group">
-              <div className="w-10 h-10 rounded-xl bg-amber-100/70 text-amber-600 mx-auto flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                <Star className="w-5 h-5 fill-amber-500" />
+            <div className="bg-white rounded-xl sm:rounded-2xl p-3.5 sm:p-5 text-center border border-slate-200/80 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-xl hover:border-amber-300 hover:-translate-y-0.5 transition-all duration-300 group">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-amber-100/70 text-amber-600 mx-auto flex items-center justify-center mb-2 sm:mb-3 group-hover:scale-110 transition-transform">
+                <ShieldCheck className="w-4 h-4 sm:w-5 sm:h-5" />
               </div>
-              <div className="text-3xl sm:text-4xl font-black bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent mb-1">
-                99.2%
+              <div className="text-2xl sm:text-3xl lg:text-4xl font-black bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent mb-0.5 sm:mb-1">
+                100% Private
               </div>
-              <div className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                Principal Satisfaction
+              <div className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-500">
+                Candidate Vault
               </div>
-              <span className="text-[10px] text-emerald-600 font-semibold mt-1 inline-block">Over 18,000 Matches</span>
+              <span className="text-[9px] sm:text-[10px] text-amber-600 font-semibold mt-0.5 sm:mt-1 inline-block">Confidential To Campus</span>
             </div>
 
           </div>
@@ -597,92 +539,71 @@ export default function Landing() {
       {/* ─────────────────────────────────────────────────────────────
           5. FOR SCHOOLS VALUE PROPOSITION (BENTO-STYLE PILLARS)
       ───────────────────────────────────────────────────────────── */}
-      <section id="for-schools" className="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+      <section id="for-schools" className="py-12 sm:py-20 lg:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         {/* Subtle Ambient Glow */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-gradient-to-r from-violet-400/10 via-sky-400/10 to-transparent blur-3xl pointer-events-none -z-10 animate-pulse-glow" />
 
         {/* Section Heading */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-violet-200 bg-violet-50 text-violet-700 text-xs font-bold uppercase tracking-wider mb-4 shadow-2xs">
+        <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12">
+          <div className="inline-flex items-center gap-1.5 px-3 sm:px-3.5 py-1 sm:py-1.5 rounded-full border border-violet-200 bg-violet-50 text-violet-700 text-[11px] sm:text-xs font-bold uppercase tracking-wider mb-3 sm:mb-4 shadow-2xs">
             <Sparkles className="w-3.5 h-3.5" /> Built for Indian Schools &amp; Institutes
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 mb-4">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-slate-900 mb-3 sm:mb-4">
             Everything your school needs to{' '}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 via-indigo-600 to-sky-500">
               Eliminate Paper Biodatas
             </span>
           </h2>
-          <p className="text-slate-600 text-sm sm:text-base font-normal leading-relaxed">
+          <p className="text-slate-600 text-xs sm:text-sm lg:text-base font-normal leading-relaxed">
             From gate walk-ins to newspaper advertisements, streamline your entire teacher recruitment into one high-speed digital dashboard.
           </p>
         </div>
 
-        {/* 3 School Pillars */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-7">
+        {/* 2 Core School Pillars (Compact & Realistic) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-7 max-w-5xl mx-auto">
           
-          <div className="bg-white rounded-3xl p-7 border border-slate-200/90 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-2xl hover:border-violet-300 hover:-translate-y-2 transition-all duration-300 group relative overflow-hidden">
+          <div className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-7 border border-slate-200/90 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-2xl hover:border-violet-300 hover:-translate-y-1.5 transition-all duration-300 group relative overflow-hidden">
             <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-violet-500 to-indigo-500" />
-            <div className="w-14 h-14 rounded-2xl bg-violet-100/70 text-violet-700 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-xs">
-              <QrCode className="w-7 h-7" />
+            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-violet-100/70 text-violet-700 flex items-center justify-center mb-4 sm:mb-6 group-hover:scale-110 transition-transform shadow-xs">
+              <QrCode className="w-6 h-6 sm:w-7 sm:h-7" />
             </div>
-            <div className="inline-block text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-md bg-violet-50 text-violet-700 mb-3 border border-violet-100">
+            <div className="inline-block text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-md bg-violet-50 text-violet-700 mb-2.5 sm:mb-3 border border-violet-100">
               Zero Friction Intake
             </div>
-            <h3 className="text-xl font-black text-slate-900 mb-2.5">
+            <h3 className="text-lg sm:text-xl font-black text-slate-900 mb-2">
               Custom Career Link &amp; Gate QR
             </h3>
-            <p className="text-xs text-slate-600 font-normal leading-relaxed mb-6">
+            <p className="text-xs text-slate-600 font-normal leading-relaxed mb-5 sm:mb-6">
               Get an instant dedicated application URL and high-res printable QR code poster. Put it on your website, reception, or newspaper ads. Walk-in candidates scan and submit digital biodatas straight to your dashboard!
             </p>
-            <ul className="space-y-2.5 text-xs font-semibold text-slate-700">
+            <ul className="space-y-2 sm:space-y-2.5 text-xs font-semibold text-slate-700">
               <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" /> Zero duplicate resumes &amp; paper mess</li>
               <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" /> Auto-collect B.Ed, Medium &amp; Experience</li>
               <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" /> Real-time mobile applicant alerts</li>
             </ul>
           </div>
 
-          <div className="bg-white rounded-3xl p-7 border-2 border-violet-500/50 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 relative group overflow-hidden">
+          <div className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-7 border-2 border-violet-500/50 shadow-xl hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300 relative group overflow-hidden">
             <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-violet-600 via-indigo-600 to-sky-500" />
-            <div className="absolute top-5 right-5 bg-gradient-to-r from-violet-600 to-indigo-600 text-white text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full shadow-md">
+            <div className="absolute top-4 right-4 sm:top-5 sm:right-5 bg-gradient-to-r from-violet-600 to-indigo-600 text-white text-[9px] sm:text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full shadow-md">
               ⚡ Instant Search
             </div>
-            <div className="w-14 h-14 rounded-2xl bg-indigo-100/70 text-indigo-700 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-xs">
-              <FolderLock className="w-7 h-7" />
+            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-indigo-100/70 text-indigo-700 flex items-center justify-center mb-4 sm:mb-6 group-hover:scale-110 transition-transform shadow-xs">
+              <FolderLock className="w-6 h-6 sm:w-7 sm:h-7" />
             </div>
-            <div className="inline-block text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-md bg-indigo-50 text-indigo-700 mb-3 border border-indigo-100">
+            <div className="inline-block text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-md bg-indigo-50 text-indigo-700 mb-2.5 sm:mb-3 border border-indigo-100">
               100% Private Vault
             </div>
-            <h3 className="text-xl font-black text-slate-900 mb-2.5">
+            <h3 className="text-lg sm:text-xl font-black text-slate-900 mb-2">
               Centralized Candidate Bank
             </h3>
-            <p className="text-xs text-slate-600 font-normal leading-relaxed mb-6">
+            <p className="text-xs text-slate-600 font-normal leading-relaxed mb-5 sm:mb-6">
               All received applications are saved permanently in your private database. Instantly search all PGT Physics or TGT Maths candidates in seconds using subject, experience, and qualification filters.
             </p>
-            <ul className="space-y-2.5 text-xs font-semibold text-slate-700">
+            <ul className="space-y-2 sm:space-y-2.5 text-xs font-semibold text-slate-700">
               <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" /> Instant Ctrl+K subject search</li>
               <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" /> 100% Confidential to your campus</li>
               <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" /> Never lose a good resume again</li>
-            </ul>
-          </div>
-
-          <div className="bg-white rounded-3xl p-7 border border-slate-200/90 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-2xl hover:border-sky-300 hover:-translate-y-2 transition-all duration-300 group relative overflow-hidden">
-            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-indigo-500 to-sky-500" />
-            <div className="w-14 h-14 rounded-2xl bg-sky-100/70 text-sky-700 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-xs">
-              <MessageSquare className="w-7 h-7" />
-            </div>
-            <div className="inline-block text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-md bg-sky-50 text-sky-700 mb-3 border border-sky-100">
-              1-Click Dispatch
-            </div>
-            <h3 className="text-xl font-black text-slate-900 mb-2.5">
-              WhatsApp Calling &amp; Pipeline
-            </h3>
-            <p className="text-xs text-slate-600 font-normal leading-relaxed mb-6">
-              Track candidates through stages: Applied, Shortlisted, Interview Scheduled, Demo Class, and Selected. Send pre-formatted interview invitations directly to their WhatsApp without saving numbers.
-            </p>
-            <ul className="space-y-2.5 text-xs font-semibold text-slate-700">
-              <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" /> 1-Click WhatsApp interview letters</li>
-              <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" /> Demo lecture scorecards &amp; notes</li>
-              <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" /> 80% faster candidate response rate</li>
             </ul>
           </div>
 
@@ -692,86 +613,86 @@ export default function Landing() {
       {/* ─────────────────────────────────────────────────────────────
           6. ROLE-SPECIFIC COVERAGE
       ───────────────────────────────────────────────────────────── */}
-      <section id="roles" className="py-24 bg-gradient-to-b from-slate-50/70 via-white to-slate-50/70 border-y border-slate-200/80 relative">
+      <section id="roles" className="py-12 sm:py-20 lg:py-24 bg-gradient-to-b from-slate-50/70 via-white to-slate-50/70 border-y border-slate-200/80 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
-          <div className="text-center max-w-3xl mx-auto mb-14">
-            <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-violet-200 bg-violet-50 text-violet-700 text-xs font-bold uppercase tracking-wider mb-4">
+          <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12">
+            <div className="inline-flex items-center gap-1.5 px-3 sm:px-3.5 py-1 sm:py-1.5 rounded-full border border-violet-200 bg-violet-50 text-violet-700 text-[11px] sm:text-xs font-bold uppercase tracking-wider mb-3 sm:mb-4">
               <Sparkles className="w-3.5 h-3.5" /> Comprehensive Campus Staffing
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 mb-4">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-slate-900 mb-3 sm:mb-4">
               One Hub For{' '}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 via-indigo-600 to-sky-500">
                 Every School Role
               </span>
             </h2>
-            <p className="text-slate-600 text-sm sm:text-base font-normal leading-relaxed">
+            <p className="text-slate-600 text-xs sm:text-sm lg:text-base font-normal leading-relaxed">
               Schools require much more than just subject teachers. HireHub includes purpose-built forms, filters, and qualification checklists for every educational and operational position.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-6">
             {[
               {
-                icon: <BookOpen className="w-6 h-6 text-violet-600" />,
+                icon: <BookOpen className="w-5 h-5 sm:w-6 sm:h-6 text-violet-600" />,
                 iconBg: "bg-violet-100/80",
-                count: "18,400+ Candidates",
+                count: "Form Available",
                 role: "Teaching Faculty",
                 items: "PGT, TGT, PRT, Pre-Primary, Subject Specialists (Maths, Science, Languages), B.Ed/M.Ed, CTET qualified.",
                 borderHover: "hover:border-violet-400"
               },
               {
-                icon: <Calculator className="w-6 h-6 text-sky-600" />,
+                icon: <Calculator className="w-5 h-5 sm:w-6 sm:h-6 text-sky-600" />,
                 iconBg: "bg-sky-100/80",
-                count: "4,200+ Candidates",
+                count: "Form Available",
                 role: "Accounts & Finance",
                 items: "School Accountants & Cashiers, Tally Prime, GST filing, School ERP & Fee Management software experts.",
                 borderHover: "hover:border-sky-400"
               },
               {
-                icon: <Bus className="w-6 h-6 text-amber-600" />,
+                icon: <Bus className="w-5 h-5 sm:w-6 sm:h-6 text-amber-600" />,
                 iconBg: "bg-amber-100/80",
-                count: "3,100+ Drivers",
+                count: "Form Available",
                 role: "Transport & Drivers",
-                items: "Verified Heavy Vehicle (Bus) & Light Vehicle Drivers with spotless records and school bus route familiarity.",
+                items: "Heavy Vehicle (Bus) & Light Vehicle Drivers with valid license, route familiarity and clean record.",
                 borderHover: "hover:border-amber-400"
               },
               {
-                icon: <Laptop className="w-6 h-6 text-indigo-600" />,
+                icon: <Laptop className="w-5 h-5 sm:w-6 sm:h-6 text-indigo-600" />,
                 iconBg: "bg-indigo-100/80",
-                count: "2,800+ Techs",
+                count: "Form Available",
                 role: "Lab & IT Technicians",
                 items: "Physics, Chemistry, Biology & Computer Science Lab Assistants, System Admins, and Network Technicians.",
                 borderHover: "hover:border-indigo-400"
               },
               {
-                icon: <UserCheck className="w-6 h-6 text-emerald-600" />,
+                icon: <UserCheck className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-600" />,
                 iconBg: "bg-emerald-100/80",
-                count: "5,600+ Staff",
+                count: "Form Available",
                 role: "Front Office & Admin",
                 items: "Receptionists, Admission Counselors, Office Clerks with fast English/Hindi typing, and Principal Secretaries.",
                 borderHover: "hover:border-emerald-400"
               },
               {
-                icon: <GraduationCap className="w-6 h-6 text-rose-600" />,
+                icon: <GraduationCap className="w-5 h-5 sm:w-6 sm:h-6 text-rose-600" />,
                 iconBg: "bg-rose-100/80",
-                count: "1,900+ Specialists",
+                count: "Form Available",
                 role: "Librarians",
                 items: "B.Lib / M.Lib graduates skilled in digital cataloging, library software (Koha), and student reading programs.",
                 borderHover: "hover:border-rose-400"
               },
               {
-                icon: <Zap className="w-6 h-6 text-teal-600" />,
+                icon: <Zap className="w-5 h-5 sm:w-6 sm:h-6 text-teal-600" />,
                 iconBg: "bg-teal-100/80",
-                count: "3,400+ Instructors",
+                count: "Form Available",
                 role: "Sports Coaches & PTI",
                 items: "NIS certified physical instructors, Cricket/Football coaches, Martial Arts, Yoga trainers, and Athletic directors.",
                 borderHover: "hover:border-teal-400"
               },
               {
-                icon: <ShieldCheck className="w-6 h-6 text-slate-700" />,
+                icon: <ShieldCheck className="w-5 h-5 sm:w-6 sm:h-6 text-slate-700" />,
                 iconBg: "bg-slate-200/80",
-                count: "6,200+ Personnel",
+                count: "Form Available",
                 role: "Campus Security & Staff",
                 items: "Ex-servicemen, Day/Night security guards, Peons, Housekeeping supervisors, and verified Caretakers.",
                 borderHover: "hover:border-slate-400"
@@ -779,17 +700,17 @@ export default function Landing() {
             ].map((card, idx) => (
               <div 
                 key={idx} 
-                className={`bg-white rounded-2xl p-6 border border-slate-200/90 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.04)] hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 ${card.borderHover} relative overflow-hidden group`}
+                className={`bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-slate-200/90 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.04)] hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 ${card.borderHover} relative overflow-hidden group`}
               >
-                <div className="flex items-center justify-between mb-4">
-                  <div className={`w-12 h-12 rounded-2xl ${card.iconBg} flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform`}>
+                <div className="flex items-center justify-between mb-3 sm:mb-4">
+                  <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl ${card.iconBg} flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform`}>
                     {card.icon}
                   </div>
-                  <span className="text-[10px] font-black text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
+                  <span className="text-[9px] sm:text-[10px] font-black text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
                     {card.count}
                   </span>
                 </div>
-                <h3 className="font-black text-slate-900 text-base mb-2">
+                <h3 className="font-black text-slate-900 text-sm sm:text-base mb-1.5 sm:mb-2">
                   {card.role}
                 </h3>
                 <p className="text-xs text-slate-600 font-medium leading-relaxed">
@@ -805,20 +726,20 @@ export default function Landing() {
       {/* ─────────────────────────────────────────────────────────────
           7. HOW HIREHUB WORKS (4-STEP WORKFLOW)
       ───────────────────────────────────────────────────────────── */}
-      <section id="how-it-works" className="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-sky-200 bg-sky-50 text-sky-700 text-xs font-bold uppercase tracking-wider mb-4">
+      <section id="how-it-works" className="py-12 sm:py-20 lg:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+        <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-12">
+          <div className="inline-flex items-center gap-1.5 px-3 sm:px-3.5 py-1 sm:py-1.5 rounded-full border border-sky-200 bg-sky-50 text-sky-700 text-[11px] sm:text-xs font-bold uppercase tracking-wider mb-3 sm:mb-4">
             <Zap className="w-3.5 h-3.5" /> Simplicity at Scale
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 mb-4">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-slate-900 mb-3 sm:mb-4">
             How HireHub Works for Schools
           </h2>
-          <p className="text-slate-600 text-sm sm:text-base">
-            Transition from messy paper biodatas and chaotic WhatsApp groups to a high-speed, centralized digital hiring engine.
+          <p className="text-slate-600 text-xs sm:text-sm lg:text-base">
+            Transition from messy paper biodatas and chaotic candidate folders to a high-speed, centralized digital hiring engine.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 relative">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 relative">
           {[
             {
               step: "01",
@@ -840,22 +761,22 @@ export default function Landing() {
             },
             {
               step: "04",
-              title: "1-Click WhatsApp Invite",
-              desc: "Shortlist candidates and dispatch pre-filled WhatsApp interview call letters with a single tap.",
+              title: "Shortlist & Manage Vault",
+              desc: "Review verified credentials, shortlist matching candidates, and manage your campus talent pool with 1-click status updates.",
               gradient: "from-emerald-600 to-teal-500"
             }
           ].map((item, idx) => (
             <div 
               key={idx} 
-              className="bg-white rounded-3xl p-7 border border-slate-200/90 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.04)] hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 relative group overflow-hidden"
+              className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-7 border border-slate-200/90 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.04)] hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300 relative group overflow-hidden"
             >
-              <div className="flex items-center justify-between mb-5">
-                <div className={`w-12 h-12 rounded-2xl bg-gradient-to-tr ${item.gradient} text-white font-black text-base flex items-center justify-center shadow-md group-hover:scale-110 transition-transform`}>
+              <div className="flex items-center justify-between mb-4 sm:mb-5">
+                <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-gradient-to-tr ${item.gradient} text-white font-black text-sm sm:text-base flex items-center justify-center shadow-md group-hover:scale-110 transition-transform`}>
                   {item.step}
                 </div>
-                <span className="text-xs font-bold text-slate-400">Step {idx + 1} of 4</span>
+                <span className="text-[11px] sm:text-xs font-bold text-slate-400">Step {idx + 1} of 4</span>
               </div>
-              <h3 className="text-lg font-black text-slate-900 mb-2">{item.title}</h3>
+              <h3 className="text-base sm:text-lg font-black text-slate-900 mb-1.5 sm:mb-2">{item.title}</h3>
               <p className="text-xs text-slate-600 font-medium leading-relaxed">{item.desc}</p>
             </div>
           ))}
@@ -863,83 +784,89 @@ export default function Landing() {
       </section>
 
       {/* ─────────────────────────────────────────────────────────────
-          8. TESTIMONIALS FROM PRINCIPALS & TRUSTEES
+          8. TESTIMONIALS FROM PRINCIPALS & TRUSTEES (COMPACT 2x2 GRID)
       ───────────────────────────────────────────────────────────── */}
-      <section id="testimonials" className="py-20 bg-gradient-to-b from-white via-slate-50/60 to-white border-y border-slate-200/80 relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section id="testimonials" className="py-10 sm:py-16 bg-gradient-to-b from-white via-purple-50/25 to-white border-y border-purple-100 relative">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           
-          <div className="text-center max-w-3xl mx-auto mb-14">
-            <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-amber-200 bg-amber-50 text-amber-700 text-xs font-bold uppercase tracking-wider mb-4">
-              <Star className="w-3.5 h-3.5 fill-current" /> Trusted by 350+ Educational Institutions
+          <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-10">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-purple-200 bg-purple-50 text-purple-700 text-[11px] sm:text-xs font-bold uppercase tracking-wider mb-2.5 sm:mb-3">
+              <Star className="w-3.5 h-3.5 fill-current text-purple-600" /> Trusted by Principals &amp; School Owners Across India
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 mb-4">
-              Loved by Principals &amp; Trustees Across India
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-slate-900 mb-2">
+              Loved by School Principals &amp; Owners
             </h2>
-            <p className="text-slate-600 text-sm sm:text-base">
+            <p className="text-slate-600 text-xs sm:text-sm">
               See how schools are cutting recruitment time by 70% and hiring verified staff with zero physical paperwork.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-7">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-5">
             {[
               {
-                quote: "HireHub's QR code on our campus entrance solved our walk-in chaos completely. 140+ teachers applied online directly without a single paper resume lost!",
-                name: "Dr. R. K. Singhania",
-                role: "Director & Principal",
-                school: "Heritage Public Academy, Delhi-NCR",
-                rating: 5,
-                tag: "Hired 14 Teachers",
-                avatar: "RS",
-                gradient: "from-violet-600 to-indigo-600"
+                quote: "HireHub eliminated our paper resume clutter completely. We put our school's QR code in recruitment ads and at our reception — 180+ qualified teachers applied digitally and our management shortlisted candidates effortlessly.",
+                name: "RAJESH KUMAR",
+                role: "SCHOOL ADMINISTRATOR",
+                school: "SUNRISE INTERNATIONAL SCHOOL",
+                initials: "RK",
+                accent: "border-t-purple-500",
+                badgeColor: "bg-purple-100 text-purple-800 border-purple-200"
               },
               {
-                quote: "The 1-click WhatsApp interview invite is a game changer for our HR. We shortlisted 15 PGT candidates and dispatched all interview schedules in 5 minutes without typing individual messages.",
-                name: "Meenakshi Sundaram",
-                role: "HR Director",
-                school: "Cambridge International School",
-                rating: 5,
-                tag: "Saved 25 Hours/wk",
-                avatar: "MS",
-                gradient: "from-sky-600 to-indigo-600"
+                quote: "Managing hiring across multiple academic sessions used to be a massive administrative burden. HireHub gave us an instant digital candidate bank with 1-click subject filtering and candidate status tracking.",
+                name: "SANJAY SHARMA",
+                role: "DIRECTOR & OWNER",
+                school: "GLOBAL WISDOM INTERNATIONAL SCHOOL",
+                initials: "SS",
+                accent: "border-t-indigo-500",
+                badgeColor: "bg-indigo-100 text-indigo-800 border-indigo-200"
               },
               {
-                quote: "We manage 3 branches. HireHub allowed our central office to review teacher applications across all schools with complete transparency and zero placement agency fees.",
-                name: "Col. V. P. Sharma (Retd.)",
-                role: "Trustee & Administrator",
-                school: "St. Xavier's Educational Society",
-                rating: 5,
-                tag: "Multi-Campus Setup",
-                avatar: "VS",
-                gradient: "from-indigo-600 to-violet-600"
+                quote: "Displaying our school QR code at the campus gate ended walk-in candidate chaos. Teachers scan and apply directly from their phones. We shortlisted 16 PGT faculty in just two days without paying any agency commission.",
+                name: "DR. SUNITA AGRAWAL",
+                role: "PRINCIPAL",
+                school: "BRIGHT HORIZON ACADEMY",
+                initials: "SA",
+                accent: "border-t-violet-500",
+                badgeColor: "bg-violet-100 text-violet-800 border-violet-200"
+              },
+              {
+                quote: "Managing recruitment for 3 branch campuses was tricky until we adopted HireHub. Our central committee reviews teacher and admin applications in one unified dashboard with total confidentiality and zero lost biodatas.",
+                name: "ANITA DESHMUKH",
+                role: "MANAGING TRUSTEE & FOUNDER",
+                school: "PRAGATI EDUCATIONAL GROUP",
+                initials: "AD",
+                accent: "border-t-fuchsia-500",
+                badgeColor: "bg-fuchsia-100 text-fuchsia-800 border-fuchsia-200"
               }
             ].map((testi, idx) => (
               <div 
                 key={idx} 
-                className="bg-white rounded-3xl p-7 border border-slate-200/90 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between"
+                className={`bg-white rounded-2xl p-4 sm:p-6 border border-slate-200/90 shadow-2xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between border-t-[3px] ${testi.accent}`}
               >
                 <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex gap-1 text-amber-400">
-                      {[...Array(testi.rating)].map((_, i) => (
-                        <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
+                  <div className="flex items-center justify-between mb-2.5 sm:mb-3">
+                    <Quote className="w-4 h-4 sm:w-5 sm:h-5 text-purple-500 fill-purple-100" />
+                    <div className="flex gap-0.5 text-amber-400">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-amber-400 text-amber-400" />
                       ))}
                     </div>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200">
-                      {testi.tag}
-                    </span>
                   </div>
-                  <p className="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed italic mb-6">
+                  <p className="text-xs sm:text-[13px] text-slate-700 font-medium leading-relaxed mb-4 sm:mb-5">
                     "{testi.quote}"
                   </p>
                 </div>
                 
-                <div className="flex items-center gap-3 pt-4 border-t border-slate-100">
-                  <div className={`w-11 h-11 rounded-2xl bg-gradient-to-tr ${testi.gradient} text-white font-black text-sm flex items-center justify-center shadow-xs`}>
-                    {testi.avatar}
+                <div className="flex items-center gap-2.5 sm:gap-3 pt-3 border-t border-slate-100">
+                  <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-lg font-black text-xs flex items-center justify-center border shrink-0 tracking-wide ${testi.badgeColor}`}>
+                    {testi.initials}
                   </div>
-                  <div>
-                    <h4 className="font-black text-sm text-slate-900">{testi.name}</h4>
-                    <p className="text-[11px] text-slate-500 font-medium">{testi.role} • {testi.school}</p>
+                  <div className="min-w-0">
+                    <h4 className="font-black text-xs sm:text-sm text-slate-900 tracking-wide truncate">{testi.name}</h4>
+                    <p className="text-[9px] sm:text-[11px] text-slate-500 font-bold uppercase tracking-wider truncate">
+                      {testi.role}, {testi.school}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -950,65 +877,69 @@ export default function Landing() {
       </section>
 
       {/* ─────────────────────────────────────────────────────────────
-          9. FAQ (CLEAN ACCORDION)
+          9. FAQ (COMPACT PURPLE ACCORDION)
       ───────────────────────────────────────────────────────────── */}
-      <section id="faq" className="py-24 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-14">
-          <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-slate-200 bg-white text-slate-700 text-xs font-bold uppercase tracking-wider mb-4 shadow-2xs">
-            <HelpCircle className="w-3.5 h-3.5 text-violet-600" /> Everything You Need To Know
+      <section id="faq" className="py-10 sm:py-16 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-6 sm:mb-8">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-purple-200 bg-purple-50 text-purple-700 text-[11px] sm:text-xs font-bold uppercase tracking-wider mb-2 sm:mb-2.5">
+            <HelpCircle className="w-3.5 h-3.5 text-purple-600" /> Frequently Asked Questions
           </div>
-          <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 mb-3">
-            Frequently Asked Questions
+          <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 mb-2">
+            Got Questions? We've Got Answers
           </h2>
-          <p className="text-slate-500 text-sm">
-            Common questions from School Principals, Administrators, and Trustees.
+          <p className="text-slate-500 text-xs sm:text-sm">
+            Quick answers for School Owners, Principals, and Administrators.
           </p>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-2 sm:space-y-2.5">
           {[
             {
               q: "Is our school's applicant data strictly private and confidential?",
-              a: "Yes, 100%. Every candidate who applies to your school via your custom QR code or career link is strictly private to your school account. We never share, sell, or expose your applicant biodatas to any other school or institution."
+              a: "Yes, 100%. Every candidate who applies to your school via your custom QR code or career link is strictly private to your school account. We never share, sell, or expose your applicant biodatas to any other institution."
             },
             {
               q: "How does the custom School QR code work?",
-              a: "When you register your school, HireHub generates a high-resolution printable QR code poster. You can print and display it at your school gate, reception desk, or include it in newspaper recruitment advertisements. When teachers scan it, they get a mobile form to submit their digital biodata."
+              a: "When you register your school, HireHub generates an instant printable QR code. You can display it at your school gate, reception, or in newspaper recruitment advertisements. Candidates scan it with their phone camera to submit their digital biodata in under 2 minutes."
+            },
+            {
+              q: "Can our front desk staff enter walk-in paper biodatas into HireHub?",
+              a: "Yes. If a candidate brings a physical printed resume to your reception, your front office executive can click 'Add Biodata' in the school dashboard and digitize their details in seconds."
+            },
+            {
+              q: "Can our school filter applicants by subject, experience, and qualification?",
+              a: "Yes! Your school dashboard provides instant filters for teaching levels (PGT, TGT, PRT, NTT), specific subjects (Maths, Science, English, etc.), years of experience, and degrees (B.Ed, CTET, Masters). You can shortlist matching candidates in seconds."
             },
             {
               q: "Can candidates apply from their mobile phone without installing an app?",
               a: "Yes. The application link is completely web-based, ultra-lightweight, and mobile responsive. Candidates don't need to install any app. They can fill details, select subjects, and upload their resume in under 2 minutes."
             },
             {
-              q: "Can our front desk staff enter walk-in paper biodatas into HireHub?",
-              a: "Yes! If a candidate brings a physical printed resume to your reception, your front office executive can click 'Add Biodata' in the school dashboard and save their details into your digital bank in seconds."
-            },
-            {
-              q: "How do 1-click WhatsApp interview invites work?",
-              a: "When you shortlist a candidate for an interview or demo lecture, you can click the WhatsApp button next to their profile. A pre-formatted interview invitation letter opens directly in WhatsApp with their name, role, school location, and interview date."
-            },
-            {
               q: "Is HireHub really free for schools to start?",
-              a: "Yes, schools can get started 100% free with no credit card required. You get your custom QR code, direct application link, and unlimited biodata management for your campus."
+              a: "Yes, schools can start 100% free with zero credit card required. You get your custom QR code, direct application link, and digital biodata management for your campus."
             }
           ].map((item, idx) => (
             <div 
               key={idx} 
-              className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs overflow-hidden transition-all"
+              className={`bg-white rounded-xl border transition-all duration-200 overflow-hidden ${
+                openFaq === idx 
+                  ? 'border-purple-300 shadow-xs bg-purple-50/20' 
+                  : 'border-slate-200/90 hover:border-purple-200'
+              }`}
             >
               <button
                 onClick={() => toggleFaq(idx)}
-                className="w-full text-left px-6 py-4.5 flex items-center justify-between gap-4 font-bold text-slate-800 text-sm sm:text-base cursor-pointer hover:text-violet-700 transition-colors"
+                className="w-full text-left px-4 py-3 sm:px-5 sm:py-3.5 flex items-center justify-between gap-3 font-bold text-slate-800 text-xs sm:text-sm cursor-pointer hover:text-purple-700 transition-colors"
               >
                 <span>{item.q}</span>
                 {openFaq === idx ? (
-                  <ChevronUp className="w-5 h-5 text-violet-600 shrink-0" />
+                  <ChevronUp className="w-4 h-4 text-purple-600 shrink-0" />
                 ) : (
-                  <ChevronDown className="w-5 h-5 text-slate-400 shrink-0" />
+                  <ChevronDown className="w-4 h-4 text-slate-400 shrink-0" />
                 )}
               </button>
               {openFaq === idx && (
-                <div className="px-6 pb-5 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-slate-100 pt-4 animate-in fade-in duration-200">
+                <div className="px-4 pb-3.5 sm:px-5 sm:pb-4 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-purple-100/70 pt-2.5 sm:pt-3">
                   {item.a}
                 </div>
               )}
@@ -1018,56 +949,51 @@ export default function Landing() {
       </section>
 
       {/* ─────────────────────────────────────────────────────────────
-          10. HIGH IMPACT MODERN SAAS BOTTOM CTA BANNER
+          10. HIGH IMPACT MODERN SAAS BOTTOM CTA BANNER (COMPACT PURPLE)
       ───────────────────────────────────────────────────────────── */}
-      <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-        <div className="rounded-3xl bg-gradient-to-r from-violet-700 via-indigo-700 to-slate-900 p-10 sm:p-16 text-center text-white shadow-2xl shadow-indigo-950/20 relative overflow-hidden group">
+      <section className="py-10 sm:py-16 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+        <div className="rounded-2xl sm:rounded-3xl bg-gradient-to-r from-purple-800 via-indigo-700 to-slate-900 p-6 sm:p-10 lg:p-12 text-center text-white shadow-2xl shadow-purple-950/20 relative overflow-hidden group">
           
           {/* Ambient Glowing Orbs */}
-          <div className="absolute top-0 right-0 w-80 h-80 bg-sky-400/20 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20 animate-pulse-glow" />
-          <div className="absolute bottom-0 left-0 w-80 h-80 bg-violet-500/20 rounded-full blur-3xl pointer-events-none -ml-20 -mb-20 animate-float-slow" />
+          <div className="absolute top-0 right-0 w-72 h-72 bg-sky-400/20 rounded-full blur-3xl pointer-events-none -mr-16 -mt-16 animate-pulse-glow" />
+          <div className="absolute bottom-0 left-0 w-72 h-72 bg-purple-500/20 rounded-full blur-3xl pointer-events-none -ml-16 -mb-16 animate-float-slow" />
 
           <div className="relative z-10 max-w-3xl mx-auto">
-            <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-white/10 text-white text-xs font-bold mb-6 backdrop-blur-md border border-white/20 shadow-sm">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-white text-[11px] sm:text-xs font-bold mb-3 sm:mb-4 backdrop-blur-md border border-white/20 shadow-xs">
               <Sparkles className="w-3.5 h-3.5 text-amber-300" /> Start Modern School Recruitment Today
             </span>
 
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight mb-5 text-white leading-tight">
+            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black tracking-tight mb-2.5 sm:mb-3 text-white leading-tight">
               Ready to Transform Your School's Hiring Season?
             </h2>
 
-            <p className="text-white/80 text-sm sm:text-base font-normal mb-9 max-w-2xl mx-auto leading-relaxed">
-              Join 350+ forward-thinking schools saving 20+ hours each week. Get your school's QR code and digital candidate vault in 2 minutes.
+            <p className="text-white/80 text-xs sm:text-sm font-normal mb-6 sm:mb-7 max-w-2xl mx-auto leading-relaxed">
+              Join forward-thinking schools saving 20+ hours each week. Get your school's QR code and digital candidate vault in 2 minutes.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-3.5 justify-center items-center mb-5 sm:mb-6">
               <Link to="/signup" className="w-full sm:w-auto">
-                <Button className="w-full sm:w-auto h-13 bg-white text-slate-900 hover:bg-slate-100 font-black px-9 rounded-2xl text-sm shadow-xl hover:scale-105 transition-all cursor-pointer">
-                  <Building2 className="w-4 h-4 mr-2 text-violet-600" /> Register Your School Free
+                <Button className="w-full sm:w-auto h-11 bg-white text-slate-900 hover:bg-slate-100 font-black px-7 sm:px-8 rounded-xl text-xs sm:text-sm shadow-xl hover:scale-105 transition-all cursor-pointer">
+                  <Building2 className="w-4 h-4 mr-2 text-purple-600" /> Register Your School Free
                 </Button>
               </Link>
-              <a 
-                href="https://wa.me/918288863132?text=Hello%20HireHub%2C%20we%20want%20to%20schedule%20a%20demo%20for%20our%20school." 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="w-full sm:w-auto"
-              >
-                <Button variant="ghost" className="w-full sm:w-auto h-13 bg-white/10 hover:bg-white/20 text-white font-bold px-8 rounded-2xl text-sm border border-white/20 backdrop-blur-md cursor-pointer">
-                  <MessageSquare className="w-4 h-4 mr-2 text-emerald-400" /> Schedule Demo on WhatsApp
+              <Link to="/login" className="w-full sm:w-auto">
+                <Button variant="ghost" className="w-full sm:w-auto h-11 bg-white/10 hover:bg-white/20 text-white font-bold px-7 sm:px-8 rounded-xl text-xs sm:text-sm border border-white/20 backdrop-blur-md cursor-pointer">
+                  <Building2 className="w-4 h-4 mr-2 text-white" /> School Admin Login
                 </Button>
-              </a>
+              </Link>
             </div>
 
             {/* Micro Trust Points */}
-            <div className="flex flex-wrap items-center justify-center gap-y-2 gap-x-6 text-xs text-white/70 font-medium">
+            <div className="flex flex-wrap items-center justify-center gap-y-2 gap-x-5 sm:gap-x-6 text-[10px] sm:text-xs text-white/70 font-medium">
               <span className="flex items-center gap-1.5">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400" /> Instant 2-Minute Setup
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" /> Instant 2-Minute Setup
               </span>
               <span className="flex items-center gap-1.5">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400" /> No Credit Card Required
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" /> No Credit Card Required
               </span>
               <span className="flex items-center gap-1.5">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400" /> 100% Private to School
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" /> 100% Private to School
               </span>
             </div>
 
@@ -1077,74 +1003,130 @@ export default function Landing() {
       </section>
 
       {/* ─────────────────────────────────────────────────────────────
-          11. FOOTER (CLEAN & PROFESSIONAL)
+          11. FOOTER (DARK MODERN THEME)
       ───────────────────────────────────────────────────────────── */}
-      <footer className="bg-white border-t border-slate-200 py-14">
+      <footer className="bg-[#0B1120] text-slate-300 border-t border-slate-800/80 pt-12 pb-8 sm:pt-16 sm:pb-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-10 mb-12">
+          <div className="grid grid-cols-2 md:grid-cols-12 gap-8 lg:gap-12 mb-10 sm:mb-12">
             
             {/* Brand column */}
-            <div className="md:col-span-5 space-y-3">
+            <div className="col-span-2 md:col-span-4 space-y-3.5 sm:space-y-4">
               <div className="flex items-center gap-2.5">
                 <img
                   src="/hirehub-logo-transparent.png"
                   alt="HireHub Logo"
-                  className="w-8 h-8 object-contain"
+                  className="w-7 h-7 sm:w-8 sm:h-8 object-contain"
                 />
-                <span className="text-xl font-black tracking-tight text-slate-900 font-sans">
-                  Hire<span className="bg-gradient-to-r from-violet-600 via-indigo-600 to-sky-500 bg-clip-text text-transparent">Hub</span>
+                <span className="text-xl font-black tracking-tight text-white font-sans">
+                  Hire<span className="bg-gradient-to-r from-violet-400 via-indigo-300 to-sky-400 bg-clip-text text-transparent">Hub</span>
                 </span>
               </div>
-              <p className="text-xs text-slate-500 leading-relaxed font-medium max-w-sm">
-                HireHub is India's dedicated recruitment operating system for educational institutions. Connecting schools with top-tier teaching and administrative talent seamlessly.
+              <p className="text-xs text-slate-400 leading-relaxed font-normal max-w-sm">
+                HireHub is a cloud-based school recruitment and staff management operating system that helps institutions streamline teacher hiring, digital biodatas, and campus placement communication efficiently.
               </p>
-            </div>
-
-            {/* School Portals */}
-            <div className="md:col-span-3 space-y-2.5 text-xs text-slate-600 font-semibold">
-              <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">Platform Portals</div>
-              <div><Link to="/login" className="hover:text-violet-600 transition-colors">School Admin Login</Link></div>
-              <div><Link to="/signup" className="hover:text-violet-600 transition-colors">School Registration</Link></div>
-            </div>
-
-            {/* Navigation Links */}
-            <div className="md:col-span-2 space-y-2.5 text-xs text-slate-600 font-semibold">
-              <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">Navigation</div>
-              <div><a href="#overview" onClick={(e) => handleScroll(e, 'overview')} className="hover:text-violet-600 transition-colors">Overview</a></div>
-              <div><a href="#for-schools" onClick={(e) => handleScroll(e, 'for-schools')} className="hover:text-violet-600 transition-colors">For Schools</a></div>
-              <div><a href="#roles" onClick={(e) => handleScroll(e, 'roles')} className="hover:text-violet-600 transition-colors">Roles Covered</a></div>
-              <div><a href="#how-it-works" onClick={(e) => handleScroll(e, 'how-it-works')} className="hover:text-violet-600 transition-colors">How It Works</a></div>
-              <div><a href="#faq" onClick={(e) => handleScroll(e, 'faq')} className="hover:text-violet-600 transition-colors">FAQ</a></div>
-            </div>
-
-            {/* Contact Info */}
-            <div className="md:col-span-2 space-y-2.5 text-xs text-slate-600">
-              <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">School Support</div>
-              <p className="text-xs text-slate-500 font-medium">Need institutional setup help or a personalized demo?</p>
-              <div className="pt-1">
+              
+              {/* Social Icons */}
+              <div className="flex items-center gap-2.5 pt-1">
                 <a 
-                  href="https://wa.me/918288863132" 
+                  href="https://twitter.com" 
                   target="_blank" 
                   rel="noopener noreferrer" 
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 font-bold border border-emerald-200 hover:bg-emerald-100 transition-colors"
+                  aria-label="Twitter"
+                  className="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-slate-700 hover:bg-slate-800 transition-all cursor-pointer"
                 >
-                  <MessageSquare className="w-3.5 h-3.5 text-emerald-600" /> WhatsApp Support
+                  <Twitter className="w-3.5 h-3.5" />
                 </a>
+                <a 
+                  href="https://linkedin.com" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  aria-label="LinkedIn"
+                  className="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-slate-700 hover:bg-slate-800 transition-all cursor-pointer"
+                >
+                  <Linkedin className="w-3.5 h-3.5" />
+                </a>
+                <a 
+                  href="https://facebook.com" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  aria-label="Facebook"
+                  className="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-slate-700 hover:bg-slate-800 transition-all cursor-pointer"
+                >
+                  <Facebook className="w-3.5 h-3.5" />
+                </a>
+                <a 
+                  href="https://instagram.com" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  aria-label="Instagram"
+                  className="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-slate-700 hover:bg-slate-800 transition-all cursor-pointer"
+                >
+                  <Instagram className="w-3.5 h-3.5" />
+                </a>
+              </div>
+            </div>
+
+            {/* Features column */}
+            <div className="col-span-1 md:col-span-3 space-y-2 sm:space-y-2.5 text-xs text-slate-400">
+              <h4 className="text-sm font-bold text-white mb-2 sm:mb-3 tracking-wide">Features</h4>
+              <div><a href="#for-schools" onClick={(e) => handleScroll(e, 'for-schools')} className="hover:text-white transition-colors">Teacher Biodata Vault</a></div>
+              <div><a href="#for-schools" onClick={(e) => handleScroll(e, 'for-schools')} className="hover:text-white transition-colors">School QR Code Poster</a></div>
+              <div><a href="#how-it-works" onClick={(e) => handleScroll(e, 'how-it-works')} className="hover:text-white transition-colors">Candidate Shortlisting</a></div>
+              <div><a href="#roles" onClick={(e) => handleScroll(e, 'roles')} className="hover:text-white transition-colors">Role &amp; Subject Filtering</a></div>
+              <div><a href="#for-schools" onClick={(e) => handleScroll(e, 'for-schools')} className="hover:text-white transition-colors">Walk-in CV Digitization</a></div>
+            </div>
+
+            {/* Support column */}
+            <div className="col-span-1 md:col-span-2 space-y-2 sm:space-y-2.5 text-xs text-slate-400">
+              <h4 className="text-sm font-bold text-white mb-2 sm:mb-3 tracking-wide">Support</h4>
+              <div><a href="#faq" onClick={(e) => handleScroll(e, 'faq')} className="hover:text-white transition-colors">Help Center</a></div>
+              <div><Link to="/login" className="hover:text-white transition-colors">School Login</Link></div>
+              <div><Link to="/signup" className="hover:text-white transition-colors">Register Campus</Link></div>
+              <div><Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></div>
+              <div><Link to="/terms" className="hover:text-white transition-colors">Terms &amp; Conditions</Link></div>
+            </div>
+
+            {/* Contact column */}
+            <div className="col-span-2 md:col-span-3 space-y-2.5 sm:space-y-3 text-xs text-slate-400">
+              <h4 className="text-sm font-bold text-white mb-2 sm:mb-3 tracking-wide">Contact</h4>
+              <div>
+                <a 
+                  href="mailto:hirehub@webncode.in" 
+                  className="flex items-center gap-2.5 hover:text-white transition-colors group"
+                >
+                  <Mail className="w-4 h-4 text-sky-400 shrink-0" />
+                  <span className="truncate">hirehub@webncode.in</span>
+                </a>
+              </div>
+              <div>
+                <a 
+                  href="tel:+918947919195" 
+                  className="flex items-center gap-2.5 hover:text-white transition-colors group"
+                >
+                  <Phone className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span>+91 8947919195</span>
+                </a>
+              </div>
+              <div className="flex items-center gap-2.5 text-slate-400">
+                <MapPin className="w-4 h-4 text-pink-400 shrink-0" />
+                <span>Jaipur, Rajasthan</span>
               </div>
             </div>
 
           </div>
 
-          <div className="pt-8 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs font-medium text-slate-400">
-            <div>&copy; {new Date().getFullYear()} HireHub Technologies. All rights reserved. Built for Indian Schools.</div>
+          {/* Bottom Bar */}
+          <div className="pt-6 sm:pt-8 border-t border-slate-800/80 flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4 text-xs font-normal text-slate-500 text-center sm:text-left">
+            <div>&copy; {new Date().getFullYear()} HireHub. All rights reserved.</div>
             <div className="flex gap-6">
-              <Link to="/privacy" className="hover:text-violet-600 transition-colors">Privacy Policy</Link>
-              <Link to="/terms" className="hover:text-violet-600 transition-colors">Terms of Service</Link>
+              <Link to="/privacy" className="hover:text-slate-300 transition-colors">Privacy policy</Link>
+              <Link to="/terms" className="hover:text-slate-300 transition-colors">Terms of service</Link>
             </div>
           </div>
         </div>
       </footer>
 
+      </div>{/* end relative z-10 content wrapper */}
     </div>
   );
 }

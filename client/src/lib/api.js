@@ -33,8 +33,12 @@ export default api;
 // Auth
 export const login = (data) => api.post('/auth/login', data);
 export const googleLogin = (data) => api.post('/auth/google', data);
+export const sendSignupOtp = (data) => api.post('/auth/send-signup-otp', data);
 export const registerSchool = (data) => api.post('/auth/register', data);
 export const getMe = () => api.get('/auth/me');
+export const forgotPassword = (data) => api.post('/auth/forgot-password', data);
+export const verifyOtp = (data) => api.post('/auth/verify-otp', data);
+export const resetPasswordWithOtp = (data) => api.post('/auth/reset-password', data);
 
 // Schools (Super Admin)
 export const getSchools = (params) => api.get('/schools', { params });

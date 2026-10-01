@@ -52,33 +52,36 @@ export default function ApplicantLogin() {
     <div className="min-h-screen bg-[#f8f9fc] flex flex-col justify-between dark:bg-slate-950">
       
       {/* Top Navbar */}
-      <nav className="w-full h-20 border-b border-slate-200/80 bg-white/90 backdrop-blur-md shadow-sm dark:bg-slate-900/90 dark:border-slate-800">
+      <nav className="w-full h-20 border-b border-slate-200/80 bg-white/80 backdrop-blur-md sticky top-0 z-50 dark:bg-slate-900/80 dark:border-slate-800">
         <div className="max-w-7xl mx-auto h-full px-4 sm:px-6 lg:px-8 flex justify-between items-center">
           <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#0F766E] to-[#7928CA] flex items-center justify-center text-white shadow-md shadow-[#0F766E]/25 group-hover:scale-105 transition-transform">
-              <Briefcase className="w-5 h-5 text-white" />
-            </div>
+            <img 
+              src="/hirehub-logo-transparent.png" 
+              alt="HireHub Logo" 
+              className="h-10 w-auto object-contain drop-shadow-sm group-hover:scale-105 transition-transform" 
+            />
             <div className="flex flex-col">
-              <span className="text-2xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-1">
-                Hire<span className="text-[#0F766E]">Hub</span>
+              <span className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white leading-none">
+                Hire<span className="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">Hub</span>
               </span>
-              <span className="text-[10px] font-semibold text-slate-400 tracking-wider uppercase -mt-1">
+              <span className="text-[10px] font-semibold tracking-wider text-slate-400 uppercase mt-0.5">
                 Candidate Portal
               </span>
             </div>
           </Link>
 
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <button
               type="button"
               onClick={handleBack}
-              className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-blue-600 px-2.5 py-1.5 rounded-lg hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800 transition-colors"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-violet-600 px-3 py-2 rounded-xl hover:bg-slate-100/80 dark:text-slate-300 dark:hover:bg-slate-800 transition-colors"
             >
-              <ArrowLeft className="w-4 h-4" /> Back
+              <ArrowLeft className="w-4 h-4" /> 
+              <span className="hidden sm:inline">Back</span>
             </button>
             <Link to="/login">
-              <Button variant="outline" className="text-xs font-bold text-slate-700 border-slate-300">
-                <Building2 className="w-3.5 h-3.5 mr-1" /> School Login
+              <Button variant="outline" className="h-9 sm:h-10 rounded-xl border-slate-300 text-slate-700 hover:text-violet-600 hover:border-violet-300 font-bold text-xs sm:text-sm px-4">
+                <Building2 className="w-3.5 h-3.5 mr-1 text-violet-600" /> School Login
               </Button>
             </Link>
           </div>
@@ -86,38 +89,22 @@ export default function ApplicantLogin() {
       </nav>
 
       {/* Main Form */}
-      <main className="flex-1 flex items-center justify-center p-6 relative overflow-hidden">
+      <main className="flex-1 flex items-center justify-center px-4 py-8 sm:py-12 relative overflow-hidden">
         {/* Soft Ambient Glow Orbs */}
-        <div className="absolute top-1/4 -left-20 w-80 h-80 bg-gradient-to-tr from-blue-500/15 to-indigo-500/10 rounded-full blur-3xl pointer-events-none animate-pulse" />
-        <div className="absolute bottom-1/4 -right-20 w-80 h-80 bg-gradient-to-br from-indigo-500/15 to-blue-500/10 rounded-full blur-3xl pointer-events-none animate-pulse" />
+        <div className="absolute top-1/4 -left-20 w-80 h-80 bg-gradient-to-tr from-violet-500/15 to-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-1/4 -right-20 w-80 h-80 bg-gradient-to-br from-indigo-500/15 to-purple-500/10 rounded-full blur-3xl pointer-events-none" />
 
         <div className="w-full max-w-md relative z-10">
-          
-          {/* Back button above card */}
-          <div className="mb-3 flex items-center justify-between">
-            <button
-              type="button"
-              onClick={handleBack}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/90 dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-blue-600 hover:border-blue-500/50 text-xs font-bold shadow-xs transition-all group backdrop-blur-sm"
-            >
-              <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform text-blue-600" />
-              <span>Back</span>
-            </button>
-            <Link to="/" className="text-xs font-semibold text-slate-400 hover:text-blue-600 transition-colors">
-              Back to Home
-            </Link>
-          </div>
-
-          <Card className="w-full rounded-2xl border border-slate-200/90 shadow-2xl bg-white/95 backdrop-blur-xl dark:bg-slate-900/95 dark:border-slate-800">
-            <CardHeader className="text-center pb-2">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-blue-200 bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:border-blue-800 dark:text-blue-300 text-[11px] font-bold uppercase tracking-wider mb-2 self-center">
-              <GraduationCap className="w-3.5 h-3.5" /> Educator &amp; Staff Login
+          <Card className="w-full rounded-3xl border border-slate-200/90 shadow-2xl shadow-slate-200/50 bg-white/95 backdrop-blur-xl dark:bg-slate-900/95 dark:border-slate-800 dark:shadow-none">
+            <CardHeader className="text-center p-6 sm:p-8 pb-2">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-violet-200 bg-violet-50 text-violet-700 dark:bg-violet-950/40 dark:border-violet-800 dark:text-violet-300 text-[11px] font-bold uppercase tracking-wider mb-2 self-center">
+              <GraduationCap className="w-3.5 h-3.5 text-violet-600" /> Educator &amp; Staff Login
             </div>
-            <CardTitle className="text-2xl font-black text-slate-900 dark:text-white">
+            <CardTitle className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">
               Candidate Login
             </CardTitle>
-            <CardDescription className="text-xs text-slate-500 font-medium">
-              View your interview invites, documents, and school interest requests
+            <CardDescription className="text-xs sm:text-sm text-slate-500 font-medium">
+              View your job applications, verified profile status, and school recruitment requests
             </CardDescription>
           </CardHeader>
           

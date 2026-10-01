@@ -79,38 +79,61 @@
 }
 
 @keyframes float-slow {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-12px) rotate(1.5deg); }
+  0%, 100% { transform: translate(0px, 0px); }
+  30%  { transform: translate(12px, -20px); }
+  60%  { transform: translate(-10px, 14px); }
 }
 
 @keyframes float-reverse {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(12px) rotate(-1.5deg); }
+  0%, 100% { transform: translate(0px, 0px); }
+  35%  { transform: translate(-15px, 18px); }
+  70%  { transform: translate(10px, -12px); }
 }
 
 @keyframes float-drift {
-  0%, 100% { transform: translate(0px, 0px) scale(1); }
-  33% { transform: translate(18px, -24px) scale(1.04); }
-  66% { transform: translate(-14px, 16px) scale(0.97); }
+  0%, 100% { transform: translate(0px, 0px); }
+  25%  { transform: translate(22px, -28px); }
+  50%  { transform: translate(-8px, 18px); }
+  75%  { transform: translate(16px, 10px); }
 }
 
 @keyframes float-wander {
-  0%, 100% { transform: translate(0px, 0px) scale(1); }
-  40% { transform: translate(-22px, -18px) scale(1.05); }
-  75% { transform: translate(16px, 20px) scale(0.96); }
+  0%, 100% { transform: translate(0px, 0px); }
+  20%  { transform: translate(-28px, -22px); }
+  50%  { transform: translate(20px, 26px); }
+  80%  { transform: translate(-14px, -10px); }
 }
 
-@keyframes pulse-glow {
-  0%, 100% { opacity: 0.55; transform: scale(1); }
-  50% { opacity: 0.9; transform: scale(1.08); }
+@keyframes float-zigzag {
+  0%, 100% { transform: translate(0px, 0px); }
+  20%  { transform: translate(25px, -18px); }
+  40%  { transform: translate(-20px, -30px); }
+  60%  { transform: translate(30px, 15px); }
+  80%  { transform: translate(-18px, 22px); }
+}
+
+@keyframes float-orbit {
+  0%   { transform: translate(0px, 0px); }
+  25%  { transform: translate(20px, -20px); }
+  50%  { transform: translate(0px, -35px); }
+  75%  { transform: translate(-20px, -20px); }
+  100% { transform: translate(0px, 0px); }
+}
+
+@keyframes float-erratic {
+  0%, 100% { transform: translate(0px, 0px); }
+  15%  { transform: translate(-30px, 10px); }
+  35%  { transform: translate(18px, -25px); }
+  55%  { transform: translate(-10px, 30px); }
+  75%  { transform: translate(28px, -8px); }
 }
 
 .animate-float-slow {
-  animation: float-slow 7s ease-in-out infinite;
+  animation: float-slow 8s ease-in-out infinite;
 }
 
 .animate-float-reverse {
-  animation: float-reverse 8.5s ease-in-out infinite;
+  animation: float-reverse 10s ease-in-out infinite;
 }
 
 .animate-float-drift {
@@ -118,7 +141,85 @@
 }
 
 .animate-float-wander {
-  animation: float-wander 18s ease-in-out infinite;
+  animation: float-wander 13s ease-in-out infinite;
+}
+
+.animate-float-zigzag {
+  animation: float-zigzag 9s ease-in-out infinite;
+}
+
+.animate-float-orbit {
+  animation: float-orbit 11s linear infinite;
+}
+
+.animate-float-erratic {
+  animation: float-erratic 7s ease-in-out infinite;
+}
+
+/* Showcase Floating Animations */
+@keyframes float-card-primary {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(-0.8deg);
+  }
+}
+
+@keyframes float-card-secondary {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(7px) rotate(0.6deg);
+  }
+}
+
+@keyframes float-badge-cap {
+  0%, 100% {
+    transform: translate(0px, 0px) rotate(0deg) scale(1);
+  }
+  50% {
+    transform: translate(3px, -9px) rotate(6deg) scale(1.05);
+  }
+}
+
+@keyframes float-badge-school {
+  0%, 100% {
+    transform: translate(0px, 0px) rotate(0deg) scale(1);
+  }
+  50% {
+    transform: translate(-4px, 7px) rotate(-5deg) scale(1.04);
+  }
+}
+
+@keyframes float-pills {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.animate-float-card-primary {
+  animation: float-card-primary 5.5s ease-in-out infinite;
+}
+
+.animate-float-card-secondary {
+  animation: float-card-secondary 6.5s ease-in-out infinite;
+}
+
+.animate-float-badge-cap {
+  animation: float-badge-cap 4.2s ease-in-out infinite;
+}
+
+.animate-float-badge-school {
+  animation: float-badge-school 4.8s ease-in-out infinite;
+}
+
+.animate-float-pills {
+  animation: float-pills 5s ease-in-out infinite;
 }
 
 @keyframes marquee {

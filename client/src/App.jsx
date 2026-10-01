@@ -11,6 +11,7 @@ import Pricing from '@/pages/Pricing';
 import Contact from '@/pages/Contact';
 import Signup from '@/pages/Signup';
 import Login from '@/pages/Login';
+import ForgotPassword from '@/pages/ForgotPassword';
 import Dashboard from '@/pages/Dashboard';
 import Candidates, { TalentPool } from '@/pages/Candidates';
 import SelfApply from '@/pages/SelfApply';
@@ -73,6 +74,7 @@ export default function App() {
             <Route path="/contact" element={<Contact />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/apply/:slug" element={<Apply />} />
             <Route path="/apply" element={<Navigate to="/join" replace />} />
             <Route path="/join" element={<SelfApply />} />
