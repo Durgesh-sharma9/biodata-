@@ -212,3 +212,8 @@ export const uploadFiles = (files) => {
     headers: { 'Content-Type': 'multipart/form-data' },
   });
 };
+
+// Platform & Marquee Settings
+export const getPublicMarqueeSettings = () => api.get('/admin/marquee/public');
+export const getAdminMarqueeSettings = () => api.get('/admin/marquee');
+export const updateMarqueeSettings = (data) => api.put('/admin/marquee', data);

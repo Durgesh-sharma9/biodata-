@@ -47,6 +47,7 @@ const adminLinks = [
   { to: '/admin/import', label: 'Candidate Import', icon: UploadCloud, color: '#3A86FF' }, // Blue
   { to: '/admin/applicant-plans', label: 'Applicant Plans', icon: FileCheck2, color: '#00F5D4' }, // Neon Green
   { to: '/admin/master-data', label: 'Master Data', icon: FolderTree, color: '#14B8A6' }, // Violet
+  { to: '/admin/marquee', label: 'Partner Marquee', icon: SlidersHorizontal, color: '#8A3BD4' }, // Purple
 ];
 
 const applicantLinks = [

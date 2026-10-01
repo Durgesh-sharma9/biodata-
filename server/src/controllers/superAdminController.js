@@ -2,6 +2,7 @@ import School from '../models/School.js';
 import User from '../models/User.js';
 import Candidate from '../models/Candidate.js';
 import Plan from '../models/Plan.js';
+import PlatformSettings, { DEFAULT_PARTNER_SCHOOLS } from '../models/PlatformSettings.js';
 import { catchAsync } from '../utils/catchAsync.js';
 
 export const getSuperAdminDashboard = catchAsync(async (req, res) => {
@@ -77,5 +78,61 @@ export const getAdmins = catchAsync(async (req, res) => {
       total,
       totalPages: Math.ceil(total / Number(limit)),
     },
+  });
+});
+
+export const getMarqueeSettings = catchAsync(async (req, res) => {
+  let settings = await PlatformSettings.findOne({ key: 'main_settings' });
+  if (!settings) {
+    settings = await PlatformSettings.create({
+      key: 'main_settings',
+      partnerSchools: DEFAULT_PARTNER_SCHOOLS,
+      marqueeSpeed: 25,
+      marqueeTitle: 'Trusted by Reputed Schools & Educational Trusts Across India',
+      isActive: true,
+    });
+  }
+
+  res.json({
+    success: true,
+    data: settings,
+  });
+});
+
+export const updateMarqueeSettings = catchAsync(async (req, res) => {
+  const { partnerSchools, marqueeSpeed, marqueeTitle, isActive, heroName, heroTagline } = req.body;
+
+  const updateData = {};
+  if (Array.isArray(partnerSchools)) {
+    updateData.partnerSchools = partnerSchools
+      .map((s) => (typeof s === 'string' ? s.trim() : ''))
+      .filter((s) => s.length > 0);
+  }
+  if (typeof marqueeSpeed === 'number' && marqueeSpeed >= 5 && marqueeSpeed <= 120) {
+    updateData.marqueeSpeed = Math.round(marqueeSpeed);
+  }
+  if (typeof marqueeTitle === 'string') {
+    updateData.marqueeTitle = marqueeTitle.trim();
+  }
+  if (typeof heroName === 'string' && heroName.trim().length > 0) {
+    updateData.heroName = heroName.trim();
+  }
+  if (typeof heroTagline === 'string' && heroTagline.trim().length > 0) {
+    updateData.heroTagline = heroTagline.trim();
+  }
+  if (typeof isActive === 'boolean') {
+    updateData.isActive = isActive;
+  }
+
+  const settings = await PlatformSettings.findOneAndUpdate(
+    { key: 'main_settings' },
+    { $set: updateData },
+    { new: true, upsert: true }
+  );
+
+  res.json({
+    success: true,
+    message: 'Marquee settings updated successfully',
+    data: settings,
   });
 });

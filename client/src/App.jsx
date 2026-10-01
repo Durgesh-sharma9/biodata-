@@ -38,6 +38,7 @@ import ApplicantPlan from '@/pages/applicant/ApplicantPlan';
 import ApplicantDocuments from '@/pages/applicant/ApplicantDocuments';
 import ApplicantNotifications from '@/pages/applicant/ApplicantNotifications';
 import ApplicantPlans from '@/pages/admin/ApplicantPlans';
+import PartnerMarquee from '@/pages/admin/PartnerMarquee';
 const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '556980788726-rjrudmqdntj9jevortkn62pb0hr5f4dv.apps.googleusercontent.com';
 
 const queryClient = new QueryClient({
@@ -118,6 +119,7 @@ export default function App() {
               <Route path="/admin/applicant-plans" element={<ApplicantPlans />} />
               <Route path="/admin/master-data" element={<MasterData />} />
               <Route path="/admin/schools" element={<Schools />} />
+              <Route path="/admin/marquee" element={<PartnerMarquee />} />
               <Route path="/admin/stats" element={<Navigate to="/admin/dashboard" replace />} />
             </Route>
 
