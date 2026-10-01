@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Building2, Sparkles, Save, RotateCcw, Plus, X, Gauge, Eye, Check, AlertCircle, FileText,
-  ArrowRight, MapPin, FolderLock, BadgeCheck, MessageSquare, Pencil, Monitor,
+  ArrowRight, MapPin, FolderLock, BadgeCheck, MessageSquare, Pencil, Monitor, SlidersHorizontal,
 } from "lucide-react";
 
 const DEFAULT_SCHOOLS = [
@@ -103,22 +103,38 @@ export default function PartnerMarquee() {
   };
 
   return (
-    <div className="space-y-6 pb-12 max-w-6xl mx-auto">
+    <div className="space-y-4 sm:space-y-5 w-full antialiased text-slate-800 dark:text-slate-100 pb-16">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-xs">
-        <div>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-50 text-violet-700 text-xs font-bold uppercase tracking-wider mb-2 border border-violet-100">
-            <Sparkles className="w-3.5 h-3.5 text-violet-600" /> Landing Page Customizer
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-gradient-to-r from-[#F0FCF5] via-[#EFF6FF] to-[#FAF5FF] dark:from-slate-800/90 dark:via-slate-800/70 dark:to-slate-800/90 p-3.5 sm:px-5 sm:py-3.5 rounded-2xl shadow-2xs border border-slate-200/80 dark:border-slate-800">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="p-2.5 bg-white dark:bg-slate-700 text-[#8A3BD4] dark:text-purple-300 rounded-xl border border-slate-200/80 shadow-2xs shrink-0">
+            <SlidersHorizontal className="h-5 w-5" />
           </div>
-          <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Landing Page Settings</h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-1">Control the platform name, hero speech, marquee ticker, and partner schools shown to all visitors.</p>
+          <div className="min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h1 className="text-sm sm:text-base font-extrabold tracking-tight text-slate-900 dark:text-white truncate">
+                Landing Page & Partner Marquee Controls
+              </h1>
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-purple-50 text-[#8A3BD4] dark:bg-purple-950/40 dark:text-purple-300 border border-purple-200/60 shrink-0">
+                {schools.length} Partner Schools Listed
+              </span>
+            </div>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium truncate mt-0.5">
+              Control hero banner speech, marquee trust ticker, and featured institutions shown across the platform
+            </p>
+          </div>
         </div>
-        <div className="flex items-center gap-2.5 shrink-0">
-          <Button type="button" variant="outline" onClick={handleResetDefaults} className="border-slate-200 text-slate-600 hover:text-slate-900 text-xs font-bold h-10 px-4 rounded-xl cursor-pointer">
+        <div className="flex items-center gap-2 shrink-0">
+          <Button type="button" variant="outline" onClick={handleResetDefaults} className="border-slate-200 text-slate-600 hover:text-slate-900 text-xs font-bold h-9 px-3 rounded-xl cursor-pointer">
             <RotateCcw className="w-3.5 h-3.5 mr-1.5" /> Reset
           </Button>
-          <Button type="button" onClick={handleSave} disabled={saveMutation.isPending} className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white text-xs font-bold h-10 px-6 rounded-xl shadow-md shadow-violet-500/25 transition-all cursor-pointer flex items-center gap-1.5">
-            {saveMutation.isPending ? "Saving..." : (<><Save className="w-4 h-4" /> Save All Changes</>)}
+          <Button 
+            type="button" 
+            onClick={handleSave} 
+            disabled={saveMutation.isPending} 
+            className="bg-gradient-to-r from-[#7C3AED] via-[#8A3BD4] to-[#00D2FF] hover:from-[#6D28D9] hover:via-[#7E22CE] hover:to-[#0284C7] text-white text-xs font-bold h-9 px-5 rounded-xl shadow-sm transition-all cursor-pointer flex items-center gap-1.5"
+          >
+            {saveMutation.isPending ? "Saving..." : (<><Save className="w-3.5 h-3.5" /> Save Changes</>)}
           </Button>
         </div>
       </div>

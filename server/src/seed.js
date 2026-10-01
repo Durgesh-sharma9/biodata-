@@ -29,11 +29,11 @@ const seed = async () => {
   }
 
   // 2. Demo School & School Admin User
-  const schoolEmail = 'school@demo.com';
-  const schoolPassword = 'School@123';
+  const schoolEmail = 'admin@gmail.com';
+  const schoolPassword = '123456';
   const schoolName = 'Greenwood Public School';
 
-  let school = await School.findOne({ email: schoolEmail });
+  let school = await School.findOne({ $or: [{ email: schoolEmail }, { email: 'school@demo.com' }] });
   if (!school) {
     const trialExpiryDate = new Date();
     trialExpiryDate.setDate(trialExpiryDate.getDate() + 90);

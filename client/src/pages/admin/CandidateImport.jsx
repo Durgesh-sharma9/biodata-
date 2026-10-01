@@ -1,8 +1,11 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { Upload, Download, FileSpreadsheet, CheckCircle, XCircle, AlertCircle, Sparkles, UserPlus, Info, FileCheck, ArrowRight, Loader2 } from 'lucide-react';
+import { 
+  Upload, Download, FileSpreadsheet, CheckCircle, XCircle, 
+  AlertCircle, Sparkles, UserPlus, Info, FileCheck, ArrowRight, 
+  Loader2, CheckCircle2, UserCheck, Briefcase
+} from 'lucide-react';
 import { importSingleCandidate, importBulkCandidates, getPositions } from '@/lib/api';
-import { PageHeader } from '@/components/common/PageHeader';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -13,7 +16,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 
-  const POSITION_TEMPLATES = {
+const POSITION_TEMPLATES = {
   Teacher: ['Name', 'Mobile', 'Email', 'State', 'City', 'Area', 'Subjects', 'Classes', 'Qualification', 'Experience', 'ExpectedSalary'],
   Driver: ['Name', 'Mobile', 'Email', 'State', 'City', 'Area', 'VehicleTypes', 'Experience', 'ExpectedSalary'],
   Accountant: ['Name', 'Mobile', 'Email', 'State', 'City', 'Area', 'TallyKnowledge', 'GSTKnowledge', 'Experience', 'ExpectedSalary'],
@@ -26,7 +29,7 @@ import { cn } from '@/lib/utils';
   Cleaner: ['Name', 'Mobile', 'Email', 'State', 'City', 'Area', 'CleaningExperience', 'SchoolExperience', 'Experience', 'ExpectedSalary'],
 };
 
-  function downloadTemplate(position) {
+function downloadTemplate(position) {
   const columns = POSITION_TEMPLATES[position] || ['Name', 'Mobile', 'Email', 'State', 'City', 'Area', 'Position', 'Experience', 'ExpectedSalary'];
   const csvContent = columns.join(',') + '\n';
   const blob = new Blob([csvContent], { type: 'text/csv' });
@@ -62,11 +65,11 @@ export default function CandidateImport() {
     onSuccess: () => {
       setForm({ fullName: '', mobile: '', email: '', position: '', experienceYears: 0, expectedSalary: '' });
       setLocation({});
-      setImportNotice({ type: 'success', message: 'Candidate imported successfully into the platform pool.' });
+      setImportNotice({ type: 'success', message: 'Candidate successfully imported into the central talent pool!' });
       setTimeout(() => setImportNotice(null), 5000);
     },
     onError: (err) => {
-      setImportNotice({ type: 'error', message: err.response?.data?.message || 'Failed to import candidate.' });
+      setImportNotice({ type: 'error', message: err.response?.data?.message || 'Failed to import candidate profile.' });
     },
   });
 
@@ -79,10 +82,10 @@ export default function CandidateImport() {
     },
     onSuccess: (res) => {
       setBulkResult(res.data.data);
-      setImportNotice({ type: 'success', message: `Bulk import completed! Successfully processed ${res.data.data?.successCount || 0} candidates.` });
+      setImportNotice({ type: 'success', message: `Bulk import completed! Ingested ${res.data.data?.imported || 0} candidates successfully.` });
     },
     onError: (err) => {
-      setImportNotice({ type: 'error', message: err.response?.data?.message || 'Bulk import failed. Please check your spreadsheet headers.' });
+      setImportNotice({ type: 'error', message: err.response?.data?.message || 'Bulk import failed. Please check spreadsheet headers and file formatting.' });
     },
   });
 
@@ -90,7 +93,7 @@ export default function CandidateImport() {
     const file = e.target.files?.[0];
     if (file) {
       if (!selectedPosition) {
-        setImportNotice({ type: 'error', message: 'Please select a target position before uploading your Excel or CSV file.' });
+        setImportNotice({ type: 'error', message: 'Please select a target position role before uploading CSV file.' });
         return;
       }
       setImportNotice(null);
@@ -99,56 +102,83 @@ export default function CandidateImport() {
   };
 
   return (
-    <div className="space-y-6 w-full antialiased text-slate-800 dark:text-white">
-      {/* Page Header Panel */}
-      <div className="pb-5">
-        <PageHeader 
-          title="Candidate Import" 
-          description="Expand your talent network repository using single profile creation fields or fast bulk database spreadsheet integrations." 
-        />
+    <div className="space-y-4 sm:space-y-5 w-full antialiased text-slate-800 dark:text-slate-100 pb-16">
+      
+      {/* ─── 1. TOP HEADER BANNER ─── */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-gradient-to-r from-[#F0FCF5] via-[#EFF6FF] to-[#FAF5FF] dark:from-slate-800/90 dark:via-slate-800/70 dark:to-slate-800/90 p-3.5 sm:px-5 sm:py-3.5 rounded-2xl shadow-2xs border border-slate-200/80 dark:border-slate-800">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="p-2.5 bg-white dark:bg-slate-700 text-[#3A86FF] rounded-xl border border-slate-200/80 shadow-2xs shrink-0">
+            <Upload className="h-5 w-5" />
+          </div>
+          <div className="min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h1 className="text-sm sm:text-base font-extrabold tracking-tight text-slate-900 dark:text-white truncate">
+                Candidate Import & Central Pool Influx
+              </h1>
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-blue-50 text-[#3A86FF] dark:bg-blue-950/40 dark:text-blue-300 border border-blue-200/60 shrink-0">
+                Single & Bulk CSV
+              </span>
+            </div>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium truncate mt-0.5">
+              Add individual job-seekers or upload structured CSV spreadsheets into the platform talent pool
+            </p>
+          </div>
+        </div>
       </div>
 
+      {/* Notice Alert */}
       {importNotice && (
         <div
-          className={`flex items-center justify-between gap-3 p-4 rounded-xl border text-xs font-semibold animate-in fade-in duration-200 ${
+          className={cn(
+            'flex items-center justify-between gap-3 p-3.5 rounded-2xl border text-xs font-semibold animate-in fade-in duration-200',
             importNotice.type === 'success'
               ? 'border-emerald-200 bg-emerald-50 text-emerald-800 dark:bg-emerald-950/40 dark:border-emerald-800 dark:text-emerald-300'
               : 'border-rose-200 bg-rose-50 text-rose-800 dark:bg-rose-950/40 dark:border-rose-800 dark:text-rose-300'
-          }`}
+          )}
         >
-          <span>{importNotice.message}</span>
+          <div className="flex items-center gap-2">
+            {importNotice.type === 'success' ? <CheckCircle2 className="h-4 w-4 text-emerald-600" /> : <AlertCircle className="h-4 w-4 text-rose-600" />}
+            <span>{importNotice.message}</span>
+          </div>
           <button
             type="button"
             onClick={() => setImportNotice(null)}
-            className="font-bold opacity-70 hover:opacity-100"
+            className="font-bold opacity-70 hover:opacity-100 cursor-pointer"
           >
             ✕
           </button>
         </div>
       )}
 
-      <Tabs defaultValue="single" className="w-full space-y-6">
-        <TabsList className="inline-flex h-12 items-center justify-center rounded-xl bg-white dark:bg-slate-900 p-1 text-slate-500 border border-slate-200/60 dark:border-slate-800 shadow-sm">
-          <TabsTrigger value="single" className="inline-flex items-center gap-2 rounded-lg px-5 py-2 text-sm font-semibold tracking-wide transition-all data-[state=active]:bg-purple-50 data-[state=active]:text-purple-600 data-[state=active]:font-semibold shadow-none">
-            <UserPlus className="h-4 w-4" />
+      {/* ─── 2. TABS: SINGLE VS BULK ─── */}
+      <Tabs defaultValue="single" className="w-full space-y-4">
+        <TabsList className="inline-flex h-11 items-center justify-start rounded-xl bg-white dark:bg-slate-900 p-1 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
+          <TabsTrigger 
+            value="single" 
+            className="inline-flex items-center gap-2 rounded-lg px-4 py-1.5 text-xs font-bold tracking-wide transition-all data-[state=active]:bg-purple-50 data-[state=active]:text-[#8A3BD4] cursor-pointer"
+          >
+            <UserPlus className="h-3.5 w-3.5" />
             Single Profile Ingest
           </TabsTrigger>
-          <TabsTrigger value="bulk" className="inline-flex items-center gap-2 rounded-lg px-5 py-2 text-sm font-semibold tracking-wide transition-all data-[state=active]:bg-purple-50 data-[state=active]:text-purple-600 data-[state=active]:font-semibold shadow-none">
-            <FileSpreadsheet className="h-4 w-4" />
+          <TabsTrigger 
+            value="bulk" 
+            className="inline-flex items-center gap-2 rounded-lg px-4 py-1.5 text-xs font-bold tracking-wide transition-all data-[state=active]:bg-purple-50 data-[state=active]:text-[#8A3BD4] cursor-pointer"
+          >
+            <FileSpreadsheet className="h-3.5 w-3.5" />
             Bulk CSV Spreadsheets
           </TabsTrigger>
         </TabsList>
 
-        {/* Single Manual Profile Import Tab Content Panel */}
-        <TabsContent value="single" className="outline-none focus:outline-none focus:ring-0">
-          <Card className="border border-slate-200/60 bg-white shadow-2xs dark:bg-slate-900 overflow-hidden">
-            <CardHeader className="p-5 border-none pb-0">
-              <CardTitle className="text-sm font-bold tracking-wide text-slate-800 dark:text-slate-200 flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-purple-600" />
-                Add Candidate Manually
+        {/* ─── SINGLE INGEST TAB ─── */}
+        <TabsContent value="single" className="space-y-4">
+          <Card className="border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xs rounded-2xl overflow-hidden">
+            <CardHeader className="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900">
+              <CardTitle className="text-sm font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-[#8A3BD4]" />
+                <span>Add Candidate Profile Manually</span>
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-5">
+            <CardContent className="p-4 sm:p-6">
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
@@ -165,50 +195,53 @@ export default function CandidateImport() {
                     workingRadius: location.workingRadius,
                   });
                 }}
-                className="space-y-6"
+                className="space-y-5"
               >
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-1.5">
-                    <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Full Name</Label>
+                    <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Candidate Full Name *</Label>
                     <Input 
                       value={form.fullName} 
                       onChange={(e) => setForm({ ...form, fullName: e.target.value })} 
                       required 
-                      placeholder="Jane Doe"
-                      className="rounded-xl border-slate-200 dark:bg-slate-800 dark:border-slate-700"
+                      placeholder="e.g. Ramesh Sharma"
+                      className="h-10 border-slate-200 rounded-xl text-xs sm:text-sm font-medium"
                     />
                   </div>
+
                   <div className="space-y-1.5">
-                    <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Mobile Number</Label>
+                    <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Mobile Number *</Label>
                     <Input 
                       value={form.mobile} 
                       onChange={(e) => setForm({ ...form, mobile: e.target.value })} 
                       required 
-                      placeholder="+91 XXXXX XXXXX"
-                      className="rounded-xl border-slate-200 dark:bg-slate-800 dark:border-slate-700"
+                      placeholder="+91 98765 43210"
+                      className="h-10 border-slate-200 rounded-xl text-xs sm:text-sm font-medium"
                     />
                   </div>
+
                   <div className="space-y-1.5">
-                    <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Email Address</Label>
+                    <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Email Address</Label>
                     <Input 
                       value={form.email} 
                       onChange={(e) => setForm({ ...form, email: e.target.value })} 
                       type="email"
-                      placeholder="jane.doe@example.com"
-                      className="rounded-xl border-slate-200 dark:bg-slate-800 dark:border-slate-700"
+                      placeholder="candidate@example.com"
+                      className="h-10 border-slate-200 rounded-xl text-xs sm:text-sm font-medium"
                     />
                   </div>
+
                   <div className="space-y-1.5">
-                    <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Target Position Role</Label>
+                    <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Target Position Role *</Label>
                     <Select value={form.position} onValueChange={(v) => setForm({ ...form, position: v })} required>
-                      <SelectTrigger className="rounded-xl border-slate-200 dark:bg-slate-800 dark:border-slate-700">
-                        <SelectValue placeholder="Select talent role profile" />
+                      <SelectTrigger className="h-10 border-slate-200 rounded-xl text-xs sm:text-sm font-semibold">
+                        <SelectValue placeholder="Select target role" />
                       </SelectTrigger>
-                      <SelectContent className="rounded-xl border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900">
+                      <SelectContent className="rounded-xl dark:bg-slate-800">
                         {positions.map((p) => {
                           const pName = typeof p === 'object' ? p.name : p;
                           return (
-                            <SelectItem key={pName} value={pName} className="rounded-lg py-2 focus:text-purple-600 focus:bg-purple-50">
+                            <SelectItem key={pName} value={pName} className="text-xs font-semibold">
                               {pName}
                             </SelectItem>
                           );
@@ -216,29 +249,31 @@ export default function CandidateImport() {
                       </SelectContent>
                     </Select>
                   </div>
+
                   <div className="space-y-1.5">
-                    <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Experience Logs (Years)</Label>
+                    <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Experience (Years)</Label>
                     <Input
                       type="number"
                       value={form.experienceYears}
                       onChange={(e) => setForm({ ...form, experienceYears: e.target.value })}
                       placeholder="0"
                       min="0"
-                      className="rounded-xl border-slate-200 dark:bg-slate-800 dark:border-slate-700"
+                      className="h-10 border-slate-200 rounded-xl text-xs sm:text-sm font-medium"
                     />
                   </div>
+
                   <div className="space-y-1.5">
-                    <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Expected Salary (₹ Annual)</Label>
+                    <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Expected Salary (₹ Annual)</Label>
                     <Input
                       type="number"
                       value={form.expectedSalary}
                       onChange={(e) => setForm({ ...form, expectedSalary: e.target.value })}
-                      placeholder="e.g. 450000"
-                      className="rounded-xl border-slate-200 dark:bg-slate-800 dark:border-slate-700"
+                      placeholder="e.g. 350000"
+                      className="h-10 border-slate-200 rounded-xl text-xs sm:text-sm font-medium"
                     />
                   </div>
-                  <div className="md:col-span-2 rounded-xl bg-slate-50/50 dark:bg-slate-900/40 p-5">
-                    <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2 inline-block">Geographic Placement Location Mapping</Label>
+
+                  <div className="md:col-span-2 pt-2 border-t border-slate-100 dark:border-slate-800">
                     <LocationSelect value={location} onChange={setLocation} />
                   </div>
                 </div>
@@ -246,12 +281,12 @@ export default function CandidateImport() {
                 <Button 
                   type="submit" 
                   disabled={singleMutation.isPending}
-                  className="w-full sm:w-auto min-w-[180px] bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold rounded-xl transition-all duration-200 disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="bg-gradient-to-r from-[#7C3AED] via-[#8A3BD4] to-[#00D2FF] hover:from-[#6D28D9] hover:via-[#7E22CE] hover:to-[#0284C7] text-white font-bold h-10 px-6 rounded-xl text-xs shadow-sm cursor-pointer flex items-center gap-2"
                 >
                   {singleMutation.isPending ? (
                     <>
                       <Loader2 className="h-4 w-4 animate-spin" />
-                      Processing Profile Ingest...
+                      Importing Candidate...
                     </>
                   ) : (
                     <>
@@ -265,30 +300,30 @@ export default function CandidateImport() {
           </Card>
         </TabsContent>
 
-        {/* Bulk Data CSV Spreadsheet Upload Tab Content Panel */}
-        <TabsContent value="bulk" className="outline-none focus:outline-none focus:ring-0">
-          <Card className="border border-slate-200/60 bg-white shadow-2xs dark:bg-slate-900 overflow-hidden">
-            <CardHeader className="p-5 border-none pb-0">
-              <CardTitle className="text-sm font-bold tracking-wide text-slate-800 dark:text-slate-200 flex items-center gap-2">
-                <FileSpreadsheet className="h-4 w-4 text-purple-600" />
-                Bulk Import (CSV / Excel Ledger)
+        {/* ─── BULK CSV TAB ─── */}
+        <TabsContent value="bulk" className="space-y-4">
+          <Card className="border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xs rounded-2xl overflow-hidden">
+            <CardHeader className="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900">
+              <CardTitle className="text-sm font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
+                <FileSpreadsheet className="h-4 w-4 text-[#8A3BD4]" />
+                <span>Bulk Spreadsheet Import (CSV / Excel)</span>
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-5 space-y-6">
+            <CardContent className="p-4 sm:p-6 space-y-5">
               
-              {/* Dynamic Action Trigger Framework Configuration Area */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-end rounded-xl bg-slate-50/50 dark:bg-slate-900/40 p-5">
+              {/* Position Selector & Download Template */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-end rounded-2xl p-4 sm:p-5 bg-slate-50/70 dark:bg-slate-950/40 border border-slate-100 dark:border-slate-800">
                 <div className="space-y-1.5">
-                  <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Target Mapping Position</Label>
+                  <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Select Target Position *</Label>
                   <Select value={selectedPosition} onValueChange={setSelectedPosition}>
-                    <SelectTrigger className="rounded-xl border-slate-200 bg-white dark:bg-slate-900 dark:border-slate-700">
-                      <SelectValue placeholder="Choose role to unlock spreadsheet architecture" />
+                    <SelectTrigger className="h-10 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-xl text-xs sm:text-sm font-semibold">
+                      <SelectValue placeholder="Choose Role for CSV Layout" />
                     </SelectTrigger>
-                    <SelectContent className="rounded-xl border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900">
+                    <SelectContent className="rounded-xl dark:bg-slate-800">
                       {positions.map((p) => {
                         const pName = typeof p === 'object' ? p.name : p;
                         return (
-                          <SelectItem key={pName} value={pName} className="rounded-lg py-2 focus:text-purple-600 focus:bg-purple-50">
+                          <SelectItem key={pName} value={pName} className="text-xs font-semibold">
                             {pName}
                           </SelectItem>
                         );
@@ -301,31 +336,31 @@ export default function CandidateImport() {
                   <Button
                     variant="outline"
                     onClick={() => downloadTemplate(selectedPosition)}
-                    className="h-11 rounded-xl border-purple-200/60 bg-purple-50/80 text-purple-700 font-bold hover:bg-purple-600 hover:text-white hover:border-purple-600 transition-all duration-200 flex items-center justify-center gap-2"
+                    className="h-10 rounded-xl border-purple-200/80 bg-purple-50 text-[#8A3BD4] font-bold hover:bg-purple-100 text-xs flex items-center justify-center gap-2 cursor-pointer"
                   >
-                    <Download className="h-4 w-4 stroke-[2.5]" />
+                    <Download className="h-3.5 w-3.5" />
                     Download {selectedPosition} CSV Template
                   </Button>
                 ) : (
-                  <div className="flex h-11 items-center gap-2 rounded-xl border border-dashed border-slate-200 px-4 text-xs font-medium text-slate-400 bg-white/50 dark:bg-slate-900/50 italic">
-                    <Info className="h-3.5 w-3.5 text-slate-300 shrink-0" />
-                    Select a target job position to generate structured CSV layouts.
+                  <div className="flex h-10 items-center gap-2 rounded-xl border border-dashed border-slate-200 px-3 text-xs text-slate-400 bg-white dark:bg-slate-800 italic">
+                    <Info className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+                    Pick a position first to unlock template download
                   </div>
                 )}
               </div>
 
-              {/* Dynamic Columns Configuration Matrix Banner */}
+              {/* Column Architecture Guidelines */}
               {selectedPosition && (
-                <div className="rounded-xl border border-slate-100 dark:border-slate-800 p-5 bg-slate-50/30 dark:bg-slate-900/10">
-                  <h4 className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-3 flex items-center gap-1.5">
-                    <FileCheck className="h-4 w-4 text-purple-600" />
-                    Required Column Architecture Guidelines
+                <div className="rounded-2xl border border-slate-100 dark:border-slate-800 p-4 bg-purple-50/30 dark:bg-purple-950/20">
+                  <h4 className="text-[11px] font-extrabold uppercase tracking-wider text-slate-500 mb-2 flex items-center gap-1.5">
+                    <FileCheck className="h-4 w-4 text-[#8A3BD4]" />
+                    Required Column Headers
                   </h4>
                   <div className="flex flex-wrap gap-1.5">
                     {POSITION_TEMPLATES[selectedPosition]?.map((col) => (
                       <span 
                         key={col} 
-                        className="px-2.5 py-1 border border-purple-200/60 bg-purple-50/80 text-purple-700 font-bold uppercase tracking-wider text-[11px] rounded-md"
+                        className="px-2.5 py-0.5 border border-purple-200 bg-purple-50 text-[#8A3BD4] dark:bg-purple-950/50 dark:text-purple-300 font-bold text-[11px] rounded-lg"
                       >
                         {col}
                       </span>
@@ -334,14 +369,14 @@ export default function CandidateImport() {
                 </div>
               )}
 
-              {/* Secure Media File Ingest Dropzone Area Box */}
+              {/* Dropzone */}
               <div className="space-y-1.5">
-                <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Upload Complete Data Sheet Ledger</Label>
+                <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Upload Spreadsheet Ledger</Label>
                 <div className={cn(
-                  "relative group flex flex-col items-center justify-center rounded-xl border border-dashed p-6 text-center transition-all duration-200",
+                  "relative flex flex-col items-center justify-center rounded-2xl border-2 border-dashed p-8 text-center transition-all",
                   selectedPosition 
-                    ? "border-slate-200 bg-white dark:bg-slate-900 hover:border-purple-600 hover:bg-purple-50 cursor-pointer" 
-                    : "border-slate-200 bg-slate-100/40 dark:bg-slate-800/40 opacity-60 cursor-not-allowed"
+                    ? "border-purple-200 bg-white dark:bg-slate-900 hover:border-[#8A3BD4] hover:bg-purple-50/30 cursor-pointer" 
+                    : "border-slate-200 bg-slate-50/50 opacity-60 cursor-not-allowed"
                 )}>
                   <Input
                     type="file"
@@ -350,70 +385,61 @@ export default function CandidateImport() {
                     disabled={!selectedPosition || bulkMutation.isPending}
                     className="absolute inset-0 opacity-0 z-10 h-full w-full cursor-pointer disabled:cursor-not-allowed"
                   />
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-400 border border-slate-100 dark:border-slate-700 group-hover:scale-105 group-hover:bg-purple-50 group-hover:text-purple-600 transition-all duration-300 mb-3">
-                    <Upload className="h-5 w-5" />
+                  <div className="h-12 w-12 rounded-2xl bg-purple-50 dark:bg-purple-950/50 text-[#8A3BD4] flex items-center justify-center mb-2">
+                    <Upload className="h-6 w-6" />
                   </div>
-                  <p className="text-sm font-bold text-slate-700 dark:text-slate-300">Click to locate or drag spreadsheet ledger file here</p>
-                  <p className="text-xs text-slate-400 mt-1 font-medium">Accepts formatted CSV, XLSX, or XLS documentation archives up to 10MB</p>
+                  <p className="text-sm font-bold text-slate-800 dark:text-white">Click or drag & drop candidate spreadsheet here</p>
+                  <p className="text-xs text-slate-400 mt-0.5">Supports standard CSV or Excel files</p>
                 </div>
               </div>
 
-              {/* In-flight Data Processing Live Monitor Block Banner */}
+              {/* Processing Spinner */}
               {bulkMutation.isPending && (
-                <div className="flex items-center gap-3 p-4 rounded-xl border border-cyan-200/60 bg-cyan-50/80 text-cyan-700 font-semibold text-sm">
+                <div className="flex items-center gap-2.5 p-3.5 rounded-xl border border-cyan-200 bg-cyan-50 text-cyan-800 text-xs font-bold">
                   <Loader2 className="h-4 w-4 animate-spin text-cyan-600" />
-                  <p className="animate-pulse">HireHub Parser parsing spreadsheet rows, validating constraints, and building network logs...</p>
+                  <span>Processing and parsing candidate rows...</span>
                 </div>
               )}
 
-              {/* Comprehensive Processing Feedback Result Ledger Scoreboard Dashboard */}
+              {/* Bulk Results Scoreboard */}
               {bulkResult && (
-                <div className="rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/40 dark:bg-slate-900/10 p-5 space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div className="bg-white dark:bg-slate-900 p-4 rounded-xl text-center shadow-sm">
-                      <p className="text-2xl font-extrabold text-slate-800 dark:text-white">{bulkResult.totalRows}</p>
-                      <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mt-1">Total Parsed Rows</p>
+                <div className="rounded-2xl border border-slate-100 dark:border-slate-800 bg-slate-50/50 p-4 sm:p-5 space-y-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <div className="bg-white dark:bg-slate-900 p-3 rounded-xl text-center border border-slate-100 dark:border-slate-800">
+                      <p className="text-xl font-black text-slate-800 dark:text-white">{bulkResult.totalRows}</p>
+                      <p className="text-[10px] font-bold uppercase text-slate-400 mt-0.5">Total Rows</p>
                     </div>
-                    <div className="bg-white dark:bg-slate-900 p-4 rounded-xl text-center shadow-sm">
-                      <p className="text-2xl font-extrabold text-emerald-600">{bulkResult.validRows}</p>
-                      <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mt-1">Valid Structures</p>
+                    <div className="bg-white dark:bg-slate-900 p-3 rounded-xl text-center border border-slate-100 dark:border-slate-800">
+                      <p className="text-xl font-black text-emerald-600">{bulkResult.validRows}</p>
+                      <p className="text-[10px] font-bold uppercase text-slate-400 mt-0.5">Valid</p>
                     </div>
-                    <div className="bg-white dark:bg-slate-900 p-4 rounded-xl text-center shadow-sm">
-                      <p className="text-2xl font-extrabold text-rose-600">{bulkResult.invalidRows}</p>
-                      <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mt-1">Invalid Warnings</p>
+                    <div className="bg-white dark:bg-slate-900 p-3 rounded-xl text-center border border-slate-100 dark:border-slate-800">
+                      <p className="text-xl font-black text-rose-600">{bulkResult.invalidRows}</p>
+                      <p className="text-[10px] font-bold uppercase text-slate-400 mt-0.5">Warnings</p>
                     </div>
-                    <div className="bg-white dark:bg-slate-900 p-4 rounded-xl text-center shadow-sm">
-                      <p className="text-2xl font-extrabold text-cyan-600">{bulkResult.imported}</p>
-                      <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mt-1">Ingested Success</p>
+                    <div className="bg-white dark:bg-slate-900 p-3 rounded-xl text-center border border-slate-100 dark:border-slate-800">
+                      <p className="text-xl font-black text-[#8A3BD4]">{bulkResult.imported}</p>
+                      <p className="text-[10px] font-bold uppercase text-slate-400 mt-0.5">Ingested</p>
                     </div>
                   </div>
 
-                  {/* Operational Validation Structural Error Reports Stack Box Log */}
-                  {bulkResult.errors?.length > 0 && (
-                    <div className="space-y-2.5">
-                      <h4 className="text-[11px] font-bold uppercase tracking-wider text-rose-600 flex items-center gap-1.5 pl-0.5">
-                        <AlertCircle className="h-4 w-4 text-rose-600" />
-                        Platform Validation Error Logs
-                      </h4>
-                      <div className="max-h-60 overflow-y-auto rounded-xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 space-y-1.5 custom-scrollbar">
-                        {bulkResult.errors.map((err, i) => (
-                          <div key={i} className="flex items-start gap-2.5 text-xs py-1.5 border-b border-slate-100 dark:border-slate-800 last:border-0 hover:bg-slate-50/50 dark:hover:bg-slate-800/30 rounded px-1 transition-colors">
-                            <XCircle className="h-3.5 w-3.5 text-rose-600 mt-0.5 shrink-0" />
-                            <div className="leading-normal font-medium">
-                              <span className="font-bold text-rose-600 border border-rose-200/60 bg-rose-50/80 px-1.5 py-0.5 rounded-md mr-1.5 text-[10px] uppercase tracking-wide">Row {err.row}</span>
-                              <span className="text-slate-500 dark:text-slate-400">{err.message}</span>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
+                  {bulkResult.imported > 0 && (
+                    <div className="flex items-center gap-2 p-3 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold">
+                      <CheckCircle className="h-4 w-4 text-emerald-600 shrink-0" />
+                      <span>Successfully added {bulkResult.imported} candidate profiles to the system!</span>
                     </div>
                   )}
 
-                  {/* Batch Success Feedback Confirmation Floating Module Row */}
-                  {bulkResult.imported > 0 && (
-                    <div className="flex items-center gap-2.5 p-4 rounded-xl border border-emerald-200/60 bg-emerald-50/80 text-emerald-700 font-semibold text-sm">
-                      <CheckCircle className="h-4 w-4 text-emerald-600 shrink-0 stroke-[2.5]" />
-                      <p>Pipeline operation complete. Successfully ingested <span className="font-bold underline">{bulkResult.imported}</span> candidate ledger records directly into the platform repository.</p>
+                  {bulkResult.errors?.length > 0 && (
+                    <div className="space-y-1.5">
+                      <h5 className="text-xs font-bold text-rose-600">Row Errors ({bulkResult.errors.length})</h5>
+                      <div className="max-h-40 overflow-y-auto space-y-1 text-xs">
+                        {bulkResult.errors.map((err, i) => (
+                          <div key={i} className="p-2 rounded-lg bg-rose-50 border border-rose-100 text-rose-800">
+                            <span className="font-bold">Row {err.row}: </span>{err.message}
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   )}
                 </div>
@@ -422,6 +448,7 @@ export default function CandidateImport() {
           </Card>
         </TabsContent>
       </Tabs>
+
     </div>
   );
 }

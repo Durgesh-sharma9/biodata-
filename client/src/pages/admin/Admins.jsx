@@ -1,13 +1,20 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Search, Shield, Coins, Layers, Mail, Phone, RefreshCcw, CheckCircle, XCircle, Award } from 'lucide-react';
+import { 
+  Search, Shield, Coins, Layers, Mail, Phone, RefreshCcw, 
+  CheckCircle, XCircle, Award, ShieldAlert, Sparkles, Building2,
+  ChevronLeft, ChevronRight, AlertCircle, Plus
+} from 'lucide-react';
 import { getAdmins, getPlans, assignCreditsToSchool } from '@/lib/api';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogBody, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { 
+  Dialog, DialogBody, DialogContent, DialogDescription, 
+  DialogFooter, DialogHeader, DialogTitle 
+} from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
@@ -20,7 +27,7 @@ export default function Admins() {
   const [planId, setPlanId] = useState('');
   const [extraCredits, setExtraCredits] = useState('');
 
-  const { data, isLoading, isFetching } = useQuery({
+  const { data, isLoading, isFetching, refetch } = useQuery({
     queryKey: ['admins', page, search],
     queryFn: () => getAdmins({ page, limit: 10, search }).then((r) => r.data),
   });
@@ -48,29 +55,111 @@ export default function Admins() {
     });
   };
 
+  const adminsList = data?.data || [];
+  const totalCount = data?.pagination?.total || adminsList.length || 0;
+  const totalPages = data?.pagination?.pages || Math.ceil(totalCount / 10) || 1;
+
+  const totalCreditsAllocated = adminsList.reduce((acc, curr) => acc + (Number(curr.credits) || 0), 0);
+  const activeAdmins = adminsList.filter((a) => a.isActive !== false).length;
+
   return (
-    <div className="space-y-6 w-full antialiased text-slate-800 dark:text-white">
+    <div className="space-y-4 sm:space-y-5 w-full antialiased text-slate-800 dark:text-slate-100 pb-16">
       
-      {/* Upper Header Frame */}
-      <div className="flex items-center justify-between border-b border-slate-200/50 pb-5 dark:border-slate-900">
-        <h1 className="text-xl font-bold tracking-tight text-slate-800 dark:text-white">
-          Admins Management
-        </h1>
-        {isFetching && (
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white border border-slate-200 text-slate-500 animate-spin dark:bg-slate-900 dark:border-slate-800">
-            <RefreshCcw className="h-4 w-4 text-[#0F766E]" />
+      {/* ─── 1. TOP HEADER BANNER ─── */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-gradient-to-r from-[#F0FCF5] via-[#EFF6FF] to-[#FAF5FF] dark:from-slate-800/90 dark:via-slate-800/70 dark:to-slate-800/90 p-3.5 sm:px-5 sm:py-3.5 rounded-2xl shadow-2xs border border-slate-200/80 dark:border-slate-800">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="p-2.5 bg-white dark:bg-slate-700 text-rose-600 dark:text-rose-400 rounded-xl border border-slate-200/80 shadow-2xs shrink-0">
+            <ShieldAlert className="h-5 w-5" />
           </div>
-        )}
+          <div className="min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h1 className="text-sm sm:text-base font-extrabold tracking-tight text-slate-900 dark:text-white truncate">
+                School Admins & Balance Governance
+              </h1>
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-rose-50 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300 border border-rose-200/60 shrink-0">
+                {totalCount} School Admins
+              </span>
+            </div>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium truncate mt-0.5">
+              Supervise institution administrator credentials, active tokens balance & plan assignments
+            </p>
+          </div>
+        </div>
+        
+        {/* Quick Refresh */}
+        <div className="flex items-center gap-2">
+          <Button 
+            variant="outline" 
+            size="icon"
+            onClick={() => refetch()} 
+            disabled={isFetching}
+            className="h-9 w-9 rounded-xl border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 text-slate-600 dark:text-slate-300 shadow-2xs group/btn cursor-pointer shrink-0"
+            title="Refresh Data"
+          >
+            <RefreshCcw className={cn(
+              "h-3.5 w-3.5 transition-transform duration-500 group-hover/btn:rotate-180", 
+              isFetching && "animate-spin text-rose-600"
+            )} />
+          </Button>
+        </div>
       </div>
 
-      {/* Modern Filter Panel */}
-      <Card className="filter">
-        <CardContent className="p-4">
-          <div className="relative max-w-md group">
-            <Search className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400 group-focus-within:text-[#0F766E] transition-colors" />
+      {/* ─── 2. MINI STATS OVERVIEW ─── */}
+      <div className="grid gap-2.5 sm:gap-3 grid-cols-1 sm:grid-cols-3">
+        <div className="p-3 sm:p-3.5 rounded-xl bg-gradient-to-br from-[#FFF1F2] via-white to-rose-50/50 dark:bg-slate-900 border border-rose-200/80 dark:border-rose-900/50 shadow-2xs flex items-center justify-between">
+          <div>
+            <span className="text-[10px] sm:text-[11px] font-bold text-rose-700 dark:text-rose-300 uppercase tracking-wider">
+              Total Admins
+            </span>
+            <h3 className="text-xl sm:text-2xl font-black text-rose-950 dark:text-white mt-1">
+              {totalCount}
+            </h3>
+            <p className="text-[10px] text-rose-600 dark:text-rose-400 font-medium mt-0.5">Supervised school accounts</p>
+          </div>
+          <div className="p-2.5 rounded-xl bg-rose-100/80 dark:bg-rose-950/60 text-rose-600 dark:text-rose-300">
+            <ShieldAlert className="h-5 w-5" />
+          </div>
+        </div>
+
+        <div className="p-3 sm:p-3.5 rounded-xl bg-gradient-to-br from-[#F0FDF4] via-white to-teal-50/50 dark:bg-slate-900 border border-teal-200/80 dark:border-teal-900/50 shadow-2xs flex items-center justify-between">
+          <div>
+            <span className="text-[10px] sm:text-[11px] font-bold text-teal-700 dark:text-teal-300 uppercase tracking-wider">
+              Active Access
+            </span>
+            <h3 className="text-xl sm:text-2xl font-black text-teal-950 dark:text-white mt-1">
+              {activeAdmins}
+            </h3>
+            <p className="text-[10px] text-teal-600 dark:text-teal-400 font-medium mt-0.5">Fully operational accounts</p>
+          </div>
+          <div className="p-2.5 rounded-xl bg-teal-100/80 dark:bg-teal-950/60 text-teal-700 dark:text-teal-300">
+            <CheckCircle className="h-5 w-5" />
+          </div>
+        </div>
+
+        <div className="p-3 sm:p-3.5 rounded-xl bg-gradient-to-br from-[#FFFBEB] via-white to-amber-50/50 dark:bg-slate-900 border border-amber-200/80 dark:border-amber-900/50 shadow-2xs flex items-center justify-between">
+          <div>
+            <span className="text-[10px] sm:text-[11px] font-bold text-amber-700 dark:text-amber-300 uppercase tracking-wider">
+              Page Credits Sum
+            </span>
+            <h3 className="text-xl sm:text-2xl font-black text-amber-950 dark:text-white mt-1">
+              {totalCreditsAllocated.toLocaleString()}
+            </h3>
+            <p className="text-[10px] text-amber-600 dark:text-amber-400 font-medium mt-0.5">Credits distributed</p>
+          </div>
+          <div className="p-2.5 rounded-xl bg-amber-100/80 dark:bg-amber-950/60 text-amber-600 dark:text-amber-300">
+            <Coins className="h-5 w-5" />
+          </div>
+        </div>
+      </div>
+
+      {/* ─── 3. SEARCH TOOLBAR ─── */}
+      <Card className="border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xs rounded-2xl">
+        <CardContent className="p-3 sm:p-4">
+          <div className="relative max-w-md">
+            <Search className="absolute left-3.5 top-3 h-4 w-4 text-slate-400" />
             <Input
-              placeholder="Search schools, administrators, or domains..."
-              className="pl-10 h-11 bg-white border-slate-200 rounded-xl font-medium focus-visible:ring-[#0F766E] transition-all text-sm"
+              placeholder="Search by school, administrator, or email..."
+              className="pl-10 h-10 border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-slate-900 text-xs sm:text-sm font-medium focus-visible:ring-rose-400"
               value={search}
               onChange={(e) => {
                 setPage(1);
@@ -81,236 +170,250 @@ export default function Admins() {
         </CardContent>
       </Card>
 
-      {/* Main Administrative Table Matrix */}
-      <Card className="w-full border border-slate-200/80 shadow-sm rounded-xl overflow-hidden bg-white">
+      {/* ─── 4. ADMINS TABLE ─── */}
+      <Card className="border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xs rounded-2xl overflow-hidden">
         <CardContent className="p-0">
-          <div className="overflow-x-auto w-full">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="pl-6 font-bold text-[11px] tracking-wider uppercase text-slate-700 dark:text-slate-300 py-4">School Profile</TableHead>
-                  <TableHead className="font-bold text-[11px] tracking-wider uppercase text-slate-700 dark:text-slate-300 py-4">Administrator</TableHead>
-                  <TableHead className="font-bold text-[11px] tracking-wider uppercase text-slate-700 dark:text-slate-300 py-4">Contact Identity</TableHead>
-                  <TableHead className="font-bold text-[11px] tracking-wider uppercase text-slate-700 dark:text-slate-300 py-4">System Status</TableHead>
-                  <TableHead className="font-bold text-[11px] tracking-wider uppercase text-slate-700 dark:text-slate-300 py-4">Balance</TableHead>
-                  <TableHead className="font-bold text-[11px] tracking-wider uppercase text-slate-700 dark:text-slate-300 py-4">Active License Tier</TableHead>
-                  <TableHead className="pr-6 text-right font-bold text-[11px] tracking-wider uppercase text-slate-700 dark:text-slate-300 py-4">Operations</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {isLoading ? (
+          {isLoading ? (
+            <div className="py-24 text-center">
+              <div className="flex flex-col items-center justify-center space-y-3">
+                <RefreshCcw className="h-7 w-7 text-rose-600 animate-spin" />
+                <span className="text-xs font-bold text-slate-500 dark:text-slate-400">Loading school administrators...</span>
+              </div>
+            </div>
+          ) : !adminsList || adminsList.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-20 px-4 text-center max-w-md mx-auto">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-50 dark:bg-slate-800 text-rose-600 mb-3">
+                <AlertCircle className="h-6 w-6 stroke-[1.5]" />
+              </div>
+              <h4 className="text-sm font-extrabold text-slate-800 dark:text-slate-200">No Matching Admins</h4>
+              <p className="text-xs text-slate-400 mt-1">
+                No school administrator records matched your search parameters.
+              </p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto w-full">
+              <Table>
+                <TableHeader className="bg-slate-50/70 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800">
                   <TableRow>
-                    <TableCell colSpan={7} className="h-64 text-center">
-                      <div className="flex flex-col items-center justify-center p-8">
-                        <div className="relative flex h-11 w-11 items-center justify-center rounded-xl bg-white border border-slate-200 mb-3 shadow-xs dark:bg-slate-800 dark:border-slate-700">
-                          <RefreshCcw className="h-4 w-4 text-[#0F766E] animate-spin" />
-                        </div>
-                        <p className="text-xs font-semibold text-slate-400 tracking-wide animate-pulse">
-                          Retrieving school matrix parameters...
-                        </p>
-                      </div>
-                    </TableCell>
+                    <TableHead className="pl-5 font-bold text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-400 py-3.5">School Identity</TableHead>
+                    <TableHead className="font-bold text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-400 py-3.5">Administrator</TableHead>
+                    <TableHead className="font-bold text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-400 py-3.5">Contact Email / Phone</TableHead>
+                    <TableHead className="font-bold text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-400 py-3.5">Status</TableHead>
+                    <TableHead className="font-bold text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-400 py-3.5">Credits Balance</TableHead>
+                    <TableHead className="font-bold text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-400 py-3.5">Active Plan Tier</TableHead>
+                    <TableHead className="pr-5 text-right font-bold text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-400 py-3.5">Resource Action</TableHead>
                   </TableRow>
-                ) : data?.data?.length > 0 ? (
-                  data.data.map((admin, index) => {
-                    return (
-                      <TableRow 
-                        key={admin._id}
-                        style={{ animationDelay: `${index * 40}ms` }}
-                        className={cn(
-                          "group transition-all duration-150 border-b border-slate-100 last:border-none dark:border-slate-800/60 hover:bg-slate-50/50 dark:hover:bg-slate-800/30 animate-in fade-in slide-in-from-left-2",
-                          admin.isActive 
-                            ? "bg-transparent" 
-                            : "bg-slate-50/30 dark:bg-slate-900/40"
-                        )}
-                      >
-                        {/* School Profile Avatar initial */}
-                        <TableCell className="pl-6 py-3.5 font-semibold text-slate-700 text-sm dark:text-slate-200">
-                          <div className="flex items-center gap-3">
-                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-r from-[#0F766E] to-[#14B8A6] text-white text-xs font-bold shadow-2xs group-hover:scale-105 transition-transform duration-200">
-                              {admin.schoolName ? admin.schoolName.charAt(0).toUpperCase() : 'S'}
+                </TableHeader>
+                <TableBody>
+                  {adminsList.map((admin) => (
+                    <TableRow 
+                      key={admin._id}
+                      className="group hover:bg-rose-50/20 dark:hover:bg-slate-800/40 transition-all border-b border-slate-100 dark:border-slate-800/60 last:border-none"
+                    >
+                      {/* School Name & Avatar */}
+                      <TableCell className="pl-5 py-4 font-bold text-slate-800 dark:text-slate-200 text-sm">
+                        <div className="flex items-center gap-3">
+                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-purple-100 dark:bg-purple-950/60 text-[#8A3BD4] dark:text-purple-300 font-extrabold text-xs shadow-2xs">
+                            {admin.schoolName ? admin.schoolName.charAt(0).toUpperCase() : 'S'}
+                          </div>
+                          <span className="truncate max-w-[180px] sm:max-w-[220px] font-extrabold text-slate-900 dark:text-white tracking-tight group-hover:text-[#8A3BD4] transition-colors">
+                            {admin.schoolName}
+                          </span>
+                        </div>
+                      </TableCell>
+
+                      {/* Admin Name */}
+                      <TableCell className="py-4 text-xs font-bold text-slate-700 dark:text-slate-200">
+                        <div className="flex items-center gap-1.5">
+                          <Shield className="h-3.5 w-3.5 text-rose-500 shrink-0" />
+                          <span>{admin.adminName}</span>
+                        </div>
+                      </TableCell>
+
+                      {/* Contact Info */}
+                      <TableCell className="py-4 text-xs font-semibold text-slate-600 dark:text-slate-300">
+                        <div className="space-y-0.5">
+                          <div className="flex items-center gap-1.5 truncate max-w-[200px]">
+                            <Mail className="h-3 w-3 text-slate-400 shrink-0" />
+                            <span className="truncate">{admin.email}</span>
+                          </div>
+                          {admin.mobile && (
+                            <div className="flex items-center gap-1.5 text-slate-400 text-[11px]">
+                              <Phone className="h-3 w-3 text-slate-400 shrink-0" />
+                              <span>{admin.mobile}</span>
                             </div>
-                            <span className="truncate max-w-[180px] block tracking-tight group-hover:text-[#0F766E] transition-colors">{admin.schoolName}</span>
-                          </div>
-                        </TableCell>
-
-                        {/* Admin Name Details */}
-                        <TableCell className="py-3.5 text-slate-700 font-semibold text-sm dark:text-slate-200">
-                          <div className="flex items-center gap-2">
-                            <Shield className="h-3.5 w-3.5 text-slate-400 group-hover:text-[#0F766E] transition-colors" />
-                            <span>{admin.adminName}</span>
-                          </div>
-                        </TableCell>
-
-                        {/* Contact Identity Stack */}
-                        <TableCell className="py-3.5">
-                          <div className="flex flex-col space-y-0.5 max-w-[190px]">
-                            <span className="text-xs font-semibold text-slate-600 dark:text-slate-300 truncate flex items-center gap-1.5">
-                              <Mail className="h-3 w-3 shrink-0 text-slate-400" />
-                              {admin.email}
-                            </span>
-                            {admin.mobile ? (
-                              <span className="text-[11px] font-medium text-slate-400 flex items-center gap-1.5">
-                                <Phone className="h-2.5 w-2.5 shrink-0 text-slate-300" />
-                                {admin.mobile}
-                              </span>
-                            ) : (
-                              <span className="text-[11px] font-medium text-slate-300 italic pl-4.5">No phone logs</span>
-                            )}
-                          </div>
-                        </TableCell>
-
-                        {/* Status Active Badge */}
-                        <TableCell className="py-3.5">
-                          <Badge 
-                            variant="outline" 
-                            className={cn(
-                              "px-2 py-0.5 font-medium tracking-wide text-[10px] uppercase rounded-md inline-flex items-center gap-1 bg-transparent border shadow-none",
-                              admin.isActive 
-                                ? "text-[#1BCFB4] border-[#1BCFB4]/30 bg-[#1BCFB4]/5" 
-                                : "text-slate-400 border-slate-200 bg-slate-50/50 dark:border-slate-800 dark:bg-transparent"
-                            )}
-                          >
-                            {admin.isActive ? (
-                              <>
-                                <CheckCircle className="h-3 w-3 text-[#1BCFB4]" />
-                                Active
-                              </>
-                            ) : (
-                              <>
-                                <XCircle className="h-3 w-3 text-slate-400" />
-                                Inactive
-                              </>
-                            )}
-                          </Badge>
-                        </TableCell>
-
-                        {/* Coin Credits Available Token Balance */}
-                        <TableCell className="py-3.5">
-                          <div className="flex items-center gap-1.5 font-semibold text-slate-700 text-sm dark:text-slate-200">
-                            <Coins className={cn("h-3.5 w-3.5", admin.credits > 0 ? "text-amber-500" : "text-slate-300")} />
-                            <span>{admin.credits}</span>
-                          </div>
-                        </TableCell>
-
-                        {/* Active Licensing Subscription Tier */}
-                        <TableCell className="py-3.5">
-                          {admin.plan?.name ? (
-                            <Badge variant="outline" className="px-2 py-0.5 border-[#14B8A6]/30 bg-[#14B8A6]/5 text-[#14B8A6] font-medium text-[10px] uppercase rounded-md inline-flex items-center gap-1">
-                              <Award className="h-3 w-3 text-[#14B8A6]" />
-                              {admin.plan.name}
-                            </Badge>
-                          ) : (
-                            <span className="text-xs font-medium text-slate-300 italic">No assigned tier</span>
                           )}
-                        </TableCell>
-
-                        {/* Operations Assign trigger box */}
-                        <TableCell className="pr-6 py-3.5 text-right">
-                          <Button 
-                            size="sm" 
-                            variant="outline" 
-                            onClick={() => setAssignDialog(admin)}
-                            className="h-8 rounded-lg px-3 text-xs font-bold border-slate-200 text-slate-600 bg-white hover:border-[#0F766E]/40 hover:bg-[#0F766E]/5 hover:text-[#0F766E] shadow-xs active:scale-95 group-hover:border-slate-300 dark:bg-slate-900 dark:border-slate-800"
-                          >
-                            Assign
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={7} className="h-48 text-center">
-                      <div className="flex flex-col items-center justify-center p-6 max-w-sm mx-auto">
-                        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-50 border border-dashed border-slate-200 text-slate-400 mb-3 shadow-xs dark:bg-slate-800 dark:border-slate-700">
-                          <Shield className="h-4 w-4" />
                         </div>
-                        <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">No school administrators found</h4>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </div>
+                      </TableCell>
+
+                      {/* Status */}
+                      <TableCell className="py-4">
+                        {admin.isActive !== false ? (
+                          <Badge className="border-emerald-200/80 bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 text-[10px] font-bold px-2.5 py-0.5 rounded-lg shadow-none flex items-center gap-1 w-fit">
+                            <span className="h-1.5 w-1.5 rounded-full inline-block bg-emerald-500 animate-pulse" />
+                            Active
+                          </Badge>
+                        ) : (
+                          <Badge className="border-rose-200/80 bg-rose-50 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300 text-[10px] font-bold px-2.5 py-0.5 rounded-lg shadow-none flex items-center gap-1 w-fit">
+                            <span className="h-1.5 w-1.5 rounded-full inline-block bg-rose-500" />
+                            Inactive
+                          </Badge>
+                        )}
+                      </TableCell>
+
+                      {/* Credits Balance */}
+                      <TableCell className="py-4">
+                        <div className="inline-flex items-center gap-1.5 font-extrabold text-xs px-2.5 py-1 rounded-lg bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200/70">
+                          <Coins className="h-3.5 w-3.5 text-amber-500 shrink-0" />
+                          <span>{admin.credits ?? 0} Credits</span>
+                        </div>
+                      </TableCell>
+
+                      {/* Active Plan */}
+                      <TableCell className="py-4">
+                        {admin.plan?.name ? (
+                          <Badge variant="outline" className="px-2.5 py-0.5 border-purple-200/80 bg-purple-50 text-[#8A3BD4] dark:bg-purple-950/40 dark:text-purple-300 font-bold text-[10px] uppercase rounded-lg inline-flex items-center gap-1 shadow-none">
+                            <Award className="h-3 w-3 text-[#8A3BD4]" />
+                            {admin.plan.name}
+                          </Badge>
+                        ) : (
+                          <span className="text-xs font-semibold text-slate-400">Default Tier</span>
+                        )}
+                      </TableCell>
+
+                      {/* Action */}
+                      <TableCell className="pr-5 py-4 text-right">
+                        <Button 
+                          size="sm" 
+                          variant="outline" 
+                          onClick={() => setAssignDialog(admin)}
+                          className="h-8 rounded-lg px-3 text-xs font-bold border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 hover:text-[#8A3BD4] hover:border-[#8A3BD4]/40 hover:bg-purple-50/50 transition-all cursor-pointer"
+                        >
+                          <Coins className="h-3.5 w-3.5 text-amber-500 mr-1.5" />
+                          Assign Credits
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between px-5 py-3 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
+              <span className="text-xs font-semibold text-slate-500">
+                Page {page} of {totalPages}
+              </span>
+              <div className="flex items-center gap-1.5">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={page <= 1}
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  className="h-8 px-2.5 rounded-lg text-xs font-bold"
+                >
+                  <ChevronLeft className="h-3.5 w-3.5 mr-1" /> Prev
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={page >= totalPages}
+                  onClick={() => setPage((p) => p + 1)}
+                  className="h-8 px-2.5 rounded-lg text-xs font-bold"
+                >
+                  Next <ChevronRight className="h-3.5 w-3.5 ml-1" />
+                </Button>
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
 
-      {/* Resource Allocation Action Modal Panel Window */}
+      {/* ─── 5. ALLOCATE CREDITS & PLAN DIALOG ─── */}
       <Dialog open={!!assignDialog} onOpenChange={() => setAssignDialog(null)}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-md rounded-2xl border border-slate-200 dark:border-slate-800 bg-white p-6 dark:bg-slate-900 shadow-xl">
           <DialogHeader>
-            <DialogTitle className="text-sm font-bold text-slate-800 tracking-wide flex items-center gap-2 dark:text-white">
-              <Layers className="h-4 w-4 text-[#0F766E]" />
-              Resource Distribution
+            <DialogTitle className="text-base font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+              <div className="p-1.5 bg-amber-100 dark:bg-amber-950/60 text-amber-700 rounded-lg">
+                <Coins className="h-4 w-4" />
+              </div>
+              <span>Allocate Credits & Subscription</span>
             </DialogTitle>
-            <DialogDescription className="text-xs font-medium text-slate-400 mt-1">
-              Modifying workspace access parameters for <span className="font-bold text-[#0F766E]">{assignDialog?.schoolName}</span>
+            <DialogDescription className="text-xs font-semibold text-slate-500 dark:text-slate-400 mt-1">
+              Top up credit balance or update plan tier for <span className="font-extrabold text-slate-900 dark:text-white">{assignDialog?.schoolName}</span>
             </DialogDescription>
           </DialogHeader>
-          <DialogBody>
-            <div className="space-y-4">
-              <div className="space-y-1.5">
-                <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Subscription Tier</Label>
-                <Select value={planId} onValueChange={setPlanId}>
-                  <SelectTrigger className="h-11 rounded-xl border-slate-200 bg-white font-medium text-slate-700 focus:ring-[#0F766E] text-xs transition-all">
-                    <SelectValue placeholder="Retain current tier or select package" />
-                  </SelectTrigger>
-                  <SelectContent className="rounded-xl border-none bg-white shadow-md p-1">
-                    {plans.map((p) => (
-                      <SelectItem
-                        key={p._id}
-                        value={p._id}
-                        className="rounded-lg py-2 text-slate-600 focus:bg-[#0F766E]/5 focus:text-[#0F766E] font-medium text-xs"
-                      >
-                        {p.name} — <span className="text-[#0F766E] font-bold">{p.credits} cr</span> / <span className="text-slate-400 font-normal">{p.durationDays} days</span>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
 
-              <div className="space-y-1.5">
-                <Label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Action Topup Credits</Label>
-                <div className="relative group">
-                  <Coins className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400 group-focus-within:text-[#0F766E] transition-colors" />
-                  <Input
-                    type="number"
-                    placeholder="Enter manual credit quantity (e.g. 500)"
-                    className="pl-10 h-11 bg-white border-slate-200 rounded-xl font-medium focus-visible:ring-[#0F766E] text-xs"
-                    value={extraCredits}
-                    onChange={(e) => setExtraCredits(e.target.value)}
-                  />
-                </div>
+          <DialogBody className="space-y-4 pt-2">
+            <div className="p-3 rounded-xl bg-purple-50/50 dark:bg-purple-950/30 border border-purple-200/60 dark:border-purple-900/40 text-xs flex items-center justify-between">
+              <div>
+                <p className="text-slate-500 font-medium">Current Balance</p>
+                <p className="text-base font-black text-[#8A3BD4] mt-0.5">{assignDialog?.credits || 0} Credits</p>
+              </div>
+              <div>
+                <p className="text-slate-500 font-medium">Administrator</p>
+                <p className="font-bold text-slate-800 dark:text-slate-200 mt-0.5">{assignDialog?.adminName}</p>
               </div>
             </div>
+
+            {/* Plan Tier Selector */}
+            <div className="space-y-1.5">
+              <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Assign Subscription Plan</Label>
+              <Select value={planId} onValueChange={setPlanId}>
+                <SelectTrigger className="h-10 border-slate-200 dark:border-slate-800 rounded-xl text-xs sm:text-sm font-semibold">
+                  <SelectValue placeholder="Keep Current Plan" />
+                </SelectTrigger>
+                <SelectContent className="rounded-xl dark:bg-slate-800">
+                  <SelectItem value="" className="text-xs font-semibold">No Change / Keep Current</SelectItem>
+                  {plans.map((p) => (
+                    <SelectItem key={p._id} value={p._id} className="text-xs font-semibold">
+                      {p.name} ({p.credits} credits, {p.durationDays} days)
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Extra Credits Top-up */}
+            <div className="space-y-1.5">
+              <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Add Extra Credits</Label>
+              <div className="relative">
+                <Input
+                  type="number"
+                  min="1"
+                  placeholder="e.g. 50"
+                  value={extraCredits}
+                  onChange={(e) => setExtraCredits(e.target.value)}
+                  className="pl-9 h-10 border-slate-200 rounded-xl text-xs sm:text-sm font-semibold"
+                />
+                <Coins className="absolute left-3 top-3 h-4 w-4 text-amber-500" />
+              </div>
+              <p className="text-[10.5px] text-slate-400 font-medium">This will be added on top of existing balance.</p>
+            </div>
           </DialogBody>
-          <DialogFooter>
-            <Button
-              variant="outline"
+
+          <DialogFooter className="mt-5 flex gap-2">
+            <Button 
+              type="button" 
+              variant="outline" 
               onClick={() => setAssignDialog(null)}
-              className="rounded-xl h-11 font-medium border-slate-200 text-slate-600 shadow-xs hover:border-[#0F766E]/40 hover:bg-[#0F766E]/5 hover:text-[#0F766E]"
+              className="rounded-xl h-10 px-4 font-bold text-xs border-slate-200"
             >
               Cancel
             </Button>
             <Button
               onClick={handleAssign}
-              disabled={assignMutation.isPending}
-              className="rounded-xl h-11 bg-gradient-to-r from-[#0F766E] via-[#14B8A6] to-[#4BCBEB] hover:opacity-95 text-white font-bold text-xs tracking-wide shadow-md shadow-[#0F766E]/20 transition-all duration-200 active:scale-[0.99] disabled:opacity-50 border-none flex items-center justify-center gap-2"
+              disabled={assignMutation.isPending || (!planId && !extraCredits)}
+              className="bg-gradient-to-r from-[#7C3AED] via-[#8A3BD4] to-[#00D2FF] hover:from-[#6D28D9] hover:via-[#7E22CE] hover:to-[#0284C7] text-white font-bold rounded-xl h-10 px-5 text-xs shadow-sm cursor-pointer"
             >
-              {assignMutation.isPending ? (
-                <>
-                  <RefreshCcw className="h-3.5 w-3.5 animate-spin" />
-                  Updating Ledger...
-                </>
-              ) : (
-                "Commit Configuration Allocation"
-              )}
+              {assignMutation.isPending ? 'Allocating...' : 'Allocate Resources'}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
     </div>
   );
 }

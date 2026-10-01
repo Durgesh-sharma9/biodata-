@@ -121,15 +121,22 @@ export function AppLayout() {
                 </div>
               </Link>
             ) : (
-              <Link to="/" className="flex items-center gap-2 shrink-0 group">
+              <Link to="/admin/dashboard" className="flex items-center gap-2.5 shrink-0 group">
                 <img
                   src="/hirehub-logo-transparent.png"
                   alt="HireHub Logo"
-                  className="h-7.5 w-7.5 object-contain shrink-0 group-hover:scale-105 transition-transform"
+                  className="h-8 w-8 object-contain shrink-0 group-hover:scale-105 transition-transform"
                 />
-                <span className="font-extrabold text-sm sm:text-base tracking-tight text-slate-900 dark:text-white font-sans">
-                  Hire<span className="bg-gradient-to-r from-[#8A3BD4] to-[#00D2FF] bg-clip-text text-transparent">Hub</span>
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="font-extrabold text-sm sm:text-base tracking-tight text-slate-900 dark:text-white font-sans">
+                    Hire<span className="bg-gradient-to-r from-[#8A3BD4] to-[#00D2FF] bg-clip-text text-transparent">Hub</span>
+                  </span>
+                  {isSuperAdmin && (
+                    <span className="hidden sm:inline-flex px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-purple-50 text-[#8A3BD4] dark:bg-purple-950/50 dark:text-purple-300 border border-purple-200/80 shadow-2xs">
+                      Super Admin
+                    </span>
+                  )}
+                </div>
               </Link>
             )}
 
@@ -173,16 +180,18 @@ export function AppLayout() {
               )}
             </div>
 
-            {/* School Application QR Button */}
-            <button
-              type="button"
-              onClick={() => setQrModalOpen(true)}
-              className="h-9 w-9 sm:h-9 sm:w-auto p-0 sm:px-2.5 sm:py-1.5 rounded-lg border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 hover:text-[#8A3BD4] hover:border-[#8A3BD4]/40 hover:bg-purple-50/50 font-bold text-xs transition-all shadow-2xs group cursor-pointer flex items-center justify-center gap-1.5 active:scale-95 shrink-0"
-              title="Open School Application QR Code for Walk-In Candidates"
-            >
-              <QrCode className="w-4 h-4 text-[#8A3BD4] group-hover:scale-110 transition-transform shrink-0" />
-              <span className="hidden sm:inline">School QR</span>
-            </button>
+            {/* School Application QR Button (Schools only) */}
+            {!isSuperAdmin && !isApplicant && (
+              <button
+                type="button"
+                onClick={() => setQrModalOpen(true)}
+                className="h-9 w-9 sm:h-9 sm:w-auto p-0 sm:px-2.5 sm:py-1.5 rounded-lg border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 hover:text-[#8A3BD4] hover:border-[#8A3BD4]/40 hover:bg-purple-50/50 font-bold text-xs transition-all shadow-2xs group cursor-pointer flex items-center justify-center gap-1.5 active:scale-95 shrink-0"
+                title="Open School Application QR Code for Walk-In Candidates"
+              >
+                <QrCode className="w-4 h-4 text-[#8A3BD4] group-hover:scale-110 transition-transform shrink-0" />
+                <span className="hidden sm:inline">School QR</span>
+              </button>
+            )}
 
             {/* Logout Button (in place of old school profile card on the right) */}
             <button

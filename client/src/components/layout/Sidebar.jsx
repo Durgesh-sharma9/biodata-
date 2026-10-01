@@ -40,6 +40,7 @@ const schoolLinks = [
 
 const adminLinks = [
   { to: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard, color: '#0F766E' },
+  { to: '/admin/schools', label: 'Schools', icon: Building2, color: '#7C3AED' }, // Purple
   { to: '/admin/admins', label: 'Admins', icon: ShieldAlert, color: '#FF4D4D' }, // Red
   { to: '/admin/plans', label: 'Plans', icon: Layers, color: '#FF9F1C' }, // Orange
   { to: '/admin/credit-packages', label: 'Credit Packages', icon: Percent, color: '#1BCFB4' }, // Teal
@@ -135,11 +136,11 @@ export function Sidebar({ onNavigate }) {
           </div>
           <div className="min-w-0 flex-1">
             <p className="truncate text-xs font-bold text-slate-800 dark:text-slate-200 leading-tight">
-              {school?.schoolName || user?.name || 'School Principal'}
+              {isSuperAdmin ? 'Platform Super Admin' : school?.schoolName || user?.name || 'School Principal'}
             </p>
             <p className="truncate text-[10px] font-semibold text-slate-400 dark:text-slate-500 mt-0.5 flex items-center gap-1">
               <span className="h-1.5 w-1.5 rounded-full bg-[#00D2FF] inline-block animate-pulse shadow-[0_0_8px_#00D2FF]" />
-              {user?.name || 'Secure Session'}
+              {isSuperAdmin ? (user?.email || 'Master Console') : user?.name || 'Secure Session'}
             </p>
           </div>
         </div>

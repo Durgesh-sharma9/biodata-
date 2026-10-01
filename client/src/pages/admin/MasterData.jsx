@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Plus, X, Edit2, Trash2, Search, Layers, FileText, Bookmark, GraduationCap, CheckCircle, HelpCircle, Loader2, Sliders, Check, Tag, RotateCcw } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Plus, X, Edit2, Trash2, Search, Layers, FileText, Bookmark, GraduationCap, CheckCircle, HelpCircle, Loader2, Sliders, Check, Tag, RotateCcw, FolderTree } from 'lucide-react';
 import {
   getPositionsForAdmin,
   getSubjectsForAdmin,
@@ -1005,18 +1006,38 @@ export default function MasterData() {
   const pendingCount = allRequests.filter((r) => r.status === 'pending').length;
 
   return (
-    <div className="space-y-6 w-full antialiased text-slate-800 dark:text-white">
-      {/* Saas Layout Header Block Container */}
-      <div className="border-b border-slate-200/60 dark:border-slate-800 pb-5">
-        <PageHeader
-          title="Master Data Management"
-          description="Govern systematic parameters, structural attributes, global taxonomy indexes, and dropdown data feeds for HireHub."
-        />
+    <div className="space-y-4 sm:space-y-5 w-full antialiased text-slate-800 dark:text-slate-100 pb-16">
+      
+      {/* ─── 1. TOP HEADER BANNER ─── */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-gradient-to-r from-[#F0FCF5] via-[#EFF6FF] to-[#FAF5FF] dark:from-slate-800/90 dark:via-slate-800/70 dark:to-slate-800/90 p-3.5 sm:px-5 sm:py-3.5 rounded-2xl shadow-2xs border border-slate-200/80 dark:border-slate-800">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="p-2.5 bg-white dark:bg-slate-700 text-[#14B8A6] rounded-xl border border-slate-200/80 shadow-2xs shrink-0">
+            <FolderTree className="h-5 w-5" />
+          </div>
+          <div className="min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h1 className="text-sm sm:text-base font-extrabold tracking-tight text-slate-900 dark:text-white truncate">
+                Platform Master Data & Taxonomies
+              </h1>
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-teal-50 text-[#14B8A6] dark:bg-teal-950/40 dark:text-teal-300 border border-teal-200/60 shrink-0">
+                Positions, Subjects & Classes
+              </span>
+              {pendingCount > 0 && (
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-500 text-white animate-pulse shrink-0">
+                  {pendingCount} Pending Requests
+                </span>
+              )}
+            </div>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium truncate mt-0.5">
+              Configure system-wide dropdown values, dynamic custom fields, and review school data requests
+            </p>
+          </div>
+        </div>
       </div>
 
-      {/* Advanced Purple Theme Navigational Tabs Panel Systems */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="inline-flex h-12 items-center justify-center rounded-xl bg-white dark:bg-slate-900 p-1 border border-slate-200/60 dark:border-slate-800 shadow-sm gap-1 w-auto max-w-full overflow-x-auto">
+      {/* ─── 2. TABS ─── */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+        <TabsList className="inline-flex h-11 items-center justify-start rounded-xl bg-white dark:bg-slate-900 p-1 border border-slate-200/80 dark:border-slate-800 shadow-2xs gap-1 w-auto max-w-full overflow-x-auto">
           {TABS.map((tab) => {
             const CurrentIcon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -1024,9 +1045,9 @@ export default function MasterData() {
               <TabsTrigger 
                 key={tab.id} 
                 value={tab.id}
-                className="inline-flex items-center gap-2 rounded-lg px-5 py-2 text-sm font-semibold tracking-wide transition-all data-[state=active]:bg-purple-50 data-[state=active]:text-purple-600 active:scale-[0.97]"
+                className="inline-flex items-center gap-2 rounded-lg px-4 py-1.5 text-xs font-bold tracking-wide transition-all data-[state=active]:bg-purple-50 data-[state=active]:text-[#8A3BD4] cursor-pointer"
               >
-                <CurrentIcon className={`h-3.5 w-3.5 transition-transform ${isActive ? 'scale-110 text-purple-600' : 'text-slate-400'}`} />
+                <CurrentIcon className={cn("h-3.5 w-3.5", isActive ? 'text-[#8A3BD4]' : 'text-slate-400')} />
                 <span>{tab.label}</span>
               </TabsTrigger>
             );
@@ -1034,12 +1055,12 @@ export default function MasterData() {
 
           <TabsTrigger
             value="requests"
-            className="inline-flex items-center gap-2 rounded-lg px-5 py-2 text-sm font-semibold tracking-wide transition-all data-[state=active]:bg-purple-50 data-[state=active]:text-purple-600 active:scale-[0.97] relative"
+            className="inline-flex items-center gap-2 rounded-lg px-4 py-1.5 text-xs font-bold tracking-wide transition-all data-[state=active]:bg-purple-50 data-[state=active]:text-[#8A3BD4] cursor-pointer relative"
           >
-            <HelpCircle className="h-3.5 w-3.5" />
+            <HelpCircle className="h-3.5 w-3.5 text-slate-400" />
             <span>School Requests</span>
             {pendingCount > 0 && (
-              <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-amber-500 text-white animate-pulse">
+              <span className="px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-amber-500 text-white animate-pulse">
                 {pendingCount}
               </span>
             )}
