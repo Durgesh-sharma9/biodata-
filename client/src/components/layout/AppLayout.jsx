@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Outlet, Link } from 'react-router-dom';
+import { Outlet, Link, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Sidebar } from './Sidebar';
 import { useAuth } from '@/context/AuthContext';
@@ -10,16 +10,23 @@ import {
   Building2, 
   Bell, 
   LogOut, 
-  QrCode
+  QrCode,
+  ArrowLeft
 } from 'lucide-react';
 import { GlobalSearch } from '@/components/common/GlobalSearch';
 import { SchoolQRModal } from '@/components/common/SchoolQRModal';
 
 export function AppLayout() {
-  const { school: authSchool, user, logout, isSuperAdmin, isApplicant } = useAuth();
+  const { school: authSchool, user, logout, isSuperAdmin, isApplicant, isImpersonating, exitImpersonation } = useAuth();
+  const navigate = useNavigate();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [qrModalOpen, setQrModalOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+
+  const handleExitImpersonation = async () => {
+    await exitImpersonation();
+    navigate('/admin/schools');
+  };
 
   const notifRef = useRef(null);
 
@@ -79,6 +86,30 @@ export function AppLayout() {
 
       {/* Main Content Area */}
       <div className="flex flex-1 flex-col min-w-0 h-full overflow-hidden relative">
+        {/* Stealth Impersonation Active Banner */}
+        {isImpersonating && (
+          <div className="w-full bg-gradient-to-r from-amber-600 via-orange-600 to-amber-700 text-white px-3 sm:px-5 py-2 flex items-center justify-between shadow-sm text-xs font-semibold z-30 shrink-0 border-b border-amber-500/50 no-print">
+            <div className="flex items-center gap-2 truncate mr-2">
+              <span className="flex h-2 w-2 relative shrink-0">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+              </span>
+              <span className="truncate">
+                <span className="font-black text-amber-200 uppercase tracking-wide mr-1.5">[Stealth Mode]</span>
+                Viewing as <strong className="text-white underline decoration-white/50 underline-offset-2">{school?.schoolName || user?.name || 'School'}</strong> ({user?.email}) — Zero notification sent
+              </span>
+            </div>
+            <button
+              onClick={handleExitImpersonation}
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white text-amber-900 hover:bg-amber-100 font-bold text-xs transition-all shadow-xs active:scale-95 cursor-pointer shrink-0"
+              title="Return to Super Admin session"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Exit to Super Admin</span>
+            </button>
+          </div>
+        )}
+
         {/* Top Header Bar (h-14 aligned with Sidebar header) */}
         <header className="flex h-14 shrink-0 items-center justify-between border-b border-[#E2EAE7] dark:border-slate-800/60 bg-white dark:bg-slate-900 px-3 sm:px-5 z-20 shadow-2xs gap-2 sm:gap-4 no-print">
           {/* Left: Mobile Hamburger & School Brand (Matches Reference: Logo + Name + Address) */}

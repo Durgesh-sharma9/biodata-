@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { 
   Search, Power, Pencil, Building2, Mail, Phone, ShieldCheck, 
   Calendar, Filter, Sparkles, AlertCircle, Loader2, CheckCircle2,
-  RefreshCcw, ChevronLeft, ChevronRight, X
+  RefreshCcw, ChevronLeft, ChevronRight, X, LogIn, KeyRound,
+  Eye, Download, Printer, CheckSquare, Square
 } from 'lucide-react';
-import { getSchools, toggleSchoolStatus, updateSchool } from '@/lib/api';
+import { getSchools, toggleSchoolStatus, updateSchool, impersonateSchool, getSuperAdminCandidatesExport } from '@/lib/api';
+import { useAuth } from '@/context/AuthContext';
+import { exportCandidatesToCSV, printCandidatesReport } from '@/lib/exportUtils';
+import { SchoolDetailsModal } from '@/components/admin/SchoolDetailsModal';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -35,6 +40,8 @@ const emptyForm = {
 };
 
 export default function Schools() {
+  const navigate = useNavigate();
+  const { impersonate } = useAuth();
   const queryClient = useQueryClient();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
@@ -43,6 +50,81 @@ export default function Schools() {
   const [editSchool, setEditSchool] = useState(null);
   const [form, setForm] = useState(emptyForm);
   const [location, setLocation] = useState({});
+  const [impersonatingId, setImpersonatingId] = useState(null);
+  const [viewSchoolId, setViewSchoolId] = useState(null);
+  const [isExportingAll, setIsExportingAll] = useState(false);
+  const [selectedSchoolIds, setSelectedSchoolIds] = useState(new Set());
+
+  const toggleSelectSchool = (schoolId) => {
+    setSelectedSchoolIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(schoolId)) next.delete(schoolId);
+      else next.add(schoolId);
+      return next;
+    });
+  };
+
+  const handleExportCandidatesCSV = async () => {
+    try {
+      setIsExportingAll(true);
+      const isFiltered = selectedSchoolIds.size > 0;
+      const params = isFiltered
+        ? { schoolIds: Array.from(selectedSchoolIds).join(',') }
+        : {};
+
+      const res = await getSuperAdminCandidatesExport(params);
+      if (res.data?.success) {
+        const filename = isFiltered
+          ? `candidates_selected_${selectedSchoolIds.size}_schools_${new Date().toISOString().slice(0, 10)}.csv`
+          : `hirehub_all_schools_candidates_${new Date().toISOString().slice(0, 10)}.csv`;
+        exportCandidatesToCSV(res.data.data, filename);
+      }
+    } catch (err) {
+      console.error('Failed to export candidates:', err);
+      alert('Failed to export candidates. Please try again.');
+    } finally {
+      setIsExportingAll(false);
+    }
+  };
+
+  const handlePrintCandidatesPDF = async () => {
+    try {
+      setIsExportingAll(true);
+      const isFiltered = selectedSchoolIds.size > 0;
+      const params = isFiltered
+        ? { schoolIds: Array.from(selectedSchoolIds).join(',') }
+        : {};
+
+      const res = await getSuperAdminCandidatesExport(params);
+      if (res.data?.success) {
+        const title = isFiltered
+          ? `Candidates Report - ${selectedSchoolIds.size} Selected School(s)`
+          : 'Platform Master Roll - All Schools Candidates';
+        printCandidatesReport(res.data.data, title);
+      }
+    } catch (err) {
+      console.error('Failed to print candidates report:', err);
+      alert('Failed to generate candidates report. Please try again.');
+    } finally {
+      setIsExportingAll(false);
+    }
+  };
+
+  const handleImpersonate = async (school) => {
+    try {
+      setImpersonatingId(school._id);
+      const res = await impersonateSchool(school._id);
+      if (res.data?.success) {
+        await impersonate(res.data);
+        navigate('/dashboard');
+      }
+    } catch (err) {
+      console.error('Failed to enter stealth session:', err);
+      alert(err.response?.data?.message || 'Failed to login as school');
+    } finally {
+      setImpersonatingId(null);
+    }
+  };
 
   const { data, isLoading, isFetching, refetch } = useQuery({
     queryKey: ['schools', page, search, status],
@@ -131,8 +213,71 @@ export default function Schools() {
           </div>
         </div>
         
-        {/* Quick Action / Refresh */}
-        <div className="flex items-center gap-2">
+        {/* Quick Action / Refresh & Candidate Exports (All or Selected Schools) */}
+        <div className="flex items-center gap-2 flex-wrap">
+          {selectedSchoolIds.size > 0 && (
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-purple-100/90 dark:bg-purple-950/70 border border-purple-200 text-[#8A3BD4] dark:text-purple-300 text-xs font-bold shrink-0 animate-in fade-in duration-200">
+              <span>{selectedSchoolIds.size} School(s) Selected</span>
+              <button 
+                onClick={() => setSelectedSchoolIds(new Set())}
+                className="hover:text-rose-600 ml-1 p-0.5 rounded cursor-pointer transition-colors"
+                title="Clear School Selection"
+              >
+                <X className="h-3 w-3" />
+              </button>
+            </div>
+          )}
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleExportCandidatesCSV}
+            disabled={isExportingAll}
+            className={cn(
+              "h-9 px-3 rounded-xl border font-bold text-xs shadow-2xs cursor-pointer flex items-center gap-1.5 transition-all",
+              selectedSchoolIds.size > 0
+                ? "border-emerald-300 bg-emerald-50 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-700 ring-2 ring-emerald-400/20"
+                : "border-emerald-200/90 bg-white dark:bg-slate-800 hover:bg-emerald-50 text-emerald-700 dark:text-emerald-300"
+            )}
+            title={
+              selectedSchoolIds.size > 0
+                ? `Download Candidates for ${selectedSchoolIds.size} Selected School(s) as Excel (CSV)`
+                : "Download All Candidates Across All Schools as Excel (CSV)"
+            }
+          >
+            {isExportingAll ? <Loader2 className="h-3.5 w-3.5 animate-spin text-emerald-600" /> : <Download className="h-3.5 w-3.5 text-emerald-600" />}
+            <span>
+              {selectedSchoolIds.size > 0 
+                ? `Export Selected (${selectedSchoolIds.size}) Excel` 
+                : 'Export All (Excel)'}
+            </span>
+          </Button>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handlePrintCandidatesPDF}
+            disabled={isExportingAll}
+            className={cn(
+              "h-9 px-3 rounded-xl border font-bold text-xs shadow-2xs cursor-pointer flex items-center gap-1.5 transition-all",
+              selectedSchoolIds.size > 0
+                ? "border-indigo-300 bg-indigo-50 text-indigo-800 dark:bg-indigo-950/60 dark:text-indigo-300 dark:border-indigo-700 ring-2 ring-indigo-400/20"
+                : "border-indigo-200/90 bg-white dark:bg-slate-800 hover:bg-indigo-50 text-indigo-700 dark:text-indigo-300"
+            )}
+            title={
+              selectedSchoolIds.size > 0
+                ? `Print / Save PDF for ${selectedSchoolIds.size} Selected School(s)`
+                : "Print / Save PDF of All Candidates Across All Schools"
+            }
+          >
+            <Printer className="h-3.5 w-3.5 text-indigo-600" />
+            <span>
+              {selectedSchoolIds.size > 0 
+                ? `Export Selected (${selectedSchoolIds.size}) PDF` 
+                : 'Export All (PDF)'}
+            </span>
+          </Button>
+
           <Button 
             variant="outline" 
             size="icon"
@@ -261,7 +406,31 @@ export default function Schools() {
               <Table>
                 <TableHeader className="bg-slate-50/70 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800">
                   <TableRow>
-                    <TableHead className="pl-5 font-bold text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-400 py-3.5">School Name</TableHead>
+                    <TableHead className="w-10 px-3 py-3.5 text-center">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (selectedSchoolIds.size === schoolsList.length && schoolsList.length > 0) {
+                            setSelectedSchoolIds(new Set());
+                          } else {
+                            setSelectedSchoolIds(new Set(schoolsList.map((s) => s._id)));
+                          }
+                        }}
+                        className="p-1 rounded hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer inline-flex items-center justify-center transition-colors"
+                        title={
+                          selectedSchoolIds.size > 0 && selectedSchoolIds.size === schoolsList.length
+                            ? "Deselect All Schools"
+                            : "Select All Schools on this page"
+                        }
+                      >
+                        {selectedSchoolIds.size > 0 && selectedSchoolIds.size === schoolsList.length ? (
+                          <CheckSquare className="h-4 w-4 text-[#8A3BD4]" />
+                        ) : (
+                          <Square className="h-4 w-4 text-slate-400" />
+                        )}
+                      </button>
+                    </TableHead>
+                    <TableHead className="pl-3 font-bold text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-400 py-3.5">School Name</TableHead>
                     <TableHead className="font-bold text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-400 py-3.5">Email / Mobile</TableHead>
                     <TableHead className="font-bold text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-400 py-3.5">Plan Tier</TableHead>
                     <TableHead className="font-bold text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-400 py-3.5">Billing Status</TableHead>
@@ -271,13 +440,34 @@ export default function Schools() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {schoolsList.map((school) => (
+                  {schoolsList.map((school) => {
+                    const isSelected = selectedSchoolIds.has(school._id);
+                    return (
                     <TableRow 
                       key={school._id} 
-                      className="group hover:bg-purple-50/30 dark:hover:bg-slate-800/40 transition-all border-b border-slate-100 dark:border-slate-800/60 last:border-none"
+                      className={cn(
+                        "group hover:bg-purple-50/30 dark:hover:bg-slate-800/40 transition-all border-b border-slate-100 dark:border-slate-800/60 last:border-none",
+                        isSelected && "bg-purple-50/50 dark:bg-purple-950/25"
+                      )}
                     >
+                      {/* Checkbox */}
+                      <TableCell className="w-10 px-3 py-4 text-center">
+                        <button
+                          type="button"
+                          onClick={() => toggleSelectSchool(school._id)}
+                          className="p-1 rounded cursor-pointer text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 inline-flex items-center justify-center transition-colors"
+                          title={isSelected ? "Deselect School" : "Select School for Export"}
+                        >
+                          {isSelected ? (
+                            <CheckSquare className="h-4 w-4 text-[#8A3BD4]" />
+                          ) : (
+                            <Square className="h-4 w-4 text-slate-300 dark:text-slate-600" />
+                          )}
+                        </button>
+                      </TableCell>
+
                       {/* School Name & Avatar */}
-                      <TableCell className="pl-5 py-4 font-bold text-slate-800 dark:text-slate-200 text-sm">
+                      <TableCell className="pl-3 py-4 font-bold text-slate-800 dark:text-slate-200 text-sm">
                         <div className="flex items-center gap-3">
                           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-purple-100 dark:bg-purple-950/60 text-[#8A3BD4] dark:text-purple-300 font-extrabold text-xs shadow-2xs overflow-hidden">
                             {school.logoUrl ? (
@@ -370,6 +560,29 @@ export default function Schools() {
                           <Button 
                             variant="outline" 
                             size="icon" 
+                            onClick={() => setViewSchoolId(school._id)}
+                            className="h-8 w-8 rounded-lg border-indigo-200/90 dark:border-indigo-900/60 bg-indigo-50/70 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 hover:border-indigo-300 transition-all cursor-pointer"
+                            title="View School Profile, Candidates & Export"
+                          >
+                            <Eye className="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400" />
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            size="icon" 
+                            onClick={() => handleImpersonate(school)}
+                            disabled={impersonatingId === school._id}
+                            className="h-8 w-8 rounded-lg border-amber-200/90 dark:border-amber-900/60 bg-amber-50/70 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 hover:bg-amber-100 hover:border-amber-300 transition-all cursor-pointer"
+                            title="Stealth Login as this School (Zero notifications or alerts sent)"
+                          >
+                            {impersonatingId === school._id ? (
+                              <Loader2 className="h-3.5 w-3.5 animate-spin text-amber-600" />
+                            ) : (
+                              <LogIn className="h-3.5 w-3.5 text-amber-600" />
+                            )}
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            size="icon" 
                             onClick={() => openEdit(school)}
                             className="h-8 w-8 rounded-lg border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:text-[#8A3BD4] hover:border-[#8A3BD4]/40 hover:bg-purple-50/50 transition-all cursor-pointer"
                             title="Edit School Parameters"
@@ -394,7 +607,8 @@ export default function Schools() {
                         </div>
                       </TableCell>
                     </TableRow>
-                  ))}
+                  );
+                })}
                 </TableBody>
               </Table>
             </div>
@@ -567,6 +781,12 @@ export default function Schools() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      {/* View School Details & Candidates Modal */}
+      <SchoolDetailsModal 
+        schoolId={viewSchoolId} 
+        isOpen={Boolean(viewSchoolId)} 
+        onClose={() => setViewSchoolId(null)} 
+      />
     </div>
   );
 }

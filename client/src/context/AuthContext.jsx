@@ -55,11 +55,59 @@ export function AuthProvider({ children }) {
     return res.data;
   };
 
+  const [isImpersonating, setIsImpersonating] = useState(() => Boolean(localStorage.getItem('originalAdminToken')));
+
   const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    localStorage.removeItem('originalAdminToken');
+    localStorage.removeItem('originalAdminUser');
+    setIsImpersonating(false);
     setUser(null);
     setSchool(null);
+  };
+
+  const impersonate = async (impersonateData) => {
+    // Save current Super Admin session before switching
+    const currentToken = localStorage.getItem('token');
+    const currentUser = localStorage.getItem('user');
+    if (currentToken && !localStorage.getItem('originalAdminToken')) {
+      localStorage.setItem('originalAdminToken', currentToken);
+      localStorage.setItem('originalAdminUser', currentUser);
+    }
+
+    // Set new school admin session
+    localStorage.setItem('token', impersonateData.token);
+    localStorage.setItem('user', JSON.stringify(impersonateData.user));
+    setIsImpersonating(true);
+    setUser(impersonateData.user);
+    setSchool(impersonateData.school);
+
+    return impersonateData;
+  };
+
+  const exitImpersonation = async () => {
+    const originalToken = localStorage.getItem('originalAdminToken');
+    const originalUser = localStorage.getItem('originalAdminUser');
+
+    if (originalToken && originalUser) {
+      localStorage.setItem('token', originalToken);
+      localStorage.setItem('user', originalUser);
+      localStorage.removeItem('originalAdminToken');
+      localStorage.removeItem('originalAdminUser');
+      setIsImpersonating(false);
+
+      const parsedUser = JSON.parse(originalUser);
+      setUser(parsedUser);
+      setSchool(null);
+
+      try {
+        const meRes = await getMe();
+        setUser(meRes.data.user);
+      } catch (e) {
+        console.warn('Failed to refresh original admin session', e);
+      }
+    }
   };
 
   const refreshSchool = async () => {
@@ -78,6 +126,9 @@ export function AuthProvider({ children }) {
         login,
         loginWithGoogle,
         logout,
+        impersonate,
+        exitImpersonation,
+        isImpersonating,
         refreshSchool,
         isSuperAdmin: user?.role === 'super_admin',
         isApplicant: user?.role === 'self_applicant' || user?.role === 'applicant',

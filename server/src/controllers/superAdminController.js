@@ -4,6 +4,8 @@ import Candidate from '../models/Candidate.js';
 import Plan from '../models/Plan.js';
 import PlatformSettings, { DEFAULT_PARTNER_SCHOOLS } from '../models/PlatformSettings.js';
 import { catchAsync } from '../utils/catchAsync.js';
+import { ApiError } from '../utils/ApiError.js';
+import { generateToken } from '../utils/generateToken.js';
 
 export const getSuperAdminDashboard = catchAsync(async (req, res) => {
   const [totalSchools, activeSchools, totalCandidates, totalPlans, recentCandidates] =
@@ -136,3 +138,150 @@ export const updateMarqueeSettings = catchAsync(async (req, res) => {
     data: settings,
   });
 });
+
+export const impersonateSchool = catchAsync(async (req, res) => {
+  const { schoolId } = req.params;
+
+  const school = await School.findById(schoolId);
+  if (!school) {
+    throw new ApiError(404, 'School not found');
+  }
+
+  // Find school_admin user for this school
+  let user = await User.findOne({ schoolId: school._id, role: 'school_admin' });
+  if (!user) {
+    user = await User.findOne({ email: school.email.toLowerCase() });
+  }
+
+  if (!user) {
+    // If no user exists, create a default school_admin user for this school
+    user = await User.create({
+      name: school.schoolName ? `${school.schoolName} Admin` : 'School Admin',
+      email: school.email.toLowerCase(),
+      password: Math.random().toString(36).slice(-10),
+      role: 'school_admin',
+      schoolId: school._id,
+    });
+  }
+
+  // Generate valid token for the school admin
+  const token = generateToken(user._id);
+
+  res.json({
+    success: true,
+    message: `Stealth session active for ${school.schoolName}`,
+    token,
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      schoolId: school._id,
+      avatarUrl: user.avatarUrl,
+    },
+    school: {
+      _id: school._id,
+      schoolName: school.schoolName,
+      email: school.email,
+      phone: school.phone,
+      logoUrl: school.logoUrl,
+      subscriptionPlan: school.subscriptionPlan,
+      credits: school.credits,
+    },
+  });
+});
+
+export const getSchoolDetailsWithCandidates = catchAsync(async (req, res) => {
+  const { id } = req.params;
+
+  const school = await School.findById(id).populate('planId', 'name price credits durationDays');
+  if (!school) {
+    throw new ApiError(404, 'School not found');
+  }
+
+  const [admin, candidates] = await Promise.all([
+    User.findOne({ schoolId: school._id, role: 'school_admin' }).select('name email phone mobile'),
+    Candidate.find({
+      $or: [{ schoolId: school._id }, { ownerSchoolId: school._id }],
+      isDeleted: false,
+    })
+      .select('fullName mobile email position experienceYears expectedSalary status city state area address source subjects qualifications classesCanTeach createdAt')
+      .sort({ createdAt: -1 }),
+  ]);
+
+  const stats = {
+    total: candidates.length,
+    hired: candidates.filter((c) => c.status === 'hired').length,
+    shortlisted: candidates.filter((c) => c.status === 'shortlisted').length,
+    interviewScheduled: candidates.filter((c) => c.status === 'interview_scheduled').length,
+    new: candidates.filter((c) => c.status === 'new').length,
+    offered: candidates.filter((c) => c.status === 'offered').length,
+    rejected: candidates.filter((c) => c.status === 'rejected').length,
+  };
+
+  res.json({
+    success: true,
+    data: {
+      school,
+      admin,
+      candidates,
+      stats,
+    },
+  });
+});
+
+export const getAllCandidatesForExport = catchAsync(async (req, res) => {
+  const { schoolId, schoolIds } = req.query;
+
+  const filter = { isDeleted: false };
+  if (schoolIds) {
+    const ids = Array.isArray(schoolIds) ? schoolIds : String(schoolIds).split(',').map((s) => s.trim()).filter(Boolean);
+    if (ids.length > 0) {
+      filter.$or = [
+        { schoolId: { $in: ids } },
+        { ownerSchoolId: { $in: ids } },
+      ];
+    }
+  } else if (schoolId) {
+    filter.$or = [{ schoolId }, { ownerSchoolId: schoolId }];
+  }
+
+  const candidates = await Candidate.find(filter)
+    .populate('schoolId', 'schoolName email phone city state')
+    .populate('ownerSchoolId', 'schoolName email phone city state')
+    .select('fullName mobile email position experienceYears expectedSalary status city state area address source subjects qualifications classesCanTeach createdAt schoolId ownerSchoolId')
+    .sort({ createdAt: -1 })
+    .limit(10000);
+
+  const formatted = candidates.map((c) => {
+    const school = c.schoolId || c.ownerSchoolId;
+    return {
+      _id: c._id,
+      fullName: c.fullName,
+      mobile: c.mobile,
+      email: c.email || '',
+      position: c.position,
+      experienceYears: c.experienceYears || 0,
+      expectedSalary: c.expectedSalary || 0,
+      status: c.status || 'new',
+      city: c.city || '',
+      state: c.state || '',
+      area: c.area || '',
+      address: c.address || '',
+      source: c.source || 'ADMIN',
+      subjects: Array.isArray(c.subjects) ? c.subjects.join(', ') : '',
+      qualifications: Array.isArray(c.qualifications) ? c.qualifications.join(', ') : '',
+      classesCanTeach: Array.isArray(c.classesCanTeach) ? c.classesCanTeach.join(', ') : '',
+      schoolName: school?.schoolName || 'Platform General Pool',
+      schoolEmail: school?.email || '',
+      createdAt: c.createdAt,
+    };
+  });
+
+  res.json({
+    success: true,
+    data: formatted,
+    total: formatted.length,
+  });
+});
+

@@ -54,6 +54,14 @@ export const updateMySchool = (data) => api.put('/schools/my-school', data);
 // Super Admin
 export const getSuperAdminDashboard = () => api.get('/admin/dashboard');
 export const getAdmins = (params) => api.get('/admin/admins', { params });
+export const impersonateSchool = (schoolId) => api.post(`/admin/impersonate/${schoolId}`);
+export const getSuperAdminSchoolDetails = (schoolId) => api.get(`/admin/schools/${schoolId}/details`);
+export const getSuperAdminCandidatesExport = (params) => {
+  if (typeof params === 'string') {
+    return api.get('/admin/candidates/export', { params: { schoolId: params } });
+  }
+  return api.get('/admin/candidates/export', { params: params || {} });
+};
 
 // Plans
 export const getPlans = () => api.get('/plans');

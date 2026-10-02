@@ -3,7 +3,10 @@ import {
   getSuperAdminDashboard, 
   getAdmins, 
   getMarqueeSettings, 
-  updateMarqueeSettings 
+  updateMarqueeSettings,
+  impersonateSchool,
+  getSchoolDetailsWithCandidates,
+  getAllCandidatesForExport,
 } from '../controllers/superAdminController.js';
 import { protect, authorize } from '../middleware/auth.js';
 
@@ -17,7 +20,10 @@ router.use(protect, authorize('super_admin'));
 
 router.get('/dashboard', getSuperAdminDashboard);
 router.get('/admins', getAdmins);
+router.get('/schools/:id/details', getSchoolDetailsWithCandidates);
+router.get('/candidates/export', getAllCandidatesForExport);
 router.get('/marquee', getMarqueeSettings);
 router.put('/marquee', updateMarqueeSettings);
+router.post('/impersonate/:schoolId', impersonateSchool);
 
 export default router;

@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { 
   Search, Shield, Coins, Layers, Mail, Phone, RefreshCcw, 
   CheckCircle, XCircle, Award, ShieldAlert, Sparkles, Building2,
-  ChevronLeft, ChevronRight, AlertCircle, Plus
+  ChevronLeft, ChevronRight, AlertCircle, Plus, LogIn, Loader2, Eye
 } from 'lucide-react';
-import { getAdmins, getPlans, assignCreditsToSchool } from '@/lib/api';
+import { getAdmins, getPlans, assignCreditsToSchool, impersonateSchool } from '@/lib/api';
+import { useAuth } from '@/context/AuthContext';
+import { SchoolDetailsModal } from '@/components/admin/SchoolDetailsModal';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -20,12 +23,32 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { cn } from '@/lib/utils';
 
 export default function Admins() {
+  const navigate = useNavigate();
+  const { impersonate } = useAuth();
   const queryClient = useQueryClient();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [assignDialog, setAssignDialog] = useState(null);
   const [planId, setPlanId] = useState('');
   const [extraCredits, setExtraCredits] = useState('');
+  const [impersonatingId, setImpersonatingId] = useState(null);
+  const [viewSchoolId, setViewSchoolId] = useState(null);
+
+  const handleImpersonate = async (schoolId) => {
+    try {
+      setImpersonatingId(schoolId);
+      const res = await impersonateSchool(schoolId);
+      if (res.data?.success) {
+        await impersonate(res.data);
+        navigate('/dashboard');
+      }
+    } catch (err) {
+      console.error('Failed to enter stealth session:', err);
+      alert(err.response?.data?.message || 'Failed to login as school');
+    } finally {
+      setImpersonatingId(null);
+    }
+  };
 
   const { data, isLoading, isFetching, refetch } = useQuery({
     queryKey: ['admins', page, search],
@@ -283,15 +306,40 @@ export default function Admins() {
 
                       {/* Action */}
                       <TableCell className="pr-5 py-4 text-right">
-                        <Button 
-                          size="sm" 
-                          variant="outline" 
-                          onClick={() => setAssignDialog(admin)}
-                          className="h-8 rounded-lg px-3 text-xs font-bold border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 hover:text-[#8A3BD4] hover:border-[#8A3BD4]/40 hover:bg-purple-50/50 transition-all cursor-pointer"
-                        >
-                          <Coins className="h-3.5 w-3.5 text-amber-500 mr-1.5" />
-                          Assign Credits
-                        </Button>
+                        <div className="inline-flex items-center justify-end gap-1.5">
+                          <Button 
+                            variant="outline" 
+                            size="icon" 
+                            onClick={() => setViewSchoolId(admin._id)}
+                            className="h-8 w-8 rounded-lg border-indigo-200/90 dark:border-indigo-900/60 bg-indigo-50/70 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 hover:border-indigo-300 transition-all cursor-pointer"
+                            title="View School Profile, Candidates & Export"
+                          >
+                            <Eye className="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400" />
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            size="icon" 
+                            onClick={() => handleImpersonate(admin._id)}
+                            disabled={impersonatingId === admin._id}
+                            className="h-8 w-8 rounded-lg border-amber-200/90 dark:border-amber-900/60 bg-amber-50/70 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 hover:bg-amber-100 hover:border-amber-300 transition-all cursor-pointer"
+                            title="Stealth Login as this School (Zero notifications or alerts sent)"
+                          >
+                            {impersonatingId === admin._id ? (
+                              <Loader2 className="h-3.5 w-3.5 animate-spin text-amber-600" />
+                            ) : (
+                              <LogIn className="h-3.5 w-3.5 text-amber-600" />
+                            )}
+                          </Button>
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            onClick={() => setAssignDialog(admin)}
+                            className="h-8 rounded-lg px-3 text-xs font-bold border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 hover:text-[#8A3BD4] hover:border-[#8A3BD4]/40 hover:bg-purple-50/50 transition-all cursor-pointer"
+                          >
+                            <Coins className="h-3.5 w-3.5 text-amber-500 mr-1.5" />
+                            Assign Credits
+                          </Button>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -414,6 +462,12 @@ export default function Admins() {
         </DialogContent>
       </Dialog>
 
+      {/* View School Details & Candidates Modal */}
+      <SchoolDetailsModal 
+        schoolId={viewSchoolId} 
+        isOpen={Boolean(viewSchoolId)} 
+        onClose={() => setViewSchoolId(null)} 
+      />
     </div>
   );
 }
