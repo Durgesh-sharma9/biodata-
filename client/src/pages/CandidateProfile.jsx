@@ -438,25 +438,27 @@ export default function CandidateProfile() {
             <div className="flex items-center gap-2 w-full sm:w-auto">
               <Button 
                 type="button"
+                variant="outline"
                 onClick={() => setShowDocumentsModal(true)}
-                className="h-9 px-3.5 rounded-xl bg-purple-50 hover:bg-purple-100 text-purple-700 dark:bg-purple-950/40 dark:text-purple-300 border border-purple-200/70 font-bold text-xs gap-1.5 shadow-xs transition-all active:scale-95"
+                className="h-9 px-3.5 rounded-xl border-slate-200 dark:border-slate-700 bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs gap-1.5 shadow-2xs transition-all active:scale-95"
                 title="View Attached Documents & Resumes"
               >
-                <FileText className="h-3.5 w-3.5 text-purple-600 dark:text-purple-400" />
+                <FileText className="h-3.5 w-3.5 text-teal-600 dark:text-teal-400" />
                 <span>View Documents</span>
                 {candidate.documents?.length > 0 && (
-                  <span className="ml-1 px-1.5 py-0.2 rounded-full bg-purple-600 text-white text-[10px] font-bold">
+                  <span className="ml-1 px-1.5 py-0.5 rounded-full bg-teal-100 dark:bg-teal-950 text-teal-700 dark:text-teal-300 text-[10px] font-bold border border-teal-200 dark:border-teal-800">
                     {candidate.documents.length}
                   </span>
                 )}
               </Button>
 
               <Button 
+                type="button"
                 onClick={() => window.print()}
-                className="h-9 px-3.5 rounded-xl bg-[#0F766E] hover:bg-[#115E59] text-white font-bold text-xs gap-1.5 shadow-xs transition-all active:scale-95"
+                className="h-9 px-3.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs gap-1.5 shadow-sm shadow-teal-600/20 transition-all active:scale-95 border-none"
                 title="Print A4 Interview Biodata Sheet"
               >
-                <Printer className="h-3.5 w-3.5" />
+                <Printer className="h-3.5 w-3.5 text-white" />
                 <span>Print Sheet (A4)</span>
               </Button>
 
@@ -547,14 +549,15 @@ export default function CandidateProfile() {
 
               <Button
                 type="button"
+                variant="outline"
                 onClick={() => setShowDocumentsModal(true)}
-                className="h-7 px-2.5 bg-purple-50 hover:bg-purple-100 text-purple-700 dark:bg-purple-950/40 dark:text-purple-300 border border-purple-200/70 font-bold text-xs rounded-lg gap-1.5 transition-all shadow-2xs"
+                className="h-7 px-2.5 bg-white hover:bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 font-bold text-xs rounded-lg gap-1.5 transition-all shadow-2xs"
                 title="View Candidate Documents"
               >
-                <FileText className="h-3 w-3 text-purple-600 dark:text-purple-400" />
+                <FileText className="h-3 w-3 text-teal-600 dark:text-teal-400" />
                 <span>Documents</span>
                 {candidate.documents?.length > 0 && (
-                  <span className="ml-0.5 px-1.5 py-0.2 rounded-full bg-purple-600 text-white text-[9px] font-bold">
+                  <span className="ml-0.5 px-1.5 py-0.2 rounded-full bg-teal-100 dark:bg-teal-950 text-teal-700 dark:text-teal-300 text-[9px] font-bold border border-teal-200">
                     {candidate.documents.length}
                   </span>
                 )}
@@ -574,9 +577,10 @@ export default function CandidateProfile() {
                   </Button>
 
                   <Button
+                    type="button"
                     onClick={() => handleSaveAll()}
                     disabled={updatePipelineMutation.isPending}
-                    className="h-7 px-3 bg-[#0F766E] hover:bg-[#115E59] text-white font-bold text-xs rounded-lg shadow-sm gap-1 active:scale-95 transition-all"
+                    className="h-7 px-3 bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs rounded-lg shadow-sm gap-1 active:scale-95 transition-all border-none"
                   >
                     {updatePipelineMutation.isPending ? (
                       <Loader2 className="h-3 w-3 animate-spin" />
