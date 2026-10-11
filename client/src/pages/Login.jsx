@@ -58,7 +58,9 @@ export default function Login({ redirectTo, signupLink = '/signup' }) {
   const onSubmit = async (data) => {
     try {
       setError('');
-      const result = await login(data.email, data.password);
+      const cleanEmail = (data.email || '').trim().toLowerCase();
+      const cleanPassword = (data.password || '').trim();
+      const result = await login(cleanEmail, cleanPassword);
       navigate(redirectTo || getPostLoginRoute(result.user.role));
     } catch (err) {
       setError(err.response?.data?.message || 'Authentication failed. Please verify your credentials.');
