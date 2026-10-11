@@ -70,6 +70,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { PwaInstallCard } from '@/components/common/PwaInstallButton';
 import {
   Dialog,
   DialogContent,
@@ -481,7 +482,7 @@ export default function Settings() {
       
       {/* Tabs Navigation - Sleek Horizontal Segmented Control */}
       <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full space-y-4">
-        <TabsList className="bg-slate-100/90 dark:bg-slate-800/80 p-1 rounded-xl h-auto border border-slate-200/80 dark:border-slate-700/80 grid grid-cols-3 gap-1 w-full shadow-2xs">
+        <TabsList className="bg-slate-100/90 dark:bg-slate-800/80 p-1 rounded-xl h-auto border border-slate-200/80 dark:border-slate-700/80 grid grid-cols-2 sm:grid-cols-4 gap-1 w-full shadow-2xs">
           <TabsTrigger 
             value="hiring" 
             className="flex items-center justify-center gap-1.5 py-2 px-1.5 sm:px-3 text-xs font-semibold rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-slate-900 data-[state=active]:text-[#0F766E] dark:data-[state=active]:text-teal-400 data-[state=active]:shadow-xs transition-all text-slate-600 dark:text-slate-400 hover:text-slate-900 min-w-0"
@@ -517,6 +518,17 @@ export default function Settings() {
             <span className="truncate">
               <span className="sm:hidden">Security</span>
               <span className="hidden sm:inline">Password & Security</span>
+            </span>
+          </TabsTrigger>
+
+          <TabsTrigger 
+            value="app" 
+            className="flex items-center justify-center gap-1.5 py-2 px-1.5 sm:px-3 text-xs font-semibold rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-slate-900 data-[state=active]:text-violet-600 dark:data-[state=active]:text-violet-400 data-[state=active]:shadow-xs transition-all text-slate-600 dark:text-slate-400 hover:text-slate-900 min-w-0"
+          >
+            <Smartphone className="h-4 w-4 shrink-0 text-violet-500" />
+            <span className="truncate">
+              <span className="sm:hidden">App</span>
+              <span className="hidden sm:inline">Download App</span>
             </span>
           </TabsTrigger>
         </TabsList>
@@ -1008,6 +1020,11 @@ export default function Settings() {
               </form>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        {/* TAB 4: APP DOWNLOAD & PWA INSTALLATION */}
+        <TabsContent value="app" className="space-y-4 mt-0">
+          <PwaInstallCard />
         </TabsContent>
 
       </Tabs>
