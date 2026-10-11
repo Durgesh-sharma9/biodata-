@@ -61,8 +61,8 @@ export default function ApplicantLogin() {
               className="h-10 w-auto object-contain drop-shadow-sm group-hover:scale-105 transition-transform" 
             />
             <div className="flex flex-col">
-              <span className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white leading-none">
-                Hire<span className="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">Hub</span>
+              <span className="text-xl sm:text-2xl font-black tracking-tight text-[#08295C] dark:text-white leading-none">
+                Hire<span className="text-[#12B9A5]">Hub</span>
               </span>
               <span className="text-[10px] font-semibold tracking-wider text-slate-400 uppercase mt-0.5">
                 Candidate Portal

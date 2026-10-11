@@ -147,8 +147,8 @@ export default function Landing() {
                 className="w-8 h-8 sm:w-10 sm:h-10 object-contain group-hover:scale-105 transition-transform"
               />
               <div className="flex flex-col">
-                <span className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 font-sans leading-tight">
-                  Hire<span className="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">Hub</span>
+                <span className="text-xl sm:text-2xl font-black tracking-tight text-[#08295C] font-sans leading-tight">
+                  Hire<span className="text-[#12B9A5]">Hub</span>
                 </span>
                 <span className="text-[9px] sm:text-[10px] font-bold text-slate-400 tracking-wider uppercase -mt-0.5">
                   School Staff Recruitment OS
@@ -234,8 +234,8 @@ export default function Landing() {
               className="w-7 h-7 object-contain"
             />
             <div className="flex flex-col">
-              <span className="text-lg font-black tracking-tight text-slate-900 leading-tight">
-                Hire<span className="bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">Hub</span>
+              <span className="text-lg font-black tracking-tight text-[#08295C] leading-tight">
+                Hire<span className="text-[#12B9A5]">Hub</span>
               </span>
               <span className="text-[8px] font-bold text-slate-400 tracking-wider uppercase -mt-0.5">
                 Recruitment OS
@@ -1018,7 +1018,7 @@ export default function Landing() {
                   className="w-7 h-7 sm:w-8 sm:h-8 object-contain"
                 />
                 <span className="text-xl font-black tracking-tight text-white font-sans">
-                  Hire<span className="bg-gradient-to-r from-violet-400 via-indigo-300 to-sky-400 bg-clip-text text-transparent">Hub</span>
+                  Hire<span className="text-[#12B9A5]">Hub</span>
                 </span>
               </div>
               <p className="text-xs text-slate-400 leading-relaxed font-normal max-w-sm">

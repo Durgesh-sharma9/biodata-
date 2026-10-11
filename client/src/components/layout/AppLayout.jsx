@@ -159,8 +159,8 @@ export function AppLayout() {
                   className="h-8 w-8 object-contain shrink-0 group-hover:scale-105 transition-transform"
                 />
                 <div className="flex items-center gap-2">
-                  <span className="font-extrabold text-sm sm:text-base tracking-tight text-slate-900 dark:text-white font-sans">
-                    Hire<span className="bg-gradient-to-r from-[#8A3BD4] to-[#00D2FF] bg-clip-text text-transparent">Hub</span>
+                  <span className="font-extrabold text-sm sm:text-base tracking-tight text-[#08295C] dark:text-white font-sans">
+                    Hire<span className="text-[#12B9A5]">Hub</span>
                   </span>
                   {isSuperAdmin && (
                     <span className="hidden sm:inline-flex px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-purple-50 text-[#8A3BD4] dark:bg-purple-950/50 dark:text-purple-300 border border-purple-200/80 shadow-2xs">

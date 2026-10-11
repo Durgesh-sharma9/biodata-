@@ -84,8 +84,8 @@ export function Sidebar({ onNavigate }) {
             alt="HireHub Logo"
             className="h-8 w-8 object-contain shrink-0 group-hover:scale-105 transition-transform"
           />
-          <h1 className="text-lg font-black tracking-tight text-slate-900 dark:text-white leading-tight font-sans">
-            Hire<span className="bg-gradient-to-r from-[#8A3BD4] to-[#00D2FF] bg-clip-text text-transparent">Hub</span>
+          <h1 className="text-lg font-black tracking-tight text-[#08295C] dark:text-white leading-tight font-sans">
+            Hire<span className="text-[#12B9A5]">Hub</span>
           </h1>
         </Link>
       </div>

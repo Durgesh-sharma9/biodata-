@@ -256,7 +256,7 @@ export default function Signup() {
             />
             <div className="flex flex-col">
               <span className="text-lg font-black text-white leading-none">
-                HireHub
+                Hire<span className="text-[#12B9A5]">Hub</span>
               </span>
               <span className="text-[9px] font-bold text-violet-200 uppercase tracking-wider mt-0.5">
                 School Staff Recruitment OS
