@@ -490,7 +490,7 @@ export default function Dashboard() {
             </div>
 
             {/* Quick Channel & Compliance Pills */}
-            <div className="pt-3 border-t border-slate-100 dark:border-slate-800 grid grid-cols-3 gap-2">
+            <div className="pt-3 border-t border-slate-100 dark:border-slate-800 grid grid-cols-2 gap-2">
               <div className="p-2.5 rounded-lg bg-cyan-50/80 dark:bg-cyan-950/30 border border-cyan-200/70 dark:border-cyan-800 text-center">
                 <span className="text-[10px] text-cyan-600 dark:text-cyan-400 uppercase font-bold block">QR Links</span>
                 <span className="text-sm font-black text-cyan-800 dark:text-cyan-200">{directApplications}</span>
@@ -498,10 +498,6 @@ export default function Dashboard() {
               <div className="p-2.5 rounded-lg bg-slate-50/80 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-800 text-center">
                 <span className="text-[10px] text-slate-400 uppercase font-bold block">Walk-ins</span>
                 <span className="text-sm font-black text-slate-800 dark:text-slate-200">{manualWalkIns}</span>
-              </div>
-              <div className="p-2.5 rounded-lg bg-emerald-50/60 dark:bg-emerald-950/30 border border-emerald-200/60 dark:border-emerald-800 text-center">
-                <span className="text-[10px] text-emerald-700 dark:text-emerald-400 uppercase font-bold block">B.Ed Certified</span>
-                <span className="text-sm font-black text-emerald-700 dark:text-emerald-300">{bEdCount} ({bEdPercentage}%)</span>
               </div>
             </div>
           </CardContent>
