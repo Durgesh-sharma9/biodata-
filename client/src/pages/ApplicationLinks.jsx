@@ -52,6 +52,8 @@ export default function ApplicationLinks() {
   const [copiedBroadcast, setCopiedBroadcast] = useState(false);
   const [broadcastTab, setBroadcastTab] = useState('whatsapp'); // 'whatsapp' | 'walkin' | 'teachers' | 'non_teaching' | 'sms'
   const [broadcastPreviewOpen, setBroadcastPreviewOpen] = useState(false);
+  const [sharingQrWhatsApp, setSharingQrWhatsApp] = useState(false);
+  const [qrShareFeedback, setQrShareFeedback] = useState('');
 
 
   const { data: mySchoolData } = useQuery({
@@ -98,30 +100,208 @@ export default function ApplicationLinks() {
     }
   };
 
+  const dataURLtoBlob = (dataurl) => {
+    if (!dataurl) return null;
+    try {
+      const arr = dataurl.split(',');
+      const mime = arr[0].match(/:(.*?);/)?.[1] || 'image/png';
+      const bstr = atob(arr[1]);
+      let n = bstr.length;
+      const u8arr = new Uint8Array(n);
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+      }
+      return new Blob([u8arr], { type: mime });
+    } catch (e) {
+      console.warn('Error converting dataURL to blob:', e);
+      return null;
+    }
+  };
+
+  const drawRoundedRect = (ctx, x, y, width, height, radius) => {
+    if (typeof ctx.roundRect === 'function') {
+      ctx.beginPath();
+      ctx.roundRect(x, y, width, height, radius);
+      return;
+    }
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.lineTo(x + width - radius, y);
+    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+    ctx.lineTo(x + width, y + height - radius);
+    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+    ctx.lineTo(x + radius, y + height);
+    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+    ctx.lineTo(x, y + radius);
+    ctx.quadraticCurveTo(x, y, x + radius, y);
+    ctx.closePath();
+  };
+
+  const generateBrandedQRBlob = async () => {
+    if (!qrData?.qrDataUrl) return null;
+    try {
+      const canvas = document.createElement('canvas');
+      canvas.width = 600;
+      canvas.height = 720;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return dataURLtoBlob(qrData.qrDataUrl);
+
+      // 1. Crisp white background
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillRect(0, 0, 600, 720);
+
+      // 2. Gradient top banner
+      const grad = ctx.createLinearGradient(0, 0, 600, 0);
+      grad.addColorStop(0, '#0F766E');
+      grad.addColorStop(0.5, '#7928CA');
+      grad.addColorStop(1, '#EC4899');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 600, 10);
+
+      // 3. Card outer border
+      ctx.strokeStyle = '#E2E8F0';
+      ctx.lineWidth = 4;
+      ctx.strokeRect(2, 2, 596, 716);
+
+      // 4. Header: School Name
+      ctx.fillStyle = '#0F172A';
+      ctx.font = 'bold 24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.textAlign = 'center';
+      const cleanSchoolName = schoolName || 'Our School';
+      const displaySchool = cleanSchoolName.length > 34 ? cleanSchoolName.slice(0, 32) + '...' : cleanSchoolName;
+      ctx.fillText(displaySchool, 300, 56);
+
+      // Subtitle Pill
+      ctx.fillStyle = '#FAF5FF';
+      drawRoundedRect(ctx, 160, 72, 280, 26, 13);
+      ctx.fill();
+      ctx.strokeStyle = '#DDD6FE';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      ctx.fillStyle = '#7C3AED';
+      ctx.font = 'bold 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.fillText('WALK-IN CAREERS & JOB PORTAL', 300, 89);
+
+      // 5. Draw QR Code in a neat frame
+      const qrImg = new Image();
+      await new Promise((resolve, reject) => {
+        qrImg.onload = resolve;
+        qrImg.onerror = reject;
+        qrImg.src = qrData.qrDataUrl;
+      });
+
+      ctx.fillStyle = '#F8FAFC';
+      ctx.strokeStyle = '#E2E8F0';
+      ctx.lineWidth = 2;
+      drawRoundedRect(ctx, 110, 115, 380, 380, 18);
+      ctx.fill();
+      ctx.stroke();
+
+      // Draw QR matrix
+      ctx.drawImage(qrImg, 130, 135, 340, 340);
+
+      // Center school initial badge
+      ctx.fillStyle = '#FFFFFF';
+      ctx.beginPath();
+      ctx.arc(300, 305, 24, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#0F766E';
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      ctx.fillStyle = '#0F766E';
+      ctx.font = 'bold 20px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      const initial = (cleanSchoolName.trim().charAt(0) || 'H').toUpperCase();
+      ctx.fillText(initial, 300, 306);
+
+      // 6. Scan prompt
+      ctx.textBaseline = 'alphabetic';
+      ctx.fillStyle = '#0F766E';
+      ctx.font = 'bold 17px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.fillText('📱 Scan with Phone Camera to Apply', 300, 530);
+
+      ctx.fillStyle = '#64748B';
+      ctx.font = '13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.fillText('Direct school submission • 2-minute apply', 300, 558);
+
+      // 7. Direct URL box
+      if (applyUrl) {
+        ctx.fillStyle = '#F1F5F9';
+        drawRoundedRect(ctx, 30, 585, 540, 48, 12);
+        ctx.fill();
+        ctx.strokeStyle = '#CBD5E1';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        ctx.fillStyle = '#1E293B';
+        ctx.font = 'bold 13px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace';
+        const displayUrl = applyUrl.length > 55 ? applyUrl.slice(0, 52) + '...' : applyUrl;
+        ctx.fillText(displayUrl, 300, 615);
+      }
+
+      // 8. Footer
+      ctx.fillStyle = '#94A3B8';
+      ctx.font = '600 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.fillText('Official Recruitment Desk • HireHub OS', 300, 680);
+
+      return await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
+    } catch (err) {
+      console.warn('Canvas branded QR creation failed, falling back to raw QR:', err);
+      return dataURLtoBlob(qrData.qrDataUrl);
+    }
+  };
+
   const copyQRImage = async () => {
     if (!qrData?.qrDataUrl) return;
     try {
-      const res = await fetch(qrData.qrDataUrl);
-      const blob = await res.blob();
-      await navigator.clipboard.write([
-        new ClipboardItem({ 'image/png': blob })
-      ]);
-      setCopiedImage(true);
-      setTimeout(() => setCopiedImage(false), 2200);
+      const blob = await generateBrandedQRBlob();
+      const finalBlob = blob || dataURLtoBlob(qrData.qrDataUrl);
+      if (navigator.clipboard?.write) {
+        await navigator.clipboard.write([
+          new ClipboardItem({ 'image/png': finalBlob })
+        ]);
+        setCopiedImage(true);
+        setTimeout(() => setCopiedImage(false), 2200);
+      } else {
+        copyToClipboard(applyUrl, 'qr');
+      }
     } catch (e) {
-      // Fallback
       copyToClipboard(applyUrl, 'qr');
     }
   };
 
-  const downloadQRCode = () => {
+  const downloadQRCode = async () => {
     if (!qrData?.qrDataUrl) return;
-    const link = document.createElement('a');
-    link.href = qrData.qrDataUrl;
-    link.download = `${linkData?.slug || 'school'}-recruitment-qr.png`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    try {
+      if (qrViewMode === 'minimal') {
+        const link = document.createElement('a');
+        link.href = qrData.qrDataUrl;
+        link.download = `${linkData?.slug || 'school'}-recruitment-qr.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        return;
+      }
+      const blob = await generateBrandedQRBlob();
+      const url = URL.createObjectURL(blob || dataURLtoBlob(qrData.qrDataUrl));
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${linkData?.slug || 'school'}-recruitment-qr.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    } catch (e) {
+      const link = document.createElement('a');
+      link.href = qrData.qrDataUrl;
+      link.download = `${linkData?.slug || 'school'}-recruitment-qr.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
   };
 
   const printQRPoster = () => {
@@ -511,8 +691,72 @@ export default function ApplicationLinks() {
 
   const shareWhatsApp = () => {
     if (!applyUrl) return;
-    const message = `*Job Vacancies at ${schoolName}*\n\nInterested candidates can submit their job application directly via our official portal:\n${applyUrl}`;
+    const message = `*Job Vacancies at ${schoolName}*\n\nInterested candidates can submit their job application directly via our official portal:\n👉 ${applyUrl}`;
     window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`, '_blank');
+  };
+
+  const shareQRCodeWhatsApp = async () => {
+    if (!qrData?.qrDataUrl) return;
+    setSharingQrWhatsApp(true);
+    setQrShareFeedback('');
+
+    const messageText = `📢 *Job Vacancies & Walk-In Recruitment — ${schoolName}*\n\nPoint your phone camera to scan the QR code, or apply directly at:\n👉 ${applyUrl}\n\nTakes only 2 minutes. Submit your biodata for direct interview call!`;
+
+    try {
+      // 1. Generate branded QR card blob or raw QR blob
+      const blob = await generateBrandedQRBlob();
+      const qrBlob = blob || dataURLtoBlob(qrData.qrDataUrl);
+      const fileName = `${linkData?.slug || 'school'}-recruitment-qr.png`;
+      const qrFile = new File([qrBlob], fileName, { type: 'image/png' });
+
+      // 2. Native Web Share API with image file (Supported on Android Chrome, Safari iOS)
+      if (typeof navigator !== 'undefined' && navigator.canShare && navigator.canShare({ files: [qrFile] })) {
+        try {
+          await navigator.share({
+            files: [qrFile],
+            title: `${schoolName} - Recruitment QR Code`,
+            text: messageText,
+          });
+          setQrShareFeedback('Shared successfully via WhatsApp!');
+          setTimeout(() => setQrShareFeedback(''), 3000);
+          setSharingQrWhatsApp(false);
+          return;
+        } catch (shareErr) {
+          if (shareErr.name === 'AbortError') {
+            // User cancelled share picker
+            setSharingQrWhatsApp(false);
+            return;
+          }
+          console.warn('Native file share failed, falling back to clipboard + WhatsApp URL:', shareErr);
+        }
+      }
+
+      // 3. Fallback for Desktop / browsers without Web Share files API:
+      // Copy image to clipboard so user can press Ctrl+V in WhatsApp chat
+      try {
+        if (navigator.clipboard?.write) {
+          await navigator.clipboard.write([
+            new ClipboardItem({ 'image/png': qrBlob })
+          ]);
+          setQrShareFeedback('QR Image copied to clipboard! Opening WhatsApp...');
+        } else {
+          setQrShareFeedback('Opening WhatsApp...');
+        }
+      } catch (clipErr) {
+        setQrShareFeedback('Opening WhatsApp...');
+      }
+
+      // 4. Open WhatsApp with formatted text
+      const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(messageText)}`;
+      window.open(waUrl, '_blank');
+      setTimeout(() => setQrShareFeedback(''), 4500);
+    } catch (err) {
+      console.error('Error sharing QR Code:', err);
+      const fallbackUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(messageText)}`;
+      window.open(fallbackUrl, '_blank');
+    } finally {
+      setSharingQrWhatsApp(false);
+    }
   };
 
   const shareEmail = () => {
@@ -1176,13 +1420,31 @@ export default function ApplicationLinks() {
                   <Button 
                     type="button"
                     variant="outline"
-                    onClick={shareWhatsApp}
-                    className="h-9 px-3 rounded-xl border-emerald-200/80 bg-emerald-50/40 text-emerald-700 hover:bg-emerald-100/60 dark:bg-emerald-950/20 dark:border-emerald-800/60 dark:text-emerald-400 text-xs font-semibold"
+                    onClick={shareQRCodeWhatsApp}
+                    disabled={!qrData?.qrDataUrl || sharingQrWhatsApp}
+                    className="h-9 px-3 rounded-xl border-emerald-200/80 bg-emerald-50/40 text-emerald-700 hover:bg-emerald-100/60 dark:bg-emerald-950/20 dark:border-emerald-800/60 dark:text-emerald-400 text-xs font-semibold transition-all disabled:opacity-60"
                   >
-                    <MessageCircle className="h-3.5 w-3.5 mr-1.5 text-emerald-600" />
-                    <span>WhatsApp</span>
+                    {sharingQrWhatsApp ? (
+                      <>
+                        <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin text-emerald-600" />
+                        <span>Sending QR...</span>
+                      </>
+                    ) : (
+                      <>
+                        <MessageCircle className="h-3.5 w-3.5 mr-1.5 text-emerald-600" />
+                        <span>WhatsApp</span>
+                      </>
+                    )}
                   </Button>
                 </div>
+
+                {/* WhatsApp / Image Sharing Status Feedback */}
+                {qrShareFeedback && (
+                  <div className="text-[11px] font-semibold text-emerald-700 dark:text-emerald-300 bg-emerald-50/90 dark:bg-emerald-950/60 border border-emerald-200/90 dark:border-emerald-800/80 rounded-xl px-3 py-2 text-center animate-in fade-in duration-200 flex items-center justify-center gap-1.5 shadow-2xs">
+                    <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-emerald-600 dark:text-emerald-400" />
+                    <span>{qrShareFeedback}</span>
+                  </div>
+                )}
               </div>
 
               {/* Target URL Substring Badge with Copy Feedback */}
