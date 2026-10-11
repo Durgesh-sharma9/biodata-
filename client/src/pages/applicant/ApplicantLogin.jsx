@@ -56,7 +56,7 @@ export default function ApplicantLogin() {
         <div className="max-w-7xl mx-auto h-full px-4 sm:px-6 lg:px-8 flex justify-between items-center">
           <Link to="/" className="flex items-center gap-2.5 group">
             <img 
-              src="/hirehub-logo-transparent.png" 
+              src="/hirehub-brand-icon.png?v=3" 
               alt="HireHub Logo" 
               className="h-10 w-auto object-contain drop-shadow-sm group-hover:scale-105 transition-transform" 
             />

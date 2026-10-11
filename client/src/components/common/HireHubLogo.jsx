@@ -28,7 +28,7 @@ export function HireHubLogo({
     return (
       <div className={`flex items-center justify-center select-none ${className}`}>
         <img
-          src="/hirehub-full-logo.png"
+          src="/hirehub-brand-logo.png?v=3"
           alt="HireHub"
           className={`object-contain ${currentSize.fullImg} ${iconClassName}`}
         />
@@ -46,7 +46,7 @@ export function HireHubLogo({
     >
       {/* Brand Emblem */}
       <img
-        src="/hirehub-logo-transparent.png"
+        src="/hirehub-brand-icon.png?v=3"
         alt="HireHub Emblem"
         className={`object-contain shrink-0 ${currentSize.img} ${iconClassName}`}
       />

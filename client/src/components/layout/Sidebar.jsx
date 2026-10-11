@@ -80,7 +80,7 @@ export function Sidebar({ onNavigate }) {
       <div className="h-14 px-4 border-b border-[#E2EAE7] dark:border-slate-800/50 flex items-center">
         <Link to="/" className="flex items-center gap-2.5 group">
           <img
-            src="/hirehub-logo-transparent.png"
+            src="/hirehub-brand-icon.png?v=3"
             alt="HireHub Logo"
             className="h-8 w-8 object-contain shrink-0 group-hover:scale-105 transition-transform"
           />

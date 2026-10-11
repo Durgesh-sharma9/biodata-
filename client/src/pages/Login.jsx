@@ -136,7 +136,7 @@ export default function Login({ redirectTo, signupLink = '/signup' }) {
         <div className="relative z-10 flex items-center justify-between pt-1 sm:pt-2 pr-6 sm:pr-8">
           <Link to="/" className="flex items-center gap-2.5">
             <img 
-              src="/hirehub-logo-transparent.png" 
+              src="/hirehub-brand-icon.png?v=3" 
               alt="HireHub Logo" 
               className="h-8 w-auto object-contain drop-shadow-md" 
             />

@@ -1,9 +1,11 @@
-const CACHE_NAME = 'hirehub-pwa-v2';
+const CACHE_NAME = 'hirehub-pwa-v4';
 
 const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/manifest.json',
+  '/hirehub-brand-logo.png',
+  '/hirehub-brand-icon.png',
   '/hirehub-logo-transparent.png',
   '/hirehub-full-logo.png',
   '/hirehub-icon-dark.png',

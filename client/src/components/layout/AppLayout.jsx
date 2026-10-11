@@ -154,7 +154,7 @@ export function AppLayout() {
             ) : (
               <Link to="/admin/dashboard" className="flex items-center gap-2.5 shrink-0 group">
                 <img
-                  src="/hirehub-logo-transparent.png"
+                  src="/hirehub-brand-icon.png?v=3"
                   alt="HireHub Logo"
                   className="h-8 w-8 object-contain shrink-0 group-hover:scale-105 transition-transform"
                 />
