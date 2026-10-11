@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { ShieldAlert, Eye, FileEdit, UserPlus, Loader2 } from 'lucide-react';
+import { ShieldAlert, Eye, FileEdit, UserPlus, Loader2, ArrowLeft } from 'lucide-react';
 import {
   getCandidate,
   createCandidate,
@@ -91,11 +91,39 @@ export default function CandidateForm() {
   return (
     <div className="space-y-6 w-full antialiased text-slate-800 dark:text-white">
       
-      {/* Page Header Minimalist Panel */}
-      <PageHeader
-        title={isEdit ? 'Edit Candidate Profile' : 'Add New Candidate'}
-        description={isEdit ? 'Modify candidate profile information, documents, and role qualifications.' : 'Fill in candidate details to add them to your recruitment database.'}
-      />
+      {/* ─── Page Identity Header (Distinct SaaS Hierarchy, Not a Collapsible Accordion Box) ─── */}
+      <div className="space-y-2.5 pb-4 border-b border-slate-200/90 dark:border-slate-800">
+        {/* Navigation Breadcrumb / Back Link */}
+        <div className="flex items-center justify-between gap-3">
+          <button
+            type="button"
+            onClick={() => navigate('/candidates')}
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 transition-colors group cursor-pointer"
+          >
+            <ArrowLeft className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5 text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-300" />
+            <span>Back to Candidate Pool</span>
+          </button>
+
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#0F766E]/10 text-[#0F766E] border border-[#0F766E]/20">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#0F766E]" />
+            <span>{isEdit ? 'Editing Existing Record' : 'Direct Manual Entry'}</span>
+          </div>
+        </div>
+
+        {/* Primary Page Title & Subtitle */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <div>
+            <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
+              <span>{isEdit ? 'Edit Candidate Profile' : 'Add New Candidate'}</span>
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium mt-0.5">
+              {isEdit 
+                ? 'Update credentials, qualifications, documents, and interview readiness.' 
+                : 'Fill in the details below to add a candidate directly to your school recruitment database.'}
+            </p>
+          </div>
+        </div>
+      </div>
 
       <DynamicCandidateForm
         initialValues={candidate}
