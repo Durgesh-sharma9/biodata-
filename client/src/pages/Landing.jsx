@@ -140,12 +140,20 @@ export default function Landing() {
           <div className="flex justify-between h-full items-center">
             
             {/* Logo */}
-            <Link to="/" className="flex items-center group py-1">
+            <Link to="/" className="flex items-center gap-2.5 sm:gap-3 group py-1">
               <img
-                src="/hirehub-brand-logo.png?v=3"
+                src="/hirehub-brand-icon.png?v=5"
                 alt="HireHub Logo"
-                className="h-12 sm:h-14 w-auto object-contain group-hover:scale-105 transition-transform"
+                className="w-9 h-9 sm:w-10 sm:h-10 object-contain group-hover:scale-105 transition-transform"
               />
+              <div className="flex flex-col">
+                <span className="text-xl sm:text-2xl font-black tracking-tight text-[#08295C] font-sans leading-tight">
+                  Hire<span className="text-[#12B9A5]">Hub</span>
+                </span>
+                <span className="text-[9px] sm:text-[10px] font-bold text-slate-500 tracking-wider uppercase -mt-0.5">
+                  School Staff Recruitment OS
+                </span>
+              </div>
             </Link>
             
             {/* Desktop Navigation Links */}
@@ -219,12 +227,20 @@ export default function Landing() {
       >
         {/* Drawer Header */}
         <div className="h-16 px-5 border-b border-slate-100 flex items-center justify-between bg-white shrink-0">
-          <Link to="/" onClick={() => setMobileMenuOpen(false)} className="flex items-center py-1">
+          <Link to="/" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-2.5 py-1">
             <img
-              src="/hirehub-brand-logo.png?v=3"
+              src="/hirehub-brand-icon.png?v=5"
               alt="HireHub Logo"
-              className="h-11 w-auto object-contain"
+              className="w-8 h-8 object-contain"
             />
+            <div className="flex flex-col">
+              <span className="text-lg font-black tracking-tight text-[#08295C] leading-tight">
+                Hire<span className="text-[#12B9A5]">Hub</span>
+              </span>
+              <span className="text-[8px] font-bold text-slate-500 tracking-wider uppercase -mt-0.5">
+                School Staff Recruitment OS
+              </span>
+            </div>
           </Link>
           
           <button 
@@ -995,12 +1011,20 @@ export default function Landing() {
             
             {/* Brand column */}
             <div className="col-span-2 md:col-span-4 space-y-3.5 sm:space-y-4">
-              <div className="flex items-center py-1">
+              <div className="flex items-center gap-2.5 py-1">
                 <img
-                  src="/hirehub-brand-logo.png?v=3"
+                  src="/hirehub-brand-icon.png?v=5"
                   alt="HireHub Logo"
-                  className="h-13 sm:h-14 w-auto object-contain"
+                  className="w-9 h-9 sm:w-10 sm:h-10 object-contain"
                 />
+                <div className="flex flex-col">
+                  <span className="text-xl sm:text-2xl font-black tracking-tight text-white font-sans leading-tight">
+                    Hire<span className="text-[#12B9A5]">Hub</span>
+                  </span>
+                  <span className="text-[9px] sm:text-[10px] font-bold text-slate-400 tracking-wider uppercase -mt-0.5">
+                    School Staff Recruitment OS
+                  </span>
+                </div>
               </div>
               <p className="text-xs text-slate-400 leading-relaxed font-normal max-w-sm">
                 HireHub is a cloud-based school recruitment and staff management operating system that helps institutions streamline teacher hiring, digital biodatas, and campus placement communication efficiently.
