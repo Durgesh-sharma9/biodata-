@@ -17,11 +17,12 @@ import {
   ShieldCheck, 
   CheckCircle2, 
   Sparkles, 
-  Users, 
   QrCode, 
   Zap, 
   Loader2, 
-  AlertCircle 
+  AlertCircle,
+  HelpCircle,
+  Home
 } from 'lucide-react';
 import { GoogleLoginButton } from '@/components/common/GoogleLoginButton';
 import { Button } from '@/components/ui/button';
@@ -71,310 +72,336 @@ export default function Login({ redirectTo, signupLink = '/signup' }) {
     }
   };
 
-  const handleBack = () => {
-    if (window.history.state && window.history.state.idx > 0) {
-      navigate(-1);
-    } else {
-      navigate('/');
-    }
-  };
-
   return (
-    <div className="min-h-screen w-full flex items-center justify-center p-4 sm:p-6 lg:p-8 relative overflow-x-hidden font-sans antialiased text-slate-800">
+    <div className="min-h-screen bg-[#FAFBFC] text-slate-800 font-sans antialiased selection:bg-violet-600 selection:text-white relative overflow-x-hidden flex flex-col justify-between">
       
       {/* 1. Signature Homepage Floating Bubble Orbs */}
       <FloatingBubbles />
 
-      {/* 2. Soft Ambient Radial Glows (matching homepage palette) */}
-      <div className="fixed top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-violet-500/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="fixed bottom-1/4 right-1/4 translate-x-1/2 translate-y-1/2 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
+      {/* 2. Soft Ambient Radial Glows (Exact Homepage Palette) */}
+      <div className="fixed top-20 left-10 w-96 h-96 bg-violet-500/10 rounded-full blur-3xl pointer-events-none -z-10" />
+      <div className="fixed bottom-10 right-10 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl pointer-events-none -z-10" />
 
-      {/* 3. Main SaaS Dual-Card Container */}
-      <div className="relative z-10 w-full max-w-6xl grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center my-auto">
-        
-        {/* ─────────────────────────────────────────────────────────────
-            LEFT PANEL: RICH HIREHUB RECRUITMENT OS HERO SHOWCASE
-            (Inspired by Homepage: Navy + Teal + Glassmorphism Cards)
-            - Only visible on Desktop (lg:), keeping mobile ultra-clean
-        ───────────────────────────────────────────────────────────── */}
-        <div className="hidden lg:flex lg:col-span-6 xl:col-span-7 flex-col justify-between p-8 xl:p-12 rounded-3xl bg-gradient-to-br from-[#08295C] via-[#0E2A5E] to-[#1E1B4B] text-white shadow-2xl border border-white/10 relative overflow-hidden min-h-[640px]">
-          {/* Ambient Lighting Gradients */}
-          <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 rounded-full bg-[#12B9A5]/20 blur-3xl pointer-events-none" />
-          <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 rounded-full bg-violet-600/25 blur-3xl pointer-events-none" />
+      {/* ─────────────────────────────────────────────────────────────
+          TOP NAVIGATION BAR (Exact Landing Page Header Experience)
+      ───────────────────────────────────────────────────────────── */}
+      <header className="sticky top-0 z-40 w-full bg-white/90 backdrop-blur-md border-b border-slate-200/80 shadow-[0_1px_10px_rgba(0,0,0,0.03)]">
+        <div className="max-w-7xl mx-auto h-16 sm:h-20 px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+          
+          {/* Logo */}
+          <Link to="/" className="flex items-center gap-2.5 sm:gap-3 group py-1">
+            <img
+              src="/hirehub-brand-icon.png?v=5"
+              alt="HireHub Logo"
+              className="w-9 h-9 sm:w-10 sm:h-10 object-contain group-hover:scale-105 transition-transform"
+            />
+            <div className="flex flex-col">
+              <span className="text-xl sm:text-2xl font-black tracking-tight text-[#08295C] font-sans leading-tight">
+                Hire<span className="text-[#12B9A5]">Hub</span>
+              </span>
+              <span className="text-[9px] sm:text-[10px] font-bold text-slate-500 tracking-wider uppercase -mt-0.5">
+                School Staff Recruitment OS
+              </span>
+            </div>
+          </Link>
 
-          {/* Top Header: Brand Logo & Pill */}
-          <div className="relative z-10 flex items-center justify-between">
-            <Link to="/" className="flex items-center gap-3 group">
-              <img
-                src="/hirehub-brand-icon.png?v=5"
-                alt="HireHub Logo"
-                className="w-10 h-10 object-contain drop-shadow-md group-hover:scale-105 transition-transform"
-              />
-              <div className="flex flex-col">
-                <span className="text-2xl font-black text-white leading-tight font-sans tracking-tight">
-                  Hire<span className="text-[#12B9A5]">Hub</span>
-                </span>
-                <span className="text-[10px] font-bold text-violet-200 uppercase tracking-wider">
-                  School Staff Recruitment OS
-                </span>
-              </div>
+          {/* Right Header CTAs */}
+          <div className="flex items-center gap-3">
+            <Link 
+              to="/" 
+              className="hidden sm:inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-violet-700 px-3 py-2 rounded-xl hover:bg-slate-100 transition-colors"
+            >
+              <Home className="w-4 h-4 text-slate-500" />
+              <span>Back to Home</span>
             </Link>
 
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md text-xs font-bold text-white border border-white/15">
-              <Building2 className="w-3.5 h-3.5 text-amber-300" />
-              <span>150+ Schools Active</span>
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="hidden md:inline text-xs text-slate-500 font-medium">New school?</span>
+              <Link to={signupLink}>
+                <Button className="h-9 sm:h-10 px-3.5 sm:px-5 rounded-xl bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white text-xs font-bold shadow-md shadow-violet-500/25 transition-all">
+                  Register School Free
+                </Button>
+              </Link>
+            </div>
           </div>
 
-          {/* Middle Body: Punchy Tagline & Floating Showcase Badges */}
-          <div className="relative z-10 my-auto py-8 space-y-6">
-            <div className="space-y-2.5 max-w-lg">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#12B9A5]/20 text-[#12B9A5] text-xs font-bold border border-[#12B9A5]/30">
-                <Sparkles className="w-3.5 h-3.5" />
-                <span>Next-Gen Educator Recruitment</span>
-              </div>
-              <h2 className="text-3xl xl:text-4xl font-black text-white tracking-tight leading-tight">
-                Hire Verified Teachers &amp; Staff in Minutes, Not Weeks.
-              </h2>
-              <p className="text-sm text-slate-300 leading-relaxed font-medium">
-                Eliminate paper biodatas and agency commissions. Access a searchable digital vault of qualified teachers ready for direct campus interviews.
+        </div>
+      </header>
+
+      {/* ─────────────────────────────────────────────────────────────
+          MAIN CONTENT AREA (Luminous Landing Theme Showcase + Form)
+      ───────────────────────────────────────────────────────────── */}
+      <main className="relative z-10 flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16 flex items-center">
+        <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          
+          {/* ─────────────────────────────────────────────────────────
+              LEFT COLUMN: LANDING PAGE HERO SHOWCASE (Desktop)
+              - Luminous, airy, friendly, exact same as Homepage!
+          ───────────────────────────────────────────────────────── */}
+          <div className="hidden lg:flex lg:col-span-7 flex-col justify-center space-y-8 pr-4">
+            
+            {/* Pill Badge */}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-violet-200 bg-white/90 shadow-2xs backdrop-blur-md self-start">
+              <span className="flex h-2 w-2 relative shrink-0">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+              </span>
+              <span className="text-xs font-bold text-slate-700">
+                Direct School Faculty &amp; Staff Recruitment Portal
+              </span>
+            </div>
+
+            {/* Headline */}
+            <div className="space-y-3">
+              <h1 className="text-4xl xl:text-5xl font-black tracking-tight text-[#08295C] leading-[1.15]">
+                Welcome Back to Your{' '}
+                <span className="bg-gradient-to-r from-violet-700 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
+                  Recruitment OS
+                </span>
+              </h1>
+              <p className="text-base text-slate-600 max-w-xl leading-relaxed font-normal">
+                Access your private school applicant vault, download gate walk-in QR standees, and review verified teacher profiles for instant campus interviews.
               </p>
             </div>
 
-            {/* Interactive Live Proof Showcase Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 max-w-xl">
-              {/* Card 1: Live Pool Strength */}
-              <div className="p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 shadow-lg space-y-2 transition-all hover:bg-white/15">
-                <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-amber-300 flex items-center gap-1.5">
-                    <Users className="w-3.5 h-3.5" /> Live Candidate Pool
-                  </span>
-                  <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+            {/* Mascot / Hero Illustration with Floating Badges (From Landing.jsx) */}
+            <div className="relative w-full max-w-[420px] flex items-center justify-center py-6">
+              
+              {/* Soft ambient colorful blur */}
+              <div className="absolute inset-0 bg-gradient-to-tr from-violet-500/20 via-indigo-500/15 to-teal-400/20 rounded-full blur-3xl pointer-events-none -z-10 animate-pulse-glow" />
+
+              <div className="relative w-full flex items-center justify-center group">
+                <img 
+                  src="/hirehub-hiring-illustration.png" 
+                  alt="We Are Hiring School Staff" 
+                  className="w-full max-w-[320px] xl:max-w-[360px] h-auto object-contain drop-shadow-xl transition-transform duration-500 group-hover:scale-105"
+                />
+
+                {/* Floating Pill Badge 1: 100% Verified */}
+                <div className="absolute top-2 -left-2 bg-white/95 backdrop-blur-md border border-slate-200/90 shadow-lg rounded-2xl px-3 py-2 flex items-center gap-2.5 animate-float-slow hover:border-violet-300 transition-all">
+                  <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold shrink-0 shadow-2xs">
+                    <CheckCircle2 className="w-4 h-4" />
+                  </div>
+                  <div className="text-left">
+                    <div className="text-xs font-bold text-slate-800 leading-tight">Teaching &amp; Staff</div>
+                    <div className="text-[10px] text-emerald-600 font-semibold">100% Verified</div>
+                  </div>
                 </div>
-                <div className="text-2xl font-black text-white">2,480+</div>
-                <p className="text-[11px] text-slate-300 font-medium">
-                  PGT, TGT, PRT, activity teachers & admin staff ready to join.
-                </p>
+
+                {/* Floating Pill Badge 2: Gate QR Intake */}
+                <div className="absolute -bottom-2 -right-2 bg-white/95 backdrop-blur-md border border-slate-200/90 shadow-lg rounded-2xl px-3 py-2 flex items-center gap-2.5 shadow-violet-500/10 hover:border-violet-300 transition-all">
+                  <div className="w-8 h-8 rounded-xl bg-violet-100 text-violet-700 flex items-center justify-center shrink-0 shadow-2xs">
+                    <QrCode className="w-4 h-4" />
+                  </div>
+                  <div className="text-left">
+                    <div className="text-xs font-bold text-slate-800 leading-tight">Gate QR Standee</div>
+                    <div className="text-[10px] text-violet-600 font-semibold">Zero Paper Biodatas</div>
+                  </div>
+                </div>
+
+                {/* Floating Pill Badge 3: Candidate Vault (top right) */}
+                <div className="absolute top-8 -right-4 bg-white/95 backdrop-blur-md border border-slate-200/90 shadow-md rounded-xl px-2.5 py-1.5 flex items-center gap-1.5 text-slate-700 font-bold text-[11px] shadow-2xs">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+                  <span>150+ Schools Active</span>
+                </div>
               </div>
 
-              {/* Card 2: Zero Agency Fee */}
-              <div className="p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 shadow-lg space-y-2 transition-all hover:bg-white/15">
-                <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#12B9A5] flex items-center gap-1.5">
-                    <ShieldCheck className="w-3.5 h-3.5" /> Direct Hiring
-                  </span>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300">
-                    0% Commission
-                  </span>
-                </div>
-                <div className="text-2xl font-black text-white">Zero Fees</div>
-                <p className="text-[11px] text-slate-300 font-medium">
-                  Connect directly via Phone & WhatsApp with candidate profiles.
-                </p>
+            </div>
+
+            {/* Trust Badges Strip (matching landing page) */}
+            <div className="pt-4 border-t border-slate-200/80 flex flex-wrap items-center gap-y-2.5 gap-x-6 text-xs font-semibold text-slate-600">
+              <div className="flex items-center gap-1.5">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" /> 100% Free School Access
+              </div>
+              <div className="flex items-center gap-1.5">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" /> Auto Gate QR Code
+              </div>
+              <div className="flex items-center gap-1.5">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" /> 100% Private to School
               </div>
             </div>
 
-            {/* Feature Badges */}
-            <div className="flex flex-wrap gap-2 text-xs font-semibold text-slate-200">
-              <span className="px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 flex items-center gap-1.5">
-                <QrCode className="w-3.5 h-3.5 text-cyan-300" /> Walk-In Standee QR Code
-              </span>
-              <span className="px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 flex items-center gap-1.5">
-                <Zap className="w-3.5 h-3.5 text-amber-300" /> 3x Faster Shortlisting
-              </span>
-              <span className="px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 flex items-center gap-1.5">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-300" /> 100% Verified Credentials
-              </span>
+          </div>
+
+          {/* ─────────────────────────────────────────────────────────
+              RIGHT COLUMN: SIGN IN CARD (Mobile & Desktop)
+              - Crisp, elevated, landing page card design
+          ───────────────────────────────────────────────────────── */}
+          <div className="lg:col-span-5 w-full max-w-md mx-auto">
+            
+            {/* The Elevated White Card */}
+            <div className="bg-white rounded-3xl p-6 sm:p-9 border border-slate-200/90 shadow-[0_15px_45px_-10px_rgba(8,41,92,0.08)] relative space-y-6">
+              
+              {/* Card Top: Back button on mobile + Heading */}
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <Link 
+                    to="/" 
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 text-slate-600 hover:text-slate-900 hover:border-slate-300 bg-slate-50 hover:bg-slate-100 text-xs font-semibold transition-all shadow-2xs cursor-pointer group"
+                  >
+                    <ArrowLeft className="w-3.5 h-3.5 transition-transform group-hover:-translate-x-0.5" />
+                    <span>Back</span>
+                  </Link>
+
+                  <div className="text-xs font-medium text-slate-500">
+                    New school?{' '}
+                    <Link to={signupLink} className="text-violet-600 font-bold hover:underline">
+                      Sign up
+                    </Link>
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  <h2 className="text-2xl sm:text-3xl font-black text-[#08295C] tracking-tight">
+                    Sign In
+                  </h2>
+                  <p className="text-xs sm:text-sm text-slate-500 font-medium">
+                    Enter your school email &amp; password
+                  </p>
+                </div>
+              </div>
+
+              {/* Error Banner */}
+              {error && (
+                <div className="rounded-2xl bg-rose-50 text-rose-600 border border-rose-200 p-3.5 text-xs font-semibold flex items-center gap-2 animate-in fade-in">
+                  <AlertCircle className="h-4 w-4 shrink-0 text-rose-500" />
+                  <span>{error}</span>
+                </div>
+              )}
+
+              {/* Form Fields */}
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 sm:space-y-5">
+                
+                {/* Email Field */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                    Official School Email
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                      <Mail className="w-4 h-4" />
+                    </div>
+                    <input
+                      id="email"
+                      type="email"
+                      placeholder="e.g. principal@school.edu.in"
+                      className="w-full pl-10 pr-10 py-3 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-3 focus:ring-violet-500/15 focus:border-violet-600 transition-all shadow-2xs"
+                      {...register('email')}
+                    />
+                    {isEmailValid && (
+                      <div className="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none text-emerald-500">
+                        <Check className="w-4 h-4 stroke-[2.5]" />
+                      </div>
+                    )}
+                  </div>
+                  {errors.email && (
+                    <p className="text-xs font-semibold text-rose-500">{errors.email.message}</p>
+                  )}
+                </div>
+
+                {/* Password Field */}
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                      Password
+                    </label>
+                    <Link
+                      to="/forgot-password"
+                      className="text-xs font-semibold text-violet-600 hover:text-violet-700 hover:underline"
+                    >
+                      Forgot password?
+                    </Link>
+                  </div>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                      <Lock className="w-4 h-4" />
+                    </div>
+                    <input
+                      id="password"
+                      type={showPassword ? 'text' : 'password'}
+                      placeholder="Enter account password"
+                      className="w-full pl-10 pr-11 py-3 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-3 focus:ring-violet-500/15 focus:border-violet-600 transition-all shadow-2xs"
+                      {...register('password')}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 cursor-pointer"
+                    >
+                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                  {errors.password && (
+                    <p className="text-xs font-semibold text-rose-500">{errors.password.message}</p>
+                  )}
+                </div>
+
+                {/* Submit Button */}
+                <div className="pt-2 space-y-4">
+                  <Button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full h-12 rounded-xl bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 hover:from-violet-700 hover:via-purple-700 hover:to-indigo-700 text-white font-bold text-sm shadow-md shadow-violet-500/25 hover:shadow-lg hover:shadow-violet-500/35 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 border-none"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span>Signing in...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>Sign In</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </>
+                    )}
+                  </Button>
+
+                  {/* Divider */}
+                  <div className="relative flex items-center justify-center py-1">
+                    <div className="w-full border-t border-slate-200" />
+                    <span className="absolute bg-white px-3 text-[11px] text-slate-400 font-bold uppercase tracking-wider">
+                      Or
+                    </span>
+                  </div>
+
+                  {/* Google Sign In */}
+                  <div className="flex justify-center w-full">
+                    <GoogleLoginButton targetRole="school_admin" redirectTo={redirectTo} />
+                  </div>
+                </div>
+
+              </form>
+
+              {/* Bottom Security Note */}
+              <div className="pt-3 border-t border-slate-100 text-center">
+                <p className="text-[11px] text-slate-400 font-medium flex items-center justify-center gap-1.5">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>256-Bit SSL Encrypted &bull; Direct School Privacy</span>
+                </p>
+              </div>
+
             </div>
           </div>
 
-          {/* Bottom Footer inside showcase */}
-          <div className="relative z-10 pt-4 border-t border-white/10 flex items-center justify-between text-xs text-slate-400 font-medium">
-            <span>&copy; {new Date().getFullYear()} HireHub OS &bull; All rights reserved</span>
-            <span className="flex items-center gap-1.5 text-emerald-400 font-semibold">
-              <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+        </div>
+      </main>
+
+      {/* ─────────────────────────────────────────────────────────────
+          PAGE FOOTER (Subtle & Clean)
+      ───────────────────────────────────────────────────────────── */}
+      <footer className="relative z-10 w-full border-t border-slate-200/80 bg-white/70 backdrop-blur-md py-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2 font-medium">
+          <div>
+            &copy; {new Date().getFullYear()} HireHub OS &bull; Direct School Faculty &amp; Staff Recruitment
+          </div>
+          <div className="flex items-center gap-4">
+            <span className="flex items-center gap-1.5 text-emerald-600 font-semibold">
+              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
               All Systems Operational
             </span>
           </div>
         </div>
-
-        {/* ─────────────────────────────────────────────────────────────
-            RIGHT PANEL: SIGN IN FORM CARD (Clean, Modern & Responsive)
-            - Seamless on Mobile (100% width) and Desktop (lg:col-span-6)
-        ───────────────────────────────────────────────────────────── */}
-        <div className="lg:col-span-6 xl:col-span-5 w-full max-w-md mx-auto">
-          <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-3xl p-6 sm:p-8 xl:p-9 shadow-2xl border border-slate-200/80 dark:border-slate-800 space-y-6">
-            
-            {/* Top Navigation Row: Back Button & Switch to Signup */}
-            <div className="flex items-center justify-between">
-              <button
-                type="button"
-                onClick={handleBack}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:border-slate-300 bg-white/80 dark:bg-slate-800 text-xs font-semibold transition-all shadow-2xs cursor-pointer group"
-                aria-label="Back"
-              >
-                <ArrowLeft className="w-3.5 h-3.5 transition-transform group-hover:-translate-x-0.5" />
-                <span>Back</span>
-              </button>
-
-              <div className="text-xs font-medium text-slate-500 dark:text-slate-400">
-                New school?{' '}
-                <Link to={signupLink} className="text-violet-600 dark:text-violet-400 font-bold hover:underline">
-                  Sign up
-                </Link>
-              </div>
-            </div>
-
-            {/* Mobile-Only Header Brand Bar */}
-            <div className="lg:hidden flex items-center gap-3 pt-1 pb-1 border-b border-slate-100 dark:border-slate-800">
-              <img 
-                src="/hirehub-brand-icon.png?v=5" 
-                alt="HireHub Logo" 
-                className="w-9 h-9 object-contain" 
-              />
-              <div className="flex flex-col">
-                <span className="text-lg font-black text-slate-900 dark:text-white leading-tight font-sans">
-                  Hire<span className="text-[#12B9A5]">Hub</span>
-                </span>
-                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">
-                  School Staff Recruitment OS
-                </span>
-              </div>
-            </div>
-
-            {/* Page Title & Subtitle */}
-            <div className="space-y-1">
-              <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
-                Sign In
-              </h1>
-              <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">
-                Direct School Faculty &amp; Staff Recruitment Portal
-              </p>
-            </div>
-
-            {/* Error Banner */}
-            {error && (
-              <div className="rounded-2xl bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-300 border border-rose-200 dark:border-rose-800 p-3.5 text-xs font-semibold flex items-center gap-2 animate-in fade-in">
-                <AlertCircle className="h-4 w-4 shrink-0 text-rose-500" />
-                <span>{error}</span>
-              </div>
-            )}
-
-            {/* Form Fields */}
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 sm:space-y-5">
-              
-              {/* Email Field */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                  Official School Email
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                    <Mail className="w-4 h-4" />
-                  </div>
-                  <input
-                    id="email"
-                    type="email"
-                    placeholder="e.g. principal@school.edu.in"
-                    className="w-full pl-10 pr-10 py-3 bg-slate-50/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-medium text-slate-800 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-600 transition-all shadow-2xs"
-                    {...register('email')}
-                  />
-                  {isEmailValid && (
-                    <div className="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none text-emerald-500">
-                      <Check className="w-4 h-4 stroke-[2.5]" />
-                    </div>
-                  )}
-                </div>
-                {errors.email && (
-                  <p className="text-xs font-semibold text-rose-500">{errors.email.message}</p>
-                )}
-              </div>
-
-              {/* Password Field */}
-              <div className="space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                    Password
-                  </label>
-                  <Link
-                    to="/forgot-password"
-                    className="text-xs font-semibold text-violet-600 dark:text-violet-400 hover:underline"
-                  >
-                    Forgot password?
-                  </Link>
-                </div>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                    <Lock className="w-4 h-4" />
-                  </div>
-                  <input
-                    id="password"
-                    type={showPassword ? 'text' : 'password'}
-                    placeholder="Enter your account password"
-                    className="w-full pl-10 pr-11 py-3 bg-slate-50/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-medium text-slate-800 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-600 transition-all shadow-2xs"
-                    {...register('password')}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
-                  >
-                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
-                </div>
-                {errors.password && (
-                  <p className="text-xs font-semibold text-rose-500">{errors.password.message}</p>
-                )}
-              </div>
-
-              {/* Submit Button */}
-              <div className="pt-2 space-y-4">
-                <Button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full h-12 rounded-xl bg-gradient-to-r from-violet-600 via-indigo-600 to-blue-600 hover:from-violet-700 hover:to-blue-700 text-white font-bold text-sm sm:text-base shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 border-none"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      <span>Signing in...</span>
-                    </>
-                  ) : (
-                    <>
-                      <span>Sign In</span>
-                      <ArrowRight className="w-4 h-4" />
-                    </>
-                  )}
-                </Button>
-
-                {/* Divider */}
-                <div className="relative flex items-center justify-center py-1">
-                  <div className="w-full border-t border-slate-200 dark:border-slate-800" />
-                  <span className="absolute bg-white dark:bg-slate-900 px-3 text-[11px] text-slate-400 font-semibold uppercase tracking-wider">
-                    Or
-                  </span>
-                </div>
-
-                {/* Google Sign In */}
-                <div className="flex justify-center w-full">
-                  <GoogleLoginButton targetRole="school_admin" redirectTo={redirectTo} />
-                </div>
-              </div>
-
-            </form>
-
-            {/* Bottom Security Note */}
-            <div className="pt-3 border-t border-slate-100 dark:border-slate-800 text-center">
-              <p className="text-[11px] text-slate-400 font-medium flex items-center justify-center gap-1.5">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-                <span>256-Bit SSL Encrypted &bull; Direct School Privacy</span>
-              </p>
-            </div>
-
-          </div>
-        </div>
-
-      </div>
+      </footer>
 
     </div>
   );
