@@ -17,11 +17,11 @@ import {
   ShieldCheck, 
   CheckCircle2, 
   Sparkles, 
+  Users, 
   QrCode, 
   Zap, 
   Loader2, 
   AlertCircle,
-  HelpCircle,
   Home
 } from 'lucide-react';
 import { GoogleLoginButton } from '@/components/common/GoogleLoginButton';
@@ -118,7 +118,7 @@ export default function Login({ redirectTo, signupLink = '/signup' }) {
             <div className="flex items-center gap-2">
               <span className="hidden md:inline text-xs text-slate-500 font-medium">New school?</span>
               <Link to={signupLink}>
-                <Button className="h-9 sm:h-10 px-3.5 sm:px-5 rounded-xl bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white text-xs font-bold shadow-md shadow-violet-500/25 transition-all">
+                <Button className="h-9 sm:h-10 px-3.5 sm:px-5 rounded-xl bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white text-xs font-bold shadow-md shadow-violet-500/25 transition-all cursor-pointer">
                   Register School Free
                 </Button>
               </Link>
@@ -129,25 +129,25 @@ export default function Login({ redirectTo, signupLink = '/signup' }) {
       </header>
 
       {/* ─────────────────────────────────────────────────────────────
-          MAIN CONTENT AREA (Luminous Landing Theme Showcase + Form)
+          MAIN CONTENT AREA (Luminous UI Widgets Showcase + Form)
       ───────────────────────────────────────────────────────────── */}
       <main className="relative z-10 flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16 flex items-center">
         <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           
           {/* ─────────────────────────────────────────────────────────
-              LEFT COLUMN: LANDING PAGE HERO SHOWCASE (Desktop)
-              - Luminous, airy, friendly, exact same as Homepage!
+              LEFT COLUMN: SAAS PRODUCT SHOWCASE (No Cartoon Image)
+              - Pure High-End Interactive UI Widgets
           ───────────────────────────────────────────────────────── */}
-          <div className="hidden lg:flex lg:col-span-7 flex-col justify-center space-y-8 pr-4">
+          <div className="hidden lg:flex lg:col-span-7 flex-col justify-center space-y-7 pr-4">
             
             {/* Pill Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-violet-200 bg-white/90 shadow-2xs backdrop-blur-md self-start">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-violet-200 bg-white shadow-2xs backdrop-blur-md self-start">
               <span className="flex h-2 w-2 relative shrink-0">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
               </span>
               <span className="text-xs font-bold text-slate-700">
-                Direct School Faculty &amp; Staff Recruitment Portal
+                150+ Schools Active Across India
               </span>
             </div>
 
@@ -159,65 +159,109 @@ export default function Login({ redirectTo, signupLink = '/signup' }) {
                   Recruitment OS
                 </span>
               </h1>
-              <p className="text-base text-slate-600 max-w-xl leading-relaxed font-normal">
-                Access your private school applicant vault, download gate walk-in QR standees, and review verified teacher profiles for instant campus interviews.
+              <p className="text-sm xl:text-base text-slate-600 max-w-xl leading-relaxed font-normal">
+                Direct walk-in QR standees, digital teacher applications, and your private candidate vault. Zero paper biodatas and zero agency fees.
               </p>
             </div>
 
-            {/* Mascot / Hero Illustration with Floating Badges (From Landing.jsx) */}
-            <div className="relative w-full max-w-[420px] flex items-center justify-center py-6">
+            {/* WIDGET CARD 1: LIVE CANDIDATE VAULT PREVIEW */}
+            <div className="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-[0_10px_35px_-5px_rgba(8,41,92,0.06)] space-y-4 max-w-xl">
               
-              {/* Soft ambient colorful blur */}
-              <div className="absolute inset-0 bg-gradient-to-tr from-violet-500/20 via-indigo-500/15 to-teal-400/20 rounded-full blur-3xl pointer-events-none -z-10 animate-pulse-glow" />
-
-              <div className="relative w-full flex items-center justify-center group">
-                <img 
-                  src="/hirehub-hiring-illustration.png" 
-                  alt="We Are Hiring School Staff" 
-                  className="w-full max-w-[320px] xl:max-w-[360px] h-auto object-contain drop-shadow-xl transition-transform duration-500 group-hover:scale-105"
-                />
-
-                {/* Floating Pill Badge 1: 100% Verified */}
-                <div className="absolute top-2 -left-2 bg-white/95 backdrop-blur-md border border-slate-200/90 shadow-lg rounded-2xl px-3 py-2 flex items-center gap-2.5 animate-float-slow hover:border-violet-300 transition-all">
-                  <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold shrink-0 shadow-2xs">
-                    <CheckCircle2 className="w-4 h-4" />
+              {/* Card Header */}
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-xl bg-violet-100 text-violet-700 flex items-center justify-center font-bold">
+                    <Users className="w-4 h-4" />
                   </div>
-                  <div className="text-left">
-                    <div className="text-xs font-bold text-slate-800 leading-tight">Teaching &amp; Staff</div>
-                    <div className="text-[10px] text-emerald-600 font-semibold">100% Verified</div>
+                  <div>
+                    <h3 className="text-xs font-black uppercase tracking-wider text-slate-800">
+                      Live Verified Candidate Pool
+                    </h3>
+                    <p className="text-[11px] text-slate-400 font-medium">Ready for immediate campus interview</p>
                   </div>
                 </div>
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold border border-emerald-200/60">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  2,480+ Teachers
+                </span>
+              </div>
 
-                {/* Floating Pill Badge 2: Gate QR Intake */}
-                <div className="absolute -bottom-2 -right-2 bg-white/95 backdrop-blur-md border border-slate-200/90 shadow-lg rounded-2xl px-3 py-2 flex items-center gap-2.5 shadow-violet-500/10 hover:border-violet-300 transition-all">
-                  <div className="w-8 h-8 rounded-xl bg-violet-100 text-violet-700 flex items-center justify-center shrink-0 shadow-2xs">
-                    <QrCode className="w-4 h-4" />
+              {/* Candidate Mini Rows */}
+              <div className="space-y-2">
+                {[
+                  { name: 'Priya Sharma', role: 'PGT Mathematics', exp: '5 Yrs Exp', quals: 'M.Sc, B.Ed', status: 'Verified' },
+                  { name: 'Rajesh Verma', role: 'TGT Science', exp: '3 Yrs Exp', quals: 'B.Sc, B.Ed, CTET', status: 'Verified' },
+                  { name: 'Ananya Sen', role: 'Computer Science & AI', exp: '4 Yrs Exp', quals: 'MCA', status: 'Verified' },
+                ].map((cand, idx) => (
+                  <div key={idx} className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50/80 hover:bg-violet-50/40 border border-slate-100 hover:border-violet-200 transition-all text-xs">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className="w-7 h-7 rounded-lg bg-white border border-slate-200 text-slate-700 font-bold flex items-center justify-center text-[11px] shrink-0">
+                        {cand.name.charAt(0)}
+                      </div>
+                      <div className="truncate">
+                        <span className="font-bold text-slate-800 block truncate">{cand.name}</span>
+                        <span className="text-[11px] text-slate-500">{cand.role} &bull; {cand.quals}</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className="text-[10px] font-semibold text-slate-500 bg-white px-2 py-0.5 rounded-md border border-slate-200">{cand.exp}</span>
+                      <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md">
+                        <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                        {cand.status}
+                      </span>
+                    </div>
                   </div>
-                  <div className="text-left">
-                    <div className="text-xs font-bold text-slate-800 leading-tight">Gate QR Standee</div>
-                    <div className="text-[10px] text-violet-600 font-semibold">Zero Paper Biodatas</div>
-                  </div>
+                ))}
+              </div>
+
+              {/* Metric Highlights Strip */}
+              <div className="grid grid-cols-3 gap-2 pt-1">
+                <div className="p-2.5 rounded-xl bg-violet-50/60 border border-violet-100 text-center">
+                  <div className="text-sm font-black text-violet-700">3x Faster</div>
+                  <div className="text-[10px] font-medium text-slate-500">Shortlisting Speed</div>
                 </div>
-
-                {/* Floating Pill Badge 3: Candidate Vault (top right) */}
-                <div className="absolute top-8 -right-4 bg-white/95 backdrop-blur-md border border-slate-200/90 shadow-md rounded-xl px-2.5 py-1.5 flex items-center gap-1.5 text-slate-700 font-bold text-[11px] shadow-2xs">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-                  <span>150+ Schools Active</span>
+                <div className="p-2.5 rounded-xl bg-emerald-50/60 border border-emerald-100 text-center">
+                  <div className="text-sm font-black text-emerald-700">0% Commission</div>
+                  <div className="text-[10px] font-medium text-slate-500">Direct Contact</div>
+                </div>
+                <div className="p-2.5 rounded-xl bg-sky-50/60 border border-sky-100 text-center">
+                  <div className="text-sm font-black text-sky-700">100% Private</div>
+                  <div className="text-[10px] font-medium text-slate-500">School Vault</div>
                 </div>
               </div>
 
             </div>
 
-            {/* Trust Badges Strip (matching landing page) */}
-            <div className="pt-4 border-t border-slate-200/80 flex flex-wrap items-center gap-y-2.5 gap-x-6 text-xs font-semibold text-slate-600">
+            {/* WIDGET CARD 2: GATE QR CODE STANDEE (Bento Feature Card) */}
+            <div className="bg-white rounded-2xl p-4 border border-slate-200/90 shadow-[0_10px_35px_-5px_rgba(8,41,92,0.06)] flex items-center gap-4 max-w-xl">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 text-white flex items-center justify-center shrink-0 shadow-md shadow-violet-500/20">
+                <QrCode className="w-6 h-6" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-xs font-black text-slate-900 uppercase tracking-wider">
+                    Gate Walk-In QR Standee
+                  </h4>
+                  <span className="text-[10px] font-bold text-violet-700 bg-violet-50 px-2 py-0.5 rounded-full border border-violet-100">
+                    Print Ready PDF
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-500 leading-snug mt-0.5">
+                  Placed at your school gate or reception. Candidates scan with their phone and submit verified biodatas straight to your dashboard.
+                </p>
+              </div>
+            </div>
+
+            {/* Trust Badges Strip */}
+            <div className="pt-2 flex flex-wrap items-center gap-y-2 gap-x-6 text-xs font-semibold text-slate-600">
               <div className="flex items-center gap-1.5">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" /> 100% Free School Access
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" /> 100% Free For Schools
               </div>
               <div className="flex items-center gap-1.5">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" /> Auto Gate QR Code
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" /> Instant Setup in 2 Mins
               </div>
               <div className="flex items-center gap-1.5">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" /> 100% Private to School
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" /> Confidential Candidate Vault
               </div>
             </div>
 

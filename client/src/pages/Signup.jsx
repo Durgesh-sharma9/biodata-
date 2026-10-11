@@ -130,7 +130,7 @@ export default function Signup() {
         ...formData,
         adminName: formData.adminName || (formData.schoolName ? `${formData.schoolName} Admin` : 'School Admin'),
         googleId: googleData.googleId,
-        googleCredential: googleData.credential, // for backend JWT verification
+        googleCredential: googleData.credential,
         avatarUrl: googleData.avatarUrl,
       });
       return;
@@ -241,7 +241,7 @@ export default function Signup() {
             <div className="flex items-center gap-2">
               <span className="hidden md:inline text-xs text-slate-500 font-medium">Already registered?</span>
               <Link to="/login">
-                <Button variant="outline" className="h-9 sm:h-10 px-3.5 sm:px-5 rounded-xl border-slate-200 bg-white hover:bg-slate-50 text-slate-700 hover:text-violet-700 hover:border-violet-300 text-xs font-bold shadow-2xs transition-all">
+                <Button variant="outline" className="h-9 sm:h-10 px-3.5 sm:px-5 rounded-xl border-slate-200 bg-white hover:bg-slate-50 text-slate-700 hover:text-violet-700 hover:border-violet-300 text-xs font-bold shadow-2xs transition-all cursor-pointer">
                   School Login
                 </Button>
               </Link>
@@ -252,19 +252,19 @@ export default function Signup() {
       </header>
 
       {/* ─────────────────────────────────────────────────────────────
-          MAIN CONTENT AREA (Luminous Landing Theme Showcase + Form)
+          MAIN CONTENT AREA (Luminous UI Widgets Showcase + Form)
       ───────────────────────────────────────────────────────────── */}
       <main className="relative z-10 flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16 flex items-center">
         <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           
           {/* ─────────────────────────────────────────────────────────
-              LEFT COLUMN: LANDING PAGE HERO SHOWCASE (Desktop)
-              - Luminous, airy, friendly, exact same as Homepage!
+              LEFT COLUMN: SAAS ONBOARDING SHOWCASE (No Cartoon Image)
+              - Pure High-End Interactive UI Widgets
           ───────────────────────────────────────────────────────── */}
-          <div className="hidden lg:flex lg:col-span-7 flex-col justify-center space-y-8 pr-4">
+          <div className="hidden lg:flex lg:col-span-7 flex-col justify-center space-y-7 pr-4">
             
             {/* Pill Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-violet-200 bg-white/90 shadow-2xs backdrop-blur-md self-start">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-violet-200 bg-white shadow-2xs backdrop-blur-md self-start">
               <span className="flex h-2 w-2 relative shrink-0">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
@@ -282,57 +282,78 @@ export default function Signup() {
                   Recruitment Portal
                 </span>
               </h1>
-              <p className="text-base text-slate-600 max-w-xl leading-relaxed font-normal">
+              <p className="text-sm xl:text-base text-slate-600 max-w-xl leading-relaxed font-normal">
                 Generate your custom application link, download your gate QR standee in 2 minutes, and organize walk-in applicants into your private candidate vault.
               </p>
             </div>
 
-            {/* Mascot / Hero Illustration with Floating Badges (From Landing.jsx) */}
-            <div className="relative w-full max-w-[420px] flex items-center justify-center py-6">
-              
-              {/* Soft ambient colorful blur */}
-              <div className="absolute inset-0 bg-gradient-to-tr from-violet-500/20 via-indigo-500/15 to-teal-400/20 rounded-full blur-3xl pointer-events-none -z-10 animate-pulse-glow" />
-
-              <div className="relative w-full flex items-center justify-center group">
-                <img 
-                  src="/hirehub-hiring-illustration.png" 
-                  alt="We Are Hiring School Staff" 
-                  className="w-full max-w-[320px] xl:max-w-[360px] h-auto object-contain drop-shadow-xl transition-transform duration-500 group-hover:scale-105"
-                />
-
-                {/* Floating Pill Badge 1: Direct Vault */}
-                <div className="absolute top-2 -left-2 bg-white/95 backdrop-blur-md border border-slate-200/90 shadow-lg rounded-2xl px-3 py-2 flex items-center gap-2.5 animate-float-slow hover:border-violet-300 transition-all">
-                  <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold shrink-0 shadow-2xs">
-                    <CheckCircle2 className="w-4 h-4" />
-                  </div>
-                  <div className="text-left">
-                    <div className="text-xs font-bold text-slate-800 leading-tight">Direct School Vault</div>
-                    <div className="text-[10px] text-emerald-600 font-semibold">100% Private &amp; Secure</div>
-                  </div>
-                </div>
-
-                {/* Floating Pill Badge 2: Gate QR Intake */}
-                <div className="absolute -bottom-2 -right-2 bg-white/95 backdrop-blur-md border border-slate-200/90 shadow-lg rounded-2xl px-3 py-2 flex items-center gap-2.5 shadow-violet-500/10 hover:border-violet-300 transition-all">
-                  <div className="w-8 h-8 rounded-xl bg-violet-100 text-violet-700 flex items-center justify-center shrink-0 shadow-2xs">
-                    <QrCode className="w-4 h-4" />
-                  </div>
-                  <div className="text-left">
-                    <div className="text-xs font-bold text-slate-800 leading-tight">Gate QR Standee</div>
-                    <div className="text-[10px] text-violet-600 font-semibold">Ready in 2 Minutes</div>
-                  </div>
-                </div>
-
-                {/* Floating Pill Badge 3: 150+ Schools (top right) */}
-                <div className="absolute top-8 -right-4 bg-white/95 backdrop-blur-md border border-slate-200/90 shadow-md rounded-xl px-2.5 py-1.5 flex items-center gap-1.5 text-slate-700 font-bold text-[11px] shadow-2xs">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-                  <span>Zero Agency Fees</span>
-                </div>
+            {/* WIDGET CARD 1: 3-STEP INSTANT ACTIVATION TIMELINE */}
+            <div className="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-[0_10px_35px_-5px_rgba(8,41,92,0.06)] space-y-4 max-w-xl">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                <span className="text-xs font-black uppercase tracking-wider text-slate-800 flex items-center gap-2">
+                  <Zap className="w-4 h-4 text-amber-500" />
+                  Instant 3-Step School Setup
+                </span>
+                <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/60">
+                  Ready in 2 Mins
+                </span>
               </div>
 
+              <div className="space-y-3">
+                <div className="flex items-start gap-3 p-3 rounded-xl bg-slate-50/80 border border-slate-100">
+                  <div className="w-6 h-6 rounded-lg bg-violet-600 text-white font-bold text-xs flex items-center justify-center shrink-0">
+                    1
+                  </div>
+                  <div className="text-xs">
+                    <div className="font-bold text-slate-800">Register Official School Account</div>
+                    <div className="text-slate-500 text-[11px] mt-0.5">Enter school details and verify official email with 1-click OTP.</div>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3 p-3 rounded-xl bg-slate-50/80 border border-slate-100">
+                  <div className="w-6 h-6 rounded-lg bg-indigo-600 text-white font-bold text-xs flex items-center justify-center shrink-0">
+                    2
+                  </div>
+                  <div className="text-xs">
+                    <div className="font-bold text-slate-800">Download Printable Gate QR Standee</div>
+                    <div className="text-slate-500 text-[11px] mt-0.5">Place it at school reception or main gate for walk-in teachers.</div>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3 p-3 rounded-xl bg-slate-50/80 border border-slate-100">
+                  <div className="w-6 h-6 rounded-lg bg-teal-600 text-white font-bold text-xs flex items-center justify-center shrink-0">
+                    3
+                  </div>
+                  <div className="text-xs">
+                    <div className="font-bold text-slate-800">Review Candidates in Private Vault</div>
+                    <div className="text-slate-500 text-[11px] mt-0.5">Search by subject, experience, and invite for direct interviews.</div>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            {/* Trust Badges Strip (matching landing page) */}
-            <div className="pt-4 border-t border-slate-200/80 flex flex-wrap items-center gap-y-2.5 gap-x-6 text-xs font-semibold text-slate-600">
+            {/* WIDGET CARD 2: PRIVACY & TRUST ASSURANCE */}
+            <div className="bg-white rounded-2xl p-4 border border-slate-200/90 shadow-[0_10px_35px_-5px_rgba(8,41,92,0.06)] flex items-center gap-4 max-w-xl">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white flex items-center justify-center shrink-0 shadow-md shadow-emerald-500/20">
+                <ShieldCheck className="w-6 h-6" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-xs font-black text-slate-900 uppercase tracking-wider">
+                    100% Confidential To Your Campus
+                  </h4>
+                  <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">
+                    Zero Leakage
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-500 leading-snug mt-0.5">
+                  Applicants who apply through your link or QR code belong strictly to your school database. Never shared with competitors or agencies.
+                </p>
+              </div>
+            </div>
+
+            {/* Trust Badges Strip */}
+            <div className="pt-2 flex flex-wrap items-center gap-y-2 gap-x-6 text-xs font-semibold text-slate-600">
               <div className="flex items-center gap-1.5">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" /> 100% Free School Registration
               </div>
