@@ -471,7 +471,7 @@ export default function Landing() {
                 <GraduationCap className="w-4 h-4 sm:w-5 sm:h-5" />
               </div>
               <div className="text-2xl sm:text-3xl lg:text-4xl font-black bg-gradient-to-r from-sky-600 to-cyan-500 bg-clip-text text-transparent mb-0.5 sm:mb-1">
-                0 Paper
+                Zero Paper
               </div>
               <div className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-500">
                 Biodatas — Digital

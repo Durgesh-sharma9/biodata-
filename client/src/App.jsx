@@ -40,6 +40,7 @@ import ApplicantDocuments from '@/pages/applicant/ApplicantDocuments';
 import ApplicantNotifications from '@/pages/applicant/ApplicantNotifications';
 import ApplicantPlans from '@/pages/admin/ApplicantPlans';
 import PartnerMarquee from '@/pages/admin/PartnerMarquee';
+import { PwaInstallButton } from '@/components/common/PwaInstallButton';
 const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '1009453564904-0g2e28s2uancvjeb0j26idg6upb1vomg.apps.googleusercontent.com';
 
 const queryClient = new QueryClient({
@@ -143,6 +144,7 @@ export default function App() {
 
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
+          <PwaInstallButton />
         </BrowserRouter>
       </AuthProvider>
     </QueryClientProvider>

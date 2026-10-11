@@ -1,0 +1,48 @@
+{
+  "name": "HireHub - School Recruitment & Talent Pool",
+  "short_name": "HireHub",
+  "description": "Smart school recruitment and talent pool platform for educational institutions, teachers, and staff.",
+  "start_url": "/",
+  "scope": "/",
+  "id": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "/pwa-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-maskable-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Teacher / Staff Apply",
+      "short_name": "Apply",
+      "description": "Submit teacher or staff application",
+      "url": "/join",
+      "icons": [{ "src": "/pwa-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "School Login",
+      "short_name": "Login",
+      "description": "Login to HireHub portal",
+      "url": "/login",
+      "icons": [{ "src": "/pwa-192x192.png", "sizes": "192x192" }]
+    }
+  ]
+}
