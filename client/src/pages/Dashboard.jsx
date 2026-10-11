@@ -431,74 +431,103 @@ export default function Dashboard() {
           </CardContent>
         </Card>
 
-        {/* Right Column (7 cols): Subject Pool Strength & Source Snapshot */}
+        {/* Right Column (7 cols): Experience Distribution & Sourcing Insights */}
         <Card className="lg:col-span-7 border border-slate-200/80 dark:border-slate-800 shadow-2xs rounded-2xl overflow-hidden bg-white dark:bg-slate-900 flex flex-col justify-between">
           <CardHeader className="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex flex-row items-center justify-between space-y-0">
             <div>
               <CardTitle className="text-xs sm:text-sm font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
-                <BarChart3 className="h-4 w-4 text-[#14B8A6]" />
-                Subject Pool Strength
+                <BarChart3 className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
+                Experience Distribution
               </CardTitle>
               <p className="text-[11px] text-slate-400 dark:text-slate-500 font-medium mt-0.5">
-                Available teacher biodatas for each department
+                Faculty seniority breakdown &amp; candidate acquisition channels
               </p>
             </div>
-            <span className="text-xs font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-md">
-              Faculty Pool
+            <span className="text-xs font-bold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-md">
+              Seniority Tiers
             </span>
           </CardHeader>
           
           <CardContent className="p-4 sm:p-5 flex-1 flex flex-col justify-between space-y-4">
             <div className="space-y-3">
-              {positionBreakdown.length === 0 ? (
-                <div className="text-center py-8 text-slate-400">
-                  <p className="text-xs font-semibold">No positions logged yet.</p>
-                  <Button size="sm" asChild className="mt-3 bg-gradient-to-r from-[#8A3BD4] to-[#A855F7] text-white text-xs rounded-lg">
-                    <Link to="/candidates/new">+ Add First Teacher</Link>
-                  </Button>
-                </div>
-              ) : (
-                positionBreakdown.slice(0, 6).map((item, idx) => {
-                  const percentage = totalCandidates > 0 ? Math.round((item.count / totalCandidates) * 100) : 0;
-                  const barColor = SUBJECT_COLORS[idx % SUBJECT_COLORS.length];
+              {[
+                { key: 'Fresher', label: 'Fresher / Trainee', color: '#0284C7' },
+                { key: '1 - 2 Years', label: '1 - 2 Years (Junior)', color: '#0D9488' },
+                { key: '3 - 5 Years', label: '3 - 5 Years (Mid-Level)', color: '#6366F1' },
+                { key: '5+ Years', label: '5+ Years (Senior Faculty)', color: '#8B5CF6' },
+              ].map((tier) => {
+                const count = (experienceBreakdown.find((e) => e.label === tier.key)?.count) || 0;
+                const percentage = totalCandidates > 0 ? Math.round((count / totalCandidates) * 100) : 0;
 
-                  return (
-                    <Link
-                      key={item.position}
-                      to={`/my-candidates?position=${encodeURIComponent(item.position)}`}
-                      className="block space-y-1.5 p-1.5 -mx-1.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group cursor-pointer"
-                      title={`Filter ${item.count} candidates for ${item.position}`}
-                    >
-                      <div className="flex items-center justify-between text-xs font-semibold">
-                        <span className="text-slate-700 dark:text-slate-300 truncate group-hover:text-[#8A3BD4] transition-colors">
-                          {item.position}
-                        </span>
-                        <span className="text-slate-500 dark:text-slate-400 font-mono text-[11px] group-hover:text-slate-700 dark:group-hover:text-slate-200">
-                          {item.count} {item.count === 1 ? 'candidate' : 'candidates'} ({percentage}%)
-                        </span>
-                      </div>
-                      <div className="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-md overflow-hidden">
-                        <div 
-                          className="h-full rounded-md transition-all duration-700" 
-                          style={{ width: `${Math.min(100, Math.max(8, percentage))}%`, backgroundColor: barColor }}
-                        />
-                      </div>
-                    </Link>
-                  );
-                })
-              )}
+                return (
+                  <Link
+                    key={tier.key}
+                    to="/my-candidates"
+                    className="block space-y-1.5 p-1.5 -mx-1.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group cursor-pointer"
+                    title={`${count} candidates with ${tier.label}`}
+                  >
+                    <div className="flex items-center justify-between text-xs font-semibold">
+                      <span className="text-slate-700 dark:text-slate-300 truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                        {tier.label}
+                      </span>
+                      <span className="text-slate-500 dark:text-slate-400 font-mono text-[11px] group-hover:text-slate-700 dark:group-hover:text-slate-200">
+                        {count} {count === 1 ? 'candidate' : 'candidates'} ({percentage}%)
+                      </span>
+                    </div>
+                    <div className="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-md overflow-hidden">
+                      <div 
+                        className="h-full rounded-md transition-all duration-700" 
+                        style={{ width: `${Math.min(100, Math.max(count > 0 ? 8 : 0, percentage))}%`, backgroundColor: tier.color }}
+                      />
+                    </div>
+                  </Link>
+                );
+              })}
             </div>
 
-            {/* Quick Channel & Compliance Pills */}
-            <div className="pt-3 border-t border-slate-100 dark:border-slate-800 grid grid-cols-2 gap-2">
-              <div className="p-2.5 rounded-lg bg-cyan-50/80 dark:bg-cyan-950/30 border border-cyan-200/70 dark:border-cyan-800 text-center">
-                <span className="text-[10px] text-cyan-600 dark:text-cyan-400 uppercase font-bold block">QR Links</span>
-                <span className="text-sm font-black text-cyan-800 dark:text-cyan-200">{directApplications}</span>
-              </div>
-              <div className="p-2.5 rounded-lg bg-slate-50/80 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-800 text-center">
-                <span className="text-[10px] text-slate-400 uppercase font-bold block">Walk-ins</span>
-                <span className="text-sm font-black text-slate-800 dark:text-slate-200">{manualWalkIns}</span>
-              </div>
+            {/* Application Sources Breakdown Strip */}
+            <div className="pt-3 border-t border-slate-100 dark:border-slate-800 grid grid-cols-2 gap-2.5">
+              <Link
+                to="/my-candidates?source=SCHOOL_LINK"
+                className="p-2.5 rounded-xl bg-cyan-50/70 hover:bg-cyan-50 dark:bg-cyan-950/30 border border-cyan-200/70 dark:border-cyan-800 transition-all text-center group cursor-pointer"
+                title="View QR Scan Applications"
+              >
+                <div className="flex items-center justify-center gap-1.5 mb-0.5">
+                  <QrCode className="h-3.5 w-3.5 text-cyan-600 dark:text-cyan-400" />
+                  <span className="text-[10px] text-cyan-700 dark:text-cyan-300 uppercase font-bold tracking-wider">
+                    QR Scan Leads
+                  </span>
+                </div>
+                <div className="flex items-baseline justify-center gap-1.5">
+                  <span className="text-base font-black text-cyan-900 dark:text-cyan-100">
+                    {directApplications}
+                  </span>
+                  <span className="text-[10px] font-semibold text-cyan-600 dark:text-cyan-400">
+                    ({totalCandidates > 0 ? Math.round((directApplications / totalCandidates) * 100) : 0}%)
+                  </span>
+                </div>
+              </Link>
+
+              <Link
+                to="/my-candidates?source=ADMIN"
+                className="p-2.5 rounded-xl bg-indigo-50/70 hover:bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-200/70 dark:border-indigo-800 transition-all text-center group cursor-pointer"
+                title="View Walk-in Applications"
+              >
+                <div className="flex items-center justify-center gap-1.5 mb-0.5">
+                  <UserCheck className="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400" />
+                  <span className="text-[10px] text-indigo-700 dark:text-indigo-300 uppercase font-bold tracking-wider">
+                    Walk-in Direct
+                  </span>
+                </div>
+                <div className="flex items-baseline justify-center gap-1.5">
+                  <span className="text-base font-black text-indigo-900 dark:text-indigo-100">
+                    {manualWalkIns}
+                  </span>
+                  <span className="text-[10px] font-semibold text-indigo-600 dark:text-indigo-400">
+                    ({totalCandidates > 0 ? Math.round((manualWalkIns / totalCandidates) * 100) : 0}%)
+                  </span>
+                </div>
+              </Link>
             </div>
           </CardContent>
         </Card>
