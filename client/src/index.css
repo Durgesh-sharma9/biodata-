@@ -237,6 +237,67 @@
   animation-play-state: paused;
 }
 
+/* ─────────────────────────────────────────────────────────────
+   Smooth Floating, Drifting & Soft Pulse Animation Keyframes
+───────────────────────────────────────────────────────────── */
+@keyframes float-slow {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-15px) rotate(2.5deg);
+  }
+}
+
+@keyframes float-reverse {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(16px) rotate(-3deg);
+  }
+}
+
+@keyframes drift-horizontal {
+  0%, 100% {
+    transform: translate(0px, 0px);
+  }
+  50% {
+    transform: translate(12px, -8px);
+  }
+}
+
+@keyframes pulse-soft-scale {
+  0%, 100% {
+    transform: scale(1) translateY(0px);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.06) translateY(-6px);
+    opacity: 1;
+  }
+}
+
+.animate-float-slow {
+  animation: float-slow 6.5s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-float-reverse {
+  animation: float-reverse 8s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-drift-horizontal {
+  animation: drift-horizontal 9s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-pulse-soft-scale {
+  animation: pulse-soft-scale 5.5s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
 /* Ensure Leaflet map canvases and controls never leak above modals, dialogs or search palette */
 .leaflet-container {
   z-index: 0 !important;
