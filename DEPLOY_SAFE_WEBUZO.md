@@ -9,7 +9,7 @@ Is process se server par chal rahe baki kisi bhi project (`campuscrm`, `testmast
 Agar server par koi extra code edit nahi kiya gaya hai, toh Webuzo Terminal me direct ye ek line run karein:
 
 ```bash
-cd /home/webncode/public_html/hirehub && git pull origin main && cd client && npm install && npm run build && cd .. && chown -R webncode:webncode /home/webncode/public_html/hirehub
+cd /home/webncode/public_html/hirehub && git pull origin main && cd client && npm install && npm run build && cd .. && pm2 restart hirehub-api && chown -R webncode:webncode /home/webncode/public_html/hirehub
 ```
 
 ---
@@ -43,16 +43,12 @@ cd ..
 
 ---
 
-### Step 4: Backend PM2 Process Restart Karein (Sirf HireHub)
-Pehle check karein HireHub ka process name kya hai:
+### Step 4: Backend PM2 Process Restart Karein (Sirf hirehub-api)
+Aapke server par PM2 process ka naam **`hirehub-api`** (ID: 19) hai:
 ```bash
-pm2 list
+pm2 restart hirehub-api
 ```
-Fir sirf HireHub process ko restart karein:
-```bash
-pm2 restart hirehub
-```
-*(Agar process name alag hai jaise `biodata-server` ya `hirehub-backend`, toh wahi naam daalein. Baki apps safely chalte rahenge).*
+*(Sirf `hirehub-api` restart hoga, baki processes jaise `campuscrm`, `testmaster`, etc. safely chalte rahenge).*
 
 ---
 
