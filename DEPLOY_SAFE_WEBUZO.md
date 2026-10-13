@@ -5,11 +5,11 @@ Is process se server par chal rahe baki kisi bhi project (`campuscrm`, `testmast
 
 ---
 
-## ⚡ 1. Quick One-Liner (Fastest & Safest)
-Agar server par koi extra code edit nahi kiya gaya hai, toh Webuzo Terminal me direct ye ek line run karein:
+## ⚡ 1. Quick All-In-One Command (Copy & Paste)
+Webuzo Terminal me bas ye **ek command** paste karein aur Enter dabayein:
 
 ```bash
-cd /home/webncode/public_html/hirehub && git pull origin main && cd client && npm install && npm run build && cd .. && pm2 restart hirehub-api && chown -R webncode:webncode /home/webncode/public_html/hirehub
+cd /home/webncode/public_html/hirehub && git pull origin main && cd client && npm run build && cd .. && \cp -rf client/dist/* . && pm2 restart hirehub-api && chown -R webncode:webncode /home/webncode/public_html/hirehub
 ```
 
 ---
